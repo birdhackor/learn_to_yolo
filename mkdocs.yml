@@ -1,0 +1,37 @@
+site_name: Learn to YOLO
+site_description: 小型 CNN 到 YOLO 演化的中文教學專案，目前為前置規劃。
+site_url: https://birdhackor.github.io/learn_to_yolo/
+repo_url: https://github.com/birdhackor/learn_to_yolo
+repo_name: birdhackor/learn_to_yolo
+theme:
+  name: material
+  language: zh-TW
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+plugins:
+  - search:
+      lang:
+        - en
+        - ja
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.superfences
+nav:
+  - 首頁: index.md
+  - 前置準備:
+      - 資料規劃: preparation/data.md
+      - 發布與帳號設定: preparation/publish.md
+      - 網頁與 Colab 規格: preparation/architecture.md
+  - 教學規劃:
+      - 第二版大綱: planning/outline.md
+      - 公開課程研究: planning/course-research.md
+      - 讀者與學習心得: planning/feedback.md
+  - 資料與平台查核:
+      - 基礎資料: research/foundation-data.md
+      - 偵測資料: research/detection-data.md
+      - Git LFS: research/lfs.md
+      - Pages 與 Colab: research/pages-colab.md

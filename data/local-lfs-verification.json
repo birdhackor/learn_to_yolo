@@ -1,0 +1,22 @@
+{
+  "checked_on": "2026-10-02",
+  "git_lfs_version": "git-lfs/3.6.1 (GitHub; linux amd64; go 1.24.4)",
+  "asset": "Fashion-MNIST train-images-idx3-ubyte.gz",
+  "bytes": 26421880,
+  "sha256": "3aede38d61863908ad78613f6a32ed271626dd12800ba2636569512369268a84",
+  "pointer": "version https://git-lfs.github.com/spec/v1\noid sha256:3aede38d61863908ad78613f6a32ed271626dd12800ba2636569512369268a84\nsize 26421880",
+  "fsck": "Git LFS fsck OK",
+  "restore_sha256_matches": true,
+  "scope": "isolated local repository; no remote upload or quota verification",
+  "additional_checks": [
+    {
+      "asset": "PennFudanPed.zip",
+      "bytes": 53723336,
+      "sha256": "9095a9613c95586f1c7f2a327d454833d16e0f5e17e5f83d35027ffd315b48e2",
+      "pointer": "version https://git-lfs.github.com/spec/v1\noid sha256:9095a9613c95586f1c7f2a327d454833d16e0f5e17e5f83d35027ffd315b48e2\nsize 53723336",
+      "fsck": "Git LFS fsck OK",
+      "restore_sha256_matches": true,
+      "note": "isolated local test only; photos not committed to public repository"
+    }
+  ]
+}

@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "note": "Planning registry; ready refers to file readiness, not remote deployment or GPU validation. Lesson paths are assigned when real material is authored.",
+  "sections": [
+    {
+      "id": "preparation-environment",
+      "title": "Colab 環境檢查",
+      "kind": "preparation",
+      "status": "ready",
+      "page": "docs/index.md",
+      "notebook": "notebooks/00_environment_check.ipynb",
+      "source_ref": "main",
+      "datasets": []
+    },
+    {
+      "id": "00-warmup",
+      "title": "一次學習的超短暖身",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "01-small-cnn",
+      "title": "VGG 風格小 CNN",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "02-diagnostics",
+      "title": "訓練診斷",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "03-identity",
+      "title": "ResNet identity shortcut",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "03-projection",
+      "title": "ResNet projection shortcut",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "03-comparison",
+      "title": "Plain／residual 對照",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "04-localization",
+      "title": "單物件分類與定位",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "04-coordinates",
+      "title": "座標轉換與還原",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "05-assignment",
+      "title": "多物件輸出與責任分配",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "06-decode-nms",
+      "title": "人工框解碼與 NMS",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "06-evaluation",
+      "title": "人工框評估與 AP50",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "07-data",
+      "title": "Grid MiniYOLO 資料",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "07-targets",
+      "title": "Grid MiniYOLO targets",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "07-loss",
+      "title": "Grid MiniYOLO loss",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "07-training",
+      "title": "少量 overfit 與偵測診斷",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "07-inference",
+      "title": "完整圖片推論",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "07-heldout",
+      "title": "獨立資料評估",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "08-own-images",
+      "title": "自己的圖片推論",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "08-own-data",
+      "title": "自己的類別與資料",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "09-anchors",
+      "title": "YOLOv2 anchor 與框參數化",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "09-anchor-clustering",
+      "title": "尺寸聚類",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "10-multiscale",
+      "title": "YOLOv3 多尺度",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "11-csp",
+      "title": "CSP",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "11-fusion",
+      "title": "特徵融合",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "11-augmentation",
+      "title": "圖與框同步增強",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "11-iou-loss",
+      "title": "IoU 類 loss",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "12-anchor-free",
+      "title": "Anchor-free",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "12-decoupled-head",
+      "title": "Decoupled head",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "12-assignment",
+      "title": "Sample assignment",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "12-dfl",
+      "title": "DFL",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "13-dual-assignment",
+      "title": "YOLOv10 dual assignment",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "13-nms-free",
+      "title": "NMS-free 推論",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "14-feature-module",
+      "title": "YOLO11 特徵模組",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "15-attention-bridge",
+      "title": "Feature map 到 attention",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "15-area-attention",
+      "title": "YOLOv12 Area Attention",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "16-dfl-free",
+      "title": "YOLO26 DFL-free",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "16-inference-head",
+      "title": "YOLO26 推論 head",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "16-training",
+      "title": "YOLO26 訓練補強候選",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "17-capstone",
+      "title": "靜態偵測結業任務",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "18-video",
+      "title": "影片串流",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "19-tracking",
+      "title": "簡易 tracking",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    },
+    {
+      "id": "20-deployment",
+      "title": "ONNX／TensorRT",
+      "kind": "lesson",
+      "status": "planned",
+      "page": null,
+      "notebook": null,
+      "source_ref": null,
+      "datasets": []
+    }
+  ]
+}

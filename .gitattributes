@@ -1,0 +1,11 @@
+# Keep website text, small images, notebooks and manifests in ordinary Git.
+*.md text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.ipynb text eol=lf
+
+# These directories are reserved for selected binary assets.
+data/curated/** filter=lfs diff=lfs merge=lfs -text
+artifacts/checkpoints/** filter=lfs diff=lfs merge=lfs -text
+artifacts/exports/** filter=lfs diff=lfs merge=lfs -text

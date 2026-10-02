@@ -1,0 +1,44 @@
+name: Publish and verify LFS dataset
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-lfs-dataset
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and verify original dataset
+        run: python scripts/download_data.py fetch fashion-mnist
+      - name: Build reproducible licensed bundle
+        run: python scripts/package_fashion_mnist.py
+      - name: Upload bundle to GitHub LFS
+        run: |
+          git lfs install --local
+          git add .gitattributes data/curated/fashion-mnist-v1.tar
+          python scripts/github_auth.py git lfs push --object-id origin 3f90f28291da3cb42cb75c4aca18014a6af397e307ee14a60516bc87e882977f
+      - name: Create local pointer commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish verified Fashion-MNIST LFS bundle'
+          fi
+      - name: Verify download from an empty LFS cache
+        run: python scripts/verify_remote_lfs.py
+      - name: Publish verified pointer to main
+        run: python scripts/github_auth.py git push origin HEAD:main

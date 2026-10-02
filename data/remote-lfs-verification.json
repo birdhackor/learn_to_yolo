@@ -1,0 +1,14 @@
+{
+  "checked_on": "2026-10-02",
+  "asset": "data/curated/fashion-mnist-v1.tar",
+  "bytes": 30894080,
+  "sha256": "3f90f28291da3cb42cb75c4aca18014a6af397e307ee14a60516bc87e882977f",
+  "native_git_lfs_result": "S3 transfer returned Not Implemented; retry with explicit Content-Length",
+  "batch_status": 200,
+  "upload_host": "github-cloud.s3.amazonaws.com",
+  "failure_status": 501,
+  "failure_server": "envoy",
+  "failure_content_type": "application/xml",
+  "failure_code": "NotImplemented",
+  "failure_message": "A header you provided implies functionality that is not implemented"
+}

@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-10-02",
+  "size_units": "bytes; displayed MB/GB are decimal",
+  "datasets": [
+    {
+      "id": "fashion-mnist",
+      "status": "download-ready",
+      "purpose": "Small CNN / ResNet classification diagnostics; no bounding boxes",
+      "license": "MIT",
+      "license_url": "https://github.com/zalandoresearch/fashion-mnist/blob/master/LICENSE",
+      "homepage": "https://github.com/zalandoresearch/fashion-mnist",
+      "format": "IDX gzip; 28x28 grayscale; 10 classes",
+      "splits": {
+        "train": 60000,
+        "test": 10000
+      },
+      "resources": [
+        {
+          "filename": "train-images-idx3-ubyte.gz",
+          "url": "https://raw.githubusercontent.com/zalandoresearch/fashion-mnist/master/data/fashion/train-images-idx3-ubyte.gz",
+          "bytes": 26421880,
+          "md5": "8d4fb7e6c68d591d4c3dfef9ec88bf0d",
+          "sha256": "3aede38d61863908ad78613f6a32ed271626dd12800ba2636569512369268a84"
+        },
+        {
+          "filename": "train-labels-idx1-ubyte.gz",
+          "url": "https://raw.githubusercontent.com/zalandoresearch/fashion-mnist/master/data/fashion/train-labels-idx1-ubyte.gz",
+          "bytes": 29515,
+          "md5": "25c81989df183df01b3e8a0aad5dffbe",
+          "sha256": "a04f17134ac03560a47e3764e11b92fc97de4d1bfaf8ba1a3aa29af54cc90845"
+        },
+        {
+          "filename": "t10k-images-idx3-ubyte.gz",
+          "url": "https://raw.githubusercontent.com/zalandoresearch/fashion-mnist/master/data/fashion/t10k-images-idx3-ubyte.gz",
+          "bytes": 4422102,
+          "md5": "bef4ecab320f06d8554ea6380940ec79",
+          "sha256": "346e55b948d973a97e58d2351dde16a484bd415d4595297633bb08f03db6a073"
+        },
+        {
+          "filename": "t10k-labels-idx1-ubyte.gz",
+          "url": "https://raw.githubusercontent.com/zalandoresearch/fashion-mnist/master/data/fashion/t10k-labels-idx1-ubyte.gz",
+          "bytes": 5148,
+          "md5": "bb300cfdad3c16e7a12a480ee83cd310",
+          "sha256": "67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5"
+        }
+      ]
+    },
+    {
+      "id": "synthetic-rgb",
+      "status": "planned",
+      "purpose": "Shared controlled classification, single-object and multi-object experiments",
+      "format": "Generated RGB images and bounding boxes; generator not implemented",
+      "resources": []
+    },
+    {
+      "id": "penn-fudan",
+      "status": "download-ready",
+      "purpose": "Small real single-class multi-object detection",
+      "homepage": "https://www.cis.upenn.edu/~jshi/ped_html/",
+      "format": "PNG instance masks and PASCAL 1.00 TXT; 170 images",
+      "redistribution": "Restricted; README retains rights and warns against reposting without permission",
+      "availability_probe": "Complete ZIP downloaded; size, SHA256, CRC and entry counts verified",
+      "resources": [
+        {
+          "filename": "PennFudanPed.zip",
+          "url": "https://www.cis.upenn.edu/~jshi/ped_html/PennFudanPed.zip",
+          "bytes": 53723336,
+          "sha256": "9095a9613c95586f1c7f2a327d454833d16e0f5e17e5f83d35027ffd315b48e2"
+        }
+      ],
+      "license": "Original copyright holders; redistribution restricted",
+      "license_url": "https://www.cis.upenn.edu/~jshi/ped_html/"
+    },
+    {
+      "id": "voc2007",
+      "status": "candidate",
+      "purpose": "Fixed multi-class subset shared across detector versions",
+      "homepage": "https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2007/index.html",
+      "format": "JPEG and VOC XML; preserve official split boundaries",
+      "redistribution": "Flickr image terms; no blanket redistribution claim",
+      "availability_probe": "HEAD and small range only; not a full-file checksum",
+      "resources": [
+        {
+          "filename": "VOCtrainval_06-Nov-2007.tar",
+          "url": "https://thor.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar",
+          "bytes": 460032000
+        },
+        {
+          "filename": "VOCtest_06-Nov-2007.tar",
+          "url": "https://thor.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar",
+          "bytes": 451020800
+        }
+      ]
+    },
+    {
+      "id": "coco2017",
+      "status": "candidate",
+      "purpose": "Fixed small-object and crowded-scene subsets",
+      "homepage": "https://cocodataset.org/#download",
+      "format": "JSON; pixel xywh; non-contiguous category IDs; iscrowd",
+      "redistribution": "Annotations CC BY 4.0; images have individual source licenses",
+      "availability_probe": "HEAD and small range only; not a full-file checksum",
+      "resources": [
+        {
+          "filename": "annotations_trainval2017.zip",
+          "url": "https://images.cocodataset.org/annotations/annotations_trainval2017.zip",
+          "bytes": 252907541
+        },
+        {
+          "filename": "val2017.zip",
+          "url": "https://images.cocodataset.org/zips/val2017.zip",
+          "bytes": 815585330
+        },
+        {
+          "filename": "train2017.zip",
+          "url": "https://images.cocodataset.org/zips/train2017.zip",
+          "bytes": 19336861798
+        }
+      ]
+    },
+    {
+      "id": "oxford-iiit-pet",
+      "status": "candidate",
+      "purpose": "Optional real single-object localization; head ROI or explicitly mask-derived whole-pet boxes",
+      "homepage": "https://www.robots.ox.ac.uk/~vgg/data/pets/",
+      "format": "Head XML partially covers split; complete trimaps for derived boxes",
+      "redistribution": "Current page CC BY-SA 4.0 conflicts with older archive README research-only terms; do not repackage yet",
+      "resources": [
+        {
+          "filename": "annotations.tar.gz",
+          "url": "https://thor.robots.ox.ac.uk/~vgg/data/pets/annotations.tar.gz",
+          "bytes": 19173078,
+          "sha256": "52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91"
+        },
+        {
+          "filename": "images.tar.gz",
+          "url": "https://thor.robots.ox.ac.uk/~vgg/data/pets/images.tar.gz",
+          "bytes": 791918971
+        }
+      ]
+    }
+  ],
+  "lfs_assets": [
+    {
+      "id": "fashion-mnist-v1",
+      "path": "data/curated/fashion-mnist-v1.tar",
+      "bytes": 30894080,
+      "sha256": "3f90f28291da3cb42cb75c4aca18014a6af397e307ee14a60516bc87e882977f",
+      "license": "MIT",
+      "included_license": "fashion-mnist/LICENSE",
+      "members": [
+        "fashion-mnist/train-images-idx3-ubyte.gz",
+        "fashion-mnist/train-labels-idx1-ubyte.gz",
+        "fashion-mnist/t10k-images-idx3-ubyte.gz",
+        "fashion-mnist/t10k-labels-idx1-ubyte.gz",
+        "fashion-mnist/LICENSE"
+      ],
+      "source_dataset": "fashion-mnist",
+      "transport": "git-lfs"
+    }
+  ]
+}
