@@ -1,0 +1,105 @@
+{
+  "workflow": "pages.yml",
+  "dispatch_started_at": "2026-10-02T05:36:59.718970+00:00",
+  "dispatch_status": 204,
+  "id": 36969733155,
+  "html_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/36969733155",
+  "head_sha": "c43ee11a7e455218cec9840e556526beb353d1d7",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-02T05:37:00Z",
+  "public_page_checks": [
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/",
+      "status": 200,
+      "colab_link_present": true
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/preparation/data/",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/preparation/publish/",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/planning/outline/",
+      "status": 200
+    }
+  ],
+  "jobs": [
+    {
+      "name": "build",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install website dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate preparation files",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build static pages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-pages-artifact@v3",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "deploy",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Deploy GitHub Pages",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "public_notebook_check": {
+    "url": "https://raw.githubusercontent.com/birdhackor/learn_to_yolo/main/notebooks/00_environment_check.ipynb",
+    "status": 200,
+    "nbformat": 4,
+    "cells": 3,
+    "colab_execution_verified": false
+  }
+}

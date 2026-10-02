@@ -7,7 +7,9 @@
 - [GitHub Pages／Colab／Git LFS 操作步驟](docs/preparation/publish.md)
 - [網站與 notebook 的編排規格](docs/preparation/architecture.md)
 
-網站目標網址：<https://birdhackor.github.io/learn_to_yolo/>。需先依操作步驟啟用 Pages 並執行發布 workflow。
+規劃網站已發布：<https://birdhackor.github.io/learn_to_yolo/>。目前提供教學大綱、資料規劃與前置操作步驟。
+
+已完成 Fashion-MNIST 封裝的 Git LFS 上傳、空快取下載與 SHA-256 驗證，並實跑 GitHub Pages 部署。測試紀錄見 [LFS](data/remote-lfs-verification.json) 與 [Pages](data/pages-verification.json)。
 
 ## 本地預覽前置規劃網站
 
