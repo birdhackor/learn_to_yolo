@@ -42,6 +42,7 @@ def main():
     many_after_nms = [many_ids[i] for i in kept]
     assert len(many_ids) == 3 and len(many_after_nms) == 2
     assert one_ids == [0, 2]
+    assert 2 in many_after_nms and any(i in many_after_nms for i in (0, 1))
     manual_scores = torch.tensor([.92, .90, .80, .05])
     top2 = manual_scores.topk(2).indices.tolist()
     assert top2 == [0, 1]  # top-k itself cannot detect duplication

@@ -42,6 +42,7 @@ def main():
     print('area affinity shape/count:', tuple(area_weights.shape), area_weights.numel())
     print(f'first-token output full={full[0,0,0].item():.4f}, area={area[0,0,0].item():.4f}')
     print(f'changing token {changed_index} affects token {query_index}: full={full_affected}, area={area_affected}; same area={same_area}')
+    print(f'after intervention: full={full_changed[0,0,0].item():.4f}, area={area_changed[0,0,0].item():.4f}')
     optimizer = torch.optim.SGD(projection.parameters(), lr=.05)
     optimizer.zero_grad()
     loss = F.mse_loss(area, tokens)

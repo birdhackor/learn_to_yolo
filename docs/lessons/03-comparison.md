@@ -4,7 +4,7 @@ Residual有直接路徑，是否就一定更準？不能只看兩個不同模型
 
 設計來源是 [ResNet 原始論文](https://arxiv.org/abs/1512.03385) 對plain與residual的研究。本節用4channel、3個block與人工色塊，省略BatchNorm、原版深度與相加後activation。它是區域性機制對照，不是重現論文的ImageNet結果。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-comparison.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-comparison.py`。CPU、16×16輸入、訓練8張／validation4張，兩模型各3步SGD。3步只驗證路徑與紀錄方法，不作架構排名。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/03-comparison.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-comparison.py`。CPU、16×16輸入、訓練8張／validation4張，兩模型各3步SGD。3步只驗證路徑與紀錄方法，不作架構排名。
 
 ## 唯一主要改動是什麼
 
@@ -54,3 +54,42 @@ Residual另多 \(3\times4\times16\times16=3072\) 次逐值加法／圖。程式�
 常見錯誤是plain較窄、residual較深卻把差異全歸給shortcut；或只讓其中一個模型多訓練幾次直到贏。另一種是用validation更新參數，失去獨立性。
 
 練習把block數由3改成1，其他固定。答案參數為 \(112+288+10=410\)，MAC為 \(27648+73728+8=101384\)，residual額外1024次加法／圖。同步更新assertion與列印成本，先預測梯度路徑可能怎樣變，再實跑；一樣不應把3步勝負當成最終架構選擇。
+
+## 延長到40步：這次真正學到了什麼
+
+這是與上方三步管線檢查分開的補充實驗，沿用同一個模型與資料。seed7、CPU、40次更新；第1／4章改用Adam lr=.01，第3章仍用SGD lr=.1，所以不能把第1／4章的差異單獨歸因於步數。
+
+|模型|首步→最後更新前loss|訓練accuracy|獨立validation accuracy|
+|---|---|---|
+|plain|0.693791 → 0.692943|0.50|0.50（4張）|
+|residual|0.692160 → 0.030739|1.00|1.00（4張）|
+
+![本次固定資料40步的實際loss](../assets/diagrams/03-comparison-learning.svg)
+
+所有更新的梯度有限且L2長度非零，權重確實改變。曲線只評固定訓練批次；不能據此宣稱真實圖片或深層架構的泛化效果。
+
+可在本節Colab完成環境格後另開code cell：`!python scripts/run_learning_extensions.py --section 03-comparison`。原始完整紀錄：[40步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison-learning.json)。
+
+曲線橫軸是訓練步序，loss 在該次更新前量測：第1點尚未更新，第40點是第40次更新前的值；更新後的預測另行評估。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    plain step=0, loss=0.6938, stem_grad_norm=0.000987
+    plain step=1, loss=0.6937, stem_grad_norm=0.001004
+    plain step=2, loss=0.6936, stem_grad_norm=0.001014
+    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0124
+    residual step=0, loss=0.6922, stem_grad_norm=0.146834
+    residual step=1, loss=0.6888, stem_grad_norm=0.147695
+    residual step=2, loss=0.6855, stem_grad_norm=0.146226
+    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0081
+    Same initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.
+    ```
+
+<!-- curriculum-evidence:end -->

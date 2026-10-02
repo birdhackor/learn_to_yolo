@@ -4,7 +4,7 @@
 
 本節是MiniYOLO之前的簡化單物件模型，不是某個完整YOLO版本。Backbone是抽特徵的主幹，head是把特徵轉答案的末端；本例沒有背景圖或變動物件數，這些限制下一階段才處理。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/04-localization.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-localization.py`。CPU、兩張32×32人工圖形、3步SGD；展示梯度和框疊圖，不宣稱已學會定位。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/04-localization.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-localization.py`。CPU、兩張32×32人工圖形、3步SGD；展示梯度和框疊圖，不宣稱已學會定位。
 
 ## 分類摘要為何未必適合位置
 
@@ -58,3 +58,41 @@ GT是真值標註，pred是預測，本圖的pred專門人工設定。Intersecti
 ## 常見錯誤、自主練習與答案
 
 常見錯誤：xyxy與cxcywh混用、pixels與正規化混用、把框輸出順序當成y先x後，或將標籤框重畫得好看便當作模型預測。手算練習將人工預測改成真值向右移6px、y不變，也就是xyxy `[10,6,22,18]`；不用改訓練模型的輸出。答案交集 \(6\times12=72\)，聯集216，IoU=1/3；正規化cx誤差6/32，MSE為 \((6/32)^2/4=0.0087890625\)。同時核對圖與數字，別只看loss。
+
+## 延長到40步：這次真正學到了什麼
+
+這是與上方三步管線檢查分開的補充實驗，沿用同一個模型與資料。seed7、CPU、40次更新；第1／4章改用Adam lr=.01，第3章仍用SGD lr=.1，所以不能把第1／4章的差異單獨歸因於步數。
+
+|模型|首步→最後更新前loss|訓練分類accuracy|獨立validation分類accuracy|
+|---|---|---|
+|localizer|0.809883 → 0.430213|1.00|未評估|
+
+![本次固定資料40步的實際loss](../assets/diagrams/04-localization-learning.svg)
+
+所有更新的梯度有限且L2長度非零，權重確實改變。曲線只評固定訓練批次；不能據此宣稱真實圖片或深層架構的泛化效果。
+
+兩張訓練圖的框IoU為`[0.6945, 0.7752]`。這次直接用模型框對GT計算，與上面的人工IoU手算圖是不同證據。
+
+可在本節Colab完成環境格後另開code cell：`!python scripts/run_learning_extensions.py --section 04-localization`。原始完整紀錄：[40步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization-learning.json)。
+
+曲線橫軸是訓練步序，loss 在該次更新前量測：第1點尚未更新，第40點是第40次更新前的值；更新後的預測另行評估。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    two different positions -> same global mean=0.0625
+    step=0, classification=0.7173, box=0.0185, total=0.8099
+    step=1, classification=0.7146, box=0.0127, total=0.7779
+    step=2, classification=0.7123, box=0.0091, total=0.7576
+    first_target_cxcywh=[0.3125, 0.375, 0.375, 0.375], class_shape=(2, 2), box_shape=(2, 4)
+    predicted pixel xyxy=[[7.4885783195495605, 7.199568748474121, 20.595396041870117, 19.995590209960938], [9.941701889038086, 8.684192657470703, 23.892370223999023, 22.775699615478516]]
+    overlay=artifacts/04-localization.png; no held-out detection claim
+    ```
+
+<!-- curriculum-evidence:end -->

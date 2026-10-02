@@ -4,7 +4,7 @@
 
 歷史機制：[VGG 原始論文](https://arxiv.org/abs/1409.1556) 研究堆疊小型 3×3 卷積的深層分類網路。本節保留「小卷積重複堆疊」的想法，縮成兩個 block、4／8 channels、global average pooling，省略原版的深度與大型全連線層。它是教學 CNN，不是 VGG16 的重現。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/01-small-cnn.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/01-small-cnn.py`。資料是程式畫的 8 張紅／藍矩形；輸入 32×32、batch 8、CPU 訓練 3 步。目的是確認形狀、梯度與參數更新，尚未訓練出可用分類器。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/01-small-cnn.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/01-small-cnn.py`。資料是程式畫的 8 張紅／藍矩形；輸入 32×32、batch 8、CPU 訓練 3 步。目的是確認形狀、梯度與參數更新，尚未訓練出可用分類器。
 
 ## 先約定圖片怎麼進模型
 
@@ -18,7 +18,7 @@ Block是一小組連續處理，例如「兩次Conv–ReLU再pooling」。Backbo
 
 Conv2d 的一個 3×3 濾鏡在每個位置讀取區域性資料，乘權重並加總。RGB輸入時，一個輸出channel讀取R、G、B各一個3×3區塊，共27個值乘27個權重，再相加並加bias；不是每次只處理一種顏色。每個輸出 channel 都有自己的一套濾鏡；channel 是不同的特徵表示，不一定對應某個顏色或物件。ReLU 把負值變成 0，加入非線性。2×2 max pooling 以 stride 2 保留每區最大值，縮小空間尺寸。
 
-padding=1 在四周補一圈，配合 kernel=3、stride=1，讓 32×32 維持 32×32。一般單軸輸出長度為 \(\lfloor(H+2p-k)/s\rfloor+1\)，其中 H 是輸入長度、p 是 padding、k 是 kernel、s 是 stride。例如 pooling 的 H=32、p=0、k=s=2，輸出就是16。
+padding=1 在四周補一圈，配合 kernel=3、stride=1，讓 32×32 維持 32×32。本例 dilation=1，pooling 使用預設 ceil_mode=False，單軸輸出長度為 \(\lfloor(H+2p-k)/s\rfloor+1\)，其中 H 是輸入長度、p 是 padding、k 是 kernel、s 是 stride。例如 pooling 的 H=32、p=0、k=s=2，輸出就是16。若改用膨脹卷積或向上取整的 pooling，需改公式，不能直接套這一式。
 
 | 位置 | Tensor shape | 空間意義 |
 | --- | --- | --- |
@@ -37,15 +37,15 @@ Global average pooling（GAP、空間平均）將每個channel的8×8共64個位
 
 ```python
 optimizer.zero_grad(set_to_none=True)
-features = self.features(images)                    # [8,8,8,8]
-summary = self.pool(features).flatten(1)             # [8,8]
-logits = self.head(summary)                          # [8,2]
+features = model.features(images)                    # [8,8,8,8]
+summary = model.pool(features).flatten(1)             # [8,8]
+logits = model.head(summary)                          # [8,2]
 loss = torch.nn.functional.cross_entropy(logits, labels)
 loss.backward()
 optimizer.step()
 ```
 
-一個卷積的參數數量是 \(C_{out}(C_{in}k^2+1)\)，其中 \(C_{in},C_{out}\) 是輸入／輸出channel數，k是kernel長度，最後的 1 是 bias。第一層為 \(4(3\times9+1)=112\)，完整模型共 **1158** 個參數。案例計算每張圖 **479248** 次乘加，僅包含 conv 與 linear，不含 ReLU、pooling與資料搬移，因此不是完整耗時模型。第一層中間特徵 `[8,4,32,32]` 的 float32 數值本身需128 KiB（1 KiB=1024 bytes）；訓練還需儲存更多中間結果、梯度與參數。
+本例卷積使用 groups=1（channel未分組）、有bias、方形kernel，參數數量是 \(C_{out}(C_{in}k^2+1)\)，其中 \(C_{in},C_{out}\) 是輸入／輸出channel數，k是kernel長度，最後的 1 是 bias。第一層為 \(4(3\times9+1)=112\)，完整模型共 **1158** 個參數。案例計算每張圖 **479248** 次乘加，僅包含 conv 與 linear，不含 ReLU、pooling與資料搬移，因此不是完整耗時模型。第一層中間特徵 `[8,4,32,32]` 的 float32 數值本身需128 KiB（1 KiB=1024 bytes）；訓練還需儲存更多中間結果、梯度與參數。
 
 一次乘加是「一個值乘權重、累加到答案」，不是把一次乘法和一次加法分別計成兩次。卷積的乘加數是輸出位置數×輸出channel數×每個輸出讀取的值數。第一層為 \(32\times32\times4\times(3\times9)=110592\)。其餘三層為147456、73728、147456，linear為 \(8\times2=16\)，相加即479248；batch8再乘8。這裡不把bias加法列入MAC。
 
@@ -66,3 +66,47 @@ optimizer.step()
 若輸入 `[8,32,32,3]`，卷積會把32當成channel；先查軸，別先調learning rate。若 loss 報標籤越界，先確認類別id是0／1。若將softmax後的值再交給cross entropy，便改變了預期的輸入契約。
 
 練習只把 width 從4改成8，維持資料、步數及seed。答案：各層channel變成8／16，四層conv及head參數依序224、584、1168、2320、34，合計 **4330**；參數約3.74倍，不是2倍。MAC依序221184、589824、294912、589824、32，合計 **1695776**。同步改案例的參數與乘加預期，再執行；觀察錯誤圖板可以，但3步、單seed、8張圖不足以判定寬模型比較準。
+
+## 延長到40步：這次真正學到了什麼
+
+這是與上方三步管線檢查分開的補充實驗，沿用同一個模型與資料。seed7、CPU、40次更新；第1／4章改用Adam lr=.01，第3章仍用SGD lr=.1，所以不能把第1／4章的差異單獨歸因於步數。
+
+|模型|首步→最後更新前loss|訓練accuracy|獨立validation accuracy|
+|---|---|---|
+|cnn|0.694144 → 0.000000|1.00|未評估|
+
+![本次固定資料40步的實際loss](../assets/diagrams/01-small-cnn-learning.svg)
+
+L2長度是把所有梯度平方相加，再開根號；大於0表示至少有參數收到非零梯度，不是梯度品質分數。所有更新的梯度有限且L2長度非零，權重確實改變。曲線只評固定訓練批次；不能據此宣稱真實圖片或深層架構的泛化效果。
+
+更新後預測為`[0,1,0,1,0,1,0,1]`，這8張訓練图全對。最後的float32交叉熵顯示0，是有限精度計算與過度自信造成的顯示结果，不表示任意新圖都能完美分類。上方三步圖仍保留其原始錯誤，兩個實驗不要混在一起。
+
+可在本節Colab完成環境格後另開code cell：`!python scripts/run_learning_extensions.py --section 01-small-cnn`。原始完整紀錄：[40步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn-learning.json)。
+
+曲線橫軸是訓練步序，loss 在該次更新前量測：第1點尚未更新，第40點是第40次更新前的值；更新後的預測另行評估。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    Conv2d: (8, 4, 32, 32)
+    Conv2d: (8, 4, 32, 32)
+    MaxPool2d: (8, 4, 16, 16)
+    Conv2d: (8, 8, 16, 16)
+    Conv2d: (8, 8, 16, 16)
+    MaxPool2d: (8, 8, 8, 8)
+    parameters=1158; multiply-accumulates/image=479248
+    step=0, loss=0.6941
+    step=1, loss=0.6940
+    step=2, loss=0.6940
+    predictions=[1, 1, 1, 1, 1, 1, 1, 1], labels=[0, 1, 0, 1, 0, 1, 0, 1], error_indices=[0, 2, 4, 6]
+    Three-step smoke test only; accuracy here is not held-out performance.
+    panel=artifacts/01-small-cnn.png
+    ```
+
+<!-- curriculum-evidence:end -->

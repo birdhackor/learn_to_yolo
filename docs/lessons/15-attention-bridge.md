@@ -1,6 +1,6 @@
 # 15.1 Feature map 到 attention：四個位置怎麼互相讀取
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/15-attention-bridge.ipynb) · 原始碼：`lesson_cases/15-attention-bridge.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/15-attention-bridge.ipynb) · 原始碼：`lesson_cases/15-attention-bridge.py`
 
 前置是feature map、矩陣乘法、softmax與backward。卷積在固定區域性鄰域使用共享濾波器；attention則根據當前特徵，計算某個位置要向其他位置讀取多少資訊。本節不先背Q、K、V的名稱，而是用2×2特徵圖，一列一列算出相似度、權重和輸出。
 
@@ -16,9 +16,11 @@
 
 QKV線性投影將每個2維token轉為6維，再切成Q、K、V各2維，shape都為`[1,4,2]`。初值三份投影都設為identity，讓Q、K、V恰好等於tokens，方便手算；它們是可學參數，不是永遠相同。
 
+token是一個空間位置的channel向量；single head只做一組讀取；identity初值把輸入值原樣輸出；row-major是逐列由左到右；affinity在此指各對位置的權重表。
+
 ## 真正算第一個位置的權重
 
-第一個query是`[1,0]`，與四個key的內積為`[1,0,1,0]`。除以`√d=√2`，softmax得到約`[.3349,.1651,.3349,.1651]`，四個權重加起來為1。
+第一個query是`[1,0]`，與四個key的內積為`[1,0,1,0]`。除以`√d=√2`，softmax得到約`[.3349,.1651,.3349,.1651]`，四個權重加起來為1。內積是對應元素乘後相加，例如[1,0]·[1,1]=1×1+0×1=1；d是query／key每個向量的特徵數，本例2。softmax先對每個分數取exp，再除這列exp總和：分母為2×exp(1/√2)+2×exp(0)≈6.0562，第一項約2.0281/6.0562=.3349；零分項為1/6.0562=.1651。
 
 ```python
 similarity = q @ k.transpose(-2, -1) / math.sqrt(2)
@@ -47,3 +49,25 @@ full attention的affinity每head有N²個數。8×8特徵圖N=64，需要4,096�
 自主練習：將第四token改成`[2,0]`，保持identity投影。案例已在optimizer step之前增加獨立練習段：複製`tokens.detach().clone()`，修改副本的第四列，再用尚未更新的qkv重算；原例assert保留，不直接改最上方feature而撞到舊答案。第一query分數為`[1,0,1,2]/√2`，第一列權重約`[.2212,.1091,.2212,.4486]`，輸出約`[1.3395,.3302]`；程式逐值核對。第四位置權重最大，第一channel增加。答案必須重新做softmax，不能只把舊輸出的第四項乘2，因為K改變了所有權重的分母。
 
 來源查覈：2026-10-02。[Attention Is All You Need](https://arxiv.org/abs/1706.03762)、[YOLOv12作者AAttn實作](https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py)。
+
+練習的修改欄位是`exercise_tokens[0,3]`，須在optimizer.step前的那份權重上比較。程式包含參考答案的核對段；先遮住該段，手算新第一列的四個分子與共同分母，再執行核對，不以Run All取代事前預測。FlashAttention只作延伸名詞，不是本節CPU必備。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/15-attention-bridge.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    tokens: [[[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]]]
+    first attention row: [0.33489999175071716, 0.16509999334812164, 0.33489999175071716, 0.16509999334812164]
+    first weighted value: [0.6697999835014343, 0.5]
+    shape feature -> tokens -> affinity -> feature: (1, 2, 2, 2) (1, 4, 2) (1, 4, 4) (1, 2, 2, 2)
+    exercise fourth-token [2,0], first weight row: [0.22120000422000885, 0.10909999907016754, 0.22120000422000885, 0.44859999418258667]
+    exercise first output: [1.3394999504089355, 0.3301999866962433]
+    backward/step through Q,K,V verified; reconstruction loss=0.1795
+    ```
+
+<!-- curriculum-evidence:end -->

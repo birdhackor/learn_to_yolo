@@ -2,7 +2,7 @@
 
 「loss 不動」不是一個完整診斷。可能是標籤錯、梯度斷、沒有更新、learning rate 不合適，也可能是資料太難。先查能直接核對的事項，比同時換 optimizer、模型與資料更容易找出原因。前置是能看懂 tensor shape 與 forward／backward／step；本節不需要記住 CNN 架構。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/02-diagnostics.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/02-diagnostics.py`。CPU 小實驗先製造兩個程式錯誤，再用8筆二維人工資料訓練20步。它不是影像模型的效果測試，而是刻意安排的診斷案例。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/02-diagnostics.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/02-diagnostics.py`。CPU 小實驗先製造兩個程式錯誤，再用8筆二維人工資料訓練20步。它不是影像模型的效果測試，而是刻意安排的診斷案例。
 
 ## 四個檢查點，各自回答不同問題
 
@@ -57,3 +57,27 @@ loss.backward()
 將訓練集新增8筆：4筆 `[-0.3,+1]` 標0、4筆 `[+0.3,-1]` 標1，與原validation的a=±0.2數值不同。先預測會依賴哪個訊號。答案：b不再穩定提供答案，模型更有理由使用a；但a幅度較小，固定20步不一定讓機率很有信心。維持原validation只用於評估，勿把它原封不動加入訓練；否則即使accuracy改善也只是看過同筆資料，不能再稱held-out。本練習仍是兩維人工資料的獨立點檢查，不代表真實圖片泛化。若 `body.weight.grad` 為None，下一個檢查點是detach／no_grad／參數是否參與forward，不是先增加模型寬度。
 
 原始工具檔案：[PyTorch zero_grad](https://pytorch.org/docs/stable/generated/torch.optim.Optimizer.zero_grad.html)、[CrossEntropyLoss](https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html)。
+
+練習需同步更新原分佈的固定答案：原來的`assert train_acc == 1.0 and val_acc == 0.0`只適用原題。新增這8筆後，用相同零初始化、SGD lr=.2與20步，本次CPU得到train／validation都是1.0，因此改成兩者都等於1.0的斷言；有限梯度與參數更新檢查仍保留。這次反背景資料讓模型較依賴a，仍只證明這組人工分佈的結果。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/02-diagnostics.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    broken graph: body.weight.grad=None, head.weight.grad exists
+    repaired graph: body gradient nonzero and body parameter changed
+    label preflight: [0, 2] invalid for two classes; expected IDs 0 or 1
+    step=0: train_loss=0.5945, validation_loss=0.7937
+    step=9: train_loss=0.2244, validation_loss=1.5204
+    step=19: train_loss=0.1236, validation_loss=2.0153
+    train_accuracy=1.00; validation_accuracy=0.00
+    learned weights=[[-0.19503173232078552, -0.9751587510108948], [0.19503173232078552, 0.9751587510108948]]
+    Synthetic distribution shift demonstrates: tiny-set overfit is not generalization.
+    ```
+
+<!-- curriculum-evidence:end -->

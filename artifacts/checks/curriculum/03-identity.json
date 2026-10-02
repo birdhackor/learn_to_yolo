@@ -1,0 +1,14 @@
+{
+  "id": "03-identity",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:17.399870+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "9d9753c44c73fec08d5335a048433f8d932cba3009abfd3cd894b78de2ff0dc2",
+  "process_wall_seconds": 1.796,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]\ninput_gradient=[1.0, 1.0, 1.0, 1.0]; F=0 preserves negative values too\nstep=0, shape=(2, 4, 8, 8), loss=1.0816\nstep=1, shape=(2, 4, 8, 8), loss=1.0724\nrandom branch updated; this does not measure ResNet classification quality\n",
+  "stderr": "",
+  "exit_code": 0
+}

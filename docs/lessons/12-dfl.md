@@ -1,10 +1,10 @@
 # 12.4 DFL：把一條邊距離學成分佈
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-dfl.ipynb) · 原始碼：`lesson_cases/12-dfl.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-dfl.ipynb) · 原始碼：`lesson_cases/12-dfl.py`
 
 前置是 softmax、cross entropy、四邊距離和反向傳播。連續回歸直接輸出一個距離，能否改成「它比較接近 1 格，但也有一部分落在 2 格」？Distribution Focal Loss，簡稱 DFL，為非整數距離提供相鄰兩個 bin 的監督，再用分佈期待值還原距離。本節會算 loss、梯度和解碼，避免只把多個 channel 叫成「分佈」。
 
-歷史機制來自 Generalized Focal Loss，YOLOv8 等模型使用分散式四邊回歸。起始分支是 anchor-free distances；本次只用一條邊、四個 bin `0,1,2,3`。實際 detector 四邊各有一份分佈，還要框 IoU loss；本例不包含分類或完整訓練。實驗後是否保留 DFL，應由定位品質和部署成本決定。
+歷史機制來自 Generalized Focal Loss，YOLOv8 等模型使用以分佈表示的四邊回歸。起始分支是 anchor-free distances；本次只用一條邊、四個 bin `0,1,2,3`。實際 detector 四邊各有一份分佈，還要框 IoU loss；本例不包含分類或完整訓練。實驗後是否保留 DFL，應由定位品質和部署成本決定。
 
 ## 1.25 格不是第 1 類
 
@@ -22,6 +22,8 @@ distance = (logits.softmax(-1) * torch.arange(K)).sum(-1)
 ```
 
 初始 logits 全 0，機率各 .25，期待距離是 1.5 格，DFL 是 `log(4)≈1.386294`。加權 cross entropy 的 logit gradient 為「預測機率−target 分佈」，得到 `[.25,−.50,0,.25]`。bin2 的梯度此刻是 0，因為它目前 .25 恰好符合 target；這不代表 bin2 永遠不更新，softmax 的機率會隨其他 logits 變動。
+
+把 target 寫成四個槽就是 `[0,.75,.25,0]`；初始預測 `[.25,.25,.25,.25]` 逐槽減掉它，便得到上面的梯度。
 
 ## Loss 和期待值各負責什麼
 
@@ -42,3 +44,23 @@ distance = (logits.softmax(-1) * torch.arange(K)).sum(-1)
 自主練習：target 改成 2.6 格、K仍為4。答案是 bin2 權重 .4、bin3 權重 .6；初始梯度 `[.25,.25,−.15,−.35]`。若 target 改成 3.2，應擴增 K 或重新設計尺度，不能讓程式讀不存在的 bin4。再說明為何「期待值誤差很小」不足以驗證 DFL 正確：兩份不同分佈可以有同樣期待值。
 
 來源查覈：2026-10-02。[Generalized Focal Loss 原論文](https://arxiv.org/abs/2006.04388)、[Ultralytics DFLoss 的相鄰 bin 加權](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[DFL 期待值模組](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)。
+
+bin是距離刻度，本例0／1／2／3分別代表0／1／2／3格。target=2.6的練習需同步三處：wanted_grad改`[[.25,.25,-.15,-.35]]`；期待值斷言改與2.6比較、容差.02；概率改檢查bin2與bin3接近.4／.6（各誤差<.02）。最後展示「兩分佈同期待值1.25」的a/b是獨立人工例，與本題2.6無關，可保留原值，不把它改成訓練target。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-dfl.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    uniform expectation=1.50; DFL=1.386294
+    initial logit gradient: [[0.25, -0.5, 0.0, 0.25]]
+    learned bin probabilities: [[0.0024999999441206455, 0.7475000023841858, 0.24740000069141388, 0.0024999999441206455]]
+    learned expectation=1.2500 cells = 9.9999 pixels at stride 8
+    different distributions can share expectation=1.25
+    ```
+
+<!-- curriculum-evidence:end -->

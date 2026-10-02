@@ -31,5 +31,5 @@
 <text x="500" y="426">objectness</text>
 <path d="M665 420h24" stroke="#7c3aed" stroke-width="3"/>
 <text x="695" y="426">classification</text>
-<text x="55" y="456">橫軸：optimizer 更新次數；縱軸：loss。訓練下降仍需另看獨立資料。</text>
+<text x="55" y="456">橫軸：訓練步序（該次更新前）；縱軸：loss。另看獨立資料。</text>
 </svg>

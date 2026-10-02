@@ -1,0 +1,14 @@
+{
+  "id": "07-heldout",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:39.041829+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "ada566e4f1c294156116f7771c2bf31dfc7d23770a7e76a56331a595cf888568",
+  "process_wall_seconds": 1.9139,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "artificial evaluation fixture {'ap_per_class': {0: 0.5, 1: None}, 'map': 0.5, 'precision': 0.3333333333333333, 'recall': 0.5}\n3-step held-out PIPELINE SMOKE, not trained detector evidence {'ap_per_class': {0: 0.0, 1: 0.0}, 'map': 0.0, 'precision': 0.0, 'recall': 0.0}\n",
+  "stderr": "",
+  "exit_code": 0
+}

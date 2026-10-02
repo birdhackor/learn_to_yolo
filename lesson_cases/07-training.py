@@ -1,3 +1,4 @@
+import math
 import torch
 from miniyolo.data import ShapeDataset, collate
 from miniyolo.models import GridDetector
@@ -24,7 +25,7 @@ def main():
         parts['total'].backward()
         assert all(torch.isfinite(p.grad).all() for p in model.parameters() if p.grad is not None)
         grad = sum(p.grad.abs().sum().item() for p in model.parameters() if p.grad is not None)
-        assert grad > 0
+        assert math.isfinite(grad) and grad > 0
         optimizer.step()
         with torch.no_grad():
             obj = prediction[..., 4].sigmoid()

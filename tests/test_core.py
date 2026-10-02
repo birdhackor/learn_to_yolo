@@ -211,7 +211,7 @@ def test_ap_no_gt_class_is_excluded_but_false_positives_still_count():
     assert result["ap_per_class"] == {0: 1., 1: None}
     assert result["map"] == 1 and result["precision"] == .5
     empty_gt = evaluate_ap([prediction([[0, 0, 10, 10]], [.9], [0])], [target()])
-    assert empty_gt == {"ap_per_class": {0: None, 1: None}, "map": 0., "precision": 0., "recall": 0.}
+    assert empty_gt == {"ap_per_class": {0: None, 1: None}, "map": None, "precision": 0., "recall": 0.}
     missing = evaluate_ap([prediction()], [target([[0, 0, 10, 10]], [0])])
     assert missing["map"] == missing["precision"] == missing["recall"] == 0
 

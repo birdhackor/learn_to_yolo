@@ -1,0 +1,14 @@
+{
+  "id": "08-own-data",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:43.164087+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "b5d494ee84e92ab3d62a77544bfd6185bb07e1ad02b28d4c6af281ba54ef911a",
+  "process_wall_seconds": 1.9934,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "rejected source leakage : source leakage\nrejected malformed box rows : box/label row counts differ\nrejected box row length with matching label count : each box row must have exactly four coordinates\nrejected boolean class id : class ids must be integer indices; bool is invalid\nrejected empty-image dimensions : width/height must be positive integers, including empty images\nrejected nonfinite coordinate : coordinates must be finite numbers\nrejected actual image/annotation size mismatch\n6 real PNG files loaded/verified; counts by split {'train': 2, 'validation': 2, 'test': 2}\nsynchronized input box [[10.666666984558105, 15.375, 32.0, 26.125]]\nnew class 2; head (2, 4, 4, 8) one training step 1.4407\n",
+  "stderr": "",
+  "exit_code": 0
+}

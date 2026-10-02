@@ -1,0 +1,20 @@
+{
+  "verified_at_utc": "2026-10-02T17:43:48.360105+00:00",
+  "source_ref": "lessons-v0.2.0",
+  "lesson_experiments_passed": 42,
+  "core_checkpoint_tests": {
+    "command": ".venv-model/bin/python -m pytest tests/test_core.py tests/test_checkpoint.py -q",
+    "passed": 24,
+    "failed": 0
+  },
+  "independent_review_coverage_per_phase": 42,
+  "review_reports": 12,
+  "required_review_issues_open": 0,
+  "zensical_strict_build": "passed",
+  "site_links_anchors_search_colab_pairs": "passed",
+  "chromium_pages_desktop_mobile": 43,
+  "case_notebook_execution_evidence_sha256": "passed",
+  "generated_svg_whitespace_cleanup": "Parsed geometry/visible-content fingerprint identical before and after whitespace cleanup",
+  "modal_jobs": "Both recorded L4 applications confirmed stopped with running_tasks=0; no GPU launched by this final validation",
+  "limits": "Not a human learning study, live Google Colab runtime validation, real-camera test, long real-data training or formal performance benchmark."
+}

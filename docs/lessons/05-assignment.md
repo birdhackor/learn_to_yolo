@@ -4,7 +4,9 @@
 
 歷史概念參考 [YOLOv1原始論文](https://arxiv.org/abs/1506.02640) 的grid與中心責任。本課MiniYOLO採每格**一個框slot**、獨立objectness、softmax類別；省略原版每格多框與其confidence/loss設計，所以不是YOLOv1重現，也不是完整多物件容量方案。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/05-assignment.ipynb)，或 `PYTHONPATH=. python lesson_cases/05-assignment.py`。CPU案例生成target、驗證同格碰撞，再在人工feature map上更新head兩步；沒有從圖片訓練detector效果。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/05-assignment.ipynb)，或 `PYTHONPATH=. python lesson_cases/05-assignment.py`。CPU案例生成target、驗證同格碰撞，再在人工feature map上更新head兩步；沒有從圖片訓練detector效果。
+
+slot是一個可輸出框的位置，annotation是圖片標註；objectness在本模型表示這格／槽是否分配到物件，logit是尚未轉成機率的原始實數。
 
 ## 固定輸出，如何接變動數量標註
 
@@ -63,3 +65,37 @@ Assignment在**訓練前生成target時**決定誰負責誰；NMS則在**推論�
 案例batch含一張兩物件圖、一張空圖，應印box [2,4,4,4]、obj [2,4,4]、正2／負30／ignore0。第一張正格為[[0,0],[2,2]]，第二張全負；同格同類案例應明確報碰撞。兩步head更新只核對mask與gradient。實跑box loss約0.0871→0.0861、obj0.7031→0.6839、class0.5235→0.4744，這些是人工features的結果。
 
 練習把藍框向左移16pixels，成[20,36,36,52]。答案中心(28,44)，由row2／col1負責，target仍[0.75,0.75,0.25,0.25]。若把S由4改8，候選由16格成64格、同圖負格62；寬高target仍0.25，但中心格索引與偏移需重算。密網格的收益是更細的候選位置，代價是更多背景候選與計算。
+
+練習可保留原main，另開cell直接測build，避免改資料後仍撞原題固定答案：
+
+```python
+moved = {'boxes': torch.tensor([[4.,4.,20.,20.],[20.,36.,36.,52.]]),
+         'labels': torch.tensor([0,1])}
+boxes, obj, cls, positive = build([moved])
+assert positive[0].nonzero().tolist() == [[0,0],[2,1]]
+dense_boxes, dense_obj, dense_cls, dense_positive = build([moved], grid=8)
+assert dense_positive[0].nonzero().tolist() == [[1,1],[5,3]]
+assert (~dense_positive[0]).sum() == 62
+```
+
+S=8若保留原兩框，位置則是`[[1,1],[5,5]]`、兩個格內xy都是`.5,.5`；若同batch另含空圖，整批負格為126。上面只測target，沒有修改人工head；若也要改head實驗，features空間、prediction shape及固定答案都須從4×4同步成8×8。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    box_shape=(2, 4, 4, 4), objectness_shape=(2, 4, 4), class_shape=(2, 4, 4)
+    positive_cells(row,col)=[[0, 0], [2, 2]], first_target=[0.75, 0.75, 0.25, 0.25], first_image_negative=14
+    batch positives=2, negatives=30, ignores=0
+    capacity limit correctly raised: same-cell collision at image=0, row=0, col=0
+    step=0, box=0.0871, obj=0.7031, cls=0.5235
+    step=1, box=0.0861, obj=0.6839, cls=0.4744
+    negative positions supervise objectness only; artificial-feature head update verified
+    ```
+
+<!-- curriculum-evidence:end -->

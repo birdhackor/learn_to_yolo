@@ -1,0 +1,14 @@
+{
+  "id": "00-warmup",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:10.012647+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "188068e6a03af06a2c37b7d2d7690ba49c8742fb0147bdad8a1217675c783dd9",
+  "process_wall_seconds": 1.8581,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "x_shape=(1, 1), weight_shape=(1, 1)\nprediction=2.00, loss=4.00, gradient=-8.00\nweight: 1.00 -> 1.80; new_loss=0.16\neval still tracks gradients; replacement optimizer points to replacement model\n",
+  "stderr": "",
+  "exit_code": 0
+}

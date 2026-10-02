@@ -1,0 +1,14 @@
+{
+  "id": "07-targets",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:32.903117+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "95804f80642c0f83830c7f88de9e3a4aa540582e67698af1cc8edab3bf2cd9c0",
+  "process_wall_seconds": 1.1974,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "same-cell collision rejected\npositive indices (b,y,x) [[0, 1, 1], [0, 2, 3]]\nred target [0.0, 0.25, 0.25, 0.25]\nblue target [0.0, 0.75, 0.25, 0.25]\npositive/negative counts 2 30\n",
+  "stderr": "",
+  "exit_code": 0
+}

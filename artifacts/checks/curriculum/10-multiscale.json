@@ -1,0 +1,14 @@
+{
+  "id": "10-multiscale",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:48.024836+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "add9aefa8efec7180d06ab255807ac4fa6847c490c8447774191f0a6566ed6a6",
+  "process_wall_seconds": 1.8666,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "cross-scale duplicate boxes before/after class-wise NMS 2 -> 1\nstride16 small target [0.5625, 0.5625, 0.125, 0.125]\nstride8 small target [0.125, 0.125, 0.125, 0.125]\nhead shapes (1, 8, 8, 7) (1, 4, 4, 7) candidates before score/NMS 80\nboth heads received gradients; one update; scale encode/decode checked\n",
+  "stderr": "",
+  "exit_code": 0
+}

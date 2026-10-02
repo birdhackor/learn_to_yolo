@@ -1,0 +1,14 @@
+{
+  "id": "01-small-cnn",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:13.817630+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "d01007e4b35a7b1c514b67c1230f76a90d8a853e1912e22352fd8c89e16ea07a",
+  "process_wall_seconds": 3.8041,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "Conv2d: (8, 4, 32, 32)\nConv2d: (8, 4, 32, 32)\nMaxPool2d: (8, 4, 16, 16)\nConv2d: (8, 8, 16, 16)\nConv2d: (8, 8, 16, 16)\nMaxPool2d: (8, 8, 8, 8)\nparameters=1158; multiply-accumulates/image=479248\nstep=0, loss=0.6941\nstep=1, loss=0.6940\nstep=2, loss=0.6940\npredictions=[1, 1, 1, 1, 1, 1, 1, 1], labels=[0, 1, 0, 1, 0, 1, 0, 1], error_indices=[0, 2, 4, 6]\nThree-step smoke test only; accuracy here is not held-out performance.\npanel=artifacts/01-small-cnn.png\n",
+  "stderr": "",
+  "exit_code": 0
+}

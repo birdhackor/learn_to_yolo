@@ -1,10 +1,12 @@
 # 14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/14-feature-module.ipynb) · 原始碼：`lesson_cases/14-feature-module.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/14-feature-module.ipynb) · 原始碼：`lesson_cases/14-feature-module.py`
 
-前置是 residual、CSP與channel concatenation。兩個3×3卷積可以轉換特徵，但所有訊號都走同樣深度。能否讓一部分走短路徑，另一部分經較深轉換，並把中間成果一起交給最後投影？本節由YOLO11官方配置中的C3k2切入，只研究其中可看懂的split–transform–concatenate機制。
+前置是[residual捷徑](03-identity.md)、[CSP](11-csp.md)與channel concatenation（沿通道串接）。residual保留原值再加轉換結果；本例bottleneck是兩層窄卷積的殘差小塊，hidden是每條內部分支的channel數。兩個3×3卷積可以轉換特徵，但所有訊號都走同樣深度。能否讓一部分走短路徑，另一部分經較深轉換，並把中間成果一起交給最後投影？本節由YOLO11官方配置中的C3k2切入，只研究其中可看懂的split–transform–concatenate機制。
 
 歷史機制是YOLO11配置採C3k2等模組，整體還含其他backbone、neck與attention設定，版本收益不能全部歸因於C3k2。本次起點為8-channel特徵，本章用C3k2／C2f啟發的小模組：1×1投影後分兩路、兩個殘差bottleneck依次處理一條路、串接所有中間輸出，再1×1融合。省略官方Conv的BN／activation配置及可選C3k內部結構，名稱為`SplitAggregate`，不冒充完整C3k2。
+
+![a、b、b1、b2保留後串接的路徑](../assets/diagrams/14-split-paths.svg)
 
 ## 用channel帳本理解路徑
 
@@ -31,6 +33,8 @@ return self.fuse(torch.cat(paths, dim=1))
 
 案例在訓練後另做一次檢查forward：對a、b、b1、b2與concat tensor呼叫`retain_grad()`，核對每份特徵與對應concat槽的值及順序。backward後，逐槽檢查concat的直接梯度，也檢查每份特徵的總梯度均非零。b1的總梯度同時包含直接融合路徑和經b2的間接路徑；這兩項不能混稱成同一個檢查。
 
+Conv2d本例含bias，參數為`out×in×kernel高×kernel寬+out`；4→4、3×3就是144+4=148。進階梯度診斷可稍後讀：retain_grad讓中間tensor也保留反傳梯度；輸出中的gradient L1是梯度絕對值加總，用來確認非零，不是新增L1訓練loss。
+
 ## 本次到底測什麼
 
 固定seed7生成一組特徵，target是向右迴圈移動一格的`x.roll(1,-1)`。這是可控的區域性轉換任務，用來驗證模組可以訓練；迴圈邊界與零padding並不完全相容，所以沒有要求loss為零。本例對`SplitAggregate`做30次MSE backward和SGD step，確認最後loss比初值小。沒有真實圖片、GT框或AP，因此它不能證明YOLO11更準。
@@ -50,3 +54,24 @@ return self.fuse(torch.cat(paths, dim=1))
 自主練習：只將`main()`的模型建立改成`module = SplitAggregate(blocks=3)`，hidden維持4。答案為五份4channel、concat`(2+3)×4=20`，fuse20→8。建構式已用`(2+blocks)×hidden`自動設定fuse，印出尺寸與梯度檢查也隨實際block數改變，不需手改輸出字串。參數為投影72＋6個3×3卷積888＋融合168＝1,128。它已接近plain參數，而且保留了更多中間activation；「拆路徑就更省」不是可用的普遍結論。
 
 來源查覈：2026-10-02。[YOLO11官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/11/yolo11.yaml)、[C3k2／C2f／Bottleneck定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)。
+
+
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/14-feature-module.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    input/output: (2, 8, 8, 8) (2, 8, 8, 8)
+    concatenated channels: 4 + 4 + 4 + 4 = 16; fuse 16 -> 8
+    parameters plain / split: 1168 800
+    local transformation MSE 1.0722 -> 1.0049
+    concat order, each direct concat-slot gradient, and each path total gradient: verified
+    direct concat-slot gradient L1: [0.2967, 0.3349, 0.3481, 0.2779]
+    ```
+
+<!-- curriculum-evidence:end -->

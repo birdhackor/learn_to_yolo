@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 355" role="img" aria-labelledby="title desc">
+<title id="title">STAL小物件候選池的幾何檢查</title><desc id="desc">2乘2真值中心8,8。16乘16候選資格框容納四個stride8格心4,4、12,4、4,12、12,12；原真值沒有擴大，四點不等於四個正樣本。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
+<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
+<rect width="780" height="355" fill="white"/><text x="28" y="28" font-weight="bold">候選資格擴張：原GT仍保留2×2</text>
+<rect x="80" y="50" width="256" height="256" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3" stroke-dasharray="8 5"/>
+<path d="M208 50V306M80 178H336" stroke="#cbd5e1"/>
+<rect x="192" y="162" width="32" height="32" fill="#bbf7d0" stroke="#15803d" stroke-width="3"/>
+<text x="72" y="332">0</text><text x="201" y="332">8</text><text x="322" y="332">16 px</text>
+<text x="395" y="95">綠框 GT：[7,7,9,9]</text><text x="395" y="133">紫框 資格：[0,0,16,16]</text>
+<text x="395" y="187">藍點：stride 8 的格心</text><text x="395" y="225">資格：0點 → 4點</text>
+<text x="395" y="270">四點進池，尚未ranking／分配</text><text x="395" y="303">回歸真值仍是原綠框</text><circle cx="144" cy="114" r="6" fill="#2563eb"/><text x="114" y="142">(4,4)</text><circle cx="272" cy="114" r="6" fill="#2563eb"/><text x="242" y="142">(12,4)</text><circle cx="144" cy="242" r="6" fill="#2563eb"/><text x="114" y="270">(4,12)</text><circle cx="272" cy="242" r="6" fill="#2563eb"/><text x="242" y="270">(12,12)</text></svg>

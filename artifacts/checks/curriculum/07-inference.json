@@ -1,0 +1,14 @@
+{
+  "id": "07-inference",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:37.127169+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "75011612e6f4c8aee853cdcaec7e7d64d44499e70464cdbb108d98e06c937c10",
+  "process_wall_seconds": 1.1136,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "untrained model candidate counts (no quality claim) [0, 0, 0]\nartificial known-logit fixture counts [2, 1, 0]\nfixture red box [8.00160026550293, 12.0, 24.00160026550293, 28.0]\nsame-class overlapping fixture NMS counts 2 -> 1\n",
+  "stderr": "",
+  "exit_code": 0
+}

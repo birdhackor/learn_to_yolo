@@ -1,0 +1,14 @@
+{
+  "id": "07-loss",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:34.066960+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "de8c656623b4a39089f143983b202f9ff255935ee8d086fbf2023899a1af4136",
+  "process_wall_seconds": 1.1632,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "{'total': 1.933169, 'box': 0.109375, 'objectness': 0.693147, 'classification': 0.693147}\npositive/background objectness gradients -0.03125 0.03125\nempty image: finite backward, box/class=0\n",
+  "stderr": "",
+  "exit_code": 0
+}

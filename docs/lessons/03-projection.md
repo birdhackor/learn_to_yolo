@@ -4,7 +4,7 @@
 
 歷史機制來自 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)：用可學的projection處理尺寸或channel不同的shortcut。本節省略BatchNorm與相加後activation，保留一個小型跨stage block；它不是完整ResNet效果重現。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-projection.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-projection.py`。CPU實驗先用固定權重驗證一個channel混合數值，再用新建隨機block做2步更新。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/03-projection.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-projection.py`。CPU實驗先用固定權重驗證一個channel混合數值，再用新建隨機block做2步更新。
 
 ## 先把兩支畫出來
 
@@ -58,3 +58,21 @@ projection的weight shape是 `[6,3,1,1]`；輸入為 `[1,3,4,4]`、輸出 `[1,6,
 ## 自主練習與答案
 
 只把人工部分輸入4×4改成5×5，卷積設定不變，第二個隨機訓練檢查仍用4×4。答案：F第一層輸出 \(\lfloor(5+2-3)/2\rfloor+1=3\)，P輸出 \(\lfloor(5-1)/2\rfloor+1=3\)，所以兩支都是3×3。同步把人工部分的 `output.shape` assertion改為 `(1,6,3,3)`，`torch.full((2,2),321.0)` 改為 `torch.full((3,3),321.0)`。第一channel仍為321。再把P stride改1：P成5×5而F仍3×3，shape assertion應失敗；下一步是修正設計，不是移除assertion。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-projection.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    input=(1, 3, 4, 4), main=(1, 6, 2, 2), projection=(1, 6, 2, 2), output=(1, 6, 2, 2)
+    first output channel=[[321.0, 321.0], [321.0, 321.0]]; 1*1 + 2*10 + 3*100 = 321
+    step=0, loss=0.3553
+    step=1, loss=0.3350
+    projection changed; block parameters=504; no classification-quality claim
+    ```
+
+<!-- curriculum-evidence:end -->

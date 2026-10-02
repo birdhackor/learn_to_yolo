@@ -1,10 +1,12 @@
 # Grid MiniYOLO：獨立資料與評估證據
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-heldout.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-heldout.ipynb){ .md-button }
 
 前置：[完整推論](07-inference.md)、[AP50](06-evaluation.md)。本節要區分「評估程式跑通」和「模型真的在未見圖片上偵測成功」。一個有限的 AP 數字，可以來自隨機模型或過短訓練；要報效果，還需儲存資料切分、儲存的模型權重、協議與圖板。
 
 本節沿用本書 grid 教學模型，評估採 IoU=.5 的按類別 AP。AP 定義可參照 [Pascal VOC evaluation](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/#devkit)；此處使用 all-points interpolated AP，不是 VOC2007 的 11 點近似，也不是 COCO 多 IoU 平均。版本歷史不改變本節協議。
+
+本書配對先排除已用GT，再找最高IoU；官方VOC則先對全部GT找最高IoU，再判它是否已用，重疊GT時可能得到不同結果。[人工AP章](06-evaluation.md)列出差異。以下數字使用本書的簡化評估器，不是官方VOC／COCO benchmark成績。
 
 ## 人工失敗例先校準評估器
 
@@ -31,7 +33,7 @@ metrics = evaluate_ap(pred, heldout_targets,
                       num_classes=2, iou_threshold=.5)
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-heldout.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。第一行人工 fixture 應核對 AP=.5、precision=1/3、recall=.5；第二部分列出本次三步模型實測的 pipeline smoke 數字。這些數字是程式執行結果，不能當作從零訓練已成功的效能證據。沒有預先填入模型 AP，也不把人工框 .5 稱為訓練成果。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-heldout.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。第一行人工 fixture 應核對 AP=.5、precision=1/3、recall=.5；第二部分列出本次三步模型實測的 pipeline smoke 數字。這些數字是程式執行結果，不能當作從零訓練已成功的效能證據。沒有預先填入模型 AP，也不把人工框 .5 稱為訓練成果。
 
 ## 完成第 7 章還需要什麼
 
@@ -66,4 +68,32 @@ python -m miniyolo.train --steps 160 --samples 32 --device cpu
 
 綠色虛線是真值，橙色實線是模型框；顏色本身是圖中的兩類物件。第一張左上框明顯向上偏，表示分數高也不等於位置完全正確。這四張圖只是圖板，mAP使用全部16張。已有框接近真值、mAP從接近零上升，支援「這條管線能在受控任務學動」；它仍不能回答模型是否認得照片裡的行人，也沒有證明某個現代機制比較好。
 
-原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/artifacts/checks/grid-learning.json)。這次只計訓練 loop，在 AMD EPYC 9V74、PyTorch 2.9.1 CPU、2 threads 上約 0.62 秒；不包含程式啟動、資料建立、圖或評估。不同機器需自行量測，不能用此時間預估真實資料訓練。
+原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)。本輪重跑只計訓練 loop，在 AMD EPYC 9V74 80-Core Processor、PyTorch 2.9.1+cpu、2 threads 上約 0.74 秒；不包含程式啟動、資料建立、圖或評估。不同機器需自行量測，不能用此時間預估真實資料訓練。
+
+兩條操作路徑的目標不同：本節notebook的三步只驗證held-out評估接通；160步補充才提供合成模型學得結果。想重跑後者可依[三步訓練頁的可選Colab操作](07-training.md)另開cell，不把三步輸出當成160步checkpoint。
+
+FP練習可在main人工fixture的原斷言之後、建立ShapeDataset之前新增：
+
+```python
+cleaned = [{k: v[:1].clone() for k, v in predictions[0].items()}, predictions[1]]
+clean_metrics = evaluate_ap(cleaned, targets, num_classes=2, iou_threshold=.5)
+assert abs(clean_metrics['map']-.5)<1e-6
+assert clean_metrics['precision']==1 and clean_metrics['recall']==.5
+```
+
+原predictions與主例斷言保留，避免改掉回歸核對。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-heldout.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    artificial evaluation fixture {'ap_per_class': {0: 0.5, 1: None}, 'map': 0.5, 'precision': 0.3333333333333333, 'recall': 0.5}
+    3-step held-out PIPELINE SMOKE, not trained detector evidence {'ap_per_class': {0: 0.0, 1: 0.0}, 'map': 0.0, 'precision': 0.0, 'recall': 0.0}
+    ```
+
+<!-- curriculum-evidence:end -->

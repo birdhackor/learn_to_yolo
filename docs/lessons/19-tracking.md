@@ -1,10 +1,10 @@
 # 19 簡易tracking：框很準，ID仍可能換人
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/19-tracking.ipynb) · 原始碼：`lesson_cases/19-tracking.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/19-tracking.ipynb) · 原始碼：`lesson_cases/19-tracking.py`
 
 前置是IoU、影片frame與matching。偵測回答「當前哪些框是物件」，tracking還要回答「這個框是否上一幀的同一個物件」。兩個同類物件交叉時，偵測可以完全正確，track ID卻互換。本節固定同一組偵測框，僅比較用上一框配對、或先用速度預測再配對，並真正計算ID switch。
 
-本節是MiniYOLO應用實驗，沒有宣稱完整SORT、DeepSORT或ByteTrack。detector輸入是人工已知的框序列，以隔離association；tracker不讀真值身份A、B。A、B只在最後評估用來判斷哪個物理物件換了track ID。兩物件視為同一語意類別，不能用分類label偷看身份。
+本節是MiniYOLO應用實驗，沒有宣稱完整SORT、DeepSORT或ByteTrack。tracker輸入是人工給定的detections框序列，本節不執行detector，以隔離association；tracker不讀真值身份A、B。A、B只在最後評估用來判斷哪個物理物件換了track ID。兩物件視為同一語意類別，不能用分類label偷看身份。
 
 ## 六幀，兩個物件與一次漏檢
 
@@ -29,7 +29,7 @@ quality = iou_matrix(predicted_boxes, detections)
 pairs = exact_gated_matching(quality, threshold=.1)
 ```
 
-案例另用真實幾何框算出反貪心表：tracks`[2,0,12,10]`與`[6,0,16,10]`，detections`[3,0,13,10]`與`[0,0,10,10]`。IoU約`[[.8182,.6667],[.5385,.25]]`。先拿最大.8182會剩.25，總1.0682；交叉配對得`.6667+.5385=1.2052`。程式assert最佳為交叉，沒有把區域性最大演演算法改名來冒充最優。空detections也回傳空配對。
+案例另用真實幾何框算出反貪心表：tracks`[2,0,12,10]`與`[6,0,16,10]`，detections`[3,0,13,10]`與`[0,0,10,10]`。IoU約`[[.8182,.6667],[.5385,.25]]`。先拿最大.8182會剩.25，總1.0682；交叉配對得`.6667+.5385=1.2052`。程式assert最佳為交叉，沒有把區域性最大演算法改名來冒充最優。空detections也回傳空配對。
 
 ## 為什麼上一框會追錯
 
@@ -52,3 +52,27 @@ last-box分支在第5幀仍保留舊ID1，它最後於第3幀匹配到B，框為
 速度預測提高平穩運動與短漏檢的連續性，代價是多一個狀態和時間契約；急轉、加速、相機移動或定位雜訊會讓估速失準。外觀特徵可幫助交叉時辨識身份，但增加模型計算、儲存與資料需求；Kalman filter可描述運動不確定性，也有噪聲設定成本。本節的完美等速案例不能證明速度模型解決所有追蹤問題。
 
 常見錯誤是依detections list索引當ID、允許兩條track配同一detection、在空幀清空所有狀態、把tracker預測框當成新偵測，以及用GT身份參與配對。自主練習：把`main(max_age=2)`的max_age改1。答案是速度分支的B在第5幀來之前，舊ID2的last_frame為3、間隔2，因此被刪除；即使速度完全正確仍要建立新ID3。motion的最後IDs為`[1,3]`，switches從0變1；last-box仍為3次。程式依本次max_age檢查對應switch數與最後IDs，圖的title、desc與列標題也取自實際計數。核對console與圖一致，再說明壽命與運動估計是不同選項。
+
+association就是把当前detections配給既有track；本節match用框IoU，與[偵測評估](06-evaluation.md)中的GT配對目的不同。輸入順序可回看[影片管線](18-video.md)。
+
+本機命令需先依[README環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定依賴，並在repository根目錄執行；Colab則先跑本節環境格。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/19-tracking.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    max_age: 2
+    per-frame IDs in detection order A,B (frame4 has only A):
+    last-box IoU: [[1, 2], [1, 2], [2, 1], [2, 1], [2], [2, 3]] ; switches: 3
+    velocity IoU: [[1, 2], [1, 2], [1, 2], [1, 2], [1], [1, 2]] ; switches: 0
+    detector recall=11/12 for both; no false positives in this artificial sequence
+    exact small matching passes non-greedy counterexample and empty detections
+    actual ID panel: docs/assets/diagrams/19-tracking.svg
+    ```
+
+<!-- curriculum-evidence:end -->

@@ -1,0 +1,14 @@
+{
+  "id": "03-projection",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:19.322105+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "9cdad8572ad96b9741fcac42659f3ca4b73d1654fabc7c50603eddf605cd622e",
+  "process_wall_seconds": 1.9214,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "input=(1, 3, 4, 4), main=(1, 6, 2, 2), projection=(1, 6, 2, 2), output=(1, 6, 2, 2)\nfirst output channel=[[321.0, 321.0], [321.0, 321.0]]; 1*1 + 2*10 + 3*100 = 321\nstep=0, loss=0.3553\nstep=1, loss=0.3350\nprojection changed; block parameters=504; no classification-quality claim\n",
+  "stderr": "",
+  "exit_code": 0
+}

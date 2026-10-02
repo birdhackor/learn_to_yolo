@@ -1,0 +1,14 @@
+{
+  "id": "04-coordinates",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T17:28:53.351080+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "028f44fe462b589165a2e8b3609051eae9ea924a51a4c2c3c1ed881dad245137",
+  "process_wall_seconds": 1.6939,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "integer annotation converted to float; finite exact round trip passed\noriginal_hw=(40, 80), resized_hw=(32, 64)\noriginal=[[10.0, 5.0, 50.0, 25.0]], letterbox=[[8.0, 20.0, 40.0, 36.0]], restored=[[10.0, 5.0, 50.0, 25.0]]\nstretch=[[8.0, 8.0, 40.0, 40.0]], padding=[0.0, 16.0, 0.0, 16.0]\nodd rounding: resized_hw=(29, 64), scales=[0.7710843086242676, 0.7837837934494019, 0.7710843086242676, 0.7837837934494019]\nodd-size and empty-box round trips passed; geometry only, no training required\ntransform_panel=artifacts/04-coordinates.png\n",
+  "stderr": "",
+  "exit_code": 0
+}

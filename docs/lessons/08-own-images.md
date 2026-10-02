@@ -1,10 +1,10 @@
 # 用自己的圖片：先保持座標與類別契約
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-images.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/08-own-images.ipynb){ .md-button }
 
 前置：[完整推論](07-inference.md)、[座標轉換](04-coordinates.md)。本節處理單張非正方形圖片：讀取、RGB／CHW 轉換、letterbox、推論、框還原。它與「新增自己的類別」是兩件事；把照片放進模型不會讓紅／藍矩形模型自動認識汽車。
 
-本次起始分支仍是兩類 grid MiniYOLO，沒有架構改動，也沒有下載 pretrained 權重。為讓沒有圖片的讀者也能獨立執行，case先在暫存目錄生成一張PNG，再用Pillow讀回；另外完成三步真實CPU更新，儲存並過載checkpoint，再作圖片推論。三步只驗證權重與圖片管線，人工已知框另用來驗證幾何，皆不代表照片偵測效果。
+本次起始分支仍是兩類 grid MiniYOLO，沒有架構改動，也沒有下載 pretrained 權重。為讓沒有圖片的讀者也能獨立執行，case先在持久輸出目錄生成一張PNG，再用Pillow讀回；另外完成三步真實CPU更新，儲存並重載checkpoint，再作圖片推論。三步只驗證權重與圖片管線，人工已知框另用來驗證幾何，皆不代表照片偵測效果。
 
 ![非正方形圖片的縮放與padding](../assets/diagrams/08-own-images.svg)
 
@@ -28,7 +28,7 @@ original_boxes = undo_letterbox(pred['boxes'], meta)
 
 ## 可核對的快速實驗
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-images.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`。應看到原圖 shape `(3,80,120)`、上述 input box 與 metadata，roundtrip 回 `[20,10,60,30]`。人工高分logits經decoder和undo再核對同一個框。另一段先做三次參數更新，再儲存、用`weights_only=True`載入，確認過載前後logits逐值相等；最後真正讀取PNG，輸出原圖座標JSON及疊框PNG。class數與配置不一致的checkpoint也必須被拒絕。三步產生的候選只證明權重已套用，不稱為偵測成功。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/08-own-images.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`。應看到原圖 shape `(3,80,120)`、上述 input box 與 metadata，roundtrip 回 `[20,10,60,30]`。人工高分logits經decoder和undo再核對同一個框。另一段先做三次參數更新，再儲存、用`weights_only=True`載入，確認重載前後logits逐值相等；最後真正讀取PNG，輸出原圖座標JSON及疊框PNG。class數與配置不一致的checkpoint也必須被拒絕。三步產生的候選只證明權重已套用，不稱為偵測成功。
 
 ## 實際載入模型，推論指定圖片
 
@@ -59,3 +59,36 @@ PYTHONPATH=. python scripts/detect_image.py --image my.png --checkpoint artifact
 收益是非正方形圖片保持長寬比，原圖框能正確展示；代價是 padding 佔用輸入範圍，小物件被縮小，極端長寬比圖的有效畫素更少。直接拉成正方形省略 padding，卻改變物件比例；兩者需要固定訓練與推論策略再比較。
 
 常見錯誤：只 resize 圖不改框；把傳入空 GT 當成空圖片；先在 padded 圖畫框再把框當原圖座標；錯用另一張 metadata。自主練習：原圖 `[0,0,120,80]` 的整張框在輸入中是什麼？答案：`[0,10,64,53]`，不包括上下 padding。下一節才增加類別、標註與重新訓練。
+
+本節實跑後，輸入圖、三步checkpoint、疊框`prediction.png`與座標`prediction.json`保留在`artifacts/lesson-08-own-images/`，終端會印出路徑。它們是本機／Colab輸出，受.gitignore排除。Colab可另開cell查看：
+
+```python
+from IPython.display import display
+from PIL import Image
+import json
+from pathlib import Path
+display(Image.open('artifacts/lesson-08-own-images/prediction.png'))
+print(json.loads(Path('artifacts/lesson-08-own-images/prediction.json').read_text()))
+```
+
+框來自三步模型，仍是管線檢查；幾何示意圖不冒充這份模型預測。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-images.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    original CHW (3, 80, 120) input box [[10.666666984558105, 15.375, 32.0, 26.125]]
+    metadata {'original_size': (80, 120), 'scale': 0.5333333333333333, 'scale_xy': (0.5333333333333333, 0.5375), 'padding': (0, 10), 'resized_size': (43, 64)} roundtrip [[20.0, 10.0, 59.999996185302734, 29.999998092651367]]
+    3-step checkpoint safely reloaded: exact logits; original-space box count 16
+    annotated PNG and JSON saved: artifacts/lesson-08-own-images/prediction.png artifacts/lesson-08-own-images/prediction.json
+    pipeline evidence only, not photo detection quality
+    class/config mismatch rejected
+    artificial known box restored [[20.000001907348633, 10.0, 59.999996185302734, 29.999998092651367]]
+    ```
+
+<!-- curriculum-evidence:end -->

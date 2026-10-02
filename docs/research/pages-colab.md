@@ -65,7 +65,7 @@ build 只需 `contents: read`；deploy 只另加 `pages: write` 與 `id-token: w
 
 ## Colab 與教材版本
 
-每節 Colab 固定為 `lessons-v0.1.0`，實驗程式已在 CPU 執行，公開 notebook 原始檔也已核對。網站主題可獨立更新，不移動已發布 tag；修改教材實驗時再建立新 tag，重新執行相應檢查。網站建置不會清除 notebook 中已儲存的 CPU 輸出。
+每節 Colab 固定為 `lessons-v0.2.0`，實驗程式已在 CPU 執行，公開 notebook 原始檔也已核對。網站主題可獨立更新，不移動已發布 tag；修改教材實驗時再建立新 tag，重新執行相應檢查。網站建置不會清除 notebook 中已儲存的 CPU 輸出。
 
 讀者執行 Colab 仍需 Google 帳號，GPU 分配依當時配額與可用性，不保證免費 GPU。從 GitHub 開啟 notebook 不會覆寫 repository；保留修改請選 **File → Save a copy in Drive**。notebook 副本不包含 runtime 已下載的資料與權重，重要產物需另外保存。
 

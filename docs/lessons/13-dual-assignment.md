@@ -1,6 +1,6 @@
 # 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/13-dual-assignment.ipynb) · 原始碼：`lesson_cases/13-dual-assignment.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/13-dual-assignment.ipynb) · 原始碼：`lesson_cases/13-dual-assignment.py`
 
 前置是 sample assignment、分類 loss 和 decoupled head。第 12 章讓一個 GT 監督多個候選，提供較密集的學習訊號；這些候選卻可能都在推論時報出同一物件。如果每個 GT 只教一個候選，重複較容易被壓低，但可用正訊號也變少。YOLOv10 的 dual assignment 在訓練保留兩種分支，推論使用一對一分支。
 
@@ -24,7 +24,7 @@ best = max(permutations(range(P), G),
            key=lambda cols: sum(quality[g, c] for g, c in enumerate(cols)))
 ```
 
-這種搜尋有 `P!/(P−G)!` 種選擇，G=2、P=3 只有6種；G、P稍大便不能這樣做。一般需要真正的最優指派 solver。官方 top-1 與本例全域最優的計算、正樣本覆蓋不同，讀者不能把本例 owner 當成官方模型必然輸出。
+這種搜尋有 `P!/(P−G)!` 種選擇，G=2、P=3 只有6種；G、P稍大便不能這樣做。若要放大本例的「總品質最大」問題，需要最優指派solver；官方YOLOv10採另一種top1規則，沒有本例這段全域搜尋。官方 top-1 與本例全域最優的計算、正樣本覆蓋不同，讀者不能把本例 owner 當成官方模型必然輸出。
 
 ## 兩個 head 與一條共享路徑
 
@@ -50,3 +50,23 @@ loss = many_bce + one_bce
 自主練習：把B的p2品質改為.95。答案為全域配對A→p0、B→p2，總約1.85；one_owner要同步改為`[0,-1,1]`，many_owner仍是`[0,0,1]`。原先「optimal嚴格大於greedy」assert也要改為`abs(optimum-greedy_value)<1e-6`；兩者用同樣Python float求和，不拿float32／float64末位差異當提升。原先非最佳的貪心在這張表變得最佳，說明一個成功案例不能證明貪心總是正確。再把GT數改為4、候選仍3，應停止並重新定義允許unmatched GT的問題，不能用permutations悄悄丟掉一個物件。
 
 來源查覈：2026-10-02。[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[作者官方 repository，固定 commit](https://github.com/THU-MIG/yolov10/tree/453c6e38a51e9d1d5a2aa5fb7f1014a711913397)、[雙分支與 detach 實作](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)。
+
+本例兩路共用同一quality表，只示意評分來源一致，不重現官方指數相容條件。兩個GT配三候選時，A先有3個選項，B剩2個，因此共3×2=6種；permutations列出這六種不同候選的配對，再找總品質最大。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    one-to-many owner: [0, 0, 1]
+    global one-to-one owner: [1, 0, -1]
+    global quality=1.73; greedy quality=1.10
+    detached one-to-one branch trains its head; only many branch trains backbone
+    loss many=0.6855, one=0.7065
+    ```
+
+<!-- curriculum-evidence:end -->

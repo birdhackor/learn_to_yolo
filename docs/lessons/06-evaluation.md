@@ -2,7 +2,7 @@
 
 一張疊圖看起來不錯，不表示漏檢少或背景誤報少。評估要把同類預測與同圖真值配對，按score排序，再計算TP、FP、FN與PR曲線。本節用人工框手算，建立可核對的計分規則。本頁先補上xyxy與IoU的意思；不需要已訓練模型。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/06-evaluation.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-evaluation.py`。CPU純評估，所有框與score人工指定，不做backward。AP採**all-points interpolated**定義；這不是完整COCO evaluator重現。原始評估來源可讀 [Pascal VOC官方評估說明](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) 與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/06-evaluation.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-evaluation.py`。CPU純評估，所有框與score人工指定，不做backward。AP採**all-points interpolated**定義；這不是完整COCO evaluator重現。原始評估來源可讀 [Pascal VOC官方評估說明](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) 與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)。
 
 ## Matching是評估規則，不是訓練assignment
 
@@ -12,7 +12,9 @@ xyxy的[x1,y1,x2,y2]表示左上角與右下角，x向右、y向下；本課使�
 
 此處IoU門檻0.5。每個類別把**所有圖片的預測收集起來**，按score由高到低看。某預測只找同圖、同類、尚未使用的GT；若最高IoU至少0.5，記true positive（TP），並鎖定該GT。否則是false positive（FP）。最後沒有被配到的GT是false negative（FN、漏檢）。
 
-一個GT只可被認領一次：第一個命中算TP，後來重複框算FP，即使IoU很高。不同圖片框數值相同也不能互相匹配。NMS是推論時候選去重；評估matching則有GT參與。這個案例故意保留重複候選，檢查評估器是否會把它錯算成第二個TP。
+一個GT只可被認領一次。本節主例中，後來的重複框找不到另一個達標GT，因此算FP，即使它與已認領GT的IoU很高。不同圖片框數值相同也不能互相匹配。NMS是推論時候選去重；評估matching則有GT參與。這個案例故意保留重複候選，檢查評估器是否會把它錯算成第二個TP。
+
+本書評估器先排除已用GT，再找最高IoU。若有兩個高度重疊的GT，相同預測框可能各配到一個GT，兩筆都算TP。官方VOC則先在全部GT中找最高IoU，再檢查它是否已使用；同一情況可能把第二筆判FP。這是本書的簡化配對契約，不能稱為完整VOC評估器。COCO也有crowd／ignore、候選數上限等額外規則；正式benchmark應用官方工具，不能只替換AP積分公式。
 
 三種門檻比較的對象不同：**score門檻**比較候選自己的分數，決定哪些候選交給評估；**NMS IoU門檻**比較候選框彼此，決定是否抑制重複候選；**matching IoU門檻**比較候選與GT，決定是否匹配成功。三者各自設定。本例不執行NMS；評估函式的 `match_iou_threshold=.5` 只控制預測與GT的匹配，後面的score≥0.85實驗則先截斷候選。
 
@@ -47,7 +49,7 @@ All-points interpolated AP先對每個recall，取它右側能達到的最高pre
 最後包絡在recall0到2/3是0.5，其餘到1是0，面積 \((2/3)\times0.5=1/3\)。程式更一般地在recall增加處累加「recall增加量×包絡precision」：
 
 ```python
-ap = sum((recall_next - recall_previous) * precision_envelope_next)
+ap = sum((recall_next - recall_previous) * precision_envelope_next)  # 公式偽碼，名稱表示各段宽度與高度
 ```
 
 完整案例先補起終點，再從右往左取最大值。這不是直接對原始鋸齒曲線做梯形積分，也不是舊VOC的11點平均；若比較不同工具，先確認AP定義。
@@ -67,3 +69,25 @@ COCO常報AP在0.50、0.55、…、0.95共10個IoU門檻平均，並有101個rec
 ## 自主練習與答案
 
 手算移除排名1的已知背景誤報，GT不變。答案順序TP、FP、TP；最終P=2/3、R=2/3，包絡在第一段1/3寬度為1、第二段1/3為2/3，AP為 \(1/3+2/9=5/9\)。案例已有此assertion與輸出0.555556。這個改動用GT認識錯框，是人工檢查，不是可直接在部署時執行的「理想濾除器」。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-evaluation.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    rank=1, score=0.95, FP, precision=0.0000, recall=0.0000
+    rank=2, score=0.90, TP, precision=0.5000, recall=0.3333
+    rank=3, score=0.80, FP, precision=0.3333, recall=0.3333
+    rank=4, score=0.70, TP, precision=0.5000, recall=0.6667
+    TP=2, FP=2, FN=1, AP50=0.333333, ap_per_class=[0.3333333432674408, None]
+    candidate threshold .85: AP50=0.166667, recall=0.3333
+    remove known high-score FP: AP50=0.555556
+    no predictions => AP=0 when GT exists; no-GT class AP=None; background FP counted
+    Artificial scoring exercise; not measured detector performance.
+    ```
+
+<!-- curriculum-evidence:end -->

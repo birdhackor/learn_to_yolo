@@ -1,0 +1,192 @@
+{
+  "steps": 40,
+  "train_samples": 64,
+  "validation_samples": 128,
+  "test_samples": 128,
+  "seed": 7,
+  "device": "cpu",
+  "batch_size": 8,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "class_names": [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot"
+  ],
+  "validation_accuracy": 0.140625,
+  "test_accuracy": 0.09375,
+  "weights_changed": true,
+  "loss_history": [
+    {
+      "step": 1,
+      "loss": 2.2216057777404785
+    },
+    {
+      "step": 2,
+      "loss": 2.3014609813690186
+    },
+    {
+      "step": 3,
+      "loss": 2.3426513671875
+    },
+    {
+      "step": 4,
+      "loss": 2.286313533782959
+    },
+    {
+      "step": 5,
+      "loss": 2.3043441772460938
+    },
+    {
+      "step": 6,
+      "loss": 2.2907097339630127
+    },
+    {
+      "step": 7,
+      "loss": 2.3110084533691406
+    },
+    {
+      "step": 8,
+      "loss": 2.385754346847534
+    },
+    {
+      "step": 9,
+      "loss": 2.2894866466522217
+    },
+    {
+      "step": 10,
+      "loss": 2.3345789909362793
+    },
+    {
+      "step": 11,
+      "loss": 2.3508808612823486
+    },
+    {
+      "step": 12,
+      "loss": 2.242997407913208
+    },
+    {
+      "step": 13,
+      "loss": 2.279428720474243
+    },
+    {
+      "step": 14,
+      "loss": 2.272387981414795
+    },
+    {
+      "step": 15,
+      "loss": 2.299285411834717
+    },
+    {
+      "step": 16,
+      "loss": 2.260000705718994
+    },
+    {
+      "step": 17,
+      "loss": 2.273879289627075
+    },
+    {
+      "step": 18,
+      "loss": 2.3259294033050537
+    },
+    {
+      "step": 19,
+      "loss": 2.251194953918457
+    },
+    {
+      "step": 20,
+      "loss": 2.222593307495117
+    },
+    {
+      "step": 21,
+      "loss": 2.3396778106689453
+    },
+    {
+      "step": 22,
+      "loss": 2.3342645168304443
+    },
+    {
+      "step": 23,
+      "loss": 2.2704763412475586
+    },
+    {
+      "step": 24,
+      "loss": 2.2154879570007324
+    },
+    {
+      "step": 25,
+      "loss": 2.303987503051758
+    },
+    {
+      "step": 26,
+      "loss": 2.304619550704956
+    },
+    {
+      "step": 27,
+      "loss": 2.261579990386963
+    },
+    {
+      "step": 28,
+      "loss": 2.3040497303009033
+    },
+    {
+      "step": 29,
+      "loss": 2.2667622566223145
+    },
+    {
+      "step": 30,
+      "loss": 2.1923000812530518
+    },
+    {
+      "step": 31,
+      "loss": 2.2167088985443115
+    },
+    {
+      "step": 32,
+      "loss": 2.2722275257110596
+    },
+    {
+      "step": 33,
+      "loss": 2.3199031352996826
+    },
+    {
+      "step": 34,
+      "loss": 2.324375629425049
+    },
+    {
+      "step": 35,
+      "loss": 2.312870979309082
+    },
+    {
+      "step": 36,
+      "loss": 2.1085872650146484
+    },
+    {
+      "step": 37,
+      "loss": 2.111006259918213
+    },
+    {
+      "step": 38,
+      "loss": 2.283092975616455
+    },
+    {
+      "step": 39,
+      "loss": 2.282379150390625
+    },
+    {
+      "step": 40,
+      "loss": 2.2367053031921387
+    }
+  ],
+  "accuracy_definition": "argmax class correct / evaluated images",
+  "split": "official train seed7 permutation: first6000 validation, remaining54000 train; official test preserved",
+  "input": "gray [1,28,28] repeated to three identical channels, float32 [0,1]",
+  "limitations": "This 40-step run checks the classification pipeline on the recorded subset and evaluation samples; it is not a complete training or generalization study."
+}

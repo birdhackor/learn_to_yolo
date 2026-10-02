@@ -1,6 +1,6 @@
 # 12.3 Sample assignment：哪個候選值得被教
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-assignment.ipynb) · 原始碼：`lesson_cases/12-assignment.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-assignment.ipynb) · 原始碼：`lesson_cases/12-assignment.py`
 
 前置是候選點、IoU 和 classification logits。密集偵測器對一張影像輸出許多候選，但標註可能只有兩個物件。每個候選都學最近的真值嗎？如果它位於框外，或分類分數很高但位置很差，這個選擇可能給出矛盾訊號。本節依序看資格、品質、數量限制和衝突，不把 assignment 當成一個黑盒。
 
@@ -49,3 +49,24 @@ owner[p] = candidates[overlaps[candidates, p].argmax()]
 自主練習：把p1的預測框改成GT B的`[12,0,32,16]`，重新計算整欄IoU，不只改一個IoU數字。答案為p1對A的IoU=.25、對B=1，品質分別為`.7×.25²=.04375`與`.8×1²=.8`；A、B仍都選p1，但解衝突後p1屬B，owner成`[0,1,1,-1]`。A正樣本數由2變1。案例結尾已有這個干預的assert，若擁擠資料常發生此情況，要觀察每GT正樣本覆蓋，而不只看全批正樣本總數。
 
 來源查覈：2026-10-02。[TaskAlignedAssigner 的品質、top-k、衝突與 target 正規化](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[訓練時 detached prediction 用於 assignment](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)。這份現行 source 還含 YOLO26 小物件候選擴張；本節未套用該規則。
+
+本例p2的預測框雖與A重疊，參考點在A之外，因此A的p2品質被mask成0；候選點資格與預測框IoU是兩項不同幾何檢查。本節衝突用最高IoU，下一節品質表的小實驗改用最高quality，不能當成沿用同一個assigner。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-assignment.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    inside-masked score * IoU^2: [[0.22499999403953552, 0.3109999895095825, 0.0, 0.0], [0.0, 0.1469999998807907, 0.5669999718666077, 0.0]]
+    candidate owner (-1 background): [0, 0, 1, -1]
+    foreground target: [1.0, 1.0, 1.0, 0.0]
+    gradient: [-0.125, -0.125, -0.125, 0.125]
+    empty image owner: [-1, -1, -1, -1]
+    exercise: move predicted box p1 to GT B; owner: [0, 1, 1, -1]
+    ```
+
+<!-- curriculum-evidence:end -->

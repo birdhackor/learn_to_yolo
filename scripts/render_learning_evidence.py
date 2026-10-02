@@ -30,7 +30,7 @@ for value in [1, 40, 80, 120, 160]:
 for i, (key, color) in enumerate(colors.items()):
     x = 80 + i * 195
     svg += [f'<path d="M{x} 420h24" stroke="{color}" stroke-width="3"/>', f'<text x="{x+30}" y="426">{key}</text>']
-svg += ['<text x="55" y="456">橫軸：optimizer 更新次數；縱軸：loss。訓練下降仍需另看獨立資料。</text>', '</svg>']
+svg += ['<text x="55" y="456">橫軸：訓練步序（該次更新前）；縱軸：loss。另看獨立資料。</text>', '</svg>']
 (DEST / 'grid-learning-curve.svg').write_text('\n'.join(svg) + '\n')
 svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 725" role="img" aria-labelledby="title desc">',
        '<title id="title">CPU 短訓練後，四張獨立 validation 圖的真值與模型框</title>',

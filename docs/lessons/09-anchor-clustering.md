@@ -1,6 +1,6 @@
 # 尺寸聚類：先驗由哪一份資料決定
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/09-anchor-clustering.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/09-anchor-clustering.ipynb){ .md-button }
 
 前置：[anchor 參數化](09-anchors.md)。這次只改 anchor 尺寸的選法，保留候選數 A=2、center decode與模型分支。問題是手填16×16，若資料多為8×8小方形和32×16寬矩形，是否浪費回歸力氣？
 
@@ -33,7 +33,7 @@ for k in range(len(anchors)):
         updated[k] = selected.mean(0)
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/09-anchor-clustering.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchor-clustering.py`。groups應為`[0,0,0,1,1,1]`、anchor為上述分數，train mean best size IoU應比兩個16×16提高。案例還把資料和anchor同時乘2，驗證IoU不變；最後用`[4,40]、[40,4]`模擬新來源，輸出覆蓋變差的數字。這些是尺寸統計，不是AP提升。案例另外以逐維median得到`[8,8]`與`[32,16]`，這六筆的mean best size IoU是.9340，高於mean更新的.9119；仍只表示這六個尺寸更接近先驗。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/09-anchor-clustering.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchor-clustering.py`。groups應為`[0,0,0,1,1,1]`、anchor為上述分數，train mean best size IoU應比兩個16×16提高。案例還把資料和anchor同時乘2，驗證IoU不變；最後用`[4,40]、[40,4]`模擬新來源，輸出覆蓋變差的數字。這些是尺寸統計，不是AP提升。案例另外以逐維median得到`[8,8]`與`[32,16]`，這六筆的mean best size IoU是.9340，高於mean更新的.9119；仍只表示這六個尺寸更接近先驗。
 
 ## 只用 train 聚類的理由
 
@@ -44,3 +44,22 @@ for k in range(len(anchors)):
 自主對照：median在這六筆的覆蓋較高，是否足以選它或宣稱AP改善？答案：都不足；需在固定獨立資料上訓練並評估模型，不能讓train尺寸統計替代泛化。
 
 常見錯誤：拿xyxy四個座標直接聚類；收集原圖pixel卻在64輸入使用；把held-out標註當免費資訊；把mean best IoU稱為mAP。自主練習：輸入尺寸64改128且保持同樣內容比例，anchor怎麼改？答案：wh一併乘2，尺寸IoU保持一致。只改影像而不改anchor，尺寸回歸起點便不同了。
+
+本節刻意用兩個相同16×16尺寸作弱基線，其mean best size IoU=.3817，**不是上一節配置的結果**。上一節的16×16與8×8在相同六筆尺寸上是.7093。mean best size IoU是每筆wh先找IoU最大的anchor，再把六個最大值平均；逐維median則是每個維度各自排序取中間值，例如寬[8,9,8]排序[8,8,9]取8。這些是尺寸覆蓋，不是AP。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/09-anchor-clustering.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    groups [0, 0, 0, 1, 1, 1] anchors pixel [[8.333333015441895, 8.333333015441895], [31.33333396911621, 16.66666603088379]]
+    train mean best size IoU 0.3817 -> 0.9119
+    median anchors [[8.0, 8.0], [32.0, 16.0]] train coverage 0.934
+    new-source shape coverage 0.1975 not detector AP
+    ```
+
+<!-- curriculum-evidence:end -->

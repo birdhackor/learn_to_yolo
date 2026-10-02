@@ -1,0 +1,14 @@
+{
+  "id": "06-decode-nms",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:29.012366+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "f0887ae525e77f26f8df74cafcc932fb8572f30ba9fb66d4da1f3c74696998e2",
+  "process_wall_seconds": 1.3255,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "candidate_boxes=[[23.200000762939453, 24.0, 39.20000076293945, 32.0], [28.0, 24.0, 44.0, 32.0], [3.999999523162842, 52.0, 12.0, 60.0]]\nscores=[0.64, 0.72, 0.855], duplicate_IoU=0.5385\nNMS keep_indices=[2, 1], kept_scores=[0.855, 0.72]\nthreshold .75 keeps only artificial false positive, score=0.855\nexercise NMS .6 keeps original candidate indices=[2, 1, 0]\nexercise score .70 keeps scores=[0.72, 0.855]\nidentical boxes of different classes both survive class-wise NMS; empty input passed\nAll logits are hand-constructed, not a trained detector.\n",
+  "stderr": "",
+  "exit_code": 0
+}

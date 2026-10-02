@@ -1,0 +1,14 @@
+{
+  "id": "05-assignment",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:27.686129+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "124b48fc55944326481d9373e4498bb25bda984a1642d8dd256458b7e9c620f7",
+  "process_wall_seconds": 2.073,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "box_shape=(2, 4, 4, 4), objectness_shape=(2, 4, 4), class_shape=(2, 4, 4)\npositive_cells(row,col)=[[0, 0], [2, 2]], first_target=[0.75, 0.75, 0.25, 0.25], first_image_negative=14\nbatch positives=2, negatives=30, ignores=0\ncapacity limit correctly raised: same-cell collision at image=0, row=0, col=0\nstep=0, box=0.0871, obj=0.7031, cls=0.5235\nstep=1, box=0.0861, obj=0.6839, cls=0.4744\nnegative positions supervise objectness only; artificial-feature head update verified\n",
+  "stderr": "",
+  "exit_code": 0
+}

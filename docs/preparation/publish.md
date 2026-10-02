@@ -81,7 +81,7 @@ Pages 經由 public repo 可用免費方案。此網站公開，不需要自訂�
 4. 執行全部 cells，查看 Python／PyTorch／CUDA；免費 GPU 可能未分配，這項檢查不訓練模型。
 5. 要保存自己的修改，選 **File → Save a copy in Drive**。runtime 中的資料檔與權重需另行保存，notebook 副本不包含它們。
 
-notebook 格式、實驗程式的 CPU 執行與公開原始檔已檢查；Google 登入與實際 Colab GPU 尚未驗證。每節網頁另有固定 `lessons-v0.1.0` 的 Colab 入口，讀者可保存自己的副本。
+notebook 格式、實驗程式的 CPU 執行與公開原始檔已檢查；Google 登入與實際 Colab GPU 尚未驗證。每節網頁另有固定 `lessons-v0.2.0` 的 Colab 入口，讀者可保存自己的副本。
 
 ## 5. Git LFS：已準備與你需要設定的部分
 
@@ -140,11 +140,11 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站可提供取得方�
 
 ## 教材的新版本發布
 
-目前教材與42份Colab固定為 `lessons-v0.1.0`。修訂教材時使用新的tag，不覆寫原tag：
+本輪教材與42份Colab固定為 `lessons-v0.2.0`；已發布的 `lessons-v0.1.0`保留不動。修訂教材時使用新的tag，不覆寫原tag：
 
-1. 完成各節網頁、CPU案例及陌生讀者審查，再用 `python scripts/build_lesson_notebooks.py --ref lessons-v0.2.0` 配對新版本。
-2. 執行 `python scripts/validate_preparation.py`、`python scripts/validate_lessons.py`、`.venv-model/bin/python scripts/check_lesson_runtime.py`、`.venv-model/bin/python -m pytest tests/test_core.py`，最後以 `.venv-docs/bin/zensical build --clean --strict` 建站。
-3. 提交所有教材與證據，再建立 `git tag lessons-v0.2.0`。使用前文的認證helper推送 `main` 與此tag；Colab所用的tag必須先能在GitHub讀到。
+1. 完成各節網頁、CPU案例及陌生讀者審查，下一版例如使用 `python scripts/build_lesson_notebooks.py --ref lessons-v0.3.0` 配對；這會重建notebook，須重新保存實際輸出。
+2. 執行 `python scripts/validate_preparation.py`、`python scripts/validate_lessons.py`、`.venv-model/bin/python scripts/verify_curriculum.py`、`python scripts/validate_curriculum_evidence.py`、`.venv-model/bin/python -m pytest tests/test_core.py tests/test_checkpoint.py`，最後以 `.venv-docs/bin/zensical build --clean --strict` 建站。
+3. 提交所有教材與證據，再建立新的tag，例如 `git tag lessons-v0.3.0`；不要再建立或移動已發布的0.2.0。使用前文的認證helper推送 `main` 與此tag；Colab所用的tag必須先能在GitHub讀到。
 4. 到 Actions → **Publish Learn to YOLO** → Run workflow，選 `main`。等 build與deploy都成功，再打開網站、抽查新tag的notebook。
 
 網站建置不會下載LFS資料或安裝PyTorch。公式與字型資產隨網站提供，MathJax 3.2.2保留原Apache 2.0授權與來源校驗紀錄。

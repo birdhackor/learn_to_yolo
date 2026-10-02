@@ -47,9 +47,12 @@ def main():
     optimizer.zero_grad()
     (many_loss + one_loss).backward()
     assert backbone.weight.grad.abs().sum() > 0
+    assert many_head.weight.grad.abs().sum() > 0 and one_head.weight.grad.abs().sum() > 0
     old = one_head.weight.detach().clone()
+    old_many = many_head.weight.detach().clone()
     optimizer.step()
     assert not torch.equal(old, one_head.weight)
+    assert not torch.equal(old_many, many_head.weight)
     print('one-to-many owner:', many_owner.tolist())
     print('global one-to-one owner:', one_owner.tolist())
     print(f'global quality={optimum:.2f}; greedy quality={greedy_value:.2f}')

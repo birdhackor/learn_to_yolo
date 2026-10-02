@@ -1,18 +1,18 @@
 # 訓練資料前置規劃
 
-查核日期：2026-10-02。先準備來源、資料契約、下載與切分規格；資料產生器、dataset adapter、模型與正式教材留到大綱定稿後實作。
+查核日期：2026-10-02。本頁保留資料來源、下載與切分規格，並同步目前可執行範圍：ShapeDataset、Fashion-MNIST loader、簡化模型與42節教材已實作；尚未使用的真實偵測資料另列。
 
 ## 推薦路線
 
 | 教學階段 | 資料 | 用途與目前狀態 |
 | --- | --- | --- |
-| 小 CNN／ResNet、單物件定位 | 自製 RGB 幾何圖形；Fashion-MNIST 分類支線 | 幾何資料先訂規格，不產生訓練程式。Fashion 完整四檔已下載、校驗 |
+| 小 CNN／ResNet、單物件定位 | 自製 RGB 幾何圖形；Fashion-MNIST 分類支線 | 各節已有自產幾何資料與訓練程式；Fashion完整四檔已下載、校驗及40步實測 |
 | 第一個多物件 detector | 幾何圖形＋Penn-Fudan | 人工控制場景搭配 170 張真實行人圖。完整包已下載、SHA-256／ZIP CRC 與各 170 份圖片／mask／標註通過 |
 | v2／v3 與多類別比較 | VOC2007 固定小型子集 | 官方 train／val／test 保留邊界。下載端點與封裝大小已查核，未下載整包 |
 | 現代版本、小物件／重疊 | COCO2017 固定子集 | 先取得 annotation，再按固定 image ID 取圖；不要求每章下載完整 19 GB 訓練包 |
 | 真實單物件定位選讀 | Oxford-IIIT Pet | annotations 已下載並抽查；頭框不完整覆蓋官方 split，全身框需從 trimap 定義。授權材料有衝突，列備選 |
 
-同一份資料與固定困難集跨版本沿用，避免每換一版就換資料，無法判斷改動的效果。張數、輸入尺寸、batch、步數與 CPU／GPU 耗時待原型量測，不先承諾。
+同一份資料與固定困難集跨版本沿用，避免每換一版就換資料，無法判斷改動的效果。各節合成實驗的張數、尺寸、batch、步數與本次量測已列於教材及[實驗清單](../validation/curriculum.md)；未跑的真實資料完整比較仍待量測。
 
 ## 已備妥：Fashion-MNIST
 
@@ -67,7 +67,7 @@ Penn-Fudan 完整 ZIP 已存入忽略的下載快取，SHA-256 為 `9095a9613c95
 python scripts/download_data.py fetch penn-fudan
 ```
 
-此指令取作者提供的來源資料，不代表有權將照片重新上傳公開 repo。分類與偵測兩份已備妥的完整來源合計 84.60 MB；轉換 adapter 與訓練留待後續。
+此指令取作者提供的來源資料，不代表有權將照片重新上傳公開 repo。分類與偵測兩份已備妥的完整來源合計 84.60 MB；Penn-Fudan真實偵測的轉換adapter與訓練仍待後續；Fashion-MNIST分類管線已實測。
 
 Pet annotation 的完整包 SHA-256 是 `52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91`。已查 split：trainval 3,680、test 3,669；XML 只 3,686 份，test 無 XML，trainval 缺 9 份。若做完整寵物框，必須按 trimap 制定規則，不能直接拿頭框當全身框。
 
@@ -75,7 +75,7 @@ CIFAR-10 亦已列入研究備選：32×32 RGB、約 170.50 MB，適合分類對
 
 ## 再散布與 LFS 的分工
 
-- **自製資料：**未來由本專案生成，保存規格、seed 與 split，不必將所有可再生圖片存進 Git。
+- **自製資料：**目前幾何資料已由本專案生成，保存規格、seed與split，不必將所有可再生圖片存進 Git。
 - **Fashion-MNIST：**MIT，可依條件再散布，保留 copyright 與 permission notice。目前先採官方下載快取。
 - **Penn-Fudan：**檔內 README 保留原權利人版權，明示通常不得未經許可重新張貼；先提供來源連結。
 - **VOC：**官方要求遵守 Flickr 條款；照片逐張權利及 annotation 再散布 grant 未充分明確，先提供來源與自己的 ID manifest。
@@ -97,10 +97,18 @@ Git LFS 適用於已確認可再散布的精選封裝、自有權重與匯出模
 
 分類、單物件定位、多物件共用背景、顏色、形狀與 seed：先一個物件，再加入不同數量、空圖、同格同類兩物件、小物件、重疊、極端長寬比與非正方形圖。類別不單靠顏色決定，held-out seed／組合固定，annotation 與圖同步產生。
 
-這裡只訂生成與驗證需求，尚未實作 generator。真實資料評估另設，幾何成功只支持對應機制與管線已學會。
+目前`ShapeDataset`已實作固定seed的64×64紅／藍矩形、空圖與最多2物件，中心刻意避開同格衝突；各節另以人工fixture檢查碰撞、裁切等情境。上段較豐富形狀、非顏色類別及困難集是延伸規格，尚未全部做成共用generator。合成資料成功只支持對應機制與受控任務，不能替代真實圖片評估。
 
 ## 完整查核來源
 
 - [基礎資料研究](../research/foundation-data.md)
 - [偵測資料研究](../research/detection-data.md)
 - [Git LFS 研究](../research/lfs.md)
+
+## 本輪真實資料讀取與短訓練核對
+
+Fashion-MNIST四份gzip的大小與SHA-256通過manifest驗證，IDX的magic、張數、28×28與標籤範圍也由loader檢查。沿用官方train內seed7切分，再取64張train、128張validation、128張官方test，CPU跑40次Adam更新（batch8、lr=.001）。
+
+本次validation accuracy為0.1406、test accuracy為0.0938，權重確實改變；步數很少，這是資料與分類訓練管線證據，不能稱為完整Fashion-MNIST成績。資料本身沒有bounding boxes。
+
+重跑：`python scripts/run_fashion_cnn.py --train-steps 40 --subset 64 --eval-samples 128`。灰階重複成三個相同channel只為共用介面，沒有新增顏色資訊。[完整結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/fashion-mnist-learning.json)。

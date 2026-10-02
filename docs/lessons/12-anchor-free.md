@@ -1,6 +1,6 @@
 # 12.1 Anchor-free：從候選點量出四條邊
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-anchor-free.ipynb) · 實驗原始碼：`lesson_cases/12-anchor-free.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-anchor-free.ipynb) · 實驗原始碼：`lesson_cases/12-anchor-free.py`
 
 讀過框座標、stride 和第 7 章 grid detector 即可開始。問題是：一個偵測位置要先選「寬 20、高 10」的 anchor，再學偏移嗎？如果資料的長寬比改變，這組尺寸先驗是否仍合適？本節換掉框的表示方式，保留候選位置和需要有人負責物件的規則。
 
@@ -31,7 +31,7 @@
 
 ## 真的更新四個距離
 
-程式讓四個可學 logits 從 0 開始，使用 `softplus` 保持正距離。這是本章的連續回歸選擇；YOLOv8 的距離分布輸出會在 DFL 節介紹。
+程式直接把四個raw數值做成nn.Parameter，沒有圖片或CNN。softplus(x)=ln(1+exp(x))把任意實數轉成正距離，softplus(0)≈.693；Smooth L1對小誤差用平方、大誤差用線性，這裡比較的是格單位的四邊距離。程式讓四個可學 logits 從 0 開始，使用 `softplus` 保持正距離。這是本章的連續回歸選擇；YOLOv8 的距離分布輸出會在 DFL 節介紹。
 
 ```python
 distance = torch.cat((point - gt[:, :2], gt[:, 2:] - point), -1) / 8
@@ -54,3 +54,21 @@ optimizer.step()
 自主練習：保持框不變，把點改成 `(20,20)`，stride 改為 4。先算距離，再修改程式。答案為畫素 `[8,4,20,16]`、格單位 `[2,1,5,4]`，解碼仍是同一框。請同步修改 `main()` 的 point、target 距離除數、預期距離 assertion，以及每個 `decode(...,8)` 的 stride，或先集中成一個 stride 變數；大距離可能需要更多步才能透過原本嚴格的下降門檻。若只改 stride 卻沿用舊 distance，框就會縮小；這是單位錯誤，不是模型能力問題。
 
 來源查覈：2026-10-02。參見 [Ultralytics Detect 的距離解碼與分支](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[bbox2dist／dist2bbox 與候選點](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)。本章的 softplus 小模型是教學選擇。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-anchor-free.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    target ltrb in feature cells: [[1.5, 1.0, 2.0, 1.5]]
+    decoded target pixels: [[12.0, 16.0, 40.0, 36.0]]
+    distance loss 0.376236 -> 0.000012
+    learned box pixels: [[12.029999732971191, 16.059999465942383, 39.9900016784668, 35.970001220703125]]
+    outside point requires a negative distance: assignment is still necessary
+    ```
+
+<!-- curriculum-evidence:end -->

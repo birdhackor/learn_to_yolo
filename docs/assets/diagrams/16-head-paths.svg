@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 690 410" role="img" aria-labelledby="title desc">
+<title id="title">訓練雙head與部署單head的資料路徑</title><desc id="desc">many head可反傳到backbone。one head讀detached特徵，僅更新自身。部署複製backbone及one head，沒有many；raw一致性在decode之前核對。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
+<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
+<rect width="690" height="410" fill="white"/><text x="25" y="28" font-weight="bold">訓練：前向都看相同特徵；detach只停止反向</text>
+<rect class="node" x="30" y="95" width="130" height="62"/><text x="50" y="130">backbone</text>
+<path class="line" d="M160 110H475"/><rect class="node" x="485" y="73" width="150" height="64"/><text x="510" y="110">many head</text>
+<text x="187" y="87">many loss可更新backbone</text>
+<path class="line" d="M160 145H245V192H300"/><rect x="310" y="167" width="110" height="50" fill="#fff1f2" stroke="#be123c" stroke-width="2"/><text x="325" y="198">detach</text>
+<path class="line" d="M420 192H475"/><rect class="node" x="485" y="167" width="150" height="64"/><text x="517" y="205">one head</text>
+<text x="32" y="270">one loss只更新one head；detached特徵的數值不變</text>
+<text x="25" y="313" font-weight="bold">部署：複製已更新權重，直接移除many</text>
+<rect class="node" x="30" y="335" width="140" height="50"/><text x="45" y="367">backbone</text><path class="line" d="M170 360H245"/>
+<rect class="node" x="255" y="335" width="150" height="50"/><text x="284" y="367">one head</text><path class="line" d="M405 360H480"/>
+<text x="492" y="357">decode／top-k</text><text x="492" y="383">輸出框、分數、類別</text></svg>

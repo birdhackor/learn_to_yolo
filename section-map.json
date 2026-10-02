@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "note": "ready means authored files exist; CPU execution and review evidence are recorded separately. GPU training quality is pending.",
+  "note": "ready means authored files exist; CPU execution and review evidence are recorded separately. Bounded L4 training/checkpoint evidence and per-section results are recorded separately; full real-world training is pending.",
   "sections": [
     {
       "id": "preparation-environment",
@@ -19,7 +19,7 @@
       "status": "ready",
       "page": "docs/lessons/00-warmup.md",
       "notebook": "notebooks/00-warmup.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -29,7 +29,7 @@
       "status": "ready",
       "page": "docs/lessons/01-small-cnn.md",
       "notebook": "notebooks/01-small-cnn.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -39,7 +39,7 @@
       "status": "ready",
       "page": "docs/lessons/02-diagnostics.md",
       "notebook": "notebooks/02-diagnostics.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -49,7 +49,7 @@
       "status": "ready",
       "page": "docs/lessons/03-identity.md",
       "notebook": "notebooks/03-identity.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -59,7 +59,7 @@
       "status": "ready",
       "page": "docs/lessons/03-projection.md",
       "notebook": "notebooks/03-projection.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -69,7 +69,7 @@
       "status": "ready",
       "page": "docs/lessons/03-comparison.md",
       "notebook": "notebooks/03-comparison.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -79,7 +79,7 @@
       "status": "ready",
       "page": "docs/lessons/04-localization.md",
       "notebook": "notebooks/04-localization.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -89,7 +89,7 @@
       "status": "ready",
       "page": "docs/lessons/04-coordinates.md",
       "notebook": "notebooks/04-coordinates.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -99,7 +99,7 @@
       "status": "ready",
       "page": "docs/lessons/05-assignment.md",
       "notebook": "notebooks/05-assignment.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -109,7 +109,7 @@
       "status": "ready",
       "page": "docs/lessons/06-decode-nms.md",
       "notebook": "notebooks/06-decode-nms.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -119,7 +119,7 @@
       "status": "ready",
       "page": "docs/lessons/06-evaluation.md",
       "notebook": "notebooks/06-evaluation.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -129,7 +129,7 @@
       "status": "ready",
       "page": "docs/lessons/07-data.md",
       "notebook": "notebooks/07-data.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -139,7 +139,7 @@
       "status": "ready",
       "page": "docs/lessons/07-targets.md",
       "notebook": "notebooks/07-targets.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -149,17 +149,17 @@
       "status": "ready",
       "page": "docs/lessons/07-loss.md",
       "notebook": "notebooks/07-loss.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
       "id": "07-training",
-      "title": "少量 overfit 與偵測診斷",
+      "title": "三步訓練與診斷",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/07-training.md",
       "notebook": "notebooks/07-training.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -169,7 +169,7 @@
       "status": "ready",
       "page": "docs/lessons/07-inference.md",
       "notebook": "notebooks/07-inference.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -179,7 +179,7 @@
       "status": "ready",
       "page": "docs/lessons/07-heldout.md",
       "notebook": "notebooks/07-heldout.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -189,7 +189,7 @@
       "status": "ready",
       "page": "docs/lessons/08-own-images.md",
       "notebook": "notebooks/08-own-images.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -199,7 +199,7 @@
       "status": "ready",
       "page": "docs/lessons/08-own-data.md",
       "notebook": "notebooks/08-own-data.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -209,7 +209,7 @@
       "status": "ready",
       "page": "docs/lessons/09-anchors.md",
       "notebook": "notebooks/09-anchors.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -219,7 +219,7 @@
       "status": "ready",
       "page": "docs/lessons/09-anchor-clustering.md",
       "notebook": "notebooks/09-anchor-clustering.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -229,7 +229,7 @@
       "status": "ready",
       "page": "docs/lessons/10-multiscale.md",
       "notebook": "notebooks/10-multiscale.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -239,7 +239,7 @@
       "status": "ready",
       "page": "docs/lessons/11-csp.md",
       "notebook": "notebooks/11-csp.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -249,7 +249,7 @@
       "status": "ready",
       "page": "docs/lessons/11-fusion.md",
       "notebook": "notebooks/11-fusion.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -259,7 +259,7 @@
       "status": "ready",
       "page": "docs/lessons/11-augmentation.md",
       "notebook": "notebooks/11-augmentation.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -269,7 +269,7 @@
       "status": "ready",
       "page": "docs/lessons/11-iou-loss.md",
       "notebook": "notebooks/11-iou-loss.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -279,7 +279,7 @@
       "status": "ready",
       "page": "docs/lessons/12-anchor-free.md",
       "notebook": "notebooks/12-anchor-free.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -289,7 +289,7 @@
       "status": "ready",
       "page": "docs/lessons/12-decoupled-head.md",
       "notebook": "notebooks/12-decoupled-head.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -299,7 +299,7 @@
       "status": "ready",
       "page": "docs/lessons/12-assignment.md",
       "notebook": "notebooks/12-assignment.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -309,7 +309,7 @@
       "status": "ready",
       "page": "docs/lessons/12-dfl.md",
       "notebook": "notebooks/12-dfl.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -319,7 +319,7 @@
       "status": "ready",
       "page": "docs/lessons/13-dual-assignment.md",
       "notebook": "notebooks/13-dual-assignment.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -329,7 +329,7 @@
       "status": "ready",
       "page": "docs/lessons/13-nms-free.md",
       "notebook": "notebooks/13-nms-free.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -339,7 +339,7 @@
       "status": "ready",
       "page": "docs/lessons/14-feature-module.md",
       "notebook": "notebooks/14-feature-module.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -349,7 +349,7 @@
       "status": "ready",
       "page": "docs/lessons/15-attention-bridge.md",
       "notebook": "notebooks/15-attention-bridge.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -359,7 +359,7 @@
       "status": "ready",
       "page": "docs/lessons/15-area-attention.md",
       "notebook": "notebooks/15-area-attention.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -369,7 +369,7 @@
       "status": "ready",
       "page": "docs/lessons/16-dfl-free.md",
       "notebook": "notebooks/16-dfl-free.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -379,7 +379,7 @@
       "status": "ready",
       "page": "docs/lessons/16-inference-head.md",
       "notebook": "notebooks/16-inference-head.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -389,7 +389,7 @@
       "status": "ready",
       "page": "docs/lessons/16-training.md",
       "notebook": "notebooks/16-training.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -399,7 +399,7 @@
       "status": "ready",
       "page": "docs/lessons/17-capstone.md",
       "notebook": "notebooks/17-capstone.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -409,7 +409,7 @@
       "status": "ready",
       "page": "docs/lessons/18-video.md",
       "notebook": "notebooks/18-video.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -419,7 +419,7 @@
       "status": "ready",
       "page": "docs/lessons/19-tracking.md",
       "notebook": "notebooks/19-tracking.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     },
     {
@@ -429,7 +429,7 @@
       "status": "ready",
       "page": "docs/lessons/20-deployment.md",
       "notebook": "notebooks/20-deployment.ipynb",
-      "source_ref": "lessons-v0.1.0",
+      "source_ref": "lessons-v0.2.0",
       "datasets": []
     }
   ]

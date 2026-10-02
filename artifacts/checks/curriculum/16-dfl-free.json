@@ -1,0 +1,14 @@
+{
+  "id": "16-dfl-free",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:41:13.809517+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "1c0ef4db6cc5b97bfb5ce96a5251e53c8ca5f90baedeb72a8a04eb72aeea9d75",
+  "process_wall_seconds": 1.9094,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "first Smooth L1 gradient: [[-0.25, -0.25, -0.25, -0.25]]\nfirst SGD distance: [[0.125, 0.125, 0.125, 0.125]]\ndirect learned distances: [[1.25, 2.5, 18.0, 3.0]]\nSmooth L1 5.687500 -> 0.000000\ndecoded direct box pixels: [[70.0, 60.0, 224.0, 104.0]]\nsigned-distance example box pixels: [[88.0, 64.0, 104.0, 112.0]]\nuntrained DFL probability per bin: [0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625]\nuntrained DFL expected distances: [[7.5, 7.5, 7.5, 7.5]]\nDFL target for 1.25: bins 1/2 weights .75/.25; direct target is the value 1.25\nfinite-bin expectation range: [0, 15] ; direct target reaches 18.0\nraw head values DFL / direct: 6600 600\nfloat32 raw head bytes: 26400 2400\nDFL-free still requires box supervision; this experiment uses Smooth L1\n",
+  "stderr": "",
+  "exit_code": 0
+}

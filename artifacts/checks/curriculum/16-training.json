@@ -1,0 +1,14 @@
+{
+  "id": "16-training",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:41:17.620928+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "896bb0cc20ff0a4420bf4d2489dfaf817ca728f53fe3c81b85ae3a7a484df1ef",
+  "process_wall_seconds": 1.9541,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "many/one weight first: (0.8, 0.2)\nmany/one weight last: (0.1, 0.9)\none-head MSE fixed=0.663073, progressive=0.016285\none-head first forward/backward/step: {\"weight\": 0.31842339038848877, \"bias\": 0.3137805461883545, \"prediction\": [-0.004642844200134277, 0.3137805461883545, 0.6322039365768433, 0.950627326965332], \"one_mse\": 5.866377353668213, \"one_gain\": 0.19999999999999996, \"weighted_dw\": -1.1461899280548096, \"weighted_dbias\": -0.6108031272888184, \"updated_weight\": 0.3757328987121582, \"updated_bias\": 0.34432071447372437}\nsmall-object eligible points original / expanded: 0 4\nGT regression box remains: [7.0, 7.0, 9.0, 9.0]\nnot a full YOLO26/STAL/MuSGD training reproduction\n",
+  "stderr": "",
+  "exit_code": 0
+}

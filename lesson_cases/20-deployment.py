@@ -116,7 +116,7 @@ def main():
                             'ort_preprocess_to_restored_boxes': end_to_end_ms, 'ort_raw_batch2': batch2_ms},
               'ort_raw_batch2_images_per_second': 2000 / batch2_ms,
               'versions': {'torch': torch.__version__, 'onnx': onnx.__version__, 'onnxruntime': ort.__version__},
-              'limits': 'CPU float32 parity; one training step is not detection-quality evidence; no TensorRT/GPU verification'}
+              'limits': 'CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented'}
     (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
     print('real ONNX export + checker + ORT CPU + restored-box parity completed')

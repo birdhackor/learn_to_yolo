@@ -139,7 +139,7 @@ def train_fashion_cnn(steps=2, root=None, subset=64, eval_samples=128,
         "loss_history": history, "accuracy_definition": "argmax class correct / evaluated images",
         "split": "official train seed7 permutation: first6000 validation, remaining54000 train; official test preserved",
         "input": "gray [1,28,28] repeated to three identical channels, float32 [0,1]",
-        "limitations": "A two-step smoke confirms learning plumbing; it is not evidence of useful classification accuracy.",
+        "limitations": f"This {steps}-step run checks the classification pipeline on the recorded subset and evaluation samples; it is not a complete training or generalization study.",
     }
     run = Path(output)
     run.mkdir(parents=True, exist_ok=True)

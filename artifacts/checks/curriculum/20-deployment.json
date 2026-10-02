@@ -1,0 +1,14 @@
+{
+  "id": "20-deployment",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T17:08:12.380897+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "af61839e8af678ab18d115b0a1b56745d6095a6122b3d40ebfd356f3e7854a64",
+  "process_wall_seconds": 2.0914,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "{\n  \"onnx\": \"artifacts/lesson-20/grid.onnx\",\n  \"opset\": 17,\n  \"providers\": [\n    \"CPUExecutionProvider\"\n  ],\n  \"input_shape\": [\n    \"batch\",\n    3,\n    64,\n    64\n  ],\n  \"batches_checked\": [\n    1,\n    2,\n    3\n  ],\n  \"max_abs_raw_errors\": [\n    4.76837158203125e-07,\n    4.76837158203125e-07,\n    4.76837158203125e-07\n  ],\n  \"decoded_boxes_scores_labels_match\": true,\n  \"dynamic_spatial\": false,\n  \"spatial80_rejected\": true,\n  \"median_ms\": {\n    \"torch_raw_batch1\": 0.15258449980137812,\n    \"ort_raw_batch1\": 0.03642449973995099,\n    \"torch_preprocess_to_restored_boxes\": 2.3286364998966746,\n    \"ort_preprocess_to_restored_boxes\": 2.144289499938168,\n    \"ort_raw_batch2\": 0.04258399985701544\n  },\n  \"ort_raw_batch2_images_per_second\": 46965.99677614626,\n  \"versions\": {\n    \"torch\": \"2.9.1+cpu\",\n    \"onnx\": \"1.19.1\",\n    \"onnxruntime\": \"1.23.2\"\n  },\n  \"limits\": \"CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented\"\n}\nreal ONNX export + checker + ORT CPU + restored-box parity completed\n",
+  "stderr": "/workspace/learn_to_yolo/lesson_cases/20-deployment.py:59: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter will be the default. To switch now, set dynamo=True in torch.onnx.export. This new exporter supports features like exporting LLMs with DynamicCache. We encourage you to try it and share feedback to help improve the experience. Learn more about the new export logic: https://pytorch.org/docs/stable/onnx_dynamo.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html.\n  torch.onnx.export(model, images[:1], str(onnx_path), input_names=['images'], output_names=['raw_grid'],\n",
+  "exit_code": 0
+}

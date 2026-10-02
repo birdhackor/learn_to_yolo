@@ -1,6 +1,6 @@
 # 13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/13-nms-free.ipynb) · 原始碼：`lesson_cases/13-nms-free.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/13-nms-free.ipynb) · 原始碼：`lesson_cases/13-nms-free.py`
 
 讀過 NMS 與一對多／一對一監督即可開始。假設一張圖有兩個物件，偵測器卻輸出三個高分框，其中兩個是同一物件。把 NMS 函式刪除，框數變多；這並沒有改善模型。本節固定框位置，只改「哪個候選被教成正樣本」，親眼看分數的變化，再比較後處理。
 
@@ -44,6 +44,26 @@ NMS-free仍然可以有score filtering與top-k。NMS特有的步驟是按兩框�
 
 常見錯誤是每個GT有一個positive便認為每張圖只剩一個框、在train用one-head但eval誤取many-head、把top-k叫成NMS、或看見重疊真值便希望系統刪除其中一個。NMS-free的目標是同一物件不重複，不是所有互相重疊的物件只留下一個。
 
-自主練習：將one-target改成`[0,1,1,0]`。答案是一對一仍有兩個高分候選，但A由p1負責。這提醒我們唯一性不要求與原始GT完全同位置，仍須計算定位IoU。再將score threshold升到.99：這次兩分支可能全被過濾，框數雖為零，recall也為零；threshold不是架構成功的證據。
+自主練習：將one-target改成`[0,1,1,0]`。答案是一對一仍有兩個高分候選，但A由p1負責。這提醒我們唯一性不要求與原始GT完全同位置，仍須計算定位IoU。再將score threshold升到.99：這次兩分支確定全被過濾，框數雖為零，recall也為零；threshold不是架構成功的證據。
 
 來源查覈：2026-10-02。[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[官方 v10Detect 推論與 postprocess](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)。
+
+練習更改one-target後，`one_ids`固定答案也改成`[1,2]`。score門檻升.99時，這次100步的两路高分約.96，因此三路候選都確定為空；同步把many／NMS／one的數量斷言改成0，並將新加入的覆蓋斷言改為`assert many_after_nms == []`，因為score過濾後不能再要求保留p2或p0／p1。且只改兩行score比較，**不要改nms的IoU threshold=.5**。本例另加斷言確認NMS後仍保留B的p2及A的p0或p1；這才是覆蓋檢查，不是只數到兩框。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-nms-free.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    many-head scores: [0.9589999914169312, 0.9589999914169312, 0.9589999914169312, 0.04100000113248825]
+    one-head scores: [0.9589999914169312, 0.04100000113248825, 0.9589999914169312, 0.04100000113248825]
+    many/no NMS: [0, 1, 2] many/NMS: [0, 2] one/no NMS: [0, 2]
+    top-2 on duplicate-heavy scores: [0, 1] (misses object at candidate 2)
+    duplicate IoU=0.8182
+    ```
+
+<!-- curriculum-evidence:end -->

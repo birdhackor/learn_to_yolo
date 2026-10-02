@@ -4,7 +4,7 @@
 
 歷史機制來自 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)。原版常見block在相加後有ReLU。本節使用**相加後沒有ReLU**的教學block，刻意讓 \(F(x)=0\) 時可以對所有正負輸入精確驗證identity；這不等於完整原版ResNet配置。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-identity.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU實驗先做人工零分支與梯度檢查，再用另一個隨機block訓練2步。前者證明算術，後者證明可更新，不是分類效果比較。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/03-identity.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU實驗先做人工零分支與梯度檢查，再用另一個隨機block訓練2步。前者證明算術，後者證明可更新，不是分類效果比較。
 
 ## 把「修正」與「完整答案」分開
 
@@ -49,6 +49,8 @@ branch是兩個無bias的3×3卷積，中間一個ReLU。4channel時共 \(2\time
 
 把整個分支所有權重都設0是為了**機制驗證**。本例兩層無bias卷積全0，中間ReLU輸入也全0，兩層weight梯度都是0，分支無法靠這條路徑開始學；第二部分另建隨機初始化的block，避免把這個人工測試當成訓練建議。
 
+第二部分的隨機block使用同shape全零target，MSE是每個輸出與零的差平方，再平均。它希望整個輸出接近零，F可能往−x修正；這個更新檢查的目標，刻意不同於第一部分F=0時保留x的identity算術測試。
+
 ## 核對、常見錯誤與收益
 
 程式先核對負值保留，再確認隨機block輸出 `[2,4,8,8]`、末層權重有非零梯度且更新。這些透過便完成本節機制檢查。identity的收益是保留同shape資訊與提供直接路徑；限制是它只適合同shape，且兩步玩具MSE沒有回答圖片分類是否更好。
@@ -58,3 +60,23 @@ branch是兩個無bias的3×3卷積，中間一個ReLU。4channel時共 \(2\time
 ## 自主練習與答案
 
 在相加後加ReLU，保留人工x。答案y會變成 `[0,0,0,1]`，原本逐值identity assertion應失敗；在正值1處，sum loss對x的梯度為1，負值處則為0。修改相應assertion並解釋原因，別只刪除它。接著把主分支stride改2：答案是直接shortcut不再匹配，需要學下一節的projection。
+
+
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-identity.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]
+    input_gradient=[1.0, 1.0, 1.0, 1.0]; F=0 preserves negative values too
+    step=0, shape=(2, 4, 8, 8), loss=1.0816
+    step=1, shape=(2, 4, 8, 8), loss=1.0724
+    random branch updated; this does not measure ResNet classification quality
+    ```
+
+<!-- curriculum-evidence:end -->

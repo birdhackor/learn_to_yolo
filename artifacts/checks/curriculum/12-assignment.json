@@ -1,0 +1,14 @@
+{
+  "id": "12-assignment",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:41:00.630059+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "0dfd33f0a6c412070e09ebbe9528118a45b49d5e81f354560f0475cc2a59075e",
+  "process_wall_seconds": 1.867,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "inside-masked score * IoU^2: [[0.22499999403953552, 0.3109999895095825, 0.0, 0.0], [0.0, 0.1469999998807907, 0.5669999718666077, 0.0]]\ncandidate owner (-1 background): [0, 0, 1, -1]\nforeground target: [1.0, 1.0, 1.0, 0.0]\ngradient: [-0.125, -0.125, -0.125, 0.125]\nempty image owner: [-1, -1, -1, -1]\nexercise: move predicted box p1 to GT B; owner: [0, 1, 1, -1]\n",
+  "stderr": "",
+  "exit_code": 0
+}

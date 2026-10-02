@@ -2,7 +2,7 @@
 
 模型在64×64輸入上畫出的框，不能直接畫回80×40原圖。縮放與補邊改變了座標系；若只記住圖片變成正方形，忘記padding，框會上下偏移。前置只需知道xyxy四數表示左上／右下，本頁從一張非正方形圖片走完往返。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/04-coordinates.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-coordinates.py`。本節CPU只做幾何變換，不需訓練。案例同時驗證整數比例、奇數尺寸與空框；成功代表變換契約成立，不代表模型定位準確。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/04-coordinates.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-coordinates.py`。本節CPU只做幾何變換，不需訓練。案例同時驗證整數比例、奇數尺寸與空框；成功代表變換契約成立，不代表模型定位準確。
 
 ## 三個座標系，先寫上單位
 
@@ -58,3 +58,39 @@ original_boxes_again = (input_boxes - padding) / scales
 ## 自主練習與答案
 
 將原圖改成H=80、W=40，框改為 `[5,10,25,50]`。答案resize成64×32（高×寬），左右各補16，框變成 `[20,8,36,40]`；回程x先減16，再除0.8。再問為何不使用加1計算框寬？答案是本課採連續pixel邊界／半開區間契約，加1會更改標註與IoU幾何。
+
+直式題可保留原例，在本節notebook最後新增獨立cell，不必逐一猜主例的固定答案：
+
+```python
+portrait = torch.zeros(3, 80, 40)
+portrait[0, 10:50, 5:25] = 1
+portrait_box = torch.tensor([[5., 10., 25., 50.]])
+portrait_canvas, mapped, meta = letterbox(portrait, portrait_box)
+assert meta['resized_hw'] == (64, 32)
+assert torch.allclose(mapped, torch.tensor([[20., 8., 36., 40.]]))
+assert torch.allclose(undo(mapped, meta), portrait_box)
+stretched = portrait_box * torch.tensor([1.6, .8, 1.6, .8])
+assert torch.allclose(stretched, torch.tensor([[8., 8., 40., 40.]]))
+```
+
+若選擇修改原main，也需同步圖片切片、letterbox固定答案、stretch比例；圖題原本是`Original 80x40`（寬×高），直式題要改成`Original 40x80`。不要刪掉往返、整數標註與空框檢查。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-coordinates.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    integer annotation converted to float; finite exact round trip passed
+    original_hw=(40, 80), resized_hw=(32, 64)
+    original=[[10.0, 5.0, 50.0, 25.0]], letterbox=[[8.0, 20.0, 40.0, 36.0]], restored=[[10.0, 5.0, 50.0, 25.0]]
+    stretch=[[8.0, 8.0, 40.0, 40.0]], padding=[0.0, 16.0, 0.0, 16.0]
+    odd rounding: resized_hw=(29, 64), scales=[0.7710843086242676, 0.7837837934494019, 0.7710843086242676, 0.7837837934494019]
+    odd-size and empty-box round trips passed; geometry only, no training required
+    transform_panel=artifacts/04-coordinates.png
+    ```
+
+<!-- curriculum-evidence:end -->

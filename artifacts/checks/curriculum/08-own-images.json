@@ -1,0 +1,14 @@
+{
+  "id": "08-own-images",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T17:08:06.414624+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "5440e8a50de3f2cfd7680fdfb4153eae5ca44123b073334a0311af2decc29fb2",
+  "process_wall_seconds": 2.2531,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "original CHW (3, 80, 120) input box [[10.666666984558105, 15.375, 32.0, 26.125]]\nmetadata {'original_size': (80, 120), 'scale': 0.5333333333333333, 'scale_xy': (0.5333333333333333, 0.5375), 'padding': (0, 10), 'resized_size': (43, 64)} roundtrip [[20.0, 10.0, 59.999996185302734, 29.999998092651367]]\n3-step checkpoint safely reloaded: exact logits; original-space box count 16\nannotated PNG and JSON saved: artifacts/lesson-08-own-images/prediction.png artifacts/lesson-08-own-images/prediction.json\npipeline evidence only, not photo detection quality\nclass/config mismatch rejected\nartificial known box restored [[20.000001907348633, 10.0, 59.999996185302734, 29.999998092651367]]\n",
+  "stderr": "",
+  "exit_code": 0
+}

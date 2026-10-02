@@ -1,0 +1,14 @@
+{
+  "id": "06-evaluation",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:30.349044+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "eda4e3a09a411737f3a2faf198e3794f49d42966f12549f45a0065ca5f4e5946",
+  "process_wall_seconds": 1.3358,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "rank=1, score=0.95, FP, precision=0.0000, recall=0.0000\nrank=2, score=0.90, TP, precision=0.5000, recall=0.3333\nrank=3, score=0.80, FP, precision=0.3333, recall=0.3333\nrank=4, score=0.70, TP, precision=0.5000, recall=0.6667\nTP=2, FP=2, FN=1, AP50=0.333333, ap_per_class=[0.3333333432674408, None]\ncandidate threshold .85: AP50=0.166667, recall=0.3333\nremove known high-score FP: AP50=0.555556\nno predictions => AP=0 when GT exists; no-GT class AP=None; background FP counted\nArtificial scoring exercise; not measured detector performance.\n",
+  "stderr": "",
+  "exit_code": 0
+}

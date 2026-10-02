@@ -4,7 +4,7 @@
 
 **[閱讀教材](https://birdhackor.github.io/learn_to_yolo/)** · [完整課綱](docs/planning/outline.md) · [驗證範圍](docs/status.md)
 
-42 節網頁各有獨立 Colab notebook，純閱讀也能學；程式與 Colab 固定為 `lessons-v0.1.0`。各節寫完由陌生讀者視角的 subagent 審閱，原始意見見 [reviews](reviews/)。模型是教學用簡化模型，不是完整原版的重現。
+42 節網頁各有獨立 Colab notebook，純閱讀也能學；程式與 Colab 固定為 `lessons-v0.2.0`。本輪另以六位陌生讀者與六位技術 reviewer 逐節審查，必要修改經獨立複查；[全套執行與審查](docs/validation/curriculum.md)保留結果與原始意見。模型是教學用簡化模型，不是完整原版的重現。
 
 ## CPU 本機執行
 
@@ -15,9 +15,11 @@ python3 -m venv .venv-model
 .venv-model/bin/python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
 .venv-model/bin/python -m pip install -r requirements-model.txt
 PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
-.venv-model/bin/python -m pytest tests/test_core.py
+.venv-model/bin/python -m pytest tests/test_core.py tests/test_checkpoint.py
 .venv-model/bin/python scripts/check_lesson_runtime.py
 ```
+
+以上安裝後，若照網頁的`python ...`命令執行，先用`source .venv-model/bin/activate`啟用環境；也可一直使用`.venv-model/bin/python`的完整路徑。Colab環境格已使用目前runtime的直譯器。
 
 案例不需要下載、GPU、torchvision 或預訓練權重。Windows 可用 `.venv-model\Scripts\python.exe`，並在 PowerShell 先設定 `$env:PYTHONPATH='.'`。Notebook 的實驗格有完整可修改程式；初始化格只取得固定版本與依賴。
 
@@ -53,6 +55,7 @@ python3 -m venv .venv-docs
 .venv-docs/bin/python -m pip install -r requirements-docs.txt
 python3 scripts/validate_preparation.py
 python3 scripts/validate_lessons.py
+python3 scripts/validate_curriculum_evidence.py
 .venv-docs/bin/zensical build --clean --strict
 python3 scripts/validate_site.py
 .venv-docs/bin/zensical serve

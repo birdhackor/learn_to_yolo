@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-10-02T06:05:32.928093+00:00",
+  "created_at": "2026-10-02T16:46:45.466737+00:00",
   "config": {
     "epochs": 1,
     "steps": 160,
@@ -30,14 +30,14 @@
     "torch_threads": 2,
     "cuda_device": null
   },
-  "training_seconds": 0.6226324840000643,
-  "checkpoint": "artifacts/runs/grid-learning/checkpoint.pt",
+  "training_seconds": 0.7360584409999547,
+  "checkpoint": "artifacts/runs/grid-curriculum/checkpoint.pt",
   "class_names": [
     "red rectangle",
     "blue rectangle"
   ],
-  "history_path": "artifacts/runs/grid-learning/history.json",
-  "curve_path": "artifacts/runs/grid-learning/loss.png",
+  "history_path": "artifacts/runs/grid-curriculum/history.json",
+  "curve_path": "artifacts/runs/grid-curriculum/loss.png",
   "initial_validation": {
     "ap_per_class": {
       "0": 0.0035014005602240893,
@@ -82,7 +82,7 @@
   "validation_examples": [
     {
       "index": 0,
-      "image_path": "artifacts/runs/grid-learning/validation-00.png",
+      "image_path": "artifacts/runs/grid-curriculum/validation-00.png",
       "target": {
         "boxes": [
           [
@@ -130,7 +130,7 @@
     },
     {
       "index": 1,
-      "image_path": "artifacts/runs/grid-learning/validation-01.png",
+      "image_path": "artifacts/runs/grid-curriculum/validation-01.png",
       "target": {
         "boxes": [
           [
@@ -178,7 +178,7 @@
     },
     {
       "index": 2,
-      "image_path": "artifacts/runs/grid-learning/validation-02.png",
+      "image_path": "artifacts/runs/grid-curriculum/validation-02.png",
       "target": {
         "boxes": [
           [
@@ -211,7 +211,7 @@
     },
     {
       "index": 3,
-      "image_path": "artifacts/runs/grid-learning/validation-03.png",
+      "image_path": "artifacts/runs/grid-curriculum/validation-03.png",
       "target": {
         "boxes": [
           [

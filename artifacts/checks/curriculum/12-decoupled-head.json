@@ -1,0 +1,14 @@
+{
+  "id": "12-decoupled-head",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:58.762101+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "38f6e64626db6a0324a23bc3d05e3c0d892df9e7a54423f98ff343abd6b5dbfc",
+  "process_wall_seconds": 2.0075,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "box / class shapes: (2, 4, 4, 4) (2, 2, 4, 4)\nclassification-only backward leaves box branch grad=None\nshared-backbone gradient cosine: -0.0073\ntotal backbone gradient = box gradient + class gradient: verified\nparameters: 1446\n",
+  "stderr": "",
+  "exit_code": 0
+}

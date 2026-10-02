@@ -1,6 +1,6 @@
 # 用自己的資料：類別、標註與來源切分
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-data.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/08-own-data.ipynb){ .md-button }
 
 前置：[自己的圖片推論](08-own-images.md)、[資料與訓練](07-data.md)。本節要解決兩個獨立問題：讓資料能表達新類別，以及讓評估真的使用沒見過的來源。模型類別數改變後需要重新訓練；改顯示名稱不能把「紅矩形」權重變成「汽車」。
 
@@ -40,7 +40,7 @@ from miniyolo.custom_data import JsonDetectionDataset
 from miniyolo.data import collate
 from torch.utils.data import DataLoader
 
-dataset = JsonDetectionDataset('annotations.json',root='my-data',split='train',image_size=64)
+dataset = JsonDetectionDataset('my-data/annotations.json',root='my-data',split='train',image_size=64)
 loader = DataLoader(dataset,batch_size=2,shuffle=False,collate_fn=collate)
 images, annotations = next(iter(loader))  # 同一順序的影像與target
 classes = dataset.classes  # 保留JSON中有順序的類別對照
@@ -64,8 +64,33 @@ optimizer.step()
 
 這裡grid_size=4表示每邊4格，image_size=64是前處理後輸入pixel邊長，num_classes來自固定有序classes；target使用變換後框，而非原圖框。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-data.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-data.py`。應看到 `rejected source leakage`、每個 split 2 筆、head `(2,4,4,8)`，再完成一步有限 loss 更新。案例實際寫出六張黃矩形／空圖PNG，查驗各檔尺寸並讀入train兩張，再完成參數更新；另外拒絕錯列長、bool類別、空圖非正尺寸、非有限座標及圖片實際尺寸不符。source_id與內容是人工fixture，重複顏色場景不提供來源獨立性的效果證據；它不是六張真實照片的評估。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/08-own-data.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-data.py`。應看到 `rejected source leakage`、每個 split 2 筆、head `(2,4,4,8)`，再完成一步有限 loss 更新。案例實際寫出六張黃矩形／空圖PNG，查驗各檔尺寸並讀入train兩張，再完成參數更新；另外拒絕錯列長、bool類別、空圖非正尺寸、非有限座標及圖片實際尺寸不符。source_id與內容是人工fixture，重複顏色場景不提供來源獨立性的效果證據；它不是六張真實照片的評估。
 
 收益是新增類別與資料切分都有可重現的規則；代價是標註、檢查、來源整理佔時間，新增類別也可能需要更多樣本及重新訓練。先選幾張標註疊圖、少量 overfit，再看獨立圖的漏檢與誤報，沿第 7 章順序排查。
 
 自主練習：A0 是 train，A1 改成 validation，能否透過？答案：不行，同 source_id 洩漏。新增「綠矩形」成 class 3，最後軸應是多少？答案：9；還要驗證對映、重建head、target及optimizer，並安排新增類別的獨立 GT，不能只改陣列名稱。
+
+圖片可放`my-data/images/`，JSON放`my-data/annotations.json`；JSON內`path`寫`images/example.png`。`root="my-data"`解析圖片路徑，JSON本身的路徑仍須完整寫明，不會自動加root。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-data.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    rejected source leakage : source leakage
+    rejected malformed box rows : box/label row counts differ
+    rejected box row length with matching label count : each box row must have exactly four coordinates
+    rejected boolean class id : class ids must be integer indices; bool is invalid
+    rejected empty-image dimensions : width/height must be positive integers, including empty images
+    rejected nonfinite coordinate : coordinates must be finite numbers
+    rejected actual image/annotation size mismatch
+    6 real PNG files loaded/verified; counts by split {'train': 2, 'validation': 2, 'test': 2}
+    synchronized input box [[10.666666984558105, 15.375, 32.0, 26.125]]
+    new class 2; head (2, 4, 4, 8) one training step 1.4407
+    ```
+
+<!-- curriculum-evidence:end -->

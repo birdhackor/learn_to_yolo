@@ -11,6 +11,27 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "birdhackor/learn_to_yolo"
 
 
+def optional_experiment(lesson_id: str) -> str:
+    if lesson_id in {"01-small-cnn", "03-comparison", "04-localization"}:
+        command = f"!python scripts/run_learning_extensions.py --section {lesson_id}"
+        return ("\n\n### 可選：40步學習實驗\n\n完成下面的完整案例後，另開code cell執行：\n\n"
+                f"```python\n{command}\nfrom IPython.display import SVG, display\n"
+                f"display(SVG(filename='docs/assets/diagrams/{lesson_id}-learning.svg'))\n```\n\n"
+                "資料、optimizer與結果的限制見網頁；這是獨立補充，不取代下方三步檢查。")
+    if lesson_id == "10-multiscale":
+        return ("\n\n### 可選：兩尺度40步與實際預測\n\n完整案例後另開code cell：\n\n"
+                "```python\n!python scripts/run_multiscale_learning.py\nfrom IPython.display import SVG, display\n"
+                "display(SVG(filename='docs/assets/diagrams/10-multiscale-learning.svg'))\n```\n\n"
+                "這只訓練一張圖；小框可能未達IoU .5，應按實際report解讀。")
+    if lesson_id == "07-training":
+        return ("\n\n### 可選：160步合成圖與held-out評估\n\n下方主例只跑三步。完成後另開code cell：\n\n"
+                "```python\n!python -m miniyolo.train --steps 160 --samples 32 --device cpu\n"
+                "from IPython.display import display\nfrom PIL import Image\n"
+                "display(Image.open('artifacts/runs/grid-learning/loss.png'))\n```\n\n"
+                "另存checkpoint.pt、history.json與validation PNG；完整指標在artifacts/checks/grid-learning.json。")
+    return ""
+
+
 def cell(kind: str, source: str) -> dict:
     result = {"cell_type": kind, "metadata": {}, "source": source.splitlines(keepends=True)}
     if kind == "code":
@@ -44,7 +65,7 @@ actual_ref = subprocess.check_output(
 if actual_ref != REF:
     raise RuntimeError("程式版本不同，請使用新的 runtime 或移除舊 clone 後重試。")
 
-# 本輪只驗證 CPU。已裝相同 PyTorch 版本時保留其 CPU/CUDA build。
+# 逐節範例預設 CPU；L4 訓練與部署的實測另見網站驗證頁。保留相同版本的 CPU/CUDA build。
 try:
     torch_version = importlib.metadata.version("torch").split("+")[0]
 except importlib.metadata.PackageNotFoundError:
@@ -65,7 +86,7 @@ print("目前目錄：", repository)
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ref", default="lessons-v0.1.0")
+    parser.add_argument("--ref", default="lessons-v0.2.0")
     args = parser.parse_args()
     registry_path = ROOT / "section-map.json"
     registry = json.loads(registry_path.read_text())
@@ -89,10 +110,11 @@ def main() -> None:
                 cell("markdown", f"# {section['title']}\n\n"
                      f"[完整圖文教材](https://birdhackor.github.io/learn_to_yolo/lessons/{lesson_id}/)\n\n"
                      "先執行環境格，再閱讀、執行下方完整實驗。各節互相獨立，不需要上一節的 runtime。\n\n"
-                     "本版使用 CPU 驗證機制及短步參數更新；長訓練的辨識效果、AP 與 GPU 效率仍待補測。"
+                     "本節在 CPU 逐節執行並保存輸出；合成資料短訓練、L4 與部署紀錄見網站驗證頁。真實場景長訓練仍待安排。"
                      "這些範例沒有預訓練權重，也不需下載資料。"),
                 cell("code", bootstrap(args.ref, lesson_id == "20-deployment")),
-                cell("markdown", "## 本節可修改的完整實驗\n\n先預測結果，再執行；確認輸出後，試做網頁的自主練習。"),
+                cell("markdown", "## 本節可修改的完整實驗\n\n先預測結果，再執行；確認輸出後，試做網頁的自主練習。"
+                     + optional_experiment(lesson_id)),
                 cell("code", case.read_text()),
             ],
         }
@@ -109,7 +131,7 @@ def main() -> None:
         page.write_text(text)
         section.update(status="ready", page=str(page.relative_to(ROOT)),
                        notebook=str(notebook_path.relative_to(ROOT)), source_ref=args.ref)
-    registry["note"] = "ready means authored files exist; CPU execution and review evidence are recorded separately. GPU training quality is pending."
+    registry["note"] = "ready means authored files exist; CPU execution and review evidence are recorded separately. Bounded L4 training/checkpoint evidence and per-section results are recorded separately; full real-world training is pending."
     registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n")
     print("Paired 42 authored lessons with version-pinned notebooks.")
 

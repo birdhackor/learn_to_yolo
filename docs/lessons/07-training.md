@@ -1,10 +1,18 @@
 # Grid MiniYOLO：三步訓練與診斷
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-training.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-training.ipynb){ .md-button }
 
 前置：[資料](07-data.md)、[targets](07-targets.md)、[loss](07-loss.md)。我們已有畫素、責任與人工梯度答案，現在才接上 CNN 和 optimizer。目標是先證明 forward、backward、step 都真的執行，而後再規劃少量 overfit 和獨立資料評估。
 
 起始分支是本書的 4×4 grid MiniYOLO。歷史上的 [YOLOv1](https://arxiv.org/abs/1506.02640) 是從整圖直接預測框的單階段設計；本節小 CNN、64×64 圖、每格單框與第 7 節 loss 都是教學簡化。本次只做 3 個 CPU optimizer steps，這不是原版訓練，也沒有宣稱完成第 7 章的泛化里程碑。
+
+## 先看這個CNN如何輸出格子
+
+width=8是首層channel數。輸入沿backbone依序變成：
+
+`[B,3,64,64] → [B,8,32,32] → [B,16,16,16] → [B,32,8,8] → adaptive pool [B,32,4,4] → 3×3 conv → 1×1 head [B,7,4,4] → permute [B,4,4,7]`。
+
+[完整GridDetector](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/miniyolo/models.py)使用三次stride2卷積，再把空間平均到4×4。head的wh bias人工設−1.8、obj bias設−2；sigmoid(−2)≈.1192解釋初始objectness約.12，而不是前節零logits的.5。這是稀疏物件的初始化選擇，不是預訓練能力。
 
 ## 一個固定 batch 的完整更新
 
@@ -31,7 +39,7 @@ for step in range(3):
 
 正負均值都下降不一定立刻代表錯誤：60 個背景格可能先被學會。但若持續下降且正格沒有區分，就必須檢視分項 loss 與解碼後框，而不能只說 total 變小。訓練分數不等於 precision；它們是網路對這個 batch 的輸出。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-training.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-training.py`。應看到 step 0、1、2 三行有限分項值，最後是 `3 real CPU optimizer steps; parameters changed; no generalization claim`。精確 loss 隨 PyTorch／核心實作可能有末位差異，透過條件是有限梯度、參數更新、正格數與 shape 正確，不要求三點曲線單調。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-training.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-training.py`。應看到 step 0、1、2 三行有限分項值，最後是 `3 real CPU optimizer steps; parameters changed; no generalization claim`。精確 loss 隨 PyTorch／核心實作可能有末位差異，透過條件是有限梯度、參數更新、正格數與 shape 正確，不要求三點曲線單調。
 
 ## 少量 overfit 與泛化是後續兩個關卡
 
@@ -66,4 +74,35 @@ python -m miniyolo.train --steps 160 --samples 32 --device cpu
 
 綠色虛線是真值，橙色實線是模型框；顏色本身是圖中的兩類物件。第一張左上框明顯向上偏，表示分數高也不等於位置完全正確。這四張圖只是圖板，mAP使用全部16張。已有框接近真值、mAP從接近零上升，支援「這條管線能在受控任務學動」；它仍不能回答模型是否認得照片裡的行人，也沒有證明某個現代機制比較好。
 
-原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/artifacts/checks/grid-learning.json)。這次只計訓練 loop，在 AMD EPYC 9V74、PyTorch 2.9.1 CPU、2 threads 上約 0.62 秒；不包含程式啟動、資料建立、圖或評估。不同機器需自行量測，不能用此時間預估真實資料訓練。
+原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)。本輪重跑只計訓練 loop，在 AMD EPYC 9V74 80-Core Processor、PyTorch 2.9.1+cpu、2 threads 上約 0.74 秒；不包含程式啟動、資料建立、圖或評估。不同機器需自行量測，不能用此時間預估真實資料訓練。
+
+想在本節Colab重跑已實測的160步，可完成環境格後另開cell：
+
+```python
+import subprocess, sys
+subprocess.run([sys.executable, '-m', 'miniyolo.train', '--steps', '160', '--samples', '32',
+                '--device', 'cpu', '--output', 'artifacts/runs/grid-learning',
+                '--report', 'artifacts/checks/grid-learning.json'], check=True)
+from IPython.display import display
+from PIL import Image
+display(Image.open('artifacts/runs/grid-learning/loss.png'))
+```
+
+同資料夾另存`checkpoint.pt`、`history.json`與validation PNG；完整指標在上述report。網站SVG是作者從保存結果另行產生的圖板，不會因讀者跑三步自動重畫。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-training.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    step 0 {'total': 0.9817, 'box': 0.009, 'objectness': 0.2525, 'classification': 0.6842} positive 0.1202 negative 0.1202
+    step 1 {'total': 0.9248, 'box': 0.0091, 'objectness': 0.2508, 'classification': 0.6283} positive 0.119 negative 0.1181
+    step 2 {'total': 0.8323, 'box': 0.0094, 'objectness': 0.2491, 'classification': 0.5362} positive 0.12 negative 0.1169
+    3 real CPU optimizer steps; parameters changed; no generalization claim
+    ```
+
+<!-- curriculum-evidence:end -->

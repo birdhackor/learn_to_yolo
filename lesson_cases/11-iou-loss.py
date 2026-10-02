@@ -3,6 +3,7 @@ import torch
 
 
 def losses(predicted, target):
+    assert torch.isfinite(target).all() and (target[2:] > target[:2]).all(), 'GT must have finite coordinates and positive width/height'
     pwh = (predicted[2:]-predicted[:2]).clamp(min=1e-6)
     twh = target[2:]-target[:2]
     inter_wh = (torch.minimum(predicted[2:],target[2:])-torch.maximum(predicted[:2],target[:2])).clamp(min=0)

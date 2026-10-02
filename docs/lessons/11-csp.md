@@ -1,6 +1,6 @@
 # CSP：分一部分通道走較短的路
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-csp.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-csp.ipynb){ .md-button }
 
 前置：[卷積shape](01-small-cnn.md)、[shortcut](03-identity.md)。問題是每個stage（在同一特徵解析度處理特徵的一組網路區段）都讓全部通道經過重複卷積，是否能把部分特徵留在較短路徑，最後再融合？本節不改預測head、資料或loss，單獨實作channel split。
 
@@ -38,8 +38,27 @@ concat是通道接在一起，不是shortcut的逐值相加。左路雖沒經過
 
 輸入輸出shape相同，但容量與中間計算不同。參數少不能直接推出精度相同，也不代表實際硬體延遲按比例下降；split／concat的記憶體操作亦有成本。這是容量成本比較，不是同參數量的公平精度實驗。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-csp.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-csp.py`。兩模型各做forward、平方均值loss、backward及一次SGD；檢查輸出`[2,8,8,8]`，輸入前後4通道梯度均有限且非零，印出兩者絕對值總和；參數梯度也全為有限值，參數為`[1240,368]`。隨機feature上的平方loss沒有偵測含義，不報告AP或「重複梯度下降多少」。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-csp.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-csp.py`。兩模型各做forward、平方均值loss、backward及一次SGD；檢查輸出`[2,8,8,8]`，輸入前後4通道梯度均有限且非零，印出兩者絕對值總和；參數梯度也全為有限值，參數為`[1240,368]`。隨機feature上的平方loss沒有偵測含義，不報告AP或「重複梯度下降多少」。
 
 收益是部分通道走較少卷積，在本例顯著減少卷積參數；代價是分流與融合配置、可能降低表達容量。若通道已很少、資料很難，過度切分未必合適。正式實驗應在同一detector位置替換block，固定資料／步數／評估，並同時報參數、時間及品質。
 
 常見錯誤：沿width而非channel切分；兩支空間大小不同仍concat；把concat說成相加；把區域性參數減少當成整版YOLO更快。自主練習：輸入C=10等分後每路5，fuse10→10，CSP參數是多少？答案：兩個5→5 3×3各230、fuse110，共570；空間shape仍不變。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-csp.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    concat (1, 4, 1, 1) [1.0, 2.0, 10.0, 20.0] add (1, 2, 1, 1) [11.0, 22.0]
+    full input gradient abs sums first4/last4 0.033093 0.029087
+    full output (2, 8, 8, 8) finite backward and step
+    CSP input gradient abs sums first4/last4 0.255476 0.019409
+    CSP output (2, 8, 8, 8) finite backward and step
+    parameters full/CSP [1240, 368] capacity differs; no accuracy comparison
+    ```
+
+<!-- curriculum-evidence:end -->

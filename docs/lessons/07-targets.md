@@ -1,6 +1,6 @@
 # Grid MiniYOLO：把框變成監督
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-targets.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-targets.ipynb){ .md-button }
 
 前置：[資料契約](07-data.md)。本節要回答「一張圖有兩個框，為什麼模型有 16 個輸出位置，誰應該學什麼」。模型尚未參與運算；我們先用人工答案確認 assignment（責任分配：哪個輸出位置負責哪個真實框）。這一步決定訓練監督，與推論 NMS（刪除重複預測框）、評估 matching（配對預測框與真實框）是三個不同程式。
 
@@ -34,7 +34,7 @@ red = target['box'][0, 1, 1]  # [0,.25,.25,.25]
 # pred[..., :4][pos] 只取負責物件的格子
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-targets.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-targets.py`。應列出正格 `[[0,1,1],[0,2,3]]`、兩個 target 與 `positive/negative counts 2 30`。再把第二個框改成 `[10,14,26,30]`：它的中心也在同一格，函式必須拋 ValueError，不能悄悄覆蓋第一個框。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-targets.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-targets.py`。應列出正格 `[[0,1,1],[0,2,3]]`、兩個 target 與 `positive/negative counts 2 30`。再把第二個框改成 `[10,14,26,30]`：它的中心也在同一格，函式必須拋 ValueError，不能悄悄覆蓋第一個框。
 
 ## 得到的能力與留下的限制
 
@@ -43,3 +43,30 @@ red = target['box'][0, 1, 1]  # [0,.25,.25,.25]
 常見錯誤：把 normalized wh 誤除以 16；以左上角而非中心落格；用 class id=0 判斷背景；把 `pred[:,gx,gy]` 寫反。逐項用紅框數字核對，遠比看 loss 是否變小可靠。
 
 自主練習：`[4,4,12,12]` 的 target 是什麼？答案：中心 `(8,8)` 在 `(0,0)`，格內 xy 為 `(.5,.5)`，wh 為 `(.125,.125)`，只有該格的 positive 變 True。若中心恰好是 `(64,64)`，它已在輸入外邊界，應先檢查標註合法性，不能用 clamp 掩飾錯誤。
+
+練習保留原main，在新cell另建立輸入，不替換主例：
+
+```python
+new_box = {'boxes': torch.tensor([[4.,4.,12.,12.]]), 'labels': torch.tensor([0])}
+new_target = build_targets([new_box],4,64,2)
+assert new_target['positive'].nonzero().tolist() == [[0,0,0]]
+assert torch.allclose(new_target['box'][0,0,0],torch.tensor([.5,.5,.125,.125]))
+```
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-targets.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    same-cell collision rejected
+    positive indices (b,y,x) [[0, 1, 1], [0, 2, 3]]
+    red target [0.0, 0.25, 0.25, 0.25]
+    blue target [0.0, 0.75, 0.25, 0.25]
+    positive/negative counts 2 30
+    ```
+
+<!-- curriculum-evidence:end -->

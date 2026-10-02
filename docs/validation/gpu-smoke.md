@@ -78,4 +78,4 @@ Volume 使用相同的專案工作路徑，沒有覆寫其他專案檔案。完�
 
 前面三個數字是含檢查與記錄的訓練計時，會包含第一次使用某些 kernels／optimizer 的初始化成本；不中斷、暖機後及新 container 的時間不可直接當成速度排名。Volume 欄位是被明確計時的首次資料 commit，後續保存 JSON 報告的 commit 包含在呼叫 wall time 中。client 整段包含 image build、CPU probe／校驗、啟動與傳輸，後續 Actions 的停止確認與 artifact 上傳不在這個 client 計時內。
 
-實際收到 AdaptiveAvgPool2d CUDA backward 缺少 deterministic implementation 的警告，已保存於 JSON。本次仍量得對照差異為 0，不能因此保證其他硬體／版本逐位一致。尚未做長訓練、真實照片品質、正式 throughput、混合精度或多 GPU 的 checkpoint 對照；TensorRT 也仍未驗證。這次已有設定全部足夠，不需要補 token 或改帳號費用上限。
+實際收到 AdaptiveAvgPool2d CUDA backward 缺少 deterministic implementation 的警告，已保存於 JSON。本次仍量得對照差異為 0，不能因此保證其他硬體／版本逐位一致。尚未做長訓練、真實照片品質、正式 throughput、混合精度或多 GPU 的 checkpoint 對照。本次checkpoint測試沒有執行TensorRT；後續獨立L4部署實測已完成，見[部署章的紀錄](../lessons/20-deployment.md)。這次已有設定全部足夠，不需要補 token 或改帳號費用上限。

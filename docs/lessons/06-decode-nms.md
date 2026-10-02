@@ -2,7 +2,9 @@
 
 Head輸出的七個數字不是可以直接畫的xyxy框。先把格內偏移與尺寸換成圖上座標，再算score、篩選、去除重複，必要時還原到原圖。本節不用模型猜答案，而是人工指定logits，讓每一步都有已知結果。前置是xyxy與IoU；本頁也簡述grid輸出的各軸。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/06-decode-nms.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-decode-nms.py`。CPU純推論幾何，不需反傳或訓練；所有框與分數是人工設計。NMS概念可對照 [Torchvision NMS檔案](https://pytorch.org/vision/stable/generated/torchvision.ops.nms.html)，案例自行實作，不需要安裝torchvision。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/06-decode-nms.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-decode-nms.py`。CPU純推論幾何，不需反傳或訓練；所有框與分數是人工設計。NMS概念可對照 [Torchvision NMS檔案](https://pytorch.org/vision/stable/generated/torchvision.ops.nms.html)，案例自行實作，不需要安裝torchvision。
+
+框的letterbox（等比例縮放再補邊）、metadata（還原所需紀錄）可回看[座標轉換](04-coordinates.md)。
 
 ## 解碼：數字的參考範圍不可混用
 
@@ -66,3 +68,24 @@ assert torch.allclose(scores70, torch.tensor([.72, .855]), atol=1e-6)
 ```
 
 第一個實驗仍使用原始logits在score門檻0.25產生的三候選；IoU0.5385沒有超過NMS門檻0.6，重複框留下，keep06索引指向原三框，順序[2,1,0]。第二個實驗從同一組原始logits重新decode，score門檻0.70留下0.72和0.855；boxes70等是新的兩候選陣列，不能套用原三框的索引。兩個實驗不累積設定。哪個比較好要看真值配對與需求，不由畫面上的框數單獨決定。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-decode-nms.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    candidate_boxes=[[23.200000762939453, 24.0, 39.20000076293945, 32.0], [28.0, 24.0, 44.0, 32.0], [3.999999523162842, 52.0, 12.0, 60.0]]
+    scores=[0.64, 0.72, 0.855], duplicate_IoU=0.5385
+    NMS keep_indices=[2, 1], kept_scores=[0.855, 0.72]
+    threshold .75 keeps only artificial false positive, score=0.855
+    exercise NMS .6 keeps original candidate indices=[2, 1, 0]
+    exercise score .70 keeps scores=[0.72, 0.855]
+    identical boxes of different classes both survive class-wise NMS; empty input passed
+    All logits are hand-constructed, not a trained detector.
+    ```
+
+<!-- curriculum-evidence:end -->

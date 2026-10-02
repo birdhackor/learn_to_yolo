@@ -1,0 +1,14 @@
+{
+  "id": "07-training",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T17:27:01.568433+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "fe1037df4ece00bef8810d5d3a31184c1a862b926306688759bcb5cb748afc99",
+  "process_wall_seconds": 1.8978,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "step 0 {'total': 0.9817, 'box': 0.009, 'objectness': 0.2525, 'classification': 0.6842} positive 0.1202 negative 0.1202\nstep 1 {'total': 0.9248, 'box': 0.0091, 'objectness': 0.2508, 'classification': 0.6283} positive 0.119 negative 0.1181\nstep 2 {'total': 0.8323, 'box': 0.0094, 'objectness': 0.2491, 'classification': 0.5362} positive 0.12 negative 0.1169\n3 real CPU optimizer steps; parameters changed; no generalization claim\n",
+  "stderr": "",
+  "exit_code": 0
+}

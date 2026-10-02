@@ -1,0 +1,14 @@
+{
+  "id": "15-area-attention",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T17:08:10.288497+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "d50234ad372f98f5bbdb784e7bb38afae26055ff8eedf762872f317a8edee71a",
+  "process_wall_seconds": 1.9057,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "full affinity shape/count: (1, 16, 16) 256\narea affinity shape/count: (4, 4, 4) 64\nfirst-token output full=0.4688, area=0.0938\nchanging token 15 affects token 0: full=True, area=False; same area=False\nafter intervention: full=0.7812, area=0.0938\narea-attention backward/step verified; loss=0.0048\n",
+  "stderr": "",
+  "exit_code": 0
+}

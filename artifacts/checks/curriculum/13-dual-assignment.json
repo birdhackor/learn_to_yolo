@@ -1,0 +1,14 @@
+{
+  "id": "13-dual-assignment",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T17:20:02.411994+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "b535b08c8ff2e9ed3ad6678f4089f7ebc6e21f977ce9a331a8602d79f9ebe96f",
+  "process_wall_seconds": 1.8353,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "one-to-many owner: [0, 0, 1]\nglobal one-to-one owner: [1, 0, -1]\nglobal quality=1.73; greedy quality=1.10\ndetached one-to-one branch trains its head; only many branch trains backbone\nloss many=0.6855, one=0.7065\n",
+  "stderr": "",
+  "exit_code": 0
+}

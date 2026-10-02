@@ -21,6 +21,7 @@ nav = [
     { "術語快速查" = "glossary.md" },
     { "驗證範圍與後續實驗" = "status.md" },
     { "GPU／checkpoint 實測" = "validation/gpu-smoke.md" },
+    { "全套實驗與審查" = "validation/curriculum.md" },
   ] },
   { "A. 先讓 CNN 學得動" = [
     { "一次學習的超短暖身" = "lessons/00-warmup.md" },
@@ -39,7 +40,7 @@ nav = [
     { "Grid MiniYOLO 資料" = "lessons/07-data.md" },
     { "Grid MiniYOLO targets" = "lessons/07-targets.md" },
     { "Grid MiniYOLO loss" = "lessons/07-loss.md" },
-    { "少量 overfit 與偵測診斷" = "lessons/07-training.md" },
+    { "三步訓練與診斷" = "lessons/07-training.md" },
     { "完整圖片推論" = "lessons/07-inference.md" },
     { "獨立資料評估" = "lessons/07-heldout.md" },
     { "自己的圖片推論" = "lessons/08-own-images.md" },

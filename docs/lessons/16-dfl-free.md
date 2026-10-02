@@ -1,10 +1,12 @@
 # 16.1 YOLO26 DFL-free：移除 bins，仍要把框學好
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-dfl-free.ipynb) · 原始碼：`lesson_cases/16-dfl-free.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/16-dfl-free.ipynb) · 原始碼：`lesson_cases/16-dfl-free.py`
 
-前置是四邊距離和DFL的期待值。DFL每條邊輸出K個logits，再softmax、加權成距離；這條路能提供分佈監督，也增加head輸出與匯出操作。若部署需求重視簡潔，可以直接預測四個距離嗎？本節比較表示與範圍，避免把「移除DFL」誤認成「沒有定位loss」。
+前置是[四邊距離](12-anchor-free.md)和[DFL期待值](12-dfl.md)。ltrb是點到左／上／右／下邊界的距離，本例一格8pixel；xyxy是左上x,y與右下x,y。DFL每條邊輸出K個logits，再softmax、加權成距離；這條路能提供分佈監督，也增加head輸出與匯出操作。若部署需求重視簡潔，可以直接預測四個距離嗎？本節比較表示與範圍，避免把「移除DFL」誤認成「沒有定位loss」。
 
 歷史機制已核對YOLO26官方配置的`reg_max:1`，以及Detect在`reg_max>1`時才建立DFL，否則使用identity。本次由第12章的距離分佈回歸，改為四個直接回歸數值；小實驗使用Smooth L1教學目標，而非完整官方IoU與正規化L1組合。實驗後可將直接回歸保留為部署候選，但尚未證明與DFL精度相同。
+
+![候選點與四條距離的解碼](../assets/diagrams/16-distance-decode.svg)
 
 ## 這裡的1不是隻剩一種距離
 
@@ -53,3 +55,31 @@ optimizer.step()
 自主練習先做紙筆範圍判斷：若右邊改成8格、K仍16，兩種表示都可涵蓋它，不能再以「DFL放不下」支持直接回歸。若修改程式target，必須同步修改固定初始loss、最大距離超界與解碼答案assert，不沿用18格的檢查。再用已加進案例的帶符號例子`[-1,2,3,4]`，同一點`(80,80)`、stride8解碼成`[88,64,104,112]`。候選點在框左側，卻仍能成合法框；程式同時確認x1<x2、y1<y2。這不等於所有任意負距離都合法，需逐框檢查幾何。
 
 來源查覈：2026-10-02。[YOLO26官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[Detect的DFL/identity分支](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[DFL-free BboxLoss](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)。
+
+distance低於target時增加它會降低loss，因此梯度為負；四邊mean使每項係數除4，SGD再以舊值−lr×梯度更新。right改8的練習同步四處：target[0,2]改8；initial_terms預期第3項改7.5；原範圍assert改`target.max()<=k-1`（code使用小寫k）；decoded預期x2改144。mean會自動變3.1875，不用改計算式。新的target在DFL範圍內，但原題18格不可。
+
+<!-- curriculum-evidence:start -->
+
+## 本輪實際執行紀錄
+
+本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-dfl-free.json)
+
+??? example "展開本次實際輸出"
+
+    ```text
+    first Smooth L1 gradient: [[-0.25, -0.25, -0.25, -0.25]]
+    first SGD distance: [[0.125, 0.125, 0.125, 0.125]]
+    direct learned distances: [[1.25, 2.5, 18.0, 3.0]]
+    Smooth L1 5.687500 -> 0.000000
+    decoded direct box pixels: [[70.0, 60.0, 224.0, 104.0]]
+    signed-distance example box pixels: [[88.0, 64.0, 104.0, 112.0]]
+    untrained DFL probability per bin: [0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625]
+    untrained DFL expected distances: [[7.5, 7.5, 7.5, 7.5]]
+    DFL target for 1.25: bins 1/2 weights .75/.25; direct target is the value 1.25
+    finite-bin expectation range: [0, 15] ; direct target reaches 18.0
+    raw head values DFL / direct: 6600 600
+    float32 raw head bytes: 26400 2400
+    DFL-free still requires box supervision; this experiment uses Smooth L1
+    ```
+
+<!-- curriculum-evidence:end -->

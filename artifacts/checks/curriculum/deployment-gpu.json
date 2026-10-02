@@ -1,0 +1,134 @@
+{
+  "status": "passed",
+  "code_commit": "e64ea79207ed3485208a91c824da3840962aff56",
+  "run_key": "github-37035865497-1-e64ea79207ed",
+  "modal_environment": "main",
+  "limits": {
+    "gpu": "L4:1",
+    "gpu_timeout_seconds": 600,
+    "max_containers": 1,
+    "retries": 0,
+    "billing_limits_changed": false
+  },
+  "modal_app_id": "ap-cmJqI2YJQU65SWaiCaPAx7",
+  "gpu": {
+    "passed": true,
+    "code_commit": "e64ea79207ed3485208a91c824da3840962aff56",
+    "gpu": "NVIDIA L4",
+    "torch": "2.9.1+cu128",
+    "torch_cuda": "12.8",
+    "tensorrt": "10.13.3.9",
+    "onnxruntime": "1.23.2",
+    "parameters": 15511,
+    "optimizer_steps": 40,
+    "initial_loss": 0.9847670793533325,
+    "final_loss": 0.07104769349098206,
+    "engines": [
+      {
+        "precision_flag": "fp32",
+        "tf32_enabled": false,
+        "batches": [
+          {
+            "batch": 1,
+            "max_abs_raw_error": 1.9073486328125e-06,
+            "max_abs_box_pixel_error": 0.0,
+            "max_abs_score_error": 0.0,
+            "decoded_candidates": 2,
+            "decoded_labels_and_order_match": true
+          },
+          {
+            "batch": 2,
+            "max_abs_raw_error": 2.86102294921875e-06,
+            "max_abs_box_pixel_error": 7.62939453125e-06,
+            "max_abs_score_error": 0.0,
+            "decoded_candidates": 4,
+            "decoded_labels_and_order_match": true
+          },
+          {
+            "batch": 3,
+            "max_abs_raw_error": 2.86102294921875e-06,
+            "max_abs_box_pixel_error": 1.1444091796875e-05,
+            "max_abs_score_error": 1.4901161193847656e-08,
+            "decoded_candidates": 6,
+            "decoded_labels_and_order_match": true
+          },
+          {
+            "batch": 4,
+            "max_abs_raw_error": 4.76837158203125e-06,
+            "max_abs_box_pixel_error": 1.1444091796875e-05,
+            "max_abs_score_error": 1.4901161193847656e-08,
+            "decoded_candidates": 7,
+            "decoded_labels_and_order_match": true
+          }
+        ],
+        "raw_batch1_median_ms": 0.16021750000128065,
+        "timing_scope": "3 warmup, 20 measurements; shape/address setup, output allocation, enqueue and stream/device synchronization; excludes preprocessing, decode, copies, engine build and container startup",
+        "engine_sha256": "fc674923aa1f406954d35ebb2207f7402cef10c55f7b8337d7649a8a75ba56cb"
+      },
+      {
+        "precision_flag": "fp16",
+        "tf32_enabled": false,
+        "batches": [
+          {
+            "batch": 1,
+            "max_abs_raw_error": 1.9073486328125e-06,
+            "max_abs_box_pixel_error": 9.5367431640625e-07,
+            "max_abs_score_error": 0.0,
+            "decoded_candidates": 2,
+            "decoded_labels_and_order_match": true
+          },
+          {
+            "batch": 2,
+            "max_abs_raw_error": 4.76837158203125e-06,
+            "max_abs_box_pixel_error": 7.62939453125e-06,
+            "max_abs_score_error": 0.0,
+            "decoded_candidates": 4,
+            "decoded_labels_and_order_match": true
+          },
+          {
+            "batch": 3,
+            "max_abs_raw_error": 4.76837158203125e-06,
+            "max_abs_box_pixel_error": 7.62939453125e-06,
+            "max_abs_score_error": 1.4901161193847656e-08,
+            "decoded_candidates": 6,
+            "decoded_labels_and_order_match": true
+          },
+          {
+            "batch": 4,
+            "max_abs_raw_error": 4.76837158203125e-06,
+            "max_abs_box_pixel_error": 7.62939453125e-06,
+            "max_abs_score_error": 1.4901161193847656e-08,
+            "decoded_candidates": 7,
+            "decoded_labels_and_order_match": true
+          }
+        ],
+        "raw_batch1_median_ms": 0.1616084999973566,
+        "timing_scope": "3 warmup, 20 measurements; shape/address setup, output allocation, enqueue and stream/device synchronization; excludes preprocessing, decode, copies, engine build and container startup",
+        "engine_sha256": "e25347e30d410ef3a6c7302037083dcb835c137cb78d9712619a2eb21419ed4a"
+      }
+    ],
+    "onnx_sha256": "229c63239757854d6ba0e8acd35342df174e869374b92f729d177e213d2f7fe0",
+    "limits": "L4 single device, fixed synthetic training/evaluation images, not held-out quality or full YOLO performance; FP16 flag permits mixed precision, not a guarantee every layer uses FP16; INT8 untested",
+    "volume_committed": true,
+    "container_task_id": "ta-01M3YR5QQKJ41W0B9RS5ESBHDR"
+  },
+  "storage": {
+    "files": {
+      "grid-fp16.engine": "e25347e30d410ef3a6c7302037083dcb835c137cb78d9712619a2eb21419ed4a",
+      "grid-fp32.engine": "fc674923aa1f406954d35ebb2207f7402cef10c55f7b8337d7649a8a75ba56cb",
+      "grid.onnx": "229c63239757854d6ba0e8acd35342df174e869374b92f729d177e213d2f7fe0",
+      "report.json": "4bd187ab948c2f8bfd2ffc67a10d726eb13239d98f60f8b40afdc59fc8aed98f"
+    },
+    "container_task_id": "ta-01M3YR6Y0XDS0P1YC2ASDV81WR",
+    "sha256_verified": true
+  },
+  "gpu_calls_finished": true,
+  "client_wall_seconds_including_build_startup_transfer": 223.40593737799998,
+  "modal_stop_confirmation": {
+    "verified": true,
+    "app_id": "ap-cmJqI2YJQU65SWaiCaPAx7",
+    "state": "stopped",
+    "running_tasks": 0,
+    "stopped_at": "2026-10-02 16:47:31+00:00"
+  }
+}

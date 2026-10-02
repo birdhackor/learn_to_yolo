@@ -1,0 +1,14 @@
+{
+  "id": "11-fusion",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:51.853032+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "1da3ebf9cc6f604affd281dc5e0e91d12955fbd389f3f39e0c7998e655dc5977",
+  "process_wall_seconds": 1.8689,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "nearest example [[1.0, 1.0, 2.0, 2.0], [1.0, 1.0, 2.0, 2.0], [3.0, 3.0, 4.0, 4.0], [3.0, 3.0, 4.0, 4.0]] source gradient [[4.0, 4.0], [4.0, 4.0]]\n8ch shallow + 8ch upsampled deep -> 16ch concat -> 8ch mixed\nparameters 1296 both branches backward and one step\n",
+  "stderr": "",
+  "exit_code": 0
+}

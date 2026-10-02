@@ -1,0 +1,14 @@
+{
+  "id": "07-data",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:40:31.705020+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "3e82d40e0dafb7c07813e8521472bc6dc220eefae4ebd576353fa3daa3a24215",
+  "process_wall_seconds": 1.3551,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "batch (2, 3, 64, 64) counts [2, 0]\nred/blue channel sums 256.0 256.0\ndataset contract checked: 8 images\n",
+  "stderr": "",
+  "exit_code": 0
+}

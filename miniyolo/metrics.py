@@ -39,7 +39,7 @@ def evaluate_ap(predictions, targets, num_classes=2, iou_threshold=.5):
     """AP 只平均有 GT 的類別；precision/recall 是所有輸入候選的 micro 指標。
 
     每個候選與同圖同類尚未使用的 GT 中最大 IoU 者配對，IoU>=門檻為 TP。
-    無 GT 類別的 AP 是 None；全部無 GT 時 map=0、recall=0。
+    無 GT 類別的 AP 是 None；全部無 GT 時 map=None、recall=0。
     此為單一 IoU 門檻 AP，並非 COCO AP@[.50:.95]。
     """
     if len(predictions) != len(targets):
@@ -75,6 +75,6 @@ def evaluate_ap(predictions, targets, num_classes=2, iou_threshold=.5):
         all_gt += n_gt
         ap_per_class[class_id] = _interpolated_ap(matches, n_gt) if n_gt else None
     valid_ap = [ap for ap in ap_per_class.values() if ap is not None]
-    return {"ap_per_class": ap_per_class, "map": sum(valid_ap) / len(valid_ap) if valid_ap else 0.0,
+    return {"ap_per_class": ap_per_class, "map": sum(valid_ap) / len(valid_ap) if valid_ap else None,
             "precision": all_tp / all_predictions if all_predictions else 0.0,
             "recall": all_tp / all_gt if all_gt else 0.0}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 235" role="img" aria-labelledby="title desc">
+<title id="title">四邊距離的pixel解碼</title><desc id="desc">候選點80,80，左上右下距離1.25、2.5、18、3格，stride8，解碼為70,60,224,104。圖是座標示意，沒有對應輸入照片。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
+<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
+<rect width="800" height="235" fill="white"/><text x="25" y="28" font-weight="bold">同一候選點，解碼四邊距離</text>
+<rect x="42" y="84" width="308" height="88" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<circle cx="62" cy="124" r="5" fill="#be123c"/>
+<path d="M62 124H350M62 124H42M62 124V84M62 124V172" stroke="#475569" stroke-dasharray="4 3"/>
+<text x="164" y="115">r=18格=144px</text><text x="20" y="65">l=1.25格=10px</text>
+<text x="77" y="98">t=2.5格=20px</text><text x="77" y="165">b=3格=24px</text>
+<text x="25" y="206">紅點：(80,80)；藍框：[70,60,224,104]</text>
+<text x="460" y="87">一格＝stride 8 pixel</text><text x="460" y="130">x1=80−10；x2=80+144</text><text x="460" y="173">y1=80−20；y2=80+24</text></svg>

@@ -25,7 +25,7 @@
 - [Grid MiniYOLO 資料](lessons/07-data.md)
 - [Grid MiniYOLO targets](lessons/07-targets.md)
 - [Grid MiniYOLO loss](lessons/07-loss.md)
-- [少量 overfit 與偵測診斷](lessons/07-training.md)
+- [三步訓練與診斷](lessons/07-training.md)，再跑同頁的160步學習實驗
 - [完整圖片推論](lessons/07-inference.md)
 - [獨立資料評估](lessons/07-heldout.md)
 - [自己的圖片推論](lessons/08-own-images.md)

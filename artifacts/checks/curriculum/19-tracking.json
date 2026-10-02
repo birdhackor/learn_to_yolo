@@ -1,0 +1,14 @@
+{
+  "id": "19-tracking",
+  "passed": true,
+  "executed_at_utc": "2026-10-02T16:41:24.642124+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "case_sha256": "adf6924a818b9d10e912a08d7aa1437abc27a2ec285a2d094b5834a5f1050895",
+  "process_wall_seconds": 1.1865,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "max_age: 2\nper-frame IDs in detection order A,B (frame4 has only A):\nlast-box IoU: [[1, 2], [1, 2], [2, 1], [2, 1], [2], [2, 3]] ; switches: 3\nvelocity IoU: [[1, 2], [1, 2], [1, 2], [1, 2], [1], [1, 2]] ; switches: 0\ndetector recall=11/12 for both; no false positives in this artificial sequence\nexact small matching passes non-greedy counterexample and empty detections\nactual ID panel: docs/assets/diagrams/19-tracking.svg\n",
+  "stderr": "",
+  "exit_code": 0
+}
