@@ -1,0 +1,13 @@
+{
+  "tag": "lessons-v0.1.0",
+  "commit": "baed4ff05a2bdaf850c01e23adbdf6f544df4aaf",
+  "raw_notebook_http_status": 200,
+  "clone": "fresh public HTTPS, depth 1, LFS skip",
+  "bootstrap_cell": "executed successfully",
+  "experiments": [
+    "00-warmup",
+    "20-deployment"
+  ],
+  "device": "CPU",
+  "scope": "Exact public notebook bootstrap and experiment code in a fresh cloud clone, using already installed pinned packages. Google Colab sign-in/runtime and full GPU training were not tested."
+}

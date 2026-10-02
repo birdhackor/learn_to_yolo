@@ -1,0 +1,78 @@
+{
+  "scope": "Chromium rendering of actual public HTTPS responses fetched with verified Python/system CA trust. Direct Chromium HTTPS reported ERR_CERT_AUTHORITY_INVALID for the cloud proxy CA; certificate verification was not disabled.",
+  "formula_containers": 44,
+  "formula_errors": 0,
+  "javascript_errors": [],
+  "requests": [
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/00-warmup/",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/stylesheets/main.ec1eaa64.min.css",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/bundle.d7400e89.min.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/mathjax.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/vendor/mathjax/es5/tex-mml-chtml.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/workers/search.2c215733.min.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/search/search_index.json",
+      "status": 200
+    },
+    {
+      "url": "https://api.github.com/repos/birdhackor/learn_to_yolo/releases/latest",
+      "status": 404
+    },
+    {
+      "url": "https://api.github.com/repos/birdhackor/learn_to_yolo",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/lunr/min/lunr.stemmer.support.min.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/vendor/mathjax/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/lunr/tinyseg.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/vendor/mathjax/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/vendor/mathjax/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/lunr/min/lunr.ja.min.js",
+      "status": 200
+    },
+    {
+      "url": "https://birdhackor.github.io/learn_to_yolo/assets/javascripts/lunr/min/lunr.multi.min.js",
+      "status": 200
+    }
+  ],
+  "nonessential_api_responses": [
+    {
+      "url": "https://api.github.com/repos/birdhackor/learn_to_yolo/releases/latest",
+      "status": 404
+    }
+  ]
+}
