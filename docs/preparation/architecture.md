@@ -2,10 +2,11 @@
 
 ## 發布架構
 
-採用 MkDocs Material：Markdown 與小型圖片建成純靜態 GitHub Pages。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
+採用 **Zensical** 的 modern 主題：Markdown 與小型圖片建成純靜態 GitHub Pages。`zensical.toml` 管理中文導覽、內建搜尋、深淺色模式與快速換頁；`requirements-docs.txt` 固定建置版本。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
 
 ```text
 docs/                       網頁文字、圖與已保存的閱讀結果
+zensical.toml               網站設定、主題與小節導覽
 docs/planning/              大綱與研究，目前已有
 docs/preparation/           前置規劃，目前已有
 notebooks/                  可獨立開啟的 Colab notebook
@@ -25,7 +26,7 @@ section-map.json            小節 ID、閱讀頁、notebook 與資料版本配�
 3. 保存固定實驗的設定、成功／失敗圖與觀察，說明結果能支持什麼。網頁能直接閱讀這些成果。
 4. 同一節附「在 Colab 執行」按鈕，以及先下載哪些資料、使用哪個模型分支、預期資源。
 5. notebook 可由全新 runtime 從頭執行；先固定程式版本，再按需下載本節資料，不依賴上一節的隱藏狀態或自己的 Google Drive 路徑。
-6. 正式發布時，網頁與 notebook 指向相同的 release tag／commit。原始資料固定 checksum 與 split；不讓讀者看到新版說明卻執行另一版程式。
+6. 正式教材的說明與 notebook 實驗對應同一個固定 release tag／commit。網站主題與建置工具可以獨立更新，不覆寫教材 tag；修改實驗或教學結果時才配對新版本。原始資料固定 checksum 與 split；不讓讀者看到新版說明卻執行另一版程式。
 
 Colab URL 格式：
 
@@ -54,4 +55,5 @@ clone repository 時可用 `GIT_LFS_SKIP_SMUDGE=1`，避免同時抓完所有版
 - [GitHub Pages 自訂 workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 - [Colab 官方 GitHub notebook 範例](https://colab.research.google.com/github/googlecolab/colabtools/blob/main/notebooks/colab-github-demo.ipynb)
 - [Colab FAQ](https://research.google.com/colaboratory/faq.html)
-- [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
+- [Zensical](https://zensical.org/docs/get-started/)
+- [Zensical 導覽設定](https://zensical.org/docs/setup/navigation/)

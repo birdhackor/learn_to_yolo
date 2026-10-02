@@ -1,0 +1,17 @@
+{
+  "python": "3.12.14",
+  "zensical": "0.0.67",
+  "legacy_mkdocs_packages": "absent",
+  "setup_script": "scripts/setup_cpu_environment.sh",
+  "setup_exit_code": 0,
+  "core_tests": {
+    "passed": 22,
+    "failed": 0
+  },
+  "clean_zensical_only_environment": {
+    "installed_from": "requirements-docs.txt",
+    "build_clean_strict": "passed",
+    "no_mkdocs_material_or_torch": true
+  },
+  "scope": "Verified current-instance install/build/preview workflow. Updated install/start instructions saved as a draft; no claim of environment publication or fresh-task restoration."
+}

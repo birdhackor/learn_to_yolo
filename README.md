@@ -44,13 +44,16 @@ Loader 會核對 bytes、SHA-256 與 IDX 格式；28×28 灰階圖複製到三�
 
 ## 網站預覽與出版
 
+網站使用 **Zensical 0.0.67** 的 modern 主題，原生設定放在 `zensical.toml`。中文導覽、全文搜尋、深淺色模式與快速換頁由 Zensical 提供；公式與 SVG 隨網站發布。
+
 ```bash
 python3 -m venv .venv-docs
 .venv-docs/bin/python -m pip install -r requirements-docs.txt
 python3 scripts/validate_preparation.py
 python3 scripts/validate_lessons.py
-.venv-docs/bin/mkdocs build --strict
-.venv-docs/bin/mkdocs serve
+.venv-docs/bin/zensical build --clean --strict
+python3 scripts/validate_site.py
+.venv-docs/bin/zensical serve
 ```
 
 網站建置只需要文件依賴，不需要 PyTorch、資料或 GPU。後續新版教材以 `python3 scripts/build_lesson_notebooks.py --ref <新release-tag>` 配對，執行 CPU 檢查後再發布新 tag 與 Pages；不要覆寫已發布 tag。GitHub Pages／Colab／LFS 維護步驟見 [發布操作](docs/preparation/publish.md)。

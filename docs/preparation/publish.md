@@ -1,10 +1,10 @@
 # GitHub Pages、Colab 與 Git LFS：操作步驟
 
-本專案目前只有前置規劃、資料與基礎配置，沒有正式教材。遠端查核時 `birdhackor/learn_to_yolo` 為 public、預設分支 main，Pages 已設為 GitHub Actions 模式；實測狀態見 `data/remote-lfs-verification.json` 與 GitHub Actions。
+本專案已有 42 節正式教材與配對的 Colab notebook，網站使用 Zensical。`birdhackor/learn_to_yolo` 為 public、預設分支 main，Pages 已設為 GitHub Actions 模式；教材的公開驗證見 `artifacts/checks/pages-publication.json`，LFS 驗證見 `data/remote-lfs-verification.json`。
 
-## 1. 先確認準備內容與授權選擇
+## 1. 本地預覽與授權選擇
 
-本次新增：MkDocs 網站、手動 Pages workflow、環境檢查 notebook、資料 manifest／下載器、LFS 路徑規則，以及大綱／研究。網站目前只包含前置規劃。
+網站的原生設定是 `zensical.toml`，文件依賴固定於 `requirements-docs.txt`。Pages workflow 手動觸發；建置時先檢查教材與 notebook 配對，再產生純靜態網站。
 
 你可先本地預覽：
 
@@ -13,14 +13,15 @@ python -m venv .venv-docs
 source .venv-docs/bin/activate
 python -m pip install -r requirements-docs.txt
 python scripts/validate_preparation.py
-mkdocs serve
+python scripts/validate_lessons.py
+zensical serve
 ```
 
-Windows 使用 `.venv-docs\Scripts\activate`。瀏覽終端機顯示的本地網址。只建置則執行 `mkdocs build --strict`。
+Windows 使用 `.venv-docs\Scripts\activate`。瀏覽終端機顯示的本地網址。只建置則執行 `zensical build --clean --strict`：清除建置快取，並在出現警告時中止。預覽服務不需 GPU 或資料集。
 
 專案還沒有 LICENSE。公開釋出時請選自己的程式／教材條款，例如程式 MIT、原創教材 CC BY 4.0；這是待 owner 決定的選項，本輪未替你宣告。第三方資料仍遵照各自來源授權。
 
-## 2. 把準備檔推到 GitHub
+## 2. 把修訂推到 GitHub
 
 ### 先確認推送認證
 
@@ -41,19 +42,20 @@ python scripts/github_auth.py git push origin HEAD:main
 
 若原始碼推送被拒，才檢查 PAT 的 repository access 是否包含 `learn_to_yolo`、Contents 是否為 Read and write；新增 workflow 也需要 Workflows: Read and write。透過 API 手動觸發 workflow 需要 Actions: Read and write；在 GitHub 網頁按 Run workflow 可用你的登入權限。
 
-### 推送準備檔
+### 推送修訂
 
 確認 diff、忽略下載快取後，以你現有的 GitHub 登入方式 commit／push。以下不會強制覆寫遠端；工作區分支即使不是 main，也將目前提交推到遠端 main：
 
 ```bash
 git status --short
 git diff --check
-git add README.md .gitignore .gitattributes .github mkdocs.yml requirements-docs.txt section-map.json docs notebooks scripts data/manifest.json data/local-lfs-verification.json data/remote-lfs-verification.json data/licenses
-git commit -m "Prepare dataset sources, Pages site and Colab entry"
+git add -A
+git diff --cached --check
+git commit -m "Update Learn to YOLO site"
 python scripts/github_auth.py git push origin HEAD:main
 ```
 
-`data/downloads/` 與 `data/processed/` 被忽略，不會因上面的指令進 Git。若遠端 main 已有新提交，先按正常 Git 流程同步／解決，不用 force push。
+`data/downloads/`、`data/processed/`、`site/` 與建置快取被忽略。提交前檢查已暫存的檔案，不納入無關修改。若遠端 main 已有新提交，先按正常 Git 流程同步／解決，不用 force push。
 
 ## 3. 啟用 GitHub Pages
 
@@ -61,12 +63,12 @@ python scripts/github_auth.py git push origin HEAD:main
 2. **Settings → Pages → Build and deployment → Source**，選 **GitHub Actions**。
 3. 如 Actions 被停用，在 **Settings → Actions → General** 允許本 workflow 使用的官方 actions。workflow 已自行宣告所需權限，不需為它新增 PAT 或將全部 workflow 設成 write。
 4. **Settings → Environments → github-pages**：如已有部署分支規則，確保 main 可部署；可將部署來源限制為 main。
-5. **Actions → Publish preparation site → Run workflow**，選 main 後執行。
+5. **Actions → Publish Learn to YOLO → Run workflow**，選 main 後執行。
 6. 等 build 與 deploy 都成功，從 deployment URL 或 Settings → Pages 開站。
 
 預期網址：**https://birdhackor.github.io/learn_to_yolo/**。
 
-Pages 與資料發布 workflow 目前都接受手動觸發，推送本身不發布。它只上傳 `site/`，不下載訓練資料或 LFS。採 Actions artifact 流程，不用建立 gh-pages 分支或執行 `mkdocs gh-deploy`。
+Pages 與資料發布 workflow 目前都接受手動觸發，推送本身不發布。網站執行 `zensical build --clean --strict`，只上傳 `site/`，不下載訓練資料或 LFS。採 Actions artifact 流程，不用建立 gh-pages 分支。
 
 Pages 經由 public repo 可用免費方案。此網站公開，不需要自訂網域；若以後改 private repo，另核對方案與網站 visibility。你看到的雲端環境「儲存並發布」不是 GitHub Pages 的發布流程。
 
@@ -79,7 +81,7 @@ Pages 經由 public repo 可用免費方案。此網站公開，不需要自訂�
 4. 執行全部 cells，查看 Python／PyTorch／CUDA；免費 GPU 可能未分配，這項檢查不訓練模型。
 5. 要保存自己的修改，選 **File → Save a copy in Drive**。runtime 中的資料檔與權重需另行保存，notebook 副本不包含它們。
 
-本地已檢查 notebook 格式與診斷程式；Google 登入、實際 Colab GPU、Pages 公開網址需要上述發布後操作才能驗證。
+notebook 格式、實驗程式的 CPU 執行與公開原始檔已檢查；Google 登入與實際 Colab GPU 尚未驗證。每節網頁另有固定 `lessons-v0.1.0` 的 Colab 入口，讀者可保存自己的副本。
 
 ## 5. Git LFS：已準備與你需要設定的部分
 
@@ -141,8 +143,10 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站可提供取得方�
 目前教材與42份Colab固定為 `lessons-v0.1.0`。修訂教材時使用新的tag，不覆寫原tag：
 
 1. 完成各節網頁、CPU案例及陌生讀者審查，再用 `python scripts/build_lesson_notebooks.py --ref lessons-v0.2.0` 配對新版本。
-2. 執行 `python scripts/validate_preparation.py`、`python scripts/validate_lessons.py`、`.venv-model/bin/python scripts/check_lesson_runtime.py`、`.venv-model/bin/python -m pytest tests/test_core.py`，最後以 `.venv-docs/bin/mkdocs build --strict` 建站。
+2. 執行 `python scripts/validate_preparation.py`、`python scripts/validate_lessons.py`、`.venv-model/bin/python scripts/check_lesson_runtime.py`、`.venv-model/bin/python -m pytest tests/test_core.py`，最後以 `.venv-docs/bin/zensical build --clean --strict` 建站。
 3. 提交所有教材與證據，再建立 `git tag lessons-v0.2.0`。使用前文的認證helper推送 `main` 與此tag；Colab所用的tag必須先能在GitHub讀到。
 4. 到 Actions → **Publish Learn to YOLO** → Run workflow，選 `main`。等 build與deploy都成功，再打開網站、抽查新tag的notebook。
 
 網站建置不會下載LFS資料或安裝PyTorch。公式與字型資產隨網站提供，MathJax 3.2.2保留原Apache 2.0授權與來源校驗紀錄。
+
+只更新 Zensical 主題、導覽或建置工具時，可以沿用教材 tag 與已驗證的 notebook，重新建置並部署網站即可。這類修改需檢查閱讀頁、搜尋、快速換頁後的公式、SVG 與手機排版；不必重跑模型訓練。

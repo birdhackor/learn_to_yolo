@@ -1,0 +1,612 @@
+{
+  "builder": "zensical",
+  "version": "0.0.67",
+  "pages": [
+    {
+      "id": "00-warmup",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 44,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/00-warmup.ipynb"
+      ]
+    },
+    {
+      "id": "01-small-cnn",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 12,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/01-small-cnn.ipynb"
+      ]
+    },
+    {
+      "id": "02-diagnostics",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 4,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/02-diagnostics.ipynb"
+      ]
+    },
+    {
+      "id": "03-identity",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 20,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-identity.ipynb"
+      ]
+    },
+    {
+      "id": "03-projection",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 12,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-projection.ipynb"
+      ]
+    },
+    {
+      "id": "03-comparison",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 14,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-comparison.ipynb"
+      ]
+    },
+    {
+      "id": "04-localization",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 16,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/04-localization.ipynb"
+      ]
+    },
+    {
+      "id": "04-coordinates",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 14,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/04-coordinates.ipynb"
+      ]
+    },
+    {
+      "id": "05-assignment",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/05-assignment.ipynb"
+      ]
+    },
+    {
+      "id": "06-decode-nms",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 6,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/06-decode-nms.ipynb"
+      ]
+    },
+    {
+      "id": "06-evaluation",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 8,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/06-evaluation.ipynb"
+      ]
+    },
+    {
+      "id": "07-data",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-data.ipynb"
+      ]
+    },
+    {
+      "id": "07-targets",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-targets.ipynb"
+      ]
+    },
+    {
+      "id": "07-loss",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-loss.ipynb"
+      ]
+    },
+    {
+      "id": "07-training",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-training.ipynb"
+      ]
+    },
+    {
+      "id": "07-inference",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-inference.ipynb"
+      ]
+    },
+    {
+      "id": "07-heldout",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-heldout.ipynb"
+      ]
+    },
+    {
+      "id": "08-own-images",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-images.ipynb"
+      ]
+    },
+    {
+      "id": "08-own-data",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-data.ipynb"
+      ]
+    },
+    {
+      "id": "09-anchors",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/09-anchors.ipynb"
+      ]
+    },
+    {
+      "id": "09-anchor-clustering",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/09-anchor-clustering.ipynb"
+      ]
+    },
+    {
+      "id": "10-multiscale",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/10-multiscale.ipynb"
+      ]
+    },
+    {
+      "id": "11-csp",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-csp.ipynb"
+      ]
+    },
+    {
+      "id": "11-fusion",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-fusion.ipynb"
+      ]
+    },
+    {
+      "id": "11-augmentation",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-augmentation.ipynb"
+      ]
+    },
+    {
+      "id": "11-iou-loss",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-iou-loss.ipynb"
+      ]
+    },
+    {
+      "id": "12-anchor-free",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-anchor-free.ipynb"
+      ]
+    },
+    {
+      "id": "12-decoupled-head",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-decoupled-head.ipynb"
+      ]
+    },
+    {
+      "id": "12-assignment",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-assignment.ipynb"
+      ]
+    },
+    {
+      "id": "12-dfl",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-dfl.ipynb"
+      ]
+    },
+    {
+      "id": "13-dual-assignment",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/13-dual-assignment.ipynb"
+      ]
+    },
+    {
+      "id": "13-nms-free",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/13-nms-free.ipynb"
+      ]
+    },
+    {
+      "id": "14-feature-module",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/14-feature-module.ipynb"
+      ]
+    },
+    {
+      "id": "15-attention-bridge",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/15-attention-bridge.ipynb"
+      ]
+    },
+    {
+      "id": "15-area-attention",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/15-area-attention.ipynb"
+      ]
+    },
+    {
+      "id": "16-dfl-free",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-dfl-free.ipynb"
+      ]
+    },
+    {
+      "id": "16-inference-head",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-inference-head.ipynb"
+      ]
+    },
+    {
+      "id": "16-training",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-training.ipynb"
+      ]
+    },
+    {
+      "id": "17-capstone",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/17-capstone.ipynb"
+      ]
+    },
+    {
+      "id": "18-video",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/18-video.ipynb"
+      ]
+    },
+    {
+      "id": "19-tracking",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/19-tracking.ipynb"
+      ]
+    },
+    {
+      "id": "20-deployment",
+      "status": 200,
+      "brokenImages": [],
+      "mathErrors": [],
+      "mathContainers": 0,
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/20-deployment.ipynb"
+      ]
+    }
+  ],
+  "mobile": [
+    {
+      "id": "00-warmup",
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "id": "01-small-cnn",
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "id": "07-heldout",
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "id": "12-dfl",
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "id": "15-area-attention",
+      "width": 390,
+      "horizontal_overflow": false
+    },
+    {
+      "id": "20-deployment",
+      "width": 390,
+      "horizontal_overflow": false
+    }
+  ],
+  "search": [
+    {
+      "query": "梯度",
+      "expected_slug": "00-warmup",
+      "results": [
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/00-warmup/?h=%E6%A2%AF%E5%BA%A6#_3",
+          "title": "A. 先讓 CNN 學得動一次學習的超短暖身梯度只是在回答「旋鈕往哪邊轉」 必懂的是梯度的意義：固定資料，將某個參數稍微增加，loss 會如何改變？\\(\\partial L/\\partial w\\) 就是這個變化率。不需要背「偏導」這個名字；模型有很多旋鈕時，它只表示一次看其中一"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/07-loss/?h=%E6%A2%AF%E5%BA%A6#_1",
+          "title": "B. 分類走到可評估的偵測Grid MiniYOLO loss梯度讓數字成為方向 BCE 對 objectness logit 的梯度是 (sigmoid(logit)-target)/(B×S×S)，本例分母纔是16。因此正格為 -.03125，背景為 +.03125。更新是 "
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/03-identity/?h=%E6%A2%AF%E5%BA%A6#_3",
+          "title": "A. 先讓 CNN 學得動ResNet identity shortcut不背微積分也能理解直接梯度路徑... \\(\\Delta x\\)，輸出變化是 \\(\\Delta x+[F(x+\\Delta x)-F(x)]\\)。第一項來自直接路徑，永遠存在；第二項來自主分支。這是「梯度可沿"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/16-training/?h=%E6%A2%AF%E5%BA%A6#musgdsgdsgd",
+          "title": "C. YOLO 的演化機制YOLO26 訓練補強候選MuSGD：矩陣更新與SGD組合，不能用改名的SGD代替 momentum是保留前幾步梯度的加權記憶，讓更新不只取決於當下的一次梯度。MuSGD的Muon部分對矩陣參數的更新方向與尺度做整理，再和SGD動量更新組合，目的在改變多"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/02-diagnostics/?h=%E6%A2%AF%E5%BA%A6",
+          "title": "A. 先讓 CNN 學得動訓練診斷訓練診斷：把下一個檢查點說清楚 「loss 不動」不是一個完整診斷。可能是標籤錯、梯度斷、沒有更新、learning rate 不合適，也可能是資料太難。先查能直接核對的事項，比同時換 optimizer、模型與資料更容易找出原因。前置是能看懂 "
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/12-decoupled-head/?h=%E6%A2%AF%E5%BA%A6#backward",
+          "title": "C. YOLO 的演化機制Decoupled head三次 backward 解開「分開」的意思 第一次只反傳 box loss：box branch 參數有梯度，class branch 的 .grad 應是 None。第二次清空梯度，只反傳 classification lo"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/12-dfl/?h=%E6%A2%AF%E5%BA%A6#loss",
+          "title": "C. YOLO 的演化機制DFLLoss 和期待值各負責什麼 程式反傳初始 loss，逐值 assert 上述梯度，再做 400 次 SGD。最後 bin1 接近 .75、bin2 接近 .25，其他 bins 接近零，期待值在 1.25 格附近。乘 stride 後接近 10 "
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/planning/outline/?h=%E6%A2%AF%E5%BA%A6#_3",
+          "title": "教學規劃第二版大綱選修與更新入口 v6／v7／v9 可用來補重參數化、訓練輔助與梯度設計；其他分支與 YOLO26 之後的版本，依可核實原文與公開實作加入，注明查核日期及成熟度。附半頁分類／segmentation／keypoint 的 head 遷移圖即可；後續版本不只為版本號"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/07-training/?h=%E6%A2%AF%E5%BA%A6",
+          "title": "B. 分類走到可評估的偵測少量 overfit 與偵測診斷Grid MiniYOLO：三步訓練與診斷 在 Colab 執行本節   前置：資料、targets、loss。我們已有畫素、責任與人工梯度答案，現在才接上 CNN 和 optimizer。目標是先證明 forward、b"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/01-small-cnn/?h=%E6%A2%AF%E5%BA%A6#_3",
+          "title": "A. 先讓 CNN 學得動VGG 風格小 CNN核對與看錯誤 程式先印表中的逐層 shape，再核對參數和乘加數；三步都檢查首層權重梯度為有限值，首層權重確實改變。每一步先清上一步梯度，再算loss與更新。推論則使用eval與no_grad，對 [8,2] logits每列用 a"
+        }
+      ]
+    },
+    {
+      "query": "座標",
+      "expected_slug": "04-coordinates",
+      "results": [
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原座標轉換與還原：框跟圖片一起移動 模型在64×64輸入上畫出的框，不能直接畫回80×40原圖。縮放與補邊改變了座標系；若只記住圖片變成正方形，忘記padding，框會上下偏移。前置只需知道xyxy四數表示左上／右下，本頁從一張非正方形圖片走"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99#_2",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原三個座標系，先寫上單位... 向下、半開區間，所以框寬40、高20。模型輸入是64×64；其框仍可用pixels表示，但pixels是輸入畫布的pixels。再除64可以得到輸入畫布的正規化座標；「正規化」不會自動指回原圖。  框所在空間 "
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/11-augmentation/?h=%E5%BA%A7%E6%A8%99#crop",
+          "title": "C. YOLO 的演化機制圖與框同步增強Crop 會改座標，也會改可見面積... pped[keep], labels[keep]\n   裁剪後輸入是 [3,32,32]，框也是32×32座標；若模型仍要求64輸入，接著要同時resize/letterbox圖片與框。再使用新的框"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/08-own-images/?h=%E5%BA%A7%E6%A8%99",
+          "title": "B. 分類走到可評估的偵測自己的圖片推論用自己的圖片：先保持座標與類別契約 在 Colab 執行本節   前置：完整推論、座標轉換。本節處理單張非正方形圖片：讀取、RGB／CHW 轉換、letterbox、推論、框還原。它與「新增自己的類別」是兩件事；把照片放進模型不會讓紅／藍矩"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99#_5",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原可核對輸出與常見錯誤... 與真值的y=5／25不同：padding沒有消失。若batch有不同原圖尺寸，每張都要儲存自己的metadata，不能全部套用第一張的比例。裁切越界預測應在所選座標系按明確規則做；裁切不是逆轉換的替代品。 "
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99#_3",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原逆變換要倒過來做... 量 [4] 在每個框重複使用。N=0時仍保留 [0,4]，不要把空框寫成無軸的空list，免得下游無法辨識四座標契約。 "
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99#stretchletterbox",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原Stretch與letterbox的差別 Stretch把原圖直接拉成64×64，水平方向比例 \\(s_x=64/80=0.8\\)，垂直方向 \\(s_y=64/40=1.6\\)。框成為 [8,8,40,40]；原先40×20的矩形變成32×"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99#_4",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原奇數尺寸為何值得另外驗證 圖片resize必須使用整數寬高。37×83原圖放進64×64，理想比例64/83約0.7711，height四捨五入成29；實際resize為29×64。因整數取整，水平實際比例64/83、垂直29/37約0.7"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/04-coordinates/?h=%E5%BA%A7%E6%A8%99#_6",
+          "title": "B. 分類走到可評估的偵測座標轉換與還原自主練習與答案 將原圖改成H=80、W=40，框改為 [5,10,25,50]。答案resize成64×32（高×寬），左右各補16，框變成 [20,8,36,40]；回程x先減16，再除0.8。再問為何不使用加1計算框寬？答案是本課採連續"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/learning-path/?h=%E5%BA%A7%E6%A8%99#b",
+          "title": "開始閱讀完整閱讀路線B. 分類走到可評估的偵測  – 單物件分類與定位  – 座標轉換與還原  – 多物件輸出與責任分配  – 人工框解碼與 NMS  – 人工框評估與 AP50  – Grid MiniYOLO 資料  – Grid MiniYOLO targets  – Gr"
+        }
+      ]
+    },
+    {
+      "query": "NMS",
+      "expected_slug": "06-decode-nms",
+      "results": [
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/06-decode-nms/?h=NMS#nms_1",
+          "title": "B. 分類走到可評估的偵測人工框解碼與 NMSNMS只處理候選之間的重複 Non-Maximum Suppression（NMS）先選最高分框，保留它，再刪除與它IoU大於門檻的其餘候選，對剩餘框重複。本課按類別分組做class-wise NMS，門檻0.5；相同框不同class"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/13-nms-free/?h=NMS",
+          "title": "C. YOLO 的演化機制NMS-free 推論13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼 開啟 Colab · 原始碼：lesson_cases/13-nms-free.py   讀過 NMS 與一對多／一對一監督即可開始。假設一張圖有兩個物件，偵測器卻輸"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/06-decode-nms/?h=NMS",
+          "title": "B. 分類走到可評估的偵測人工框解碼與 NMS人工框解碼與 NMS：少一個框不一定更好... grid輸出的各軸。   在 Colab 執行，或 PYTHONPATH=. python lesson_cases/06-decode-nms.py。CPU純推論幾何，不需反傳或訓練；"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/13-nms-free/?h=NMS#_3",
+          "title": "C. YOLO 的演化機制NMS-free 推論省了哪個成本，又增加哪個風險 省去NMS可以減少逐對IoU、排序後的依次抑制及部署工具對此運算的支援需求，尤其當候選多時；實際速度仍受候選數、硬體與實作影響。代價是訓練需要學好唯一負責人；一對一正訊號較稀疏，排名不穩或兩物件非常靠近"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/13-nms-free/?h=NMS#_2",
+          "title": "C. YOLO 的演化機制NMS-free 推論三條推論路徑比同一組答案 score threshold設 .5。一對多不做NMS留下p0,p1,p2，共3框；一對多加NMS留下兩框，符合兩物件；一對一不做NMS留下p0,p2，也是2框。分數相同時NMS可能保留p0或p1，本例檢"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/13-nms-free/?h=NMS#_1",
+          "title": "C. YOLO 的演化機制NMS-free 推論明確知道哪些框是重複... 。   p0、p1 相交面積90，各自面積100，IoU為 90/(100+100−90)=90/110≈.8182。NMS閾值 .5 時它們互相競爭。p0 和p2不重疊，應各保留一個；p3應以低分排除。"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/06-decode-nms/?h=NMS#_2",
+          "title": "B. 分類走到可評估的偵測人工框解碼與 NMS四種規則要分清楚 訓練assignment決定誰接收哪個target；NMS是推論時候選與候選去重；評估matching是預測與真值判TP／FP。三者即使用到IoU，用途也不同。   顯示score門檻決定畫哪些框；評估候選截斷決定評"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/06-decode-nms/?h=NMS#_3",
+          "title": "B. 分類走到可評估的偵測人工框解碼與 NMS還原、核對與練習... 例直接用64×64的人工座標，所以沒有額外還原。   可核對score列表[0.64,0.72,0.855]、duplicate IoU0.5385、NMS保留索引[2,1]；另一個相同框不同類別測試應兩個都保"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/06-decode-nms/?h=NMS#_1",
+          "title": "B. 分類走到可評估的偵測人工框解碼與 NMS解碼：數字的參考範圍不可混用 MiniYOLO每圖logits為[S,S,5+C]，本例S=4、C=2，最後軸為tx、ty、tw、th、obj、class0、class1。Logit是尚未轉成機率或座標比例的原始分數；sigmoid把"
+        },
+        {
+          "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/06-decode-nms/?h=NMS#scoreprecision",
+          "title": "B. 分類走到可評估的偵測人工框解碼與 NMSScore不是precision 本課分數定義為 \\(score=\\sigma(obj)\\times\\max_c softmax(class)_c\\)，並選最大類別作label。一個候選objectness0.9、最高類別比例0.8，"
+        }
+      ]
+    }
+  ],
+  "direct_page_checks_scope": "Previously verified localhost routes; interactions below also use the production /learn_to_yolo/ prefix.",
+  "instant_navigation": {
+    "preserved_javascript_state": true,
+    "formulas_after_navigation": "passed"
+  },
+  "palette_toggle": "light -> dark -> light passed",
+  "search_result_navigation": {
+    "passed": true,
+    "retains_javascript_state": false,
+    "math_after_navigation": "passed"
+  },
+  "passed": true,
+  "mobile_drawer": "open and close passed",
+  "javascript_errors_menu_check": []
+}

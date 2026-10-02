@@ -1,0 +1,133 @@
+# Website configuration. Lesson code and Colab retain their frozen release tag.
+[project]
+site_name = "Learn to YOLO"
+site_description = "從小型 CNN、ResNet 到 YOLO 演化的中文 PyTorch 教材，42 節圖文與獨立 Colab。"
+site_url = "https://birdhackor.github.io/learn_to_yolo/"
+repo_url = "https://github.com/birdhackor/learn_to_yolo"
+repo_name = "birdhackor/learn_to_yolo"
+docs_dir = "docs"
+site_dir = "site"
+use_directory_urls = true
+
+extra_javascript = [
+  "assets/javascripts/mathjax.js",
+  "assets/vendor/mathjax/es5/tex-mml-chtml.js",
+]
+
+nav = [
+  { "開始閱讀" = [
+    { "首頁" = "index.md" },
+    { "完整閱讀路線" = "learning-path.md" },
+    { "術語快速查" = "glossary.md" },
+    { "驗證範圍與後續實驗" = "status.md" },
+  ] },
+  { "A. 先讓 CNN 學得動" = [
+    { "一次學習的超短暖身" = "lessons/00-warmup.md" },
+    { "VGG 風格小 CNN" = "lessons/01-small-cnn.md" },
+    { "訓練診斷" = "lessons/02-diagnostics.md" },
+    { "ResNet identity shortcut" = "lessons/03-identity.md" },
+    { "ResNet projection shortcut" = "lessons/03-projection.md" },
+    { "Plain／residual 對照" = "lessons/03-comparison.md" },
+  ] },
+  { "B. 分類走到可評估的偵測" = [
+    { "單物件分類與定位" = "lessons/04-localization.md" },
+    { "座標轉換與還原" = "lessons/04-coordinates.md" },
+    { "多物件輸出與責任分配" = "lessons/05-assignment.md" },
+    { "人工框解碼與 NMS" = "lessons/06-decode-nms.md" },
+    { "人工框評估與 AP50" = "lessons/06-evaluation.md" },
+    { "Grid MiniYOLO 資料" = "lessons/07-data.md" },
+    { "Grid MiniYOLO targets" = "lessons/07-targets.md" },
+    { "Grid MiniYOLO loss" = "lessons/07-loss.md" },
+    { "少量 overfit 與偵測診斷" = "lessons/07-training.md" },
+    { "完整圖片推論" = "lessons/07-inference.md" },
+    { "獨立資料評估" = "lessons/07-heldout.md" },
+    { "自己的圖片推論" = "lessons/08-own-images.md" },
+    { "自己的類別與資料" = "lessons/08-own-data.md" },
+  ] },
+  { "C. YOLO 的演化機制" = [
+    { "YOLOv2 anchor 與框參數化" = "lessons/09-anchors.md" },
+    { "尺寸聚類" = "lessons/09-anchor-clustering.md" },
+    { "YOLOv3 多尺度" = "lessons/10-multiscale.md" },
+    { "CSP" = "lessons/11-csp.md" },
+    { "特徵融合" = "lessons/11-fusion.md" },
+    { "圖與框同步增強" = "lessons/11-augmentation.md" },
+    { "IoU 類 loss" = "lessons/11-iou-loss.md" },
+    { "Anchor-free" = "lessons/12-anchor-free.md" },
+    { "Decoupled head" = "lessons/12-decoupled-head.md" },
+    { "Sample assignment" = "lessons/12-assignment.md" },
+    { "DFL" = "lessons/12-dfl.md" },
+    { "YOLOv10 dual assignment" = "lessons/13-dual-assignment.md" },
+    { "NMS-free 推論" = "lessons/13-nms-free.md" },
+    { "YOLO11 特徵模組" = "lessons/14-feature-module.md" },
+    { "Feature map 到 attention" = "lessons/15-attention-bridge.md" },
+    { "YOLOv12 Area Attention" = "lessons/15-area-attention.md" },
+    { "YOLO26 DFL-free" = "lessons/16-dfl-free.md" },
+    { "YOLO26 推論 head" = "lessons/16-inference-head.md" },
+    { "YOLO26 訓練補強候選" = "lessons/16-training.md" },
+  ] },
+  { "D. 整合與應用" = [
+    { "靜態偵測結業任務" = "lessons/17-capstone.md" },
+    { "影片串流" = "lessons/18-video.md" },
+    { "簡易 tracking" = "lessons/19-tracking.md" },
+    { "ONNX／TensorRT" = "lessons/20-deployment.md" },
+  ] },
+  { "前置準備" = [
+    { "資料規劃" = "preparation/data.md" },
+    { "發布與帳號設定" = "preparation/publish.md" },
+    { "網頁與 Colab 規格" = "preparation/architecture.md" },
+  ] },
+  { "教學規劃" = [
+    { "第二版大綱" = "planning/outline.md" },
+    { "公開課程研究" = "planning/course-research.md" },
+    { "讀者與學習心得" = "planning/feedback.md" },
+  ] },
+  { "資料與平台查核" = [
+    { "基礎資料" = "research/foundation-data.md" },
+    { "偵測資料" = "research/detection-data.md" },
+    { "Git LFS" = "research/lfs.md" },
+    { "Pages 與 Colab" = "research/pages-colab.md" },
+    { "版本來源查證" = "research/version-sources.md" },
+  ] },
+]
+
+[project.theme]
+variant = "modern"
+custom_dir = "overrides"
+language = "zh-TW"
+font = false
+features = [
+  "navigation.sections",
+  "navigation.top",
+  "navigation.footer",
+  "navigation.instant",
+  "navigation.instant.progress",
+  "navigation.tracking",
+  "content.code.copy",
+  "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/moon"
+toggle.name = "切換深色模式"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/sun"
+toggle.name = "切換淺色模式"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+"pymdownx.details" = {}
+"pymdownx.superfences" = {}
+"pymdownx.arithmatex" = { generic = true }
+"pymdownx.highlight" = { pygments_lang_class = true }
+"pymdownx.inlinehilite" = {}
+toc = { permalink = true }

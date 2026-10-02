@@ -11,4 +11,5 @@ git lfs install --local
 python3 scripts/validate_preparation.py
 python3 scripts/validate_lessons.py
 .venv-model/bin/python -m pytest tests/test_core.py
-.venv-docs/bin/mkdocs build --strict
+.venv-docs/bin/zensical build --clean --strict
+python3 scripts/validate_site.py
