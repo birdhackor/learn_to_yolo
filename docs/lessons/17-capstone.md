@@ -1,6 +1,6 @@
 # 17 靜態偵測結業：用一次有理由的改動交付結果
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/17-capstone.ipynb) · 原始碼：`lesson_cases/17-capstone.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/17-capstone.ipynb) · 原始碼：`lesson_cases/17-capstone.py`
 
 前置是[資料切分與held-out](07-heldout.md)、[grid loss](07-loss.md)、[AP50](06-evaluation.md)與[完整圖片推論](07-inference.md)。現在不再以版本名稱選模型，而是接到一個具體需求：辨識64×64圖片中的紅、藍矩形，可能有零至兩個物件，CPU單張處理要能測量。先從最小grid MiniYOLO從零訓練，確認失敗落在哪裡，再只改一項。這份範例交付真實跑出的數字與失敗圖，也保留不能下結論的範圍。
 

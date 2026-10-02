@@ -38,11 +38,11 @@ def opencv_frames(source):
     """Optional real file/camera adapter. Never called by this lesson's main()."""
     import cv2  # optional: pip install opencv-python-headless
     capture = cv2.VideoCapture(source)
-    if not capture.isOpened():
-        raise RuntimeError(f'Cannot open video source: {source}')
-    fps = capture.get(cv2.CAP_PROP_FPS)
-    started, index = time.perf_counter(), 0
     try:
+        if not capture.isOpened():
+            raise RuntimeError(f'Cannot open video source: {source}')
+        fps = capture.get(cv2.CAP_PROP_FPS)
+        started, index = time.perf_counter(), 0
         while True:
             ok, bgr = capture.read()
             if not ok:

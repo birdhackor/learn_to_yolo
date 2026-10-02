@@ -4,7 +4,7 @@ Residual有直接路徑，是否就一定更準？不能只看兩個不同模型
 
 設計來源是 [ResNet 原始論文](https://arxiv.org/abs/1512.03385) 對plain與residual的研究。本節用4channel、3個block與人工色塊，省略BatchNorm、原版深度與相加後activation。它是區域性機制對照，不是重現論文的ImageNet結果。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/03-comparison.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-comparison.py`。CPU、16×16輸入、訓練8張／validation4張，兩模型各3步SGD。3步只驗證路徑與紀錄方法，不作架構排名。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/03-comparison.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-comparison.py`。CPU、16×16輸入、訓練8張／validation4張，兩模型各3步SGD。3步只驗證路徑與紀錄方法，不作架構排名。
 
 ## 唯一主要改動是什麼
 

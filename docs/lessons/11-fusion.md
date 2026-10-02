@@ -1,6 +1,6 @@
 # 特徵融合：把深層資訊送回細網格
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-fusion.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-fusion.ipynb){ .md-button }
 
 前置：[多尺度head](10-multiscale.md)、[卷積shape](01-small-cnn.md)。增加8×8head讓細格子可輸出框，但淺層feature的語義可能不足。這次只加入深層到淺層的top-down融合，不同時改anchor、augmentation或loss。
 
@@ -38,7 +38,7 @@ fused = mix_3x3(joined)
 
 本例參數是reduce `8×16+8=136`，mix `8×16×9+8=1160`，總1296。1296是本節toy neck自身的參數，不是直接加在第10章的成本。若接第10章，須reduce32→16、concat32、mix32→16，再交給原fine_head；這份neck為(32×16+16)+(32×16×9+16)=5152參數。concat的中間feature有`B×16×8×8`元素，也比單路8channel多；以float32、B=1，僅這張concat是4096bytes，實際訓練還包括梯度與其他activation。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-fusion.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-fusion.py`。應核對手算4×4矩陣、來源gradient全為4、融合輸出`[1,8,8,8]`、參數1296；兩來源均有非零梯度並完成一次真SGD更新。這個feature實驗沒有訓練detector，因而沒有小物件AP或速度結論。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-fusion.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-fusion.py`。應核對手算4×4矩陣、來源gradient全為4、融合輸出`[1,8,8,8]`、參數1296；兩來源均有非零梯度並完成一次真SGD更新。這個feature實驗沒有訓練detector，因而沒有小物件AP或速度結論。
 
 ## 收益與代價
 

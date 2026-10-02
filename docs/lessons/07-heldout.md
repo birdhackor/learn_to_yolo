@@ -1,6 +1,6 @@
 # Grid MiniYOLO：獨立資料與評估證據
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-heldout.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-heldout.ipynb){ .md-button }
 
 前置：[完整推論](07-inference.md)、[AP50](06-evaluation.md)。本節要區分「評估程式跑通」和「模型真的在未見圖片上偵測成功」。一個有限的 AP 數字，可以來自隨機模型或過短訓練；要報效果，還需儲存資料切分、儲存的模型權重、協議與圖板。
 
@@ -33,7 +33,7 @@ metrics = evaluate_ap(pred, heldout_targets,
                       num_classes=2, iou_threshold=.5)
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-heldout.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。第一行人工 fixture 應核對 AP=.5、precision=1/3、recall=.5；第二部分列出本次三步模型實測的 pipeline smoke 數字。這些數字是程式執行結果，不能當作從零訓練已成功的效能證據。沒有預先填入模型 AP，也不把人工框 .5 稱為訓練成果。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-heldout.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。第一行人工 fixture 應核對 AP=.5、precision=1/3、recall=.5；第二部分列出本次三步模型實測的 pipeline smoke 數字。這些數字是程式執行結果，不能當作從零訓練已成功的效能證據。沒有預先填入模型 AP，也不把人工框 .5 稱為訓練成果。
 
 ## 完成第 7 章還需要什麼
 

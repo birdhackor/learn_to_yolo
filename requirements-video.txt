@@ -1,0 +1,3 @@
+# Optional file/video adapter; keeps the model environment's NumPy pin.
+numpy==2.3.5
+opencv-python-headless==4.13.0.92

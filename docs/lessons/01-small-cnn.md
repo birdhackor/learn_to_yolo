@@ -4,7 +4,7 @@
 
 歷史機制：[VGG 原始論文](https://arxiv.org/abs/1409.1556) 研究堆疊小型 3×3 卷積的深層分類網路。本節保留「小卷積重複堆疊」的想法，縮成兩個 block、4／8 channels、global average pooling，省略原版的深度與大型全連線層。它是教學 CNN，不是 VGG16 的重現。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/01-small-cnn.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/01-small-cnn.py`。資料是程式畫的 8 張紅／藍矩形；輸入 32×32、batch 8、CPU 訓練 3 步。目的是確認形狀、梯度與參數更新，尚未訓練出可用分類器。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/01-small-cnn.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/01-small-cnn.py`。資料是程式畫的 8 張紅／藍矩形；輸入 32×32、batch 8、CPU 訓練 3 步。目的是確認形狀、梯度與參數更新，尚未訓練出可用分類器。
 
 ## 先約定圖片怎麼進模型
 

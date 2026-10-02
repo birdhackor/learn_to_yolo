@@ -1,14 +1,14 @@
 {
   "id": "18-video",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:41:23.454725+00:00",
+  "executed_at_utc": "2026-10-02T18:02:47.962004+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "6019cf6f6d8e0cb6bf443584c030eee53f4fe2481e12757568633ab383e632eb",
-  "process_wall_seconds": 2.477,
+  "case_sha256": "2d7c5acafb068d819c740fd41c6b30e1d2ca798e94ab0ced29806fb732139f25",
+  "process_wall_seconds": 2.4652,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "{\n  \"frames\": 12,\n  \"source_fps\": 20,\n  \"source_duration_s\": 0.6,\n  \"source_last_timestamp_s\": 0.55,\n  \"gif_frame_duration_ms\": 50,\n  \"source_size_hw\": [\n    64,\n    96\n  ],\n  \"object_visible_per_frame\": [\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true\n  ],\n  \"model_input_hw\": [\n    64,\n    64\n  ],\n  \"boxes_per_frame\": [\n    1,\n    1,\n    0,\n    0,\n    0,\n    0,\n    1,\n    1,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"median_ms_excluding_first\": {\n    \"preprocess\": 0.18675100000109524,\n    \"model\": 0.19888899998932175,\n    \"postprocess\": 0.36744300001601005,\n    \"drawing\": 0.04854299999124123,\n    \"total\": 0.8406750000062857\n  },\n  \"camera_adapter\": \"provided, not executed\",\n  \"limits\": \"synthetic lazy producer; no capture/codec/display/network queue latency measured\"\n}\nGIF: artifacts/lesson-18/stream.gif; actual static panel: docs/assets/diagrams/18-video.svg\n",
+  "stdout": "{\n  \"frames\": 12,\n  \"source_fps\": 20,\n  \"source_duration_s\": 0.6,\n  \"source_last_timestamp_s\": 0.55,\n  \"gif_frame_duration_ms\": 50,\n  \"source_size_hw\": [\n    64,\n    96\n  ],\n  \"object_visible_per_frame\": [\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true,\n    true\n  ],\n  \"model_input_hw\": [\n    64,\n    64\n  ],\n  \"boxes_per_frame\": [\n    1,\n    1,\n    0,\n    0,\n    0,\n    0,\n    1,\n    1,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"median_ms_excluding_first\": {\n    \"preprocess\": 0.19916899964300683,\n    \"model\": 0.21497299985639984,\n    \"postprocess\": 0.3365060001669917,\n    \"drawing\": 0.045397999201668426,\n    \"total\": 0.886802999957581\n  },\n  \"camera_adapter\": \"provided, not executed\",\n  \"limits\": \"synthetic lazy producer; no capture/codec/display/network queue latency measured\"\n}\nGIF: artifacts/lesson-18/stream.gif; actual static panel: docs/assets/diagrams/18-video.svg\n",
   "stderr": "",
   "exit_code": 0
 }

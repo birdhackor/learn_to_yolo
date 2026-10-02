@@ -1,6 +1,6 @@
 # 尺寸聚類：先驗由哪一份資料決定
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/09-anchor-clustering.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/09-anchor-clustering.ipynb){ .md-button }
 
 前置：[anchor 參數化](09-anchors.md)。這次只改 anchor 尺寸的選法，保留候選數 A=2、center decode與模型分支。問題是手填16×16，若資料多為8×8小方形和32×16寬矩形，是否浪費回歸力氣？
 
@@ -33,7 +33,7 @@ for k in range(len(anchors)):
         updated[k] = selected.mean(0)
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/09-anchor-clustering.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchor-clustering.py`。groups應為`[0,0,0,1,1,1]`、anchor為上述分數，train mean best size IoU應比兩個16×16提高。案例還把資料和anchor同時乘2，驗證IoU不變；最後用`[4,40]、[40,4]`模擬新來源，輸出覆蓋變差的數字。這些是尺寸統計，不是AP提升。案例另外以逐維median得到`[8,8]`與`[32,16]`，這六筆的mean best size IoU是.9340，高於mean更新的.9119；仍只表示這六個尺寸更接近先驗。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/09-anchor-clustering.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchor-clustering.py`。groups應為`[0,0,0,1,1,1]`、anchor為上述分數，train mean best size IoU應比兩個16×16提高。案例還把資料和anchor同時乘2，驗證IoU不變；最後用`[4,40]、[40,4]`模擬新來源，輸出覆蓋變差的數字。這些是尺寸統計，不是AP提升。案例另外以逐維median得到`[8,8]`與`[32,16]`，這六筆的mean best size IoU是.9340，高於mean更新的.9119；仍只表示這六個尺寸更接近先驗。
 
 ## 只用 train 聚類的理由
 

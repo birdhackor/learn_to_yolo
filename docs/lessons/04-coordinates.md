@@ -2,7 +2,7 @@
 
 模型在64×64輸入上畫出的框，不能直接畫回80×40原圖。縮放與補邊改變了座標系；若只記住圖片變成正方形，忘記padding，框會上下偏移。前置只需知道xyxy四數表示左上／右下，本頁從一張非正方形圖片走完往返。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/04-coordinates.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-coordinates.py`。本節CPU只做幾何變換，不需訓練。案例同時驗證整數比例、奇數尺寸與空框；成功代表變換契約成立，不代表模型定位準確。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/04-coordinates.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-coordinates.py`。本節CPU只做幾何變換，不需訓練。案例同時驗證整數比例、奇數尺寸與空框；成功代表變換契約成立，不代表模型定位準確。
 
 ## 三個座標系，先寫上單位
 

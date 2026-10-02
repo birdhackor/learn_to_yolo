@@ -4,7 +4,7 @@
 
 **[閱讀教材](https://birdhackor.github.io/learn_to_yolo/)** · [完整課綱](docs/planning/outline.md) · [驗證範圍](docs/status.md)
 
-42 節網頁各有獨立 Colab notebook，純閱讀也能學；程式與 Colab 固定為 `lessons-v0.2.0`。本輪另以六位陌生讀者與六位技術 reviewer 逐節審查，必要修改經獨立複查；[全套執行與審查](docs/validation/curriculum.md)保留結果與原始意見。模型是教學用簡化模型，不是完整原版的重現。
+42 節網頁各有獨立 Colab notebook，純閱讀也能學；程式與 Colab 固定為 `lessons-v0.3.0`。本輪另以六位陌生讀者與六位技術 reviewer 逐節審查，必要修改經獨立複查；[全套執行與審查](docs/validation/curriculum.md)保留結果與原始意見。模型是教學用簡化模型，不是完整原版的重現。
 
 ## CPU 本機執行
 

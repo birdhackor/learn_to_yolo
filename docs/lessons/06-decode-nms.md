@@ -2,7 +2,7 @@
 
 Head輸出的七個數字不是可以直接畫的xyxy框。先把格內偏移與尺寸換成圖上座標，再算score、篩選、去除重複，必要時還原到原圖。本節不用模型猜答案，而是人工指定logits，讓每一步都有已知結果。前置是xyxy與IoU；本頁也簡述grid輸出的各軸。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/06-decode-nms.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-decode-nms.py`。CPU純推論幾何，不需反傳或訓練；所有框與分數是人工設計。NMS概念可對照 [Torchvision NMS檔案](https://pytorch.org/vision/stable/generated/torchvision.ops.nms.html)，案例自行實作，不需要安裝torchvision。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/06-decode-nms.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-decode-nms.py`。CPU純推論幾何，不需反傳或訓練；所有框與分數是人工設計。NMS概念可對照 [Torchvision NMS檔案](https://pytorch.org/vision/stable/generated/torchvision.ops.nms.html)，案例自行實作，不需要安裝torchvision。
 
 框的letterbox（等比例縮放再補邊）、metadata（還原所需紀錄）可回看[座標轉換](04-coordinates.md)。
 

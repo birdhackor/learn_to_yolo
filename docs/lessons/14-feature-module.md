@@ -1,6 +1,6 @@
 # 14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/14-feature-module.ipynb) · 原始碼：`lesson_cases/14-feature-module.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/14-feature-module.ipynb) · 原始碼：`lesson_cases/14-feature-module.py`
 
 前置是[residual捷徑](03-identity.md)、[CSP](11-csp.md)與channel concatenation（沿通道串接）。residual保留原值再加轉換結果；本例bottleneck是兩層窄卷積的殘差小塊，hidden是每條內部分支的channel數。兩個3×3卷積可以轉換特徵，但所有訊號都走同樣深度。能否讓一部分走短路徑，另一部分經較深轉換，並把中間成果一起交給最後投影？本節由YOLO11官方配置中的C3k2切入，只研究其中可看懂的split–transform–concatenate機制。
 

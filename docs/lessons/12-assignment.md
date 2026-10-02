@@ -1,6 +1,6 @@
 # 12.3 Sample assignment：哪個候選值得被教
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-assignment.ipynb) · 原始碼：`lesson_cases/12-assignment.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/12-assignment.ipynb) · 原始碼：`lesson_cases/12-assignment.py`
 
 前置是候選點、IoU 和 classification logits。密集偵測器對一張影像輸出許多候選，但標註可能只有兩個物件。每個候選都學最近的真值嗎？如果它位於框外，或分類分數很高但位置很差，這個選擇可能給出矛盾訊號。本節依序看資格、品質、數量限制和衝突，不把 assignment 當成一個黑盒。
 

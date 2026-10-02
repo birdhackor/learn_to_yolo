@@ -1,6 +1,6 @@
 # 12.2 Decoupled head：分類和定位在哪裡分工
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-decoupled-head.ipynb) · 原始碼：`lesson_cases/12-decoupled-head.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/12-decoupled-head.ipynb) · 原始碼：`lesson_cases/12-decoupled-head.py`
 
 前置是 Conv2d、反向傳播與多項 loss。backbone 是影像轉特徵的主幹，head 是把特徵轉成預測的輸出模組。現在同一特徵要回答兩個問題：「這裡是哪一類？」和「框的邊在哪裡？」分類常需要辨識形狀與語意，定位要保留精細位置。把兩者全塞進同一串卷積，可能限制各自能學的轉換。本節把 head 分成兩串卷積，觀察梯度究竟如何走。
 

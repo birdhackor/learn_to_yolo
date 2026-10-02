@@ -1,6 +1,6 @@
 # 增強：畫素怎麼變，框就怎麼變
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-augmentation.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-augmentation.ipynb){ .md-button }
 
 前置：[資料契約](07-data.md)、[自己的資料](08-own-data.md)。這次只改訓練資料變換。增強能產生位置和外觀變化，但若框沒跟著圖片走，會把正確標註變成錯誤監督。先使用可逆、可手算的flip，再使用會裁掉物件的crop。
 
@@ -42,7 +42,7 @@ new_boxes, new_labels = clipped[keep], labels[keep]
 
 letterbox 是等比例縮放後補邊；框也要乘縮放比例並加補邊偏移，見[座標轉換](04-coordinates.md)。targets 是由新框建立的訓練目標，見[建立 targets](07-targets.md)。Mosaic 拼接多張圖，mixup 混合圖片與標註；bag of freebies 指主要增加訓練成本的改進。這裡的固定 budget 是固定訓練步數或計算預算，尚未實測這些進階增強的效果。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-augmentation.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-augmentation.py`。應看到flip框`[40,12,56,28]`、雙flip還原、crop框`[0,4,8,20]`、可見面積128/256=.5，以及.6移除結果。程式把變換後彩色pixel與新框區域核對，實際用keep篩labels：.5時留下值為`[0]`的long tensor，.6時boxes變shape`[0,4]`、labels變shape`[0]`的空long tensor。空圖是沒有目標的圖片，案例使用全零像素配空boxes及空long labels，flip和crop後三者都仍正確；不能以帶紅物件卻空標註的圖代替空圖。這是資料幾何實驗，不需backward，也沒有AP結論。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-augmentation.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-augmentation.py`。應看到flip框`[40,12,56,28]`、雙flip還原、crop框`[0,4,8,20]`、可見面積128/256=.5，以及.6移除結果。程式把變換後彩色pixel與新框區域核對，實際用keep篩labels：.5時留下值為`[0]`的long tensor，.6時boxes變shape`[0,4]`、labels變shape`[0]`的空long tensor。空圖是沒有目標的圖片，案例使用全零像素配空boxes及空long labels，flip和crop後三者都仍正確；不能以帶紅物件卻空標註的圖代替空圖。這是資料幾何實驗，不需backward，也沒有AP結論。
 
 ## 收益與代價
 

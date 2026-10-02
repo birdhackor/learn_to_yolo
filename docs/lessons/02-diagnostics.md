@@ -2,7 +2,7 @@
 
 「loss 不動」不是一個完整診斷。可能是標籤錯、梯度斷、沒有更新、learning rate 不合適，也可能是資料太難。先查能直接核對的事項，比同時換 optimizer、模型與資料更容易找出原因。前置是能看懂 tensor shape 與 forward／backward／step；本節不需要記住 CNN 架構。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/02-diagnostics.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/02-diagnostics.py`。CPU 小實驗先製造兩個程式錯誤，再用8筆二維人工資料訓練20步。它不是影像模型的效果測試，而是刻意安排的診斷案例。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/02-diagnostics.ipynb)，或執行 `PYTHONPATH=. python lesson_cases/02-diagnostics.py`。CPU 小實驗先製造兩個程式錯誤，再用8筆二維人工資料訓練20步。它不是影像模型的效果測試，而是刻意安排的診斷案例。
 
 ## 四個檢查點，各自回答不同問題
 

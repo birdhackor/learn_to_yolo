@@ -4,7 +4,7 @@
 
 本節是MiniYOLO之前的簡化單物件模型，不是某個完整YOLO版本。Backbone是抽特徵的主幹，head是把特徵轉答案的末端；本例沒有背景圖或變動物件數，這些限制下一階段才處理。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/04-localization.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-localization.py`。CPU、兩張32×32人工圖形、3步SGD；展示梯度和框疊圖，不宣稱已學會定位。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/04-localization.ipynb)，或 `PYTHONPATH=. python lesson_cases/04-localization.py`。CPU、兩張32×32人工圖形、3步SGD；展示梯度和框疊圖，不宣稱已學會定位。
 
 ## 分類摘要為何未必適合位置
 

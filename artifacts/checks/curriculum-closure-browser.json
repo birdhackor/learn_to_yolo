@@ -1,0 +1,117 @@
+{
+  "verified_at_utc": "2026-10-02T18:32:37.111126+00:00",
+  "source_ref": "lessons-v0.3.0",
+  "scope": "Final closure wording and SVG layout on local strict build; supplements full 43-page desktop/mobile check. No live Google Colab runtime.",
+  "results": [
+    {
+      "path": "lessons/08-own-data/",
+      "viewport": [
+        1280,
+        1000
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "6679314cface9c66c4fe026d689b7a759921477d2280deff15cf4e4d9a2c65b3"
+    },
+    {
+      "path": "lessons/08-own-data/",
+      "viewport": [
+        390,
+        844
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "6679314cface9c66c4fe026d689b7a759921477d2280deff15cf4e4d9a2c65b3"
+    },
+    {
+      "path": "lessons/18-video/",
+      "viewport": [
+        1280,
+        1000
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "6e334f10d7fdca4427b9aaca1f152629ffe58af4b8a723b4327e98de925b0498"
+    },
+    {
+      "path": "lessons/18-video/",
+      "viewport": [
+        390,
+        844
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "6e334f10d7fdca4427b9aaca1f152629ffe58af4b8a723b4327e98de925b0498"
+    },
+    {
+      "path": "lessons/19-tracking/",
+      "viewport": [
+        1280,
+        1000
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "9e50aca0b8871a86f79a33f0029d340e9936551a65f8e6bc4e4374e166e40bdb"
+    },
+    {
+      "path": "lessons/19-tracking/",
+      "viewport": [
+        390,
+        844
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "9e50aca0b8871a86f79a33f0029d340e9936551a65f8e6bc4e4374e166e40bdb"
+    },
+    {
+      "path": "validation/curriculum/",
+      "viewport": [
+        1280,
+        1000
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "b573eb65418baf817bbd0290d2e043103ad4881b08f594a7b6bf3dc8eec3231b"
+    },
+    {
+      "path": "validation/curriculum/",
+      "viewport": [
+        390,
+        844
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "b573eb65418baf817bbd0290d2e043103ad4881b08f594a7b6bf3dc8eec3231b"
+    },
+    {
+      "path": "status/",
+      "viewport": [
+        1280,
+        1000
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "43b76f5f3a897209920bcfb68fbdf6c8cf4f0c39bf5a06e142ebcdba19fb34f2"
+    },
+    {
+      "path": "status/",
+      "viewport": [
+        390,
+        844
+      ],
+      "http": 200,
+      "images_loaded": true,
+      "document_overflow": false,
+      "html_sha256": "43b76f5f3a897209920bcfb68fbdf6c8cf4f0c39bf5a06e142ebcdba19fb34f2"
+    }
+  ]
+}

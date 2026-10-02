@@ -4,7 +4,7 @@
 
 歷史機制來自 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)。原版常見block在相加後有ReLU。本節使用**相加後沒有ReLU**的教學block，刻意讓 \(F(x)=0\) 時可以對所有正負輸入精確驗證identity；這不等於完整原版ResNet配置。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/03-identity.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU實驗先做人工零分支與梯度檢查，再用另一個隨機block訓練2步。前者證明算術，後者證明可更新，不是分類效果比較。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/03-identity.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU實驗先做人工零分支與梯度檢查，再用另一個隨機block訓練2步。前者證明算術，後者證明可更新，不是分類效果比較。
 
 ## 把「修正」與「完整答案」分開
 

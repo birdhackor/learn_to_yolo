@@ -1,6 +1,6 @@
 # 13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/13-nms-free.ipynb) · 原始碼：`lesson_cases/13-nms-free.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/13-nms-free.ipynb) · 原始碼：`lesson_cases/13-nms-free.py`
 
 讀過 NMS 與一對多／一對一監督即可開始。假設一張圖有兩個物件，偵測器卻輸出三個高分框，其中兩個是同一物件。把 NMS 函式刪除，框數變多；這並沒有改善模型。本節固定框位置，只改「哪個候選被教成正樣本」，親眼看分數的變化，再比較後處理。
 

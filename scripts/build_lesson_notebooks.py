@@ -29,6 +29,19 @@ def optional_experiment(lesson_id: str) -> str:
                 "from IPython.display import display\nfrom PIL import Image\n"
                 "display(Image.open('artifacts/runs/grid-learning/loss.png'))\n```\n\n"
                 "另存checkpoint.pt、history.json與validation PNG；完整指標在artifacts/checks/grid-learning.json。")
+    if lesson_id == "08-own-data":
+        return ("\n\n### 可選：JSON資料完整短訓練\n\n主例檢查一步更新；完成後另開code cell：\n\n"
+                "```python\n!python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001\n"
+                "from IPython.display import SVG, display\n"
+                "display(SVG(filename='artifacts/runs/custom-data-learning/learning.svg'))\n```\n\n"
+                "三類PNG/JSON、checkpoint與結果保存於artifacts/runs/custom-data-learning。"
+                "自己的資料改用--annotations與--root；具體格式與指標解讀见網頁。")
+    if lesson_id in {"18-video", "19-tracking"}:
+        return ("\n\n### 可選：真正影片檔案與tracking接線\n\n主例完成後另開code cell：\n\n"
+                "```python\n!python -m pip install -r requirements-video.txt\n"
+                "!python scripts/verify_video_file.py\n```\n\n"
+                "自行產生12幀無損AVI，實際讀檔、模型推論、按class 0配track ID，"
+                "並檢查RGB/框一致及capture釋放；沒有測實體相機。")
     return ""
 
 
@@ -86,7 +99,7 @@ print("目前目錄：", repository)
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ref", default="lessons-v0.2.0")
+    parser.add_argument("--ref", default="lessons-v0.3.0")
     args = parser.parse_args()
     registry_path = ROOT / "section-map.json"
     registry = json.loads(registry_path.read_text())

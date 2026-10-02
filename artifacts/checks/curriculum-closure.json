@@ -1,0 +1,93 @@
+{
+  "verified_at_utc": "2026-10-02T18:27:11.540851+00:00",
+  "source_ref": "lessons-v0.3.0",
+  "scope": "Outline completion check; custom JSON learning, original-image inference, checkpoint reload, real video file and detector-to-tracker bridge. Previous two full 42-section review phases retained.",
+  "prior_review_reports_verified": 12,
+  "closure_review_reports": [
+    {
+      "review_kind": "reader",
+      "report": "reviews/closure-reader-custom-data.md",
+      "sections": [
+        "08-own-data"
+      ],
+      "report_sha256": "0d23d89d89562e0c34d575168705f23b2c38977f22f3b180828a82e4cc28f0c3",
+      "required_issues_open": 0,
+      "status": "Initial findings retained; proposed fixes independently rechecked"
+    },
+    {
+      "review_kind": "reader",
+      "report": "reviews/closure-reader-application.md",
+      "sections": [
+        "18-video",
+        "19-tracking"
+      ],
+      "report_sha256": "0b97c67eee8af37750b00b3e59db585b453b9dc219d533eed110018d2776ec80",
+      "required_issues_open": 0,
+      "status": "Initial findings retained; proposed fixes independently rechecked"
+    },
+    {
+      "review_kind": "accuracy",
+      "report": "reviews/closure-accuracy-custom-data.md",
+      "sections": [
+        "08-own-data"
+      ],
+      "report_sha256": "6de5dcc0b03b823cdc1fa1f1c2bfdd688e0da874131d92a763e201ce89603273",
+      "required_issues_open": 0,
+      "status": "Initial findings retained; proposed fixes independently rechecked"
+    },
+    {
+      "review_kind": "accuracy",
+      "report": "reviews/closure-accuracy-application.md",
+      "sections": [
+        "18-video",
+        "19-tracking"
+      ],
+      "report_sha256": "419b8084db1595e2f68b026ed1196765917aee37921fea7c77fbad6efbab0f4e",
+      "required_issues_open": 0,
+      "status": "Initial findings retained; proposed fixes independently rechecked"
+    }
+  ],
+  "required_issues_open": 0,
+  "experiment_reports": [
+    "artifacts/checks/curriculum/custom-data-160-step.json",
+    "artifacts/checks/curriculum/custom-data-learning.json",
+    "artifacts/checks/curriculum/video-file.json"
+  ],
+  "budget": {
+    "authorized_cap_usd": 10,
+    "new_modal_jobs": 0,
+    "additional_modal_gpu_cost_usd": 0,
+    "additional_training_device": "local CPU",
+    "account_cost_limits_changed": false,
+    "pages_job_timeouts_minutes": {
+      "build": 10,
+      "deploy": 5
+    },
+    "max_pages_dispatches_this_turn": 2,
+    "official_standard_linux_paid_rate_usd_per_minute": 0.006,
+    "conservative_paid_runner_compute_bound_per_dispatch_usd": 0.09,
+    "conservative_paid_runner_compute_bound_for_two_dispatches_usd": 0.18,
+    "pricing_source": "https://docs.github.com/en/billing/reference/actions-runner-pricing",
+    "repository_public_confirmed": true,
+    "scope": "New work in this turn only; conservative Actions compute estimate, not a billing statement or previous GPU costs; no Codex subscription/account-wide cost claim"
+  },
+  "recorded_modal_final_states": [
+    {
+      "evidence": "artifacts/checks/gpu-smoke-37032967155.json",
+      "verified": true,
+      "app_id": "ap-IvP1WCRTduPs9ZTJKY8aG1",
+      "state": "stopped",
+      "running_tasks": 0,
+      "stopped_at": "2026-10-02 16:21:02+00:00"
+    },
+    {
+      "evidence": "artifacts/checks/curriculum/deployment-gpu.json",
+      "verified": true,
+      "app_id": "ap-cmJqI2YJQU65SWaiCaPAx7",
+      "state": "stopped",
+      "running_tasks": 0,
+      "stopped_at": "2026-10-02 16:47:31+00:00"
+    }
+  ],
+  "limits": "Synthetic short learning and lossless file I/O only; no real-data long training, physical camera, live Google Colab login or formal performance benchmark."
+}

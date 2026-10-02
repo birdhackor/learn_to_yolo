@@ -4,7 +4,7 @@
 
 歷史機制來自 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)：用可學的projection處理尺寸或channel不同的shortcut。本節省略BatchNorm與相加後activation，保留一個小型跨stage block；它不是完整ResNet效果重現。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/03-projection.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-projection.py`。CPU實驗先用固定權重驗證一個channel混合數值，再用新建隨機block做2步更新。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/03-projection.ipynb)，或 `PYTHONPATH=. python lesson_cases/03-projection.py`。CPU實驗先用固定權重驗證一個channel混合數值，再用新建隨機block做2步更新。
 
 ## 先把兩支畫出來
 

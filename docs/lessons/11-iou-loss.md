@@ -1,6 +1,6 @@
 # IoU 類 loss：沒有重疊時還能往哪裡移
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-iou-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-iou-loss.ipynb){ .md-button }
 
 前置：[IoU與框](04-localization.md)、[grid loss](07-loss.md)。座標MSE衡量各數字的差，評估卻依框重疊判定。這次只研究定位loss，固定兩個pixel框與框表示，不同時修改head、assignment或augmentation。
 
@@ -39,7 +39,7 @@ ciou_loss = 1-iou + center_penalty + alpha*v
 
 ## 實際一次更新的核對
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/11-iou-loss.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。初始loss應為IoU1、GIoU1.2、DIoU／CIoU1.310345；純IoU中心gradient為零。也核對GIoU梯度`.02,0`與左移1pixel後1.179487。再以DIoU做一次真實SGD，檢查x中心小於40、loss下降且梯度有限。學習率100在這個pixel中心的區域性實驗中用來讓變化可見，不能直接複製到detector所有網路參數。完全相同的GT與prediction時四項都為0。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-iou-loss.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。初始loss應為IoU1、GIoU1.2、DIoU／CIoU1.310345；純IoU中心gradient為零。也核對GIoU梯度`.02,0`與左移1pixel後1.179487。再以DIoU做一次真實SGD，檢查x中心小於40、loss下降且梯度有限。學習率100在這個pixel中心的區域性實驗中用來讓變化可見，不能直接複製到detector所有網路參數。完全相同的GT與prediction時四項都為0。
 
 收益是定位目標與框幾何更直接相連，GIoU／DIoU在本例沒有交集時提供訊號；代價是分段幾何、數值保護、權重與梯度行為需要重新驗證。CIoU的額外項不代表每一種資料一定更好；非正格仍不應計算定位loss，objectness／class也不會被它自動取代。
 

@@ -1,6 +1,6 @@
 # Grid MiniYOLO：先讓資料可以被檢查
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-data.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-data.ipynb){ .md-button }
 
 前置：[多物件責任分配](05-assignment.md)、[座標轉換](04-coordinates.md)。本節要解決的問題是「模型喫到的畫素，是否仍與框描述同一個物件」。若藍色矩形的框移到紅色矩形上，訓練可以照常降低某個 loss，卻是在學錯的任務。
 
@@ -33,7 +33,7 @@ image[2, 36:52, 40:56] = 1  # 藍
 images, targets = collate([(image, target), (empty_image, empty)])
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-data.ipynb，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-data.py`。預期 `batch (2,3,64,64) counts [2,0]`、通道總和 `256.0 256.0`，再透過由 boxes／labels 重建彩色 mask 與原畫素逐值相等、以及 8 張生成資料的範圍與正面積檢查。把紅框 x1 改成 9 而不改畫素，此 assertion 應失敗。沒有下載、沒有 GPU，也沒有模型結果。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-data.ipynb，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-data.py`。預期 `batch (2,3,64,64) counts [2,0]`、通道總和 `256.0 256.0`，再透過由 boxes／labels 重建彩色 mask 與原畫素逐值相等、以及 8 張生成資料的範圍與正面積檢查。把紅框 x1 改成 9 而不改畫素，此 assertion 應失敗。沒有下載、沒有 GPU，也沒有模型結果。
 
 ## 這個改動的收益與代價
 

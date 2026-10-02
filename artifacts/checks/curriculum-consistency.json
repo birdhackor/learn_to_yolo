@@ -200,7 +200,7 @@
     },
     {
       "id": "18-video",
-      "case_sha256": "6019cf6f6d8e0cb6bf443584c030eee53f4fe2481e12757568633ab383e632eb",
+      "case_sha256": "2d7c5acafb068d819c740fd41c6b30e1d2ca798e94ab0ced29806fb732139f25",
       "evidence_matches": true
     },
     {
@@ -212,6 +212,16 @@
       "id": "20-deployment",
       "case_sha256": "af61839e8af678ab18d115b0a1b56745d6095a6122b3d40ebfd356f3e7854a64",
       "evidence_matches": true
+    }
+  ],
+  "closure_extensions": [
+    {
+      "id": "custom-data-learning",
+      "source_and_evidence_match": true
+    },
+    {
+      "id": "video-file-and-tracking",
+      "source_and_evidence_match": true
     }
   ]
 }

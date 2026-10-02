@@ -9,7 +9,10 @@
     "zh-TW"
   ],
   "all_lessons_indexed": true,
-  "artifact_files": 128,
-  "artifact_bytes": 6466446,
-  "artifact_boundaries": "passed"
+  "artifact_files": 130,
+  "artifact_bytes": 6575896,
+  "artifact_boundaries": "passed",
+  "verified_at_utc": "2026-10-02T18:33:22.670048+00:00",
+  "source_ref": "lessons-v0.3.0",
+  "strict_build": "passed"
 }

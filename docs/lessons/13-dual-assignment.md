@@ -1,6 +1,6 @@
 # 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/13-dual-assignment.ipynb) · 原始碼：`lesson_cases/13-dual-assignment.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/13-dual-assignment.ipynb) · 原始碼：`lesson_cases/13-dual-assignment.py`
 
 前置是 sample assignment、分類 loss 和 decoupled head。第 12 章讓一個 GT 監督多個候選，提供較密集的學習訊號；這些候選卻可能都在推論時報出同一物件。如果每個 GT 只教一個候選，重複較容易被壓低，但可用正訊號也變少。YOLOv10 的 dual assignment 在訓練保留兩種分支，推論使用一對一分支。
 

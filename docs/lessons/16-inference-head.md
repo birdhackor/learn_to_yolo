@@ -1,6 +1,6 @@
 # 16.2 YOLO26 推論 head：訓練用分支怎麼離開部署圖
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/16-inference-head.ipynb) · 原始碼：`lesson_cases/16-inference-head.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/16-inference-head.ipynb) · 原始碼：`lesson_cases/16-inference-head.py`
 
 前置是dual assignment、DFL-free與模型的train/eval模式。訓練時有兩個head，不代表部署也要執行兩個。要省掉輔助分支，必須確認推論取的是正確權重、解碼單位正確，而且模型真的不再攜帶那條路。本節建立一份只有推論head的module，逐值比對保留前後的raw輸出。
 

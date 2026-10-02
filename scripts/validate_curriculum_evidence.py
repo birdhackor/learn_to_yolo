@@ -61,12 +61,41 @@ def main():
         assert page.count("<!-- curriculum-evidence:end -->") == 1, sid
         assert record["executed_at_utc"][:10] in page and record["torch"] in page, sid
         results.append({"id": sid, "case_sha256": digest, "evidence_matches": True})
+    extensions = []
+    custom = json.loads((folder / "custom-data-learning.json").read_text())
+    finite_json(custom)
+    assert custom["code"]["script_sha256"] == hashlib.sha256(
+        (ROOT / "scripts/run_custom_data_learning.py").read_bytes()).hexdigest()
+    for filename, digest in custom["code"]["core_sha256"].items():
+        assert digest == hashlib.sha256((ROOT / "miniyolo" / filename).read_bytes()).hexdigest(), filename
+    assert custom["steps_completed"] == len(custom["loss_history"])
+    assert custom["all_step_gradients_finite_nonzero"] and custom["weight_delta_l2"] > 0
+    assert custom["loss_decreased_on_same_full_train_set"]
+    assert all(custom["reload_checks"][key] for key in
+               ("raw_predictions_exact", "decoded_predictions_exact", "optimizer_state_exact", "rng_state_exact"))
+    extensions.append({"id": "custom-data-learning", "source_and_evidence_match": True})
+    video = json.loads((folder / "video-file.json").read_text())
+    finite_json(video)
+    assert video["script_sha256"] == hashlib.sha256((ROOT / "scripts/verify_video_file.py").read_bytes()).hexdigest()
+    for sid, digest in video["lesson_case_sha256"].items():
+        assert digest == hashlib.sha256((ROOT / f"lesson_cases/{sid}.py").read_bytes()).hexdigest(), sid
+    assert video["rgb_pixels_exact"] and video["detector_predictions_exact"] and video["overlays_exact"]
+    assert all(video["capture_released"].values())
+    assert len(video["tracking"]["ids"]) == video["video"]["frames"]
+    extensions.append({"id": "video-file-and-tracking", "source_and_evidence_match": True})
+    closure = json.loads((ROOT / "artifacts/checks/curriculum-closure.json").read_text())
+    assert closure["required_issues_open"] == 0
+    assert len(closure["closure_review_reports"]) == 4
+    for review in closure["closure_review_reports"]:
+        assert review["required_issues_open"] == 0
+        assert review["report_sha256"] == hashlib.sha256((ROOT / review["report"]).read_bytes()).hexdigest()
     report = {"scope": "Current case SHA-256, notebook code/stdout, per-section JSON, index and page evidence markers; correctness reviews are separate",
-              "lesson_count": len(results), "passed": len(results), "results": results}
+              "lesson_count": len(results), "passed": len(results), "results": results,
+              "closure_extensions": extensions}
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
-    print(f"{len(results)} current lesson cases, notebook outputs and execution records: consistent")
+    print(f"{len(results)} current lesson cases and {len(extensions)} closure extensions: source and execution evidence consistent")
 
 
 if __name__ == "__main__":

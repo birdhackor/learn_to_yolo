@@ -1,6 +1,6 @@
 # 19 簡易tracking：框很準，ID仍可能換人
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/19-tracking.ipynb) · 原始碼：`lesson_cases/19-tracking.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/19-tracking.ipynb) · 原始碼：`lesson_cases/19-tracking.py`
 
 前置是IoU、影片frame與matching。偵測回答「當前哪些框是物件」，tracking還要回答「這個框是否上一幀的同一個物件」。兩個同類物件交叉時，偵測可以完全正確，track ID卻互換。本節固定同一組偵測框，僅比較用上一框配對、或先用速度預測再配對，並真正計算ID switch。
 
@@ -54,6 +54,29 @@ last-box分支在第5幀仍保留舊ID1，它最後於第3幀匹配到B，框為
 常見錯誤是依detections list索引當ID、允許兩條track配同一detection、在空幀清空所有狀態、把tracker預測框當成新偵測，以及用GT身份參與配對。自主練習：把`main(max_age=2)`的max_age改1。答案是速度分支的B在第5幀來之前，舊ID2的last_frame為3、間隔2，因此被刪除；即使速度完全正確仍要建立新ID3。motion的最後IDs為`[1,3]`，switches從0變1；last-box仍為3次。程式依本次max_age檢查對應switch數與最後IDs，圖的title、desc與列標題也取自實際計數。核對console與圖一致，再說明壽命與運動估計是不同選項。
 
 association就是把当前detections配給既有track；本節match用框IoU，與[偵測評估](06-evaluation.md)中的GT配對目的不同。輸入順序可回看[影片管線](18-video.md)。
+
+## 接上真正的逐幀預測
+
+人工交叉案例讓我們隔離配對規則；下面則接第18章的真實模型輸出。先只追蹤class 0紅矩形：這個最小tracker沒有類別配對門檻，混入多類別可能把不同類別接成同一ID。`runpy.run_path`讀取兩節函數，預設不執行各節的`main()`；model只訓練一次。
+
+```python
+import runpy
+import torch
+torch.set_num_threads(2)
+video = runpy.run_path('lesson_cases/18-video.py')
+tracking = runpy.run_path('lesson_cases/19-tracking.py')
+model = video['fit_detector']()
+tracker = tracking['Tracker'](motion=True, max_age=2)
+for result in video['run_stream'](video['synthetic_frames'](), model):
+    pred = result['prediction']
+    boxes = pred['boxes'][pred['labels'] == 0]
+    ids = tracker.update(boxes, result['index'])
+    print(result['index'], ids)
+```
+
+空幀也呼叫`update`，才能依frame間隔讓舊track過期。框是還原後的原圖pixel xyxy，ID順序對應本次篩選後的boxes，不能直接zip未篩選的原始predictions。
+
+[影片檔案實測](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)已把同一組真實預測接上此tracker：第0、1幀回傳`[1]`，第2–5幀`[]`，第6、7幀回傳`[2]`，其餘為`[]`。連續漏檢超過max_age，重現後只能建立新ID；運動預測沒有修好detector的漏檢。這條接線未用GT身份配對計分，不能報成新的ID switch、IDF1或HOTA成績。可執行`PYTHONPATH=. python scripts/verify_video_file.py`重跑實際檔案與接線驗證；需先安裝`requirements-video.txt`。
 
 本機命令需先依[README環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定依賴，並在repository根目錄執行；Colab則先跑本節環境格。
 

@@ -1,6 +1,6 @@
 # 16.3 YOLO26 訓練補強：先把已查證機制分開
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/16-training.ipynb) · 原始碼：`lesson_cases/16-training.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/16-training.ipynb) · 原始碼：`lesson_cases/16-training.py`
 
 前置是dual head、loss權重和SGD。推論用one-to-one head，不代表整個訓練期間應以相同權重分配兩條路；小物件也可能因候選格太疏而沒有正訊號。官方YOLO26介紹Progressive Loss、STAL和MuSGD，本節逐項界定已公開可核對的行為，再選Progressive權重作主要對照。不要看到三個名稱就一次全加入，否則不知道結果由誰造成。
 

@@ -1,6 +1,6 @@
 # Grid MiniYOLO：loss 必須能手算
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-loss.ipynb){ .md-button }
 
 前置：[targets](07-targets.md)。本節在訓練前用人工 logits 驗證三件事：數值是否吻合、哪些位置收到梯度、空圖能否 backward。只看到 total loss 是有限數字不足以證明 mask 正確。
 
@@ -53,7 +53,7 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
 
 scalar 是 shape `[]` 的單值 tensor；`sum()*0` 保留與 prediction 的計算關係，梯度為0。空圖沒有正格：box 與 class 回傳連到計算圖的 scalar 0，objectness 仍是 .693147。對空 tensor 直接做 mean 會得到 NaN，不能靠刪掉空圖解決。這個分支讓全背景 batch 仍有有效梯度。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-loss.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-loss.py`，應核對 `box .109375 / objectness .693147 / classification .693147 / total 1.933169`、正負梯度 `-.03125/.03125`，並透過空圖 backward。這是 loss 的人工單元實驗，沒有 AP 結果。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-loss.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-loss.py`，應核對 `box .109375 / objectness .693147 / classification .693147 / total 1.933169`、正負梯度 `-.03125/.03125`，並透過空圖 backward。這是 loss 的人工單元實驗，沒有 AP 結果。
 
 收益是每一項監督和梯度方向都能被驗證；代價是 MSE 未直接表達框重疊品質，平均 BCE 在稀疏場景也可能使背景訊號佔優。不要在尚未確認資料與 mask 時先調權重。第 11 章才單獨替換定位目標，看 IoU 類 loss 改了什麼。
 

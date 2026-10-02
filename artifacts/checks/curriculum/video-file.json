@@ -1,0 +1,134 @@
+{
+  "verified_at_utc": "2026-10-02T18:06:51.020971+00:00",
+  "code_commit": "c0463720b24c4d8a86c739f8c2784ad25164a6ee",
+  "code_commit_scope": "Base checkout commit before the extension is committed; script and lesson SHA-256 identify the executed working-tree bytes",
+  "script_sha256": "f7820880f0c89c715c58b2f7ad4682ee9283db4d1a4d76a75787831f155f5b4b",
+  "lesson_case_sha256": {
+    "18-video": "2d7c5acafb068d819c740fd41c6b30e1d2ca798e94ab0ced29806fb732139f25",
+    "19-tracking": "adf6924a818b9d10e912a08d7aa1437abc27a2ec285a2d094b5834a5f1050895"
+  },
+  "device": "cpu",
+  "torch": "2.9.1+cpu",
+  "numpy": "2.3.5",
+  "opencv": "4.13.0",
+  "model_parameters": 15511,
+  "training": {
+    "steps": 160,
+    "samples": 32,
+    "seed": 7,
+    "data_seed": 4100,
+    "batch_size": 8,
+    "optimizer": "Adam",
+    "learning_rate": 0.01
+  },
+  "video": {
+    "codec": "FFV1",
+    "container": "AVI",
+    "frames": 12,
+    "source_fps": 20,
+    "source_size_hw": [
+      64,
+      96
+    ],
+    "last_timestamp_s": 0.55,
+    "sha256": "1c124d4aae1e30c4eed7f6c2e5cb98613ad1e059bce7f657c78be00c83fd64dc",
+    "bytes": 9232
+  },
+  "rgb_pixels_exact": true,
+  "detector_predictions_exact": true,
+  "overlays_exact": true,
+  "capture_released": {
+    "eof": true,
+    "early_generator_close": true,
+    "open_failure": true
+  },
+  "boxes_per_frame": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "tracking": {
+    "class_id": 0,
+    "motion": true,
+    "max_age": 2,
+    "ids": [
+      [
+        1
+      ],
+      [
+        1
+      ],
+      [],
+      [],
+      [],
+      [],
+      [
+        2
+      ],
+      [
+        2
+      ],
+      [],
+      [],
+      [],
+      []
+    ],
+    "original_pixel_boxes": [
+      [
+        [
+          4.660533905029297,
+          14.066386222839355,
+          16.72848892211914,
+          31.179786682128906
+        ]
+      ],
+      [
+        [
+          6.64886999130249,
+          15.054085731506348,
+          19.934675216674805,
+          30.956418991088867
+        ]
+      ],
+      [],
+      [],
+      [],
+      [],
+      [
+        [
+          35.62268829345703,
+          18.666748046875,
+          47.192752838134766,
+          33.39585494995117
+        ]
+      ],
+      [
+        [
+          37.14796447753906,
+          20.521753311157227,
+          50.35932540893555,
+          33.725948333740234
+        ]
+      ],
+      [],
+      [],
+      [],
+      []
+    ],
+    "limits": "Actual detector input; no GT identity matching, IDF1/HOTA or tracking quality claim"
+  },
+  "file_pipeline_wall_seconds": 0.015970064000612183,
+  "file_pipeline_timing_scope": "Entire file consumption including capture/open/read/decode, CPU preprocess/model/postprocess/drawing and Python collection; excludes prior training, encoding and disk output; no display or network queue",
+  "verification_wall_seconds": 1.009969137000553,
+  "verification_timing_scope": "Inside verify(), including fixture encoding, decoding and resource checks, model initialization/training, two inference streams, tracking, first-overlay save and hashes; excludes imports, process startup and final JSON write",
+  "limits": "Controlled lossless generated video, CPU only; no physical camera, lossy MP4/color-space parity, variable-frame-rate PTS, live/network latency or formal throughput benchmark"
+}

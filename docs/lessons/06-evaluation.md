@@ -2,7 +2,7 @@
 
 一張疊圖看起來不錯，不表示漏檢少或背景誤報少。評估要把同類預測與同圖真值配對，按score排序，再計算TP、FP、FN與PR曲線。本節用人工框手算，建立可核對的計分規則。本頁先補上xyxy與IoU的意思；不需要已訓練模型。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/06-evaluation.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-evaluation.py`。CPU純評估，所有框與score人工指定，不做backward。AP採**all-points interpolated**定義；這不是完整COCO evaluator重現。原始評估來源可讀 [Pascal VOC官方評估說明](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) 與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/06-evaluation.ipynb)，或 `PYTHONPATH=. python lesson_cases/06-evaluation.py`。CPU純評估，所有框與score人工指定，不做backward。AP採**all-points interpolated**定義；這不是完整COCO evaluator重現。原始評估來源可讀 [Pascal VOC官方評估說明](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) 與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)。
 
 ## Matching是評估規則，不是訓練assignment
 

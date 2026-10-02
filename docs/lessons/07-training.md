@@ -1,6 +1,6 @@
 # Grid MiniYOLO：三步訓練與診斷
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-training.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-training.ipynb){ .md-button }
 
 前置：[資料](07-data.md)、[targets](07-targets.md)、[loss](07-loss.md)。我們已有畫素、責任與人工梯度答案，現在才接上 CNN 和 optimizer。目標是先證明 forward、backward、step 都真的執行，而後再規劃少量 overfit 和獨立資料評估。
 
@@ -12,7 +12,7 @@ width=8是首層channel數。輸入沿backbone依序變成：
 
 `[B,3,64,64] → [B,8,32,32] → [B,16,16,16] → [B,32,8,8] → adaptive pool [B,32,4,4] → 3×3 conv → 1×1 head [B,7,4,4] → permute [B,4,4,7]`。
 
-[完整GridDetector](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/miniyolo/models.py)使用三次stride2卷積，再把空間平均到4×4。head的wh bias人工設−1.8、obj bias設−2；sigmoid(−2)≈.1192解釋初始objectness約.12，而不是前節零logits的.5。這是稀疏物件的初始化選擇，不是預訓練能力。
+[完整GridDetector](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/miniyolo/models.py)使用三次stride2卷積，再把空間平均到4×4。head的wh bias人工設−1.8、obj bias設−2；sigmoid(−2)≈.1192解釋初始objectness約.12，而不是前節零logits的.5。這是稀疏物件的初始化選擇，不是預訓練能力。
 
 ## 一個固定 batch 的完整更新
 
@@ -39,7 +39,7 @@ for step in range(3):
 
 正負均值都下降不一定立刻代表錯誤：60 個背景格可能先被學會。但若持續下降且正格沒有區分，就必須檢視分項 loss 與解碼後框，而不能只說 total 變小。訓練分數不等於 precision；它們是網路對這個 batch 的輸出。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-training.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-training.py`。應看到 step 0、1、2 三行有限分項值，最後是 `3 real CPU optimizer steps; parameters changed; no generalization claim`。精確 loss 隨 PyTorch／核心實作可能有末位差異，透過條件是有限梯度、參數更新、正格數與 shape 正確，不要求三點曲線單調。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-training.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-training.py`。應看到 step 0、1、2 三行有限分項值，最後是 `3 real CPU optimizer steps; parameters changed; no generalization claim`。精確 loss 隨 PyTorch／核心實作可能有末位差異，透過條件是有限梯度、參數更新、正格數與 shape 正確，不要求三點曲線單調。
 
 ## 少量 overfit 與泛化是後續兩個關卡
 

@@ -1,6 +1,6 @@
 # 用自己的圖片：先保持座標與類別契約
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/08-own-images.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/08-own-images.ipynb){ .md-button }
 
 前置：[完整推論](07-inference.md)、[座標轉換](04-coordinates.md)。本節處理單張非正方形圖片：讀取、RGB／CHW 轉換、letterbox、推論、框還原。它與「新增自己的類別」是兩件事；把照片放進模型不會讓紅／藍矩形模型自動認識汽車。
 
@@ -28,7 +28,7 @@ original_boxes = undo_letterbox(pred['boxes'], meta)
 
 ## 可核對的快速實驗
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/08-own-images.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`。應看到原圖 shape `(3,80,120)`、上述 input box 與 metadata，roundtrip 回 `[20,10,60,30]`。人工高分logits經decoder和undo再核對同一個框。另一段先做三次參數更新，再儲存、用`weights_only=True`載入，確認重載前後logits逐值相等；最後真正讀取PNG，輸出原圖座標JSON及疊框PNG。class數與配置不一致的checkpoint也必須被拒絕。三步產生的候選只證明權重已套用，不稱為偵測成功。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/08-own-images.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`。應看到原圖 shape `(3,80,120)`、上述 input box 與 metadata，roundtrip 回 `[20,10,60,30]`。人工高分logits經decoder和undo再核對同一個框。另一段先做三次參數更新，再儲存、用`weights_only=True`載入，確認重載前後logits逐值相等；最後真正讀取PNG，輸出原圖座標JSON及疊框PNG。class數與配置不一致的checkpoint也必須被拒絕。三步產生的候選只證明權重已套用，不稱為偵測成功。
 
 ## 實際載入模型，推論指定圖片
 

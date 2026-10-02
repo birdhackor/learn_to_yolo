@@ -1,6 +1,6 @@
 # Grid MiniYOLO：把框變成監督
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-targets.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-targets.ipynb){ .md-button }
 
 前置：[資料契約](07-data.md)。本節要回答「一張圖有兩個框，為什麼模型有 16 個輸出位置，誰應該學什麼」。模型尚未參與運算；我們先用人工答案確認 assignment（責任分配：哪個輸出位置負責哪個真實框）。這一步決定訓練監督，與推論 NMS（刪除重複預測框）、評估 matching（配對預測框與真實框）是三個不同程式。
 
@@ -34,7 +34,7 @@ red = target['box'][0, 1, 1]  # [0,.25,.25,.25]
 # pred[..., :4][pos] 只取負責物件的格子
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-targets.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-targets.py`。應列出正格 `[[0,1,1],[0,2,3]]`、兩個 target 與 `positive/negative counts 2 30`。再把第二個框改成 `[10,14,26,30]`：它的中心也在同一格，函式必須拋 ValueError，不能悄悄覆蓋第一個框。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-targets.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-targets.py`。應列出正格 `[[0,1,1],[0,2,3]]`、兩個 target 與 `positive/negative counts 2 30`。再把第二個框改成 `[10,14,26,30]`：它的中心也在同一格，函式必須拋 ValueError，不能悄悄覆蓋第一個框。
 
 ## 得到的能力與留下的限制
 

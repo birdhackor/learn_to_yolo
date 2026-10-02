@@ -1,6 +1,6 @@
 # 15.1 Feature map 到 attention：四個位置怎麼互相讀取
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/15-attention-bridge.ipynb) · 原始碼：`lesson_cases/15-attention-bridge.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/15-attention-bridge.ipynb) · 原始碼：`lesson_cases/15-attention-bridge.py`
 
 前置是feature map、矩陣乘法、softmax與backward。卷積在固定區域性鄰域使用共享濾波器；attention則根據當前特徵，計算某個位置要向其他位置讀取多少資訊。本節不先背Q、K、V的名稱，而是用2×2特徵圖，一列一列算出相似度、權重和輸出。
 

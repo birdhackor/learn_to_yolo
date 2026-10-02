@@ -1,6 +1,6 @@
 # YOLOv2 機制：anchor 是尺寸起點
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/09-anchors.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/09-anchors.ipynb){ .md-button }
 
 前置：[grid targets](07-targets.md)、[loss](07-loss.md)。上一版每格直接回歸 normalized 寬高；這次問「若多數物件的尺寸集中在幾種形狀，是否可以從合適的起點回歸修正量」。anchor 是預先指定的寬高先驗，沒有繫結某一類。
 
@@ -31,7 +31,7 @@ valid = ~ignore
 obj_loss = F.binary_cross_entropy_with_logits(raw[...,4][valid], obj_target[valid])
 ```
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/09-anchors.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchors.py`。應看到尺寸 IoU `[1,.25]`、best=0、log wh `[0,0]`、計數 `1/1/30`，再透過 encode/decode、ignore 梯度0、非正槽框梯度0及一次真實 SGD 更新。這是槽位學習實驗，沒有已訓練偵測AP。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/09-anchors.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchors.py`。應看到尺寸 IoU `[1,.25]`、best=0、log wh `[0,0]`、計數 `1/1/30`，再透過 encode/decode、ignore 梯度0、非正槽框梯度0及一次真實 SGD 更新。這是槽位學習實驗，沒有已訓練偵測AP。
 
 ## 收益與代價
 

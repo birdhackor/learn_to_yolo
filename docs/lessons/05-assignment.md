@@ -4,7 +4,7 @@
 
 歷史概念參考 [YOLOv1原始論文](https://arxiv.org/abs/1506.02640) 的grid與中心責任。本課MiniYOLO採每格**一個框slot**、獨立objectness、softmax類別；省略原版每格多框與其confidence/loss設計，所以不是YOLOv1重現，也不是完整多物件容量方案。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/05-assignment.ipynb)，或 `PYTHONPATH=. python lesson_cases/05-assignment.py`。CPU案例生成target、驗證同格碰撞，再在人工feature map上更新head兩步；沒有從圖片訓練detector效果。
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/05-assignment.ipynb)，或 `PYTHONPATH=. python lesson_cases/05-assignment.py`。CPU案例生成target、驗證同格碰撞，再在人工feature map上更新head兩步；沒有從圖片訓練detector效果。
 
 slot是一個可輸出框的位置，annotation是圖片標註；objectness在本模型表示這格／槽是否分配到物件，logit是尚未轉成機率的原始實數。
 

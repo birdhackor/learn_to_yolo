@@ -2,7 +2,7 @@
 
 先回答一個最小問題：程式跑完一次 `loss.backward()`，模型已經學到了嗎？還沒有。這一步只算出調整方向；`optimizer.step()` 才修改參數。本節用一個可手算的數字，讓 forward、loss、gradient 和更新接在一起。前置只需會建立 Python 變數，不用記得微積分推導。
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/00-warmup.ipynb)。本機在專案根目錄執行 `PYTHONPATH=. python lesson_cases/00-warmup.py`。實驗只有一筆資料、一個參數、CPU 一步 SGD；不用下載資料。這是算術驗證，不代表完成了任何圖片任務。
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/00-warmup.ipynb)。本機在專案根目錄執行 `PYTHONPATH=. python lesson_cases/00-warmup.py`。實驗只有一筆資料、一個參數、CPU 一步 SGD；不用下載資料。這是算術驗證，不代表完成了任何圖片任務。
 
 ## 從輸入走到誤差
 

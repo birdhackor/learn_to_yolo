@@ -1,6 +1,6 @@
 # 15.2 YOLOv12 Area Attention：互動範圍是一筆預算
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/15-area-attention.ipynb) · 原始碼：`lesson_cases/15-area-attention.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/15-area-attention.ipynb) · 原始碼：`lesson_cases/15-area-attention.py`
 
 前置是上一節QK-softmax-V和N²成本。full attention讓每個位置讀全圖，feature map越大，pair越多。若把token分成數個區域，各自attention，再拼回原圖，會少哪些計算，又失去哪一些互動？本節不只數矩陣大小，也用干預一個遠處token檢查資訊能否跨區。
 

@@ -1,6 +1,6 @@
 # 18 影片串流：處理每一幀，並分清FPS與延遲
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/18-video.ipynb) · 原始碼：`lesson_cases/18-video.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/18-video.ipynb) · 原始碼：`lesson_cases/18-video.py`
 
 前置是[完整圖片推論](07-inference.md)與[letterbox座標轉換](04-coordinates.md)。影片並不要求換掉圖片detector，而是把「讀一張圖→前處理→模型→後處理→畫框」放進連續迴圈。真正新問題是幀的時間、來源大小、資源釋放與佇列。本節先使用可控連續幾何畫面，測一條真實推論管線，再提供可替換的影片／相機adapter；預設不使用相機許可權。
 
@@ -34,13 +34,13 @@ generator每次`yield`交出一幀結果，下游要求下一筆才繼續處理�
 
 | 階段 | median毫秒 | 包含 |
 | --- | --- | --- |
-| 前處理 | 0.187 | uint8→tensor、縮放、padding |
-| 模型 | 0.199 | 一次forward |
-| 後處理 | 0.367 | score篩選、NMS、框還原 |
-| 畫框 | 0.049 | PIL影像與文字框 |
-| 全流程 | 0.841 | 上述各項的逐幀總時間 |
+| 前處理 | 0.199 | uint8→tensor、縮放、padding |
+| 模型 | 0.215 | 一次forward |
+| 後處理 | 0.337 | score篩選、NMS、框還原 |
+| 畫框 | 0.045 | PIL影像與文字框 |
+| 全流程 | 0.887 | 上述各項的逐幀總時間 |
 
-各分項median相加不一定等於total median，因為每項的中位幀可能不同。這裡未包含影片解碼、網路、磁碟、螢幕重新整理或相機佇列；因此不能用`1000/0.841`推算相機實際輸出FPS。來源本來只有20FPS，也沒有sleep模擬實際到達。
+各分項median相加不一定等於total median，因為每項的中位幀可能不同。這裡未包含影片解碼、網路、磁碟、螢幕重新整理或相機佇列；因此不能用`1000/0.887`推算相機實際輸出FPS。來源本來只有20FPS，也沒有sleep模擬實際到達。
 
 對30FPS相機，來源間隔約33.3毫秒。若每幀處理50毫秒，無限排隊會讓畫面越來越舊，即使程式仍持續輸出約20FPS。應決定保留全部幀、丟棄舊幀或降低解析度。FPS描述一段時間處理幾幀，latency描述一幀從取得到完成多久；要量實際畫面年齡，還需同時記擷取時間、排隊時間與完成時間。
 
@@ -54,7 +54,9 @@ generator每次`yield`交出一幀結果，下游要求下一筆才繼續處理�
 
 ## 接真影片的同一個入口
 
-案例提供`opencv_frames(source)`adapter（把來源轉成Frame的介面），需額外安裝`opencv-python-headless`；讀檔使用`cv2.VideoCapture('clip.mp4')`、BGR轉RGB，最後`finally: capture.release()`。可用`run_stream(opencv_frames('clip.mp4'),model)`替換來源。相機來源可傳0，但本次沒有開啟或驗證相機。檔案的frame時間用index/fps，相機用取得時的monotonic時間；可變frame rate或網路串流應改讀可靠的媒體PTS（影格呈現時間戳），不把固定FPS推算當真實擷取時間。
+案例提供`opencv_frames(source)`adapter（把來源轉成Frame的介面），需額外安裝`opencv-python-headless`；讀檔使用`cv2.VideoCapture('clip.mp4')`、BGR轉RGB，最後`finally: capture.release()`。可用`run_stream(opencv_frames('clip.mp4'),model)`替換來源。相機來源可傳0，但本次沒有開啟或驗證相機。
+
+有可用FPS的固定幀率檔案，以index/fps估算frame來源時間；若FPS未知或來源是相機，adapter改用取得時的monotonic經過時間（從開啟後開始計），並非sensor曝光時間。可變frame rate或網路串流應改讀可靠的媒體PTS（影格呈現時間戳），不把固定FPS推算當真實擷取時間。
 
 收益是圖片模型可接不同來源、保留座標與時間契約；代價是解碼、格式、佇列與輸出資源。常見錯誤是OpenCV BGR未轉RGB、每幀重新載入權重、未還原padding、將frame index當毫秒，或只測forward就報端到端延遲。
 
@@ -62,15 +64,32 @@ generator每次`yield`交出一幀結果，下游要求下一筆才繼續處理�
 
 若把fps改10、位置步長保持4，每秒位移從80降到40畫素，GIF也由每幀50毫秒改為100毫秒播放；12幀的最後時間戳是1.1秒、總播放時間1.2秒。單幀推論shape不變，這是來源運動速度改變，不是模型加速。GIF時長以`round(1000/fps)`毫秒設定，本題10／20FPS可精確表示；任意FPS需留意GIF播放器的時間精度。
 
-真影片adapter沒有在本輪測試；以下是實際消費generator的最小接法。先`pip install opencv-python-headless`，把檔案放在目前目錄，且已執行本節完整case以定義各函數：
+同一個adapter已用12幀FFV1無損AVI檔實測：寫入BGR後重讀為RGB，像素與記憶體來源完全相同，模型框、分數、類別與疊圖也相同；12幀的時間戳仍是0至.55秒。程式核對讀到檔尾、提前關閉generator與開檔失敗時，真正的capture都已釋放。[檔案實測紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)保留影片SHA與結果。這沒有測實體相機，也不能保證有損MP4編解碼後的像素完全相同。
 
-```python
-model = fit_detector()
-for result in run_stream(opencv_frames('clip.mp4'), model):
-    print(result['index'], len(result['prediction']['boxes']))
+可自己重跑這段不用下載的檔案實驗：
+
+```bash
+python -m pip install -r requirements-video.txt
+PYTHONPATH=. python scripts/verify_video_file.py
 ```
 
-只呼叫run_stream不會开始逐幀工作，for迴圈才消費它。這份合成圖模型仍不能直接辨識任意照片物件；換真實來源前要有對應模型与類別。
+它產生`artifacts/runs/video-file/lossless-fixture.avi`及疊圖，也將真實預測接給第19章tracker。影片處理計時包括capture開檔、讀取與解碼、前後處理、模型、畫框及結果收集；不含先前訓練、影片編碼、磁碟輸出、顯示或網路佇列。不要把這12幀的小測試當影片正式效能。
+
+換自己的`clip.mp4`時，先安裝上面的固定依賴，並在repository根目錄放好檔案。以下用`runpy`載入函數，新Python工作階段也可執行；不會自動跑case的`main()`。`closing`確保迴圈提前`break`或推論出錯時也關閉來源：
+
+```python
+import runpy
+import torch
+from contextlib import closing
+torch.set_num_threads(2)
+video = runpy.run_path('lesson_cases/18-video.py')
+model = video['fit_detector']()
+with closing(video['opencv_frames']('clip.mp4')) as frames:
+    for result in video['run_stream'](frames, model):
+        print(result['index'], len(result['prediction']['boxes']))
+```
+
+只呼叫run_stream不會开始逐幀工作，for迴圈才消費它。這份合成圖模型仍不能直接辨識任意照片物件；換真實來源前要有對應模型与類別。若在Colab執行過本節完整case，函數已在同一工作階段；本機單獨執行`python lesson_cases/18-video.py`則不會替下一個Python程序保留函數。
 
 本機命令需先依[README環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定依賴，並在repository根目錄執行；Colab則先跑本節環境格。
 
@@ -126,11 +145,11 @@ for result in run_stream(opencv_frames('clip.mp4'), model):
         0
       ],
       "median_ms_excluding_first": {
-        "preprocess": 0.18675100000109524,
-        "model": 0.19888899998932175,
-        "postprocess": 0.36744300001601005,
-        "drawing": 0.04854299999124123,
-        "total": 0.8406750000062857
+        "preprocess": 0.19916899964300683,
+        "model": 0.21497299985639984,
+        "postprocess": 0.3365060001669917,
+        "drawing": 0.045397999201668426,
+        "total": 0.886802999957581
       },
       "camera_adapter": "provided, not executed",
       "limits": "synthetic lazy producer; no capture/codec/display/network queue latency measured"

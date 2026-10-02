@@ -1,6 +1,6 @@
 # 12.1 Anchor-free：從候選點量出四條邊
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-anchor-free.ipynb) · 實驗原始碼：`lesson_cases/12-anchor-free.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/12-anchor-free.ipynb) · 實驗原始碼：`lesson_cases/12-anchor-free.py`
 
 讀過框座標、stride 和第 7 章 grid detector 即可開始。問題是：一個偵測位置要先選「寬 20、高 10」的 anchor，再學偏移嗎？如果資料的長寬比改變，這組尺寸先驗是否仍合適？本節換掉框的表示方式，保留候選位置和需要有人負責物件的規則。
 

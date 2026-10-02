@@ -1,6 +1,6 @@
 # Grid MiniYOLO：把輸出接回圖片
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-inference.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-inference.ipynb){ .md-button }
 
 前置：[targets](07-targets.md)、[三步訓練](07-training.md)、[NMS](06-decode-nms.md)。本節把 dataset→model→decode→score filtering→分類別 NMS 接成可核對的推論介面。故障可能出現在每一段，因此先讓人工已知 logits 走同一個 decoder，再讓小模型輸出走它。
 
@@ -38,7 +38,7 @@ with torch.inference_mode():
 
 `eval()` 改變模型模式，`inference_mode()` 停止建立梯度；兩者用途不同。decoder 在每個類別內以 score 排序做 NMS，兩個不同類別即使重疊也不互相壓掉。score threshold=.25 決定留下哪些候選；NMS IoU=.5 決定哪些同類重複候選被刪。二者都不是 held-out matching 的 IoU 門檻。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/07-inference.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。先列出未訓練模型的候選數，只證明介面相容；再列出 `artificial known-logit fixture counts [2,1,0]`，每個人工框還原到 .02 pixel 以內。另檢查 batch=1 仍回傳長度 1 的 list，不會因 `squeeze()` 丟失 batch 軸。最後額外在相鄰cell放一個低一點分數、幾乎重疊的紅候選；NMS IoU=1保留2框，改.5剩1框，顯示同類去重實際發生。這個人工對照也不代表模型學會。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/07-inference.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。先列出未訓練模型的候選數，只證明介面相容；再列出 `artificial known-logit fixture counts [2,1,0]`，每個人工框還原到 .02 pixel 以內。另檢查 batch=1 仍回傳長度 1 的 list，不會因 `squeeze()` 丟失 batch 軸。最後額外在相鄰cell放一個低一點分數、幾乎重疊的紅候選；NMS IoU=1保留2框，改.5剩1框，顯示同類去重實際發生。這個人工對照也不代表模型學會。
 
 ## 圖片尺寸與顯示的最後一段
 

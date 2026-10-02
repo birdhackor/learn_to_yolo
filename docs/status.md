@@ -34,6 +34,8 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 本輪以六位全新讀者subagent逐節檢查42節的理解、圖文與數字，再以另外六位技術reviewer核對原始論文、固定官方程式碼及計算。必要修改已由reviewer獨立複查；[12份審查與覆蓋紀錄](validation/curriculum.md)保留原始發現與關閉結果。
 
+收尾另補[自有JSON／PNG訓練閉環](lessons/08-own-data.md)：三類模型固定1600個CPU步驟後，train AP50=1.0；獨立validation／新test為.388889／.666667，checkpoint重讀與原圖座標推論通過。最初160步定位不足的證據保留，沒有只靠loss下降宣布overfit。另完成12幀實際AVI讀檔、RGB／預測一致、capture釋放及[真正預測接tracking](lessons/19-tracking.md)；實體攝影機仍未測。新增內容另經四位獨立reviewer檢查，見[收尾紀錄](validation/curriculum.md)。
+
 首頁另有[初讀與修訂版複查報告](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/homepage-fresh-reader.md)，包含圖文一致性及手機呈現的檢查。這些是編輯審查紀錄，沒有做過真人學生的學習實驗。
 
 ## 之後有 GPU 時的實驗順序

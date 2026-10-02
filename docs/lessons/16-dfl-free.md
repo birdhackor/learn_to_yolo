@@ -1,6 +1,6 @@
 # 16.1 YOLO26 DFL-free：移除 bins，仍要把框學好
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/16-dfl-free.ipynb) · 原始碼：`lesson_cases/16-dfl-free.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/16-dfl-free.ipynb) · 原始碼：`lesson_cases/16-dfl-free.py`
 
 前置是[四邊距離](12-anchor-free.md)和[DFL期待值](12-dfl.md)。ltrb是點到左／上／右／下邊界的距離，本例一格8pixel；xyxy是左上x,y與右下x,y。DFL每條邊輸出K個logits，再softmax、加權成距離；這條路能提供分佈監督，也增加head輸出與匯出操作。若部署需求重視簡潔，可以直接預測四個距離嗎？本節比較表示與範圍，避免把「移除DFL」誤認成「沒有定位loss」。
 

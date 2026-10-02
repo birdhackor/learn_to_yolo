@@ -1,6 +1,6 @@
 # 20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/20-deployment.ipynb) · 原始碼：`lesson_cases/20-deployment.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/20-deployment.ipynb) · 原始碼：`lesson_cases/20-deployment.py`
 
 前置是model.eval、圖片契約、letterbox與decode。模型檔成功產生，不代表部署成功；運算圖、輸入layout、分數公式、NMS和框還原任一處不同，都可能造成框偏移。本節真的匯出ONNX、執行checker與ONNX Runtime CPU，再比較raw輸出和還原後的框。TensorRT另用Actions／Modal在單張L4實際建置與執行，紀錄見下方；Colab本身仍執行CPU範例。
 

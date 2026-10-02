@@ -60,6 +60,8 @@
 5. 第10章：同一個TwoScale模型40步訓練1張圖，实际decode两head并画预测；不宣稱held-out小物件提升。
 6. 資料準備：Fashion-MNIST的SHA-256／IDX讀取與40步分類驗證，保留官方test邊界。
 7. 第20章：手動Actions呼叫單張L4，原GridDetector40步後實際建FP32／允許FP16混合精度的TensorRT engine；核對B1–4的raw、非空decoded框、類別與分數。未檢查逐層精度，不宣稱全部層使用FP16。engine只放專用Volume，不進普通Git。
+8. 第8章：補JSON／PNG的三類完整訓練入口。160步定位不足的紀錄保留；依train的座標／mask診斷，事前固定1600步，其餘設定與train／validation PNG不變。train AP50=1.0，validation=.388889，新的test seed7001只評一次、AP50=.666667；checkpoint重讀及原圖推論通過。
+9. 第18／19章：真正寫出並重讀12幀FFV1 AVI；RGB、預測與疊圖相同，capture在檔尾、提前close及失敗時均釋放。真實class0預測接上tracker，保留漏檢造成新ID的結果；不宣稱新的追蹤品質指標。
 
 ## 已有GPU與checkpoint證據
 
@@ -82,6 +84,19 @@
 
 `python scripts/validate_curriculum_evidence.py`逐節核對目前case的SHA-256、notebook code與stdout、JSON/index及頁面證據；Pages建置也執行此檢查。它驗證版本一致，科學結論仍依獨立查核。
 
-教材固定為新的`lessons-v0.2.0`，舊`lessons-v0.1.0`保留不動。發布後從公開repo做空checkout，實際執行00／20兩種依賴組合的notebook初始化格及CPU案例，兩者通過；42節程式SHA與已審查工作區相同。[公開tag初始化驗證](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)保存完整輸出。這是本地直譯器上的公開clone驗證，沒有登入Google或聲稱測過Colab分配的GPU。
+教材固定為新的`lessons-v0.3.0`，已發布的`lessons-v0.1.0`與`lessons-v0.2.0`保留不動。前輪從公開v0.2空checkout，實際執行00／20兩種依賴組合的notebook初始化格及CPU案例，兩者通過；[v0.2公開tag初始化驗證](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)保留完整輸出。這是本地直譯器上的公開clone驗證，沒有登入Google或聲稱測過Colab分配的GPU。
+
+## 對照大綱的最後補齊
+
+另由獨立審查對照大綱，發現第8章雖有一步更新，尚缺完成條件中的overfit與獨立圖片推論；已補上述第8項。第18／19章的實際檔案及接線也一併補驗證。新內容再由兩位陌生讀者與另外兩位技術reviewer審查，保留初讀與修後複查：
+
+|範圍|讀者審查|技術核查|
+|---|---|---|
+|自有JSON資料、訓練與checkpoint|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/closure-reader-custom-data.md)|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/closure-accuracy-custom-data.md)|
+|影片檔案與tracking接線|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/closure-reader-application.md)|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/closure-accuracy-application.md)|
+
+[收尾證據與費用範圍](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-closure.json)保存四份新review的SHA、已關閉結果與原GPU停止紀錄；必要問題均經提出者獨立複查。新版來源／輸出檢查也驗證兩條補充入口及四份review沒有版本不一致。
+
+收尾沿用已有L4／Volume／HF／TensorRT證據，沒有新增Modal GPU工作或修改帳號費用上限。使用者本輪費用上限10美元；新增訓練全在本機CPU。網站發布使用標準Linux Actions，build最多10分鐘、deploy最多5分鐘；即使以[官方每分鐘0.006美元](https://docs.github.com/en/billing/reference/actions-runner-pricing)估算，每次runner計算上限約0.09美元。這是保守計算範圍，不是帳單；不包含先前已完成的GPU工作或整個帳號其他工作。
 
 真人學生學習成效、完整真實場景長訓練、INT8與攝影機實測仍屬後續工作。

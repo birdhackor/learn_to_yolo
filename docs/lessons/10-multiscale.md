@@ -1,6 +1,6 @@
 # YOLOv3 機制：同一個 pixel 框看兩種尺度
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/10-multiscale.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/10-multiscale.ipynb){ .md-button }
 
 前置：[grid targets](07-targets.md)、[anchor](09-anchors.md)。小物件只有8×8pixel，若整張64×64只保留4×4特徵，每個位置涵蓋16pixel，區域性訊號容易被壓縮。本節研究增加一個較細的8×8預測head，先看shape、encode/decode與成本，再問是否值得留下。
 
@@ -53,7 +53,7 @@ for cls in labels.unique():
 
 同類兩框重疊為1，單次分類別NMS留下其中一個，數量2→1。本toy每尺度本來只有一框，所以各自decode helper內的NMS不會代替跨尺度去重；完整case會收集各類keep索引。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/10-multiscale.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/10-multiscale.py`。應核對表內兩個target、head shapes、候選數`64+16=80`；兩head均有非零梯度並做一次更新。最後人工logits分別經兩種尺度decode，同時還原小框，再真的cat boxes／scores／labels及分類別NMS，核對跨尺度重複框2→1。這是機制驗證，沒有小物件AP提升證據。
+執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/10-multiscale.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/10-multiscale.py`。應核對表內兩個target、head shapes、候選數`64+16=80`；兩head均有非零梯度並做一次更新。最後人工logits分別經兩種尺度decode，同時還原小框，再真的cat boxes／scores／labels及分類別NMS，核對跨尺度重複框2→1。這是機制驗證，沒有小物件AP提升證據。
 
 ## 收益、代價與適用條件
 

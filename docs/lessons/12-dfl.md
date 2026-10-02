@@ -1,6 +1,6 @@
 # 12.4 DFL：把一條邊距離學成分佈
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.2.0/notebooks/12-dfl.ipynb) · 原始碼：`lesson_cases/12-dfl.py`
+[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/12-dfl.ipynb) · 原始碼：`lesson_cases/12-dfl.py`
 
 前置是 softmax、cross entropy、四邊距離和反向傳播。連續回歸直接輸出一個距離，能否改成「它比較接近 1 格，但也有一部分落在 2 格」？Distribution Focal Loss，簡稱 DFL，為非整數距離提供相鄰兩個 bin 的監督，再用分佈期待值還原距離。本節會算 loss、梯度和解碼，避免只把多個 channel 叫成「分佈」。
 
