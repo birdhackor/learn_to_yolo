@@ -1,0 +1,431 @@
+{
+  "pages_checked": 42,
+  "browser": "Chromium / Playwright",
+  "javascript_errors": [],
+  "svg_assets_checked": 19,
+  "clipped_svg_text": [],
+  "mobile_width": 390,
+  "mobile_horizontal_overflow": false,
+  "results": [
+    {
+      "id": "00-warmup",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/00-warmup.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "一次學習的超短暖身"
+    },
+    {
+      "id": "01-small-cnn",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/01-small-cnn.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "VGG 風格小 CNN：讓區域性圖樣重複使用"
+    },
+    {
+      "id": "02-diagnostics",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/02-diagnostics.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "訓練診斷：把下一個檢查點說清楚"
+    },
+    {
+      "id": "03-identity",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-identity.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "ResNet identity shortcut：先確定真的能原樣透過"
+    },
+    {
+      "id": "03-projection",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-projection.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "ResNet projection shortcut：對齊形狀也在學轉換"
+    },
+    {
+      "id": "03-comparison",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/03-comparison.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Plain／residual 對照：先控制比較條件"
+    },
+    {
+      "id": "04-localization",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/04-localization.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "單物件分類與定位：類別之外，還要回答在哪裡"
+    },
+    {
+      "id": "04-coordinates",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/04-coordinates.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "座標轉換與還原：框跟圖片一起移動"
+    },
+    {
+      "id": "05-assignment",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/05-assignment.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "多物件輸出與責任分配：哪個預測負責哪個物件"
+    },
+    {
+      "id": "06-decode-nms",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/06-decode-nms.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "人工框解碼與 NMS：少一個框不一定更好"
+    },
+    {
+      "id": "06-evaluation",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/06-evaluation.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "人工框評估與 AP50：把預測逐筆算成證據"
+    },
+    {
+      "id": "07-data",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-data.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Grid MiniYOLO：先讓資料可以被檢查"
+    },
+    {
+      "id": "07-targets",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-targets.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Grid MiniYOLO：把框變成監督"
+    },
+    {
+      "id": "07-loss",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-loss.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Grid MiniYOLO：loss 必須能手算"
+    },
+    {
+      "id": "07-training",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-training.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Grid MiniYOLO：三步訓練與診斷"
+    },
+    {
+      "id": "07-inference",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-inference.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Grid MiniYOLO：把輸出接回圖片"
+    },
+    {
+      "id": "07-heldout",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/07-heldout.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "Grid MiniYOLO：獨立資料與評估證據"
+    },
+    {
+      "id": "08-own-images",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-images.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "用自己的圖片：先保持座標與類別契約"
+    },
+    {
+      "id": "08-own-data",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/08-own-data.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "用自己的資料：類別、標註與來源切分"
+    },
+    {
+      "id": "09-anchors",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/09-anchors.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "YOLOv2 機制：anchor 是尺寸起點"
+    },
+    {
+      "id": "09-anchor-clustering",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/09-anchor-clustering.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "尺寸聚類：先驗由哪一份資料決定"
+    },
+    {
+      "id": "10-multiscale",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/10-multiscale.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "YOLOv3 機制：同一個 pixel 框看兩種尺度"
+    },
+    {
+      "id": "11-csp",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-csp.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "CSP：分一部分通道走較短的路"
+    },
+    {
+      "id": "11-fusion",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-fusion.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "特徵融合：把深層資訊送回細網格"
+    },
+    {
+      "id": "11-augmentation",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-augmentation.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "增強：畫素怎麼變，框就怎麼變"
+    },
+    {
+      "id": "11-iou-loss",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/11-iou-loss.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "IoU 類 loss：沒有重疊時還能往哪裡移"
+    },
+    {
+      "id": "12-anchor-free",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-anchor-free.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "12.1 Anchor-free：從候選點量出四條邊"
+    },
+    {
+      "id": "12-decoupled-head",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-decoupled-head.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "12.2 Decoupled head：分類和定位在哪裡分工"
+    },
+    {
+      "id": "12-assignment",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-assignment.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "12.3 Sample assignment：哪個候選值得被教"
+    },
+    {
+      "id": "12-dfl",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/12-dfl.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "12.4 DFL：把一條邊距離學成分佈"
+    },
+    {
+      "id": "13-dual-assignment",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/13-dual-assignment.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複"
+    },
+    {
+      "id": "13-nms-free",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/13-nms-free.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼"
+    },
+    {
+      "id": "14-feature-module",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/14-feature-module.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合"
+    },
+    {
+      "id": "15-attention-bridge",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/15-attention-bridge.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "15.1 Feature map 到 attention：四個位置怎麼互相讀取"
+    },
+    {
+      "id": "15-area-attention",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/15-area-attention.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "15.2 YOLOv12 Area Attention：互動範圍是一筆預算"
+    },
+    {
+      "id": "16-dfl-free",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-dfl-free.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "16.1 YOLO26 DFL-free：移除 bins，仍要把框學好"
+    },
+    {
+      "id": "16-inference-head",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-inference-head.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "16.2 YOLO26 推論 head：訓練用分支怎麼離開部署圖"
+    },
+    {
+      "id": "16-training",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/16-training.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "16.3 YOLO26 訓練補強：先把已查證機制分開"
+    },
+    {
+      "id": "17-capstone",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/17-capstone.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "17 靜態偵測結業：用一次有理由的改動交付結果"
+    },
+    {
+      "id": "18-video",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/18-video.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "18 影片串流：處理每一幀，並分清FPS與延遲"
+    },
+    {
+      "id": "19-tracking",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/19-tracking.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "19 簡易tracking：框很準，ID仍可能換人"
+    },
+    {
+      "id": "20-deployment",
+      "http_status": 200,
+      "brokenImages": [],
+      "colab": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/notebooks/20-deployment.ipynb"
+      ],
+      "mathErrors": [],
+      "h1": "20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果"
+    }
+  ]
+}

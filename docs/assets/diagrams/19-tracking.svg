@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 420" role="img" aria-labelledby="t d">
+<title id="t">ID switches at max_age=2: last-box 3, velocity 0</title>
+<desc id="d">Six frames, two ground-truth identities A and B. Top row matches last boxes with 3 switches. Bottom uses velocity prediction with 0 switches. Both use max_age=2. Frame4 misses B.</desc>
+<rect width="1040" height="420" fill="#f8fafc"/>
+<text x="20" y="35" font-family="sans-serif" font-size="22" fill="#0f172a">Last-box IoU: 3 switches</text>
+<rect x="20" y="55" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="28" y="80" font-family="sans-serif" font-size="20">frame 0</text>
+<rect x="56.4" y="110" width="23" height="18" fill="#dc2626"/>
+<text x="28" y="106" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="102.0" y="147" width="23" height="18" fill="#2563eb"/>
+<text x="28" y="143" font-family="sans-serif" font-size="17">B: ID2</text>
+<rect x="190" y="55" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="198" y="80" font-family="sans-serif" font-size="20">frame 1</text>
+<rect x="241.6" y="110" width="23" height="18" fill="#dc2626"/>
+<text x="198" y="106" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="256.8" y="147" width="23" height="18" fill="#2563eb"/>
+<text x="198" y="143" font-family="sans-serif" font-size="17">B: ID2</text>
+<rect x="360" y="55" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="368" y="80" font-family="sans-serif" font-size="20">frame 2</text>
+<rect x="426.8" y="110" width="23" height="18" fill="#2563eb"/>
+<text x="368" y="106" font-family="sans-serif" font-size="17">A: ID2</text>
+<rect x="411.6" y="147" width="23" height="18" fill="#dc2626"/>
+<text x="368" y="143" font-family="sans-serif" font-size="17">B: ID1</text>
+<rect x="530" y="55" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="538" y="80" font-family="sans-serif" font-size="20">frame 3</text>
+<rect x="612.0" y="110" width="23" height="18" fill="#2563eb"/>
+<text x="538" y="106" font-family="sans-serif" font-size="17">A: ID2</text>
+<rect x="566.4" y="147" width="23" height="18" fill="#dc2626"/>
+<text x="538" y="143" font-family="sans-serif" font-size="17">B: ID1</text>
+<rect x="700" y="55" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="708" y="80" font-family="sans-serif" font-size="20">frame 4</text>
+<rect x="797.2" y="110" width="23" height="18" fill="#2563eb"/>
+<text x="708" y="106" font-family="sans-serif" font-size="17">A: ID2</text>
+<text x="708" y="150" font-family="sans-serif" font-size="17" fill="#64748b">B: missed</text>
+<rect x="870" y="55" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="878" y="80" font-family="sans-serif" font-size="20">frame 5</text>
+<rect x="982.4" y="110" width="23" height="18" fill="#2563eb"/>
+<text x="878" y="106" font-family="sans-serif" font-size="17">A: ID2</text>
+<rect x="876.0" y="147" width="23" height="18" fill="#7c3aed"/>
+<text x="878" y="143" font-family="sans-serif" font-size="17">B: ID3</text>
+<text x="20" y="205" font-family="sans-serif" font-size="22" fill="#0f172a">Velocity + IoU: 0 switches</text>
+<rect x="20" y="225" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="28" y="250" font-family="sans-serif" font-size="20">frame 0</text>
+<rect x="56.4" y="280" width="23" height="18" fill="#dc2626"/>
+<text x="28" y="276" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="102.0" y="317" width="23" height="18" fill="#2563eb"/>
+<text x="28" y="313" font-family="sans-serif" font-size="17">B: ID2</text>
+<rect x="190" y="225" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="198" y="250" font-family="sans-serif" font-size="20">frame 1</text>
+<rect x="241.6" y="280" width="23" height="18" fill="#dc2626"/>
+<text x="198" y="276" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="256.8" y="317" width="23" height="18" fill="#2563eb"/>
+<text x="198" y="313" font-family="sans-serif" font-size="17">B: ID2</text>
+<rect x="360" y="225" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="368" y="250" font-family="sans-serif" font-size="20">frame 2</text>
+<rect x="426.8" y="280" width="23" height="18" fill="#dc2626"/>
+<text x="368" y="276" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="411.6" y="317" width="23" height="18" fill="#2563eb"/>
+<text x="368" y="313" font-family="sans-serif" font-size="17">B: ID2</text>
+<rect x="530" y="225" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="538" y="250" font-family="sans-serif" font-size="20">frame 3</text>
+<rect x="612.0" y="280" width="23" height="18" fill="#dc2626"/>
+<text x="538" y="276" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="566.4" y="317" width="23" height="18" fill="#2563eb"/>
+<text x="538" y="313" font-family="sans-serif" font-size="17">B: ID2</text>
+<rect x="700" y="225" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="708" y="250" font-family="sans-serif" font-size="20">frame 4</text>
+<rect x="797.2" y="280" width="23" height="18" fill="#dc2626"/>
+<text x="708" y="276" font-family="sans-serif" font-size="17">A: ID1</text>
+<text x="708" y="320" font-family="sans-serif" font-size="17" fill="#64748b">B: missed</text>
+<rect x="870" y="225" width="155" height="120" fill="white" stroke="#94a3b8"/>
+<text x="878" y="250" font-family="sans-serif" font-size="20">frame 5</text>
+<rect x="982.4" y="280" width="23" height="18" fill="#dc2626"/>
+<text x="878" y="276" font-family="sans-serif" font-size="17">A: ID1</text>
+<rect x="876.0" y="317" width="23" height="18" fill="#2563eb"/>
+<text x="878" y="313" font-family="sans-serif" font-size="17">B: ID2</text>
+<text x="20" y="380" font-family="sans-serif" font-size="18">Colors = assigned track IDs. A/B labels are used only for evaluation. Same detections feed both trackers.</text>
+<text x="20" y="408" font-family="sans-serif" font-size="18">Horizontal position is real. A/B display lanes separate labels; matching uses the same y coordinate.</text>
+</svg>

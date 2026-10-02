@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-02",
+  "script": "scripts/setup_cpu_environment.sh",
+  "exit_code": 0,
+  "python": "3.12.14",
+  "core_tests": {
+    "passed": 22,
+    "failed": 0
+  },
+  "preparation_validator": "passed",
+  "lessons_validator": "passed",
+  "mkdocs_strict_build": "passed",
+  "scope": "Commands executed in the current cloud environment. Saved configuration does not claim a new-task restore or environment publication."
+}

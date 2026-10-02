@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 340" role="img" aria-labelledby="title desc">
+  <title id="title">兩條路徑對齊 shape 的 projection block</title>
+  <desc id="desc">輸入為 B乘3乘4乘4，主分支以stride2卷積輸出B乘6乘2乘2，shortcut用1乘1 stride2卷積得到相同shape，再逐值相加。Projection有18個可學權重，不是複製輸入。</desc>
+  <rect width="940" height="340" fill="#f8fafc"/>
+  <g fill="#e0f2fe" stroke="#0369a1" stroke-width="2">
+    <rect x="20" y="132" width="190" height="66" rx="8"/>
+    <rect x="290" y="38" width="350" height="76" rx="8"/>
+    <rect x="290" y="222" width="350" height="76" rx="8"/>
+    <circle cx="730" cy="165" r="29"/>
+    <rect x="795" y="132" width="125" height="66" rx="8"/>
+  </g>
+  <g stroke="#334155" stroke-width="3" fill="none">
+    <path d="M210 165H248V76H290M248 165V260H290M640 76H730V136M640 260H730V194M759 165H795"/>
+  </g>
+  <g font-family="sans-serif" font-size="21" text-anchor="middle" fill="#0f172a">
+    <text x="115" y="159">輸入 x</text><text x="115" y="186">[B,3,4,4]</text>
+    <text x="465" y="59" font-size="19">F：3×3 s2 p1（3→6）</text>
+    <text x="465" y="82" font-size="19">ReLU → 3×3 s1 p1（6→6）</text>
+    <text x="465" y="106" font-size="19">[B,6,2,2]；s=stride，p=padding</text>
+    <text x="465" y="253">P：1×1、stride 2</text><text x="465" y="282">[B,6,2,2]；18個學得的權重</text>
+    <text x="730" y="173" font-size="32">+</text>
+    <text x="857" y="157" font-size="19">P(x)+F(x)</text><text x="857" y="184" font-size="17">[B,6,2,2]</text>
+    <text x="465" y="166">相加前，兩支每一軸都要一致</text>
+  </g>
+</svg>

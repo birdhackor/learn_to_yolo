@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 310" role="img" aria-labelledby="title desc">
+  <title id="title">四個空間位置的attention計算</title>
+  <desc id="desc">二channel二乘二特徵轉成四個二維token，產生Q K V，QK得到四乘四權重，再以權重讀取V並還原特徵圖。每列權重加總為一。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3Z" fill="#2563eb"/></marker></defs>
+  <rect width="1060" height="310" fill="#f8fafc"/>
+  <g fill="#dbeafe" stroke="#2563eb" stroke-width="2">
+    <rect x="20" y="70" width="180" height="120" rx="12"/><rect x="230" y="70" width="180" height="120" rx="12"/>
+    <rect x="440" y="70" width="180" height="120" rx="12"/><rect x="650" y="70" width="180" height="120" rx="12"/>
+    <rect x="860" y="70" width="180" height="120" rx="12"/>
+  </g>
+  <g font-family="sans-serif" font-size="21" fill="#0f172a" text-anchor="middle">
+    <text x="110" y="105">Feature map</text><text x="110" y="140">[1,2,2,2]</text><text x="110" y="170">N = H × W = 4</text>
+    <text x="320" y="105">Spatial tokens</text><text x="320" y="140">[1,4,2]</text><text x="320" y="170">一列一個位置</text>
+    <text x="530" y="105">Q、K、V</text><text x="530" y="140">各為 [1,4,2]</text><text x="530" y="170">可學線性投影</text>
+    <text x="740" y="105">softmax(QKᵀ/√2)</text><text x="740" y="140">[1,4,4]</text><text x="740" y="170">每列權重合計 1</text>
+    <text x="950" y="105">weights × V</text><text x="950" y="140">[1,4,2]</text><text x="950" y="170">還原 [1,2,2,2]</text>
+    <text x="530" y="245">列 = 接收位置；欄 = 來源位置。softmax 沿來源軸。</text>
+    <text x="530" y="280">Q、K 決定讀取比例；V 提供被加權的內容。</text>
+  </g>
+  <g stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)"><path d="M202 130H226"/><path d="M412 130H436"/><path d="M622 130H646"/><path d="M832 130H856"/></g>
+</svg>

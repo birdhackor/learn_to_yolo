@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 350" role="img" aria-labelledby="title desc">
+ <title id="title">80乘40原圖與64乘64 letterbox的座標往返</title>
+ <desc id="desc">原圖框10,5,50,25，等比例縮小0.8為64乘32，再上下各補16像素，變成8,20,40,36。逆轉換先減padding再除scale，回到原框。</desc>
+ <rect width="920" height="350" fill="#f8fafc"/>
+ <rect x="35" y="110" width="240" height="120" fill="#0f172a"/>
+ <rect x="65" y="125" width="120" height="60" fill="#ef4444" stroke="#4ade80" stroke-width="3"/>
+ <rect x="370" y="60" width="192" height="192" fill="#cbd5e1"/>
+ <rect x="370" y="108" width="192" height="96" fill="#0f172a"/>
+ <rect x="394" y="120" width="96" height="48" fill="#ef4444" stroke="#4ade80" stroke-width="3"/>
+ <g font-family="sans-serif" font-size="21" fill="#0f172a">
+  <text x="35" y="85">原圖 W=80，H=40</text><text x="35" y="269">框 [10,5,50,25] px</text>
+  <text x="370" y="35">輸入64×64</text><text x="370" y="280">框 [8,20,40,36] px</text>
+  <text x="605" y="92">去程：乘0.8，y加16</text><text x="605" y="147">回程：y減16，再除0.8</text>
+  <text x="605" y="203">灰色：padding</text><text x="605" y="242">綠線：同步轉換的框</text>
+  <text x="35" y="328">同一張圖的scale與padding必須一起保存，才知道如何還原。</text>
+ </g>
+ <path d="M290 150H350" stroke="#334155" stroke-width="3"/>
+ <path d="M340 142L350 150L340 158" fill="none" stroke="#334155" stroke-width="3"/>
+</svg>

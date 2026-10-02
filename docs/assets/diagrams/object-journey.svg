@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" role="img" aria-labelledby="title description">
+  <title id="title">同一個紅框走過 MiniYOLO 的完整流程</title>
+  <desc id="description">64乘64圖片的框8,12,24,28先變成第1列第1欄的target，模型輸出經loss更新；推論另走解碼、NMS與獨立評估。閃動只提示閱讀順序，不代表訓練品質。</desc>
+  <style>
+    text{font-family:system-ui,sans-serif;fill:#172554;font-size:17px}.small{font-size:15px}.title{font-weight:700;font-size:19px}.card{fill:#eff6ff;stroke:#3b82f6;stroke-width:2}.line{stroke:#64748b;stroke-width:2;fill:none;marker-end:url(#arrow)}
+    .hint{fill:#dc2626;animation:pulse 6s infinite}.b{animation-delay:1s}.c{animation-delay:2s}.d{animation-delay:3s}
+    @keyframes pulse{0%,35%,100%{opacity:.25}10%,25%{opacity:1}}
+    @media(prefers-reduced-motion:reduce){.hint{animation:none;opacity:1}}
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10" fill="#64748b"/></marker></defs>
+  <rect width="960" height="440" fill="white" rx="16"/>
+  <text x="24" y="32" class="title">先追一個物件，再談整個模型</text>
+  <rect class="card" x="24" y="65" width="200" height="145" rx="10"/>
+  <circle class="hint" cx="205" cy="82" r="6"/>
+  <text x="40" y="96" class="title">① 原圖與標註</text>
+  <text x="40" y="128">圖片 64 × 64</text><text x="40" y="155" class="small">xyxy = [8,12,24,28]</text><text x="40" y="182" class="small">類別 0：紅色矩形</text>
+  <path class="line" d="M224 140H254"/>
+  <rect class="card" x="264" y="65" width="200" height="145" rx="10"/>
+  <circle class="hint b" cx="445" cy="82" r="6"/>
+  <text x="280" y="96" class="title">② 監督 target</text>
+  <text x="280" y="128">4 × 4 grid</text><text x="280" y="155" class="small">中心 (16,20) → 格 (1,1)</text><text x="280" y="182" class="small">框 [0,.25,.25,.25]</text>
+  <path class="line" d="M464 140H494"/>
+  <rect class="card" x="504" y="65" width="200" height="145" rx="10"/>
+  <circle class="hint c" cx="685" cy="82" r="6"/>
+  <text x="520" y="96" class="title">③ 模型與 loss</text>
+  <text x="520" y="128">輸出 [B,4,4,7]</text><text x="520" y="155" class="small">框 + 有無物件 + 類別</text><text x="520" y="182" class="small">只在負責的格學框</text>
+  <path class="line" d="M704 140H734"/>
+  <rect class="card" x="744" y="65" width="192" height="145" rx="10"/>
+  <circle class="hint d" cx="917" cy="82" r="6"/>
+  <text x="760" y="96" class="title">④ 更新參數</text>
+  <text x="760" y="128">backward → step</text><text x="760" y="155" class="small">調整卷積與 head</text><text x="760" y="182" class="small">小步執行 ≠ 泛化成功</text>
+  <text x="24" y="255" class="title">推論時：不需要真值 target，也不計算 loss</text>
+  <rect class="card" x="24" y="278" width="280" height="108" rx="10"/>
+  <text x="40" y="311" class="title">⑤ decode 與還原</text><text x="40" y="342" class="small">格內偏移 → 像素框</text><text x="40" y="367" class="small">score = 物件機率 × 類別機率</text>
+  <path class="line" d="M304 332H339"/>
+  <rect class="card" x="350" y="278" width="260" height="108" rx="10"/>
+  <text x="366" y="311" class="title">⑥ 同類別 NMS</text><text x="366" y="342" class="small">移除高重疊的重複候選</text><text x="366" y="367" class="small">不是訓練的責任分配</text>
+  <path class="line" d="M610 332H645"/>
+  <rect class="card" x="656" y="278" width="280" height="108" rx="10"/>
+  <text x="672" y="311" class="title">⑦ 獨立評估</text><text x="672" y="342" class="small">新圖片 → 一次真值配對</text><text x="672" y="367" class="small">TP / FP / FN → AP50</text>
+  <text x="24" y="418" class="small">紅點僅提示閱讀順序。動畫關閉時，所有數值與流程仍然完整。</text>
+</svg>

@@ -1,4 +1,4 @@
-name: Publish preparation site
+name: Publish Learn to YOLO
 
 on:
   workflow_dispatch:
@@ -24,8 +24,10 @@ jobs:
           cache-dependency-path: requirements-docs.txt
       - name: Install website dependencies
         run: python -m pip install -r requirements-docs.txt
-      - name: Validate preparation files
+      - name: Validate data manifests and notebook pairs
         run: python scripts/validate_preparation.py
+      - name: Validate lessons and reader reviews
+        run: python scripts/validate_lessons.py
       - name: Build static pages
         run: mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3

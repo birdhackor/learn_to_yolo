@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 590" role="img" aria-labelledby="title desc">
+<title id="title">兩尺度特徵融合：原圖stride、lateral與top-down路徑</title>
+<desc id="desc">同一64乘64輸入的backbone提供stride8的8乘8淺層特徵和stride16的4乘4深層特徵。深層16通道經1乘1減到8、nearest放大到8乘8，與淺層沿通道拼成16，再卷積成8通道。細head僅示意後續接點。本例只有deep到shallow，PAN額外的反方向只用圖例虛線表示。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#2563eb"/></marker><marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309"/></marker></defs>
+<rect width="1200" height="590" fill="#f8fafc"/>
+<g font-family="sans-serif" font-size="22" fill="#172033">
+<text x="30" y="40" font-size="27">本節：同一張圖的深層資訊，融合到細網格</text>
+<g stroke="#64748b" stroke-width="2" fill="#fff"><rect x="30" y="205" width="150" height="85" rx="8"/><rect x="215" y="205" width="155" height="85" rx="8"/><rect x="425" y="80" width="235" height="100" rx="8" fill="#dcfce7"/><rect x="425" y="325" width="235" height="100" rx="8" fill="#dbeafe"/><rect x="710" y="325" width="180" height="90" rx="8"/><rect x="710" y="200" width="180" height="90" rx="8"/><rect x="930" y="80" width="235" height="110" rx="8" fill="#e0f2fe"/><rect x="930" y="245" width="235" height="70" rx="8" fill="#dcfce7"/></g>
+<text x="52" y="237">輸入圖片</text><text x="51" y="270">64×64 RGB</text><text x="240" y="237">Backbone</text><text x="240" y="270">特徵提取</text>
+<text x="446" y="109">Shallow：stride 8</text><text x="446" y="140">8 channel × 8×8</text><text x="446" y="168">每格間距 8 pixel</text>
+<text x="446" y="355">Deep：stride 16</text><text x="446" y="387">16 channel × 4×4</text><text x="446" y="415">每格間距 16 pixel</text>
+<text x="732" y="357">1×1 reduce</text><text x="731" y="390">16ch→8ch</text><text x="731" y="231">Nearest ↑</text><text x="731" y="264">4×4→8×8</text>
+<text x="952" y="111">Concat：8+8=16ch</text><text x="952" y="143">3×3 mix：16→8ch</text><text x="952" y="175">輸出 8ch × 8×8</text><text x="955" y="273">細 head：接點示意</text><text x="955" y="304">case停在融合特徵</text>
+<g fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)"><path d="M180 247H215"/><path d="M370 247H397V130H425"/><path d="M542 180V325"/><path d="M660 130H930"/><path d="M660 370H710"/><path d="M800 325V290"/><path d="M890 245H909V170H930"/><path d="M1047 190V245"/></g>
+<text x="550" y="254" font-size="20">繼續下採樣</text><text x="682" y="114" font-size="20">lateral 同尺度接入</text>
+<text x="30" y="470">Neck = reduce + upsample + concat/mix；位於 backbone 與預測 head 之間。</text>
+<text x="30" y="510">FPN 原版：top-down + lateral，用 add；本例用 concat，只示範一次 deep→shallow。</text>
+<path d="M30 550H125" stroke="#b45309" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#orange)"/>
+<text x="145" y="557">PAN 還增加 shallow→deep 的 bottom-up（本例未實作；此虛線只作圖例）。</text>
+</g></svg>

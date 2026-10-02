@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 410" role="img" aria-labelledby="title desc">
+ <title id="title">64乘64圖、4乘4候選格與中心責任分配</title>
+ <desc id="desc">紅框4,4,20,20中心12,12由row0 col0負責；藍框36,36,52,52中心44,44由row2 col2負責。框可以跨cell，但只依中心指派。剩下14格是負樣本，本模型沒有ignore。</desc>
+ <rect width="930" height="410" fill="#f8fafc"/>
+ <rect x="45" y="55" width="288" height="288" fill="#0f172a"/>
+ <g fill="none" stroke="#94a3b8" stroke-width="1.5"><path d="M117 55V343M189 55V343M261 55V343M45 127H333M45 199H333M45 271H333"/></g>
+ <rect x="63" y="73" width="72" height="72" fill="#ef4444" fill-opacity=".4" stroke="#f87171" stroke-width="3"/>
+ <rect x="207" y="217" width="72" height="72" fill="#3b82f6" fill-opacity=".4" stroke="#60a5fa" stroke-width="3"/>
+ <circle cx="99" cy="109" r="5" fill="white"/><circle cx="243" cy="253" r="5" fill="white"/>
+ <g font-family="sans-serif" font-size="22" fill="#0f172a">
+  <text x="45" y="33">每格16 px；column往右、row往下</text>
+  <text x="380" y="85">紅中心(12,12) → cell(row0,col0)</text>
+  <text x="380" y="124">target：[0.75,0.75,0.25,0.25]</text>
+  <text x="380" y="179">藍中心(44,44) → cell(row2,col2)</text>
+  <text x="380" y="218">target：[0.75,0.75,0.25,0.25]</text>
+  <text x="380" y="273">正樣本2格；負樣本14格；ignore0</text>
+  <text x="380" y="320">每格1 slot：同格兩物件會撞容量</text>
+  <text x="45" y="387">白點是物件中心。責任看中心，框不必完全落在負責的格內。</text>
+ </g>
+</svg>

@@ -135,3 +135,14 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站可提供取得方�
 - [Colab FAQ](https://research.google.com/colaboratory/faq.html)
 - [Pages／Colab 完整研究](../research/pages-colab.md)
 - [LFS 完整研究](../research/lfs.md)
+
+## 教材的新版本發布
+
+目前教材與42份Colab固定為 `lessons-v0.1.0`。修訂教材時使用新的tag，不覆寫原tag：
+
+1. 完成各節網頁、CPU案例及陌生讀者審查，再用 `python scripts/build_lesson_notebooks.py --ref lessons-v0.2.0` 配對新版本。
+2. 執行 `python scripts/validate_preparation.py`、`python scripts/validate_lessons.py`、`.venv-model/bin/python scripts/check_lesson_runtime.py`、`.venv-model/bin/python -m pytest tests/test_core.py`，最後以 `.venv-docs/bin/mkdocs build --strict` 建站。
+3. 提交所有教材與證據，再建立 `git tag lessons-v0.2.0`。使用前文的認證helper推送 `main` 與此tag；Colab所用的tag必須先能在GitHub讀到。
+4. 到 Actions → **Publish Learn to YOLO** → Run workflow，選 `main`。等 build與deploy都成功，再打開網站、抽查新tag的notebook。
+
+網站建置不會下載LFS資料或安裝PyTorch。公式與字型資產隨網站提供，MathJax 3.2.2保留原Apache 2.0授權與來源校驗紀錄。

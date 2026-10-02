@@ -1,0 +1,246 @@
+{
+  "created_at": "2026-10-02T06:05:32.928093+00:00",
+  "config": {
+    "epochs": 1,
+    "steps": 160,
+    "device": "cpu",
+    "samples": 32,
+    "validation_samples": 16,
+    "test_samples": 16,
+    "batch_size": 8,
+    "width": 8,
+    "grid_size": 4,
+    "image_size": 64,
+    "learning_rate": 0.01,
+    "seed": 7,
+    "train_seed": 7,
+    "validation_seed": 700,
+    "test_seed": 7000,
+    "score_threshold": 0.05,
+    "nms_iou": 0.5,
+    "eval_iou": 0.5,
+    "threads": 2
+  },
+  "steps_completed": 160,
+  "hardware": {
+    "device": "cpu",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_threads": 2,
+    "cuda_device": null
+  },
+  "training_seconds": 0.6226324840000643,
+  "checkpoint": "artifacts/runs/grid-learning/checkpoint.pt",
+  "class_names": [
+    "red rectangle",
+    "blue rectangle"
+  ],
+  "history_path": "artifacts/runs/grid-learning/history.json",
+  "curve_path": "artifacts/runs/grid-learning/loss.png",
+  "initial_validation": {
+    "ap_per_class": {
+      "0": 0.0035014005602240893,
+      "1": 0.0
+    },
+    "map": 0.0017507002801120447,
+    "precision": 0.01171875,
+    "recall": 0.16666666666666666
+  },
+  "final_validation": {
+    "ap_per_class": {
+      "0": 0.8571428571428571,
+      "1": 0.75
+    },
+    "map": 0.8035714285714286,
+    "precision": 0.9375,
+    "recall": 0.8333333333333334
+  },
+  "final_test": {
+    "ap_per_class": {
+      "0": 0.8571428571428571,
+      "1": 0.6926406926406926
+    },
+    "map": 0.7748917748917749,
+    "precision": 0.8823529411764706,
+    "recall": 0.7894736842105263
+  },
+  "final_train_loss": {
+    "total": 0.003810588736087084,
+    "box": 0.0007201499538496137,
+    "objectness": 0.00017974253569263965,
+    "classification": 3.009671127074398e-05
+  },
+  "metric_definitions": {
+    "map": "mean all-points interpolated AP over classes having GT, at eval_iou only",
+    "precision": "micro TP/(TP+FP) over candidates after score filtering and class-wise NMS",
+    "recall": "micro TP/(TP+FN); each same-image same-class GT matched at most once",
+    "score": "sigmoid(objectness) * max softmax(class logits)",
+    "loss": "5*positive-cell sigmoid-coordinate MSE + all-cell BCEWithLogits + positive-cell class CE"
+  },
+  "limitations": "Early observation on synthetic colored rectangles; no real-image detection claim. Runtime describes this hardware/run only.",
+  "validation_examples": [
+    {
+      "index": 0,
+      "image_path": "artifacts/runs/grid-learning/validation-00.png",
+      "target": {
+        "boxes": [
+          [
+            2.0,
+            4.0,
+            13.0,
+            13.0
+          ],
+          [
+            54.0,
+            49.0,
+            63.0,
+            59.0
+          ]
+        ],
+        "labels": [
+          1,
+          0
+        ]
+      },
+      "prediction": {
+        "boxes": [
+          [
+            2.4384279251098633,
+            0.8460597991943359,
+            13.391471862792969,
+            12.074921607971191
+          ],
+          [
+            50.89150619506836,
+            50.191162109375,
+            61.14250564575195,
+            60.51239013671875
+          ]
+        ],
+        "scores": [
+          0.99980229139328,
+          0.9804236888885498
+        ],
+        "labels": [
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "image_path": "artifacts/runs/grid-learning/validation-01.png",
+      "target": {
+        "boxes": [
+          [
+            51.0,
+            32.0,
+            62.0,
+            42.0
+          ],
+          [
+            20.0,
+            17.0,
+            31.0,
+            30.0
+          ]
+        ],
+        "labels": [
+          0,
+          1
+        ]
+      },
+      "prediction": {
+        "boxes": [
+          [
+            20.974063873291016,
+            17.849027633666992,
+            32.42605972290039,
+            30.59175682067871
+          ],
+          [
+            48.625404357910156,
+            32.74586486816406,
+            62.102439880371094,
+            42.156341552734375
+          ]
+        ],
+        "scores": [
+          0.9999747276306152,
+          0.9982487559318542
+        ],
+        "labels": [
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "image_path": "artifacts/runs/grid-learning/validation-02.png",
+      "target": {
+        "boxes": [
+          [
+            48.0,
+            16.0,
+            58.0,
+            31.0
+          ]
+        ],
+        "labels": [
+          0
+        ]
+      },
+      "prediction": {
+        "boxes": [
+          [
+            47.93864822387695,
+            17.43926239013672,
+            58.35445785522461,
+            29.393566131591797
+          ]
+        ],
+        "scores": [
+          0.9999918937683105
+        ],
+        "labels": [
+          0
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "image_path": "artifacts/runs/grid-learning/validation-03.png",
+      "target": {
+        "boxes": [
+          [
+            1.0,
+            49.0,
+            14.0,
+            64.0
+          ]
+        ],
+        "labels": [
+          0
+        ]
+      },
+      "prediction": {
+        "boxes": [
+          [
+            1.0055718421936035,
+            48.94125747680664,
+            15.329368591308594,
+            63.92348861694336
+          ]
+        ],
+        "scores": [
+          0.9999998807907104
+        ],
+        "labels": [
+          0
+        ]
+      }
+    }
+  ]
+}

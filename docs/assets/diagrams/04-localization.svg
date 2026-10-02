@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 380" role="img" aria-labelledby="title desc">
+ <title id="title">人工真值框和偏移預測框的定位比較</title>
+ <desc id="desc">32乘32圖的真值框為4,6,16,18。人工預測框為6,8,18,20。交集100、聯集188，因此IoU約0.532。此圖非訓練模型輸出。</desc>
+ <rect width="850" height="380" fill="#f8fafc"/>
+ <rect x="55" y="45" width="288" height="288" fill="#0f172a"/>
+ <rect x="91" y="99" width="108" height="108" fill="#ef4444"/>
+ <rect x="91" y="99" width="108" height="108" fill="none" stroke="#4ade80" stroke-width="4"/>
+ <rect x="109" y="117" width="108" height="108" fill="none" stroke="#facc15" stroke-width="4" stroke-dasharray="9 5"/>
+ <g font-family="sans-serif" font-size="23" fill="#0f172a">
+  <text x="385" y="65">人工已知答案，非模型成果</text>
+  <text x="385" y="118">綠實線 GT：[4,6,16,18] px</text>
+  <text x="385" y="158">黃虛線 pred：[6,8,18,20] px</text>
+  <text x="385" y="211">交集：10×10＝100 px²</text>
+  <text x="385" y="251">聯集：144+144−100＝188 px²</text>
+  <text x="385" y="299">IoU：100÷188 ≈ 0.532</text>
+  <text x="55" y="363">圖左上角為(0,0)，x向右、y向下；框採半開區間。</text>
+ </g>
+</svg>

@@ -1,0 +1,40 @@
+{
+  "steps": 2,
+  "train_samples": 64,
+  "validation_samples": 128,
+  "test_samples": 128,
+  "seed": 7,
+  "device": "cpu",
+  "batch_size": 8,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "class_names": [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot"
+  ],
+  "validation_accuracy": 0.0859375,
+  "test_accuracy": 0.125,
+  "weights_changed": true,
+  "loss_history": [
+    {
+      "step": 1,
+      "loss": 2.2216057777404785
+    },
+    {
+      "step": 2,
+      "loss": 2.3014609813690186
+    }
+  ],
+  "accuracy_definition": "argmax class correct / evaluated images",
+  "split": "official train seed7 permutation: first6000 validation, remaining54000 train; official test preserved",
+  "input": "gray [1,28,28] repeated to three identical channels, float32 [0,1]",
+  "limitations": "A two-step smoke confirms learning plumbing; it is not evidence of useful classification accuracy."
+}

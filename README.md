@@ -1,33 +1,64 @@
 # Learn to YOLO
 
-從小型 CNN、ResNet 到 YOLO 演化的中文教學專案。目前在前置準備階段，正式教材與模型尚未撰寫。
+用小型 PyTorch 模型，從 VGG 風格 CNN、ResNet，一路學會圖片偵測與 YOLO 各分支的設計選擇。中文為主：每次改了什麼、為什麼、帶來什麼好處，又付出什麼。
 
-- [教學大綱](docs/planning/outline.md)
-- [資料來源與下載規劃](docs/preparation/data.md)
-- [GitHub Pages／Colab／Git LFS 操作步驟](docs/preparation/publish.md)
-- [網站與 notebook 的編排規格](docs/preparation/architecture.md)
+**[閱讀教材](https://birdhackor.github.io/learn_to_yolo/)** · [完整課綱](docs/planning/outline.md) · [驗證範圍](docs/status.md)
 
-規劃網站已發布：<https://birdhackor.github.io/learn_to_yolo/>。目前提供教學大綱、資料規劃與前置操作步驟。
+42 節網頁各有獨立 Colab notebook，純閱讀也能學；程式與 Colab 固定為 `lessons-v0.1.0`。各節寫完由陌生讀者視角的 subagent 審閱，原始意見見 [reviews](reviews/)。模型是教學用簡化模型，不是完整原版的重現。
 
-已完成 Fashion-MNIST 封裝的 Git LFS 上傳、空快取下載與 SHA-256 驗證，並實跑 GitHub Pages 部署。測試紀錄見 [LFS](data/remote-lfs-verification.json) 與 [Pages](data/pages-verification.json)。
+## CPU 本機執行
 
-## 本地預覽前置規劃網站
+使用 Python 3.12，在 repository 根目錄：
 
 ```bash
-python -m venv .venv-docs
-source .venv-docs/bin/activate
-python -m pip install -r requirements-docs.txt
-python scripts/validate_preparation.py
-mkdocs serve
+python3 -m venv .venv-model
+.venv-model/bin/python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
+.venv-model/bin/python -m pip install -r requirements-model.txt
+PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
+.venv-model/bin/python -m pytest tests/test_core.py
+.venv-model/bin/python scripts/check_lesson_runtime.py
 ```
 
-Windows 的啟用指令為 `.venv-docs\Scripts\activate`。正式建置使用 `mkdocs build --strict`。
+案例不需要下載、GPU、torchvision 或預訓練權重。Windows 可用 `.venv-model\Scripts\python.exe`，並在 PowerShell 先設定 `$env:PYTHONPATH='.'`。Notebook 的實驗格有完整可修改程式；初始化格只取得固定版本與依賴。
 
-## 取得已查核的小型分類資料
+## 從零訓練小偵測器
 
 ```bash
-python scripts/download_data.py list
-python scripts/download_data.py fetch fashion-mnist
+.venv-model/bin/python -m miniyolo.train --steps 160 --samples 32 --device cpu
 ```
 
-原始資料存入 `data/downloads/`，已被 Git 忽略。Manifest 記錄來源、大小、校驗碼與授權；其他候選資料的限制見資料規劃。Git LFS 預留給明確可再散布的精選資料與模型產物；完整公開資料集以來源下載為主。
+此命令產生固定的紅／藍矩形，走過 data → target → loss → update → decode → NMS → held-out AP50。設定、曲線、範例圖與 checkpoint 存在 `artifacts/runs/grid-learning/`；報告預設在 `artifacts/checks/grid-learning.json`。這次固定 CPU 實驗得到 validation mAP50 約 .804、test 約 .775，只代表這個受控合成任務，不能外推到照片。
+
+較完整的預算可使用 `--epochs 20 --samples 1024`，並指定不同 `--output`／`--report` 保留對照。後續 GPU 環境先依 [PyTorch 官方安裝選擇器](https://pytorch.org/get-started/locally/) 安裝相容的 CUDA build，確認 `torch.cuda.is_available()`，再使用 `--device cuda`。目前沒有 GPU 效率或真實資料完整訓練結果。
+
+## 真實分類資料的短步檢查
+
+Fashion-MNIST 四個原始 gzip 已驗證 SHA-256，完整 MIT 授權封裝已發布到 Git LFS。預設 lesson 保持免下載；若要接真實圖片：
+
+```bash
+python3 scripts/download_data.py fetch fashion-mnist
+.venv-model/bin/python scripts/run_fashion_cnn.py --steps 2
+```
+
+Loader 會核對 bytes、SHA-256 與 IDX 格式；28×28 灰階圖複製到三個 channel，再交給同樣的 RGB TinyCNN。固定 54k train／6k validation 與官方 10k test，短步只取小 subset，驗證權重更新。`--train-steps 1000 --eval-samples 0` 可供之後的完整比較；兩步輸出不代表模型已學好。偵測資料的來源、大小與再散佈限制見 [資料規劃](docs/preparation/data.md)。
+
+## 網站預覽與出版
+
+```bash
+python3 -m venv .venv-docs
+.venv-docs/bin/python -m pip install -r requirements-docs.txt
+python3 scripts/validate_preparation.py
+python3 scripts/validate_lessons.py
+.venv-docs/bin/mkdocs build --strict
+.venv-docs/bin/mkdocs serve
+```
+
+網站建置只需要文件依賴，不需要 PyTorch、資料或 GPU。後續新版教材以 `python3 scripts/build_lesson_notebooks.py --ref <新release-tag>` 配對，執行 CPU 檢查後再發布新 tag 與 Pages；不要覆寫已發布 tag。GitHub Pages／Colab／LFS 維護步驟見 [發布操作](docs/preparation/publish.md)。
+
+## 程式結構
+
+- `miniyolo/`：資料、模型、targets、loss、解碼、幾何、AP 與可選訓練 CLI。
+- `lesson_cases/`：每節可獨立執行的小實驗，notebook 直接包含同份程式。
+- `docs/lessons/`、`docs/assets/diagrams/`：教學文字、SVG 與實測圖。
+- `artifacts/checks/`：實測結果；大型或臨時產物在 ignored `artifacts/runs/`。
+- `section-map.json`：42 節網頁／notebook／版本對應；`ready` 是檔案狀態，效果驗證另記。

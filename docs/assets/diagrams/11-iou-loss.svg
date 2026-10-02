@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" role="img" aria-labelledby="title desc">
+<title id="title">IoU幾何：真值G、預測P、包圍框C與中心距離</title>
+<desc id="desc">G為8,12,24,28，P為32,12,48,28，兩者16乘16且未相交。C為8,12,48,28，面積640。兩中心距離rho為24，C的對角平方為40平方加16平方。所有框為pixel xyxy半開區間。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#172033"/></marker></defs>
+<rect width="1000" height="440" fill="#f8fafc"/>
+<g font-family="sans-serif" font-size="22" fill="#172033">
+<text x="30" y="40" font-size="27">未相交也有移動方向：C 隨 P 往左而縮小</text>
+<rect x="90" y="110" width="160" height="160" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+<rect x="330" y="110" width="160" height="160" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+<rect x="90" y="110" width="400" height="160" fill="none" stroke="#b45309" stroke-width="4" stroke-dasharray="10 7"/>
+<text x="103" y="96" fill="#dc2626">G 真值</text><text x="340" y="96" fill="#2563eb">P 預測</text><text x="100" y="301" fill="#b45309">C：40×16，最小包圍框</text>
+<path d="M90 110L490 270" stroke="#7c3aed" stroke-width="2"/>
+<text x="270" y="256" fill="#7c3aed">c² = 1856</text>
+<circle cx="170" cy="190" r="5" fill="#172033"/><circle cx="410" cy="190" r="5" fill="#172033"/>
+<path d="M170 190H410" stroke="#172033" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="208" y="151" width="166" height="30" fill="#f8fafc"/><text x="216" y="175">ρ = 24 pixel</text>
+<text x="555" y="93">G = [8,12,24,28]</text><text x="555" y="132">P = [32,12,48,28]</text><text x="555" y="171">C = [8,12,48,28]</text><text x="555" y="210">union = 512 pixel²</text><text x="555" y="249">area(C) = 640 pixel²</text><text x="555" y="288">ρ²/c² = 576/1856（無單位）</text>
+<text x="30" y="354">xyxy = [左,上,右,下]；圖形按 10 倍pixel間距顯示，沒有交集。</text>
+<text x="30" y="396">P 左移 1 pixel：C 面積降到 624，GIoU loss 1.2 → 1.179487。</text>
+</g></svg>

@@ -33,7 +33,7 @@ Colab URL 格式：
 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/notebooks/<section>.ipynb
 ```
 
-目前只建立環境檢查 notebook。`section-map.json` 已預留 42 個教學小節 ID，狀態為 planned、頁面與 notebook 路徑留空，尚未建立空白課程或訓練程式。正式撰寫時再填配對；標為 ready 時，基礎檢查要求閱讀頁與 notebook 都存在，避免改標題讓外部連結失效。
+`section-map.json` 記錄 42 個教學小節 ID，各自配對網頁與獨立 notebook。`ready` 表示兩份檔案已建立；CPU 執行與讀者審查的證據另行保存，不把此標記當成 GPU 訓練或效果驗證。正式教材的 notebook 與初始化程式固定到同一個 release tag，避免改標題讓外部連結失效。
 
 ## 純閱讀模式如何保留成果
 

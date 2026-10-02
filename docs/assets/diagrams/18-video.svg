@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 290" role="img" aria-labelledby="t d">
+<title id="t">Actual moving-frame detector output: 12 frames at 20 source FPS</title>
+<desc id="d">Generated RGB frames [0, 5, 11] from this run, with yellow model predictions, source timestamps and processing time. The last frame is included; predictions are not ground truth.</desc>
+<rect width="960" height="290" fill="#0f172a"/>
+<image x="15" y="20" width="288" height="192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABACAIAAABqVuVZAAACj0lEQVR4nO3Zv0sbcRzG8cckg7/KGShJGvDH0FFcdHDOcEH8AQ5xOqlk0sFFkCz+DUEUN5EWMl0gg6JwNzgpWSIOTuoqjZGCKQUtJ5EOgYAH5XHJJbTPa8uXC3zy5ntfLklPb28v5O9CnR6g2ykQoUCEAhEKRCgQ4Q9kGIZt26enp7ZtG4bRWh8bGzs6OnJdt1QqxWIxAP39/YVCwXXdcrk8MzMT6NQB8gfK5XJnZ2epVOr8/Hxzc7O1vre3l8/nTdPc3d3d2toCsLq6WqlUTNNcXFzc3t4Ocugg9fgeFC8uLubm5qrVajKZPDw8nJqaaq7f3d2Njo42Go1wOHx5eTkxMTE0NPT09OR5XiqV2tnZGR8f78T8beffQfF4vFarAbi/v4/H4631q6ur2dlZAAsLC81brF6ve553cHBQLBbX19cDnDlQ7z2k19bWLMtyHGdkZOTl5aW1ns1mV1ZWLMtqz3id5w9Uq9WaGyeRSDS3UtPS0pJlWel0+vj4+Pb2FkA+n49EIgBOTk7+o0PacZxMJgMgk8k4jgNgcHAQwOTkZDqdBrC8vGzbNgDDMObn5wFMT0/f3NwEPHdg3hzSz8+/AQP4BnwEfgBfgJ+AC5jAZ+ArEAYqAwO519fX4eHh/f39UCjked7Gxsb19XXnPkUb+QP19ZFfP95zzb9ET9KEAhEKRCgQEfG9fohG2VuqD9Fo7PGxTQN1G+0gQoEIBSIUiFAgQoEIBSIUiFAgQoEI/1eND9+rHZmja70J9Cv5qVNzdC3dYoT/j0Px0Q4iFIhQIEKBCAUiFIhQIEKBCAUiFIhQIEKBCAUiFIhQIEKBCAUiFIhQIEKBCAUiFIhQIEKBCAUiFIhQIEKBCAUi/gDrPayOnjmFrwAAAABJRU5ErkJggg=="/>
+<text x="15" y="242" fill="white" font-family="sans-serif" font-size="21">frame 0: source 0.00s</text>
+<text x="15" y="272" fill="white" font-family="sans-serif" font-size="19">pipeline 2.94ms | boxes 1</text>
+<image x="330" y="20" width="288" height="192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABACAIAAABqVuVZAAAAtUlEQVR4nO3aIQ7DMBAAwTgqMDXp/99Xki/0BekWRGnBDLZ81uqgx5xz49z+6wf8O4GCQEGgIFAQKAgUBAoCBYGCQEGgIFAQKAgUBAoCBYGCQOFx1UWvtb48+TyOq4bewAYFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBh+mH1mg4JAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAovAFqcgOxbkB4GwAAAABJRU5ErkJggg=="/>
+<text x="330" y="242" fill="white" font-family="sans-serif" font-size="21">frame 5: source 0.25s</text>
+<text x="330" y="272" fill="white" font-family="sans-serif" font-size="19">pipeline 0.91ms | boxes 0</text>
+<image x="645" y="20" width="288" height="192" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABACAIAAABqVuVZAAAAtUlEQVR4nO3aIQ6DQBRF0dIgxmLY//owbAFR16RcTAPiHD3i5ebLmcYYL3573z3g6QQKAgWBgkBBoCBQECgIFAQKAgWBgkBBoCBQECgIFAQKAoX57gHftmW5+HLd978u+XBBQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQmP8zOuaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgIFgYJAQaAgUBAoCBQECgeSYwOx/j0IlwAAAABJRU5ErkJggg=="/>
+<text x="645" y="242" fill="white" font-family="sans-serif" font-size="21">frame 11: source 0.55s</text>
+<text x="645" y="272" fill="white" font-family="sans-serif" font-size="19">pipeline 0.91ms | boxes 0</text>
+</svg>

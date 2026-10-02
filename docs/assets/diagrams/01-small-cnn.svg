@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 290" role="img" aria-labelledby="title desc">
+ <title id="title">三步訓練後的小CNN人工圖形推論圖板</title>
+ <desc id="desc">前四張圖紅藍交錯。固定seed7三步SGD後全部預測藍類別1，因此第一與第三張紅類別0是錯誤。不是已訓練模型成果。</desc>
+ <rect width="850" height="290" fill="#f8fafc"/>
+ <g font-family="sans-serif" text-anchor="middle" font-size="22" fill="#0f172a">
+  <text x="425" y="35">人工資料；seed 7；僅3步更新；模型全猜類別1</text>
+  <text x="120" y="76" fill="#b91c1c">0：GT=0，pred=1</text>
+  <text x="320" y="76">1：GT=1，pred=1</text>
+  <text x="520" y="76" fill="#b91c1c">2：GT=0，pred=1</text>
+  <text x="720" y="76">3：GT=1，pred=1</text>
+ </g>
+ <g fill="#000">
+  <rect x="72" y="95" width="96" height="96"/><rect x="272" y="95" width="96" height="96"/>
+  <rect x="472" y="95" width="96" height="96"/><rect x="672" y="95" width="96" height="96"/>
+ </g>
+ <rect x="84" y="113" width="36" height="36" fill="#f00"/>
+ <rect x="296" y="128" width="36" height="36" fill="#00f"/>
+ <rect x="508" y="113" width="36" height="36" fill="#f00"/>
+ <rect x="684" y="128" width="36" height="36" fill="#00f"/>
+ <g font-family="sans-serif" text-anchor="middle" font-size="21" fill="#0f172a">
+  <text x="120" y="220" fill="#b91c1c">錯誤</text><text x="320" y="220">正確</text>
+  <text x="520" y="220" fill="#b91c1c">錯誤</text><text x="720" y="220">正確</text>
+  <text x="425" y="263">類別0＝紅；類別1＝藍。GT真值與預測一起看。</text>
+ </g>
+</svg>

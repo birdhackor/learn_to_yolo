@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 350" role="img" aria-labelledby="title desc">
+ <title id="title">NMS移除人工重複框，但保留高分錯框</title>
+ <desc id="desc">人工真值框28,24,44,32有兩個類別0候選score0.72與0.64，重疊IoU0.538，NMS0.5移除0.64。遠處錯框score0.855不重疊，仍保留。三框變兩框不代表所有錯誤消失。</desc>
+ <rect width="910" height="350" fill="#f8fafc"/>
+ <g fill="#0f172a"><rect x="45" y="70" width="192" height="192"/><rect x="345" y="70" width="192" height="192"/></g>
+ <g fill="#4ade80" fill-opacity=".35"><rect x="129" y="142" width="48" height="24"/><rect x="429" y="142" width="48" height="24"/></g>
+ <g fill="none" stroke="#38bdf8" stroke-width="3">
+  <rect x="129" y="142" width="48" height="24"/><rect x="429" y="142" width="48" height="24"/>
+ </g>
+ <rect x="114.6" y="142" width="48" height="24" fill="none" stroke="#facc15" stroke-dasharray="6 4" stroke-width="3"/>
+ <g fill="none" stroke="#fb7185" stroke-width="3"><rect x="57" y="226" width="24" height="24"/><rect x="357" y="226" width="24" height="24"/></g>
+ <g font-family="sans-serif" font-size="21" fill="#0f172a">
+  <text x="45" y="42">篩分後：3個人工候選</text><text x="345" y="42">NMS後：2框</text>
+  <text x="45" y="295">藍0.72，黃0.64，紅0.855</text>
+  <text x="345" y="295">黃框被去重；紅錯框仍在</text>
+  <text x="575" y="103">綠填色：唯一真值</text><text x="575" y="150">黃虛線：重複預測</text>
+  <text x="575" y="197">紅實線：背景誤報</text><text x="575" y="244">NMS IoU門檻＝0.5</text>
+  <text x="45" y="333">人工案例，非訓練成果。提高score門檻到0.75，會只留下紅色錯框。</text>
+ </g>
+ <path d="M257 157H319M308 149L319 157L308 165" fill="none" stroke="#334155" stroke-width="3"/>
+</svg>
