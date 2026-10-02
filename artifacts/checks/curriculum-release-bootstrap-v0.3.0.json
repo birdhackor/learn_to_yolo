@@ -1,0 +1,25 @@
+{
+  "verified_at_utc": "2026-10-02T18:34:20.066121+00:00",
+  "source_ref": "lessons-v0.3.0",
+  "code_commit": "b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777",
+  "scope": "Fresh public Git clone with LFS smudge disabled; execute the two dependency variants of the actual notebook bootstrap then their CPU case. This is not a Google login/Colab-hosted runtime test. Other 40 cases were already executed in the reviewed workspace, and all 42 source hashes and saved outputs match this release.",
+  "all_42_case_sources_match": true,
+  "bootstrap_results": [
+    {
+      "id": "00-warmup",
+      "bootstrap_executed_verbatim": true,
+      "case_sha_matches_reviewed_workspace": true,
+      "exit_code": 0,
+      "stdout": "固定教材版本： lessons-v0.3.0\n目前目錄： /tmp/curriculum-release-bootstraps/learn_to_yolo_lessons_v0_3_0\nx_shape=(1, 1), weight_shape=(1, 1)\nprediction=2.00, loss=4.00, gradient=-8.00\nweight: 1.00 -> 1.80; new_loss=0.16\neval still tracks gradients; replacement optimizer points to replacement model\n",
+      "stderr": "Cloning into '/tmp/curriculum-release-bootstraps/learn_to_yolo_lessons_v0_3_0'...\nwarning: refs/tags/lessons-v0.3.0 57f66a7bdf8e7797a617e361a457aeb36b57c643 is not a commit!\nNote: switching to 'b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\n\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: python -m pip install --upgrade pip\n"
+    },
+    {
+      "id": "20-deployment",
+      "bootstrap_executed_verbatim": true,
+      "case_sha_matches_reviewed_workspace": true,
+      "exit_code": 0,
+      "stdout": "固定教材版本： lessons-v0.3.0\n目前目錄： /tmp/curriculum-release-bootstraps/learn_to_yolo_lessons_v0_3_0\n{\n  \"onnx\": \"artifacts/lesson-20/grid.onnx\",\n  \"opset\": 17,\n  \"providers\": [\n    \"CPUExecutionProvider\"\n  ],\n  \"input_shape\": [\n    \"batch\",\n    3,\n    64,\n    64\n  ],\n  \"batches_checked\": [\n    1,\n    2,\n    3\n  ],\n  \"max_abs_raw_errors\": [\n    4.76837158203125e-07,\n    4.76837158203125e-07,\n    4.76837158203125e-07\n  ],\n  \"decoded_boxes_scores_labels_match\": true,\n  \"dynamic_spatial\": false,\n  \"spatial80_rejected\": true,\n  \"median_ms\": {\n    \"torch_raw_batch1\": 0.2504159997442912,\n    \"ort_raw_batch1\": 0.07444199991368805,\n    \"torch_preprocess_to_restored_boxes\": 2.9552439996223256,\n    \"ort_preprocess_to_restored_boxes\": 2.3034934997667733,\n    \"ort_raw_batch2\": 0.0701059998391429\n  },\n  \"ort_raw_batch2_images_per_second\": 28528.228747738685,\n  \"versions\": {\n    \"torch\": \"2.9.1+cpu\",\n    \"onnx\": \"1.19.1\",\n    \"onnxruntime\": \"1.23.2\"\n  },\n  \"limits\": \"CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented\"\n}\nreal ONNX export + checker + ORT CPU + restored-box parity completed\n",
+      "stderr": "\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: python -m pip install --upgrade pip\nlesson_cases/20-deployment.py:59: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter will be the default. To switch now, set dynamo=True in torch.onnx.export. This new exporter supports features like exporting LLMs with DynamicCache. We encourage you to try it and share feedback to help improve the experience. Learn more about the new export logic: https://pytorch.org/docs/stable/onnx_dynamo.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html.\n  torch.onnx.export(model, images[:1], str(onnx_path), input_names=['images'], output_names=['raw_grid'],\n"
+    }
+  ]
+}

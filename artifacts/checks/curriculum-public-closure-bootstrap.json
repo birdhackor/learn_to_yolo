@@ -1,0 +1,35 @@
+{
+  "verified_at_utc": "2026-10-02T18:35:50.494030+00:00",
+  "source_ref": "lessons-v0.3.0",
+  "code_commit": "b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777",
+  "scope": "Actual entry commands executed from the fresh public immutable tag with PYTHONPATH unset. Uses local existing CPU interpreter; not a hosted Google Colab/camera/GPU test. Temporary outputs kept outside checkout except the video script fixed report in this disposable clone.",
+  "results": [
+    {
+      "id": "video-dependencies",
+      "exit_code": 0,
+      "stdout": "Requirement already satisfied: numpy==2.3.5 in /workspace/learn_to_yolo/.venv-model/lib/python3.12/site-packages (from -r requirements-video.txt (line 2)) (2.3.5)\nRequirement already satisfied: opencv-python-headless==4.13.0.92 in /workspace/learn_to_yolo/.venv-model/lib/python3.12/site-packages (from -r requirements-video.txt (line 3)) (4.13.0.92)\n",
+      "stderr": "\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: python -m pip install --upgrade pip\n",
+      "process_wall_seconds": 0.31903195999984746
+    },
+    {
+      "id": "custom-data-learning",
+      "exit_code": 0,
+      "stdout": "{\n  \"report\": \"/tmp/public-v3-custom/result.json\",\n  \"diagram\": \"/tmp/public-v3-custom/learning.svg\",\n  \"steps\": 1600,\n  \"train_loss_before\": 1.5501668453216553,\n  \"train_loss_after\": 0.000354691524989903,\n  \"train_ap50\": 1.0,\n  \"validation_ap50\": 0.3888888888888889,\n  \"test_ap50\": 0.6666666666666666,\n  \"reload_raw_exact\": true,\n  \"training_seconds\": 7.567071591000058\n}\n",
+      "stderr": "",
+      "process_wall_seconds": 9.74735851999958
+    },
+    {
+      "id": "video-file-and-tracking",
+      "exit_code": 0,
+      "stdout": "{\n  \"verified_at_utc\": \"2026-10-02T18:35:49.995311+00:00\",\n  \"code_commit\": \"b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777\",\n  \"code_commit_scope\": \"Base checkout commit before the extension is committed; script and lesson SHA-256 identify the executed working-tree bytes\",\n  \"script_sha256\": \"f7820880f0c89c715c58b2f7ad4682ee9283db4d1a4d76a75787831f155f5b4b\",\n  \"lesson_case_sha256\": {\n    \"18-video\": \"2d7c5acafb068d819c740fd41c6b30e1d2ca798e94ab0ced29806fb732139f25\",\n    \"19-tracking\": \"adf6924a818b9d10e912a08d7aa1437abc27a2ec285a2d094b5834a5f1050895\"\n  },\n  \"device\": \"cpu\",\n  \"torch\": \"2.9.1+cpu\",\n  \"numpy\": \"2.3.5\",\n  \"opencv\": \"4.13.0\",\n  \"model_parameters\": 15511,\n  \"training\": {\n    \"steps\": 160,\n    \"samples\": 32,\n    \"seed\": 7,\n    \"data_seed\": 4100,\n    \"batch_size\": 8,\n    \"optimizer\": \"Adam\",\n    \"learning_rate\": 0.01\n  },\n  \"video\": {\n    \"codec\": \"FFV1\",\n    \"container\": \"AVI\",\n    \"frames\": 12,\n    \"source_fps\": 20,\n    \"source_size_hw\": [\n      64,\n      96\n    ],\n    \"last_timestamp_s\": 0.55,\n    \"sha256\": \"1c124d4aae1e30c4eed7f6c2e5cb98613ad1e059bce7f657c78be00c83fd64dc\",\n    \"bytes\": 9232\n  },\n  \"rgb_pixels_exact\": true,\n  \"detector_predictions_exact\": true,\n  \"overlays_exact\": true,\n  \"capture_released\": {\n    \"eof\": true,\n    \"early_generator_close\": true,\n    \"open_failure\": true\n  },\n  \"boxes_per_frame\": [\n    1,\n    1,\n    0,\n    0,\n    0,\n    0,\n    1,\n    1,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"tracking\": {\n    \"class_id\": 0,\n    \"motion\": true,\n    \"max_age\": 2,\n    \"ids\": [\n      [\n        1\n      ],\n      [\n        1\n      ],\n      [],\n      [],\n      [],\n      [],\n      [\n        2\n      ],\n      [\n        2\n      ],\n      [],\n      [],\n      [],\n      []\n    ],\n    \"original_pixel_boxes\": [\n      [\n        [\n          4.660533905029297,\n          14.066386222839355,\n          16.72848892211914,\n          31.179786682128906\n        ]\n      ],\n      [\n        [\n          6.64886999130249,\n          15.054085731506348,\n          19.934675216674805,\n          30.956418991088867\n        ]\n      ],\n      [],\n      [],\n      [],\n      [],\n      [\n        [\n          35.62268829345703,\n          18.666748046875,\n          47.192752838134766,\n          33.39585494995117\n        ]\n      ],\n      [\n        [\n          37.14796447753906,\n          20.521753311157227,\n          50.35932540893555,\n          33.725948333740234\n        ]\n      ],\n      [],\n      [],\n      [],\n      []\n    ],\n    \"limits\": \"Actual detector input; no GT identity matching, IDF1/HOTA or tracking quality claim\"\n  },\n  \"file_pipeline_wall_seconds\": 0.017918612999892503,\n  \"file_pipeline_timing_scope\": \"Entire file consumption including capture/open/read/decode, CPU preprocess/model/postprocess/drawing and Python collection; excludes prior training, encoding and disk output; no display or network queue\",\n  \"verification_wall_seconds\": 1.032663925999259,\n  \"verification_timing_scope\": \"Inside verify(), including fixture encoding, decoding and resource checks, model initialization/training, two inference streams, tracking, first-overlay save and hashes; excludes imports, process startup and final JSON write\",\n  \"limits\": \"Controlled lossless generated video, CPU only; no physical camera, lossy MP4/color-space parity, variable-frame-rate PTS, live/network latency or formal throughput benchmark\"\n}\n",
+      "stderr": "",
+      "process_wall_seconds": 2.474151214999438
+    }
+  ],
+  "custom_loss_and_metrics_match_reviewed_workspace": true,
+  "video_pixels_predictions_tracking_match_reviewed_workspace": true,
+  "new_modal_jobs": 0,
+  "custom_parameters": 15544,
+  "custom_steps": 1600,
+  "custom_test_ap50": 0.6666666666666666
+}

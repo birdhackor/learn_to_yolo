@@ -86,6 +86,8 @@
 
 教材固定為新的`lessons-v0.3.0`，已發布的`lessons-v0.1.0`與`lessons-v0.2.0`保留不動。前輪從公開v0.2空checkout，實際執行00／20兩種依賴組合的notebook初始化格及CPU案例，兩者通過；[v0.2公開tag初始化驗證](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)保留完整輸出。這是本地直譯器上的公開clone驗證，沒有登入Google或聲稱測過Colab分配的GPU。
 
+v0.3發布後再做公開空checkout，00／20兩種初始化格和CPU案例再次通過，全部42節source與已審查工作區相同；[v0.3初始化紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap-v0.3.0.json)保存輸出。另從該tag、未設定PYTHONPATH的子程序實際執行新的1600步資料入口與影片檔案入口，數值和已審查結果一致；[公開tag補充入口驗證](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-public-closure-bootstrap.json)保留結果。這仍是本地CPU驗證，未登入Google Colab。
+
 ## 對照大綱的最後補齊
 
 另由獨立審查對照大綱，發現第8章雖有一步更新，尚缺完成條件中的overfit與獨立圖片推論；已補上述第8項。第18／19章的實際檔案及接線也一併補驗證。新內容再由兩位陌生讀者與另外兩位技術reviewer審查，保留初讀與修後複查：
