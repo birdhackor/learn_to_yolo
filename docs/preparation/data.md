@@ -37,7 +37,7 @@ python scripts/download_data.py fetch fashion-mnist --output /content/data
 
 已建立 `data/curated/fashion-mnist-v1.tar`，包含完整四份原始 gzip 與 MIT LICENSE，共 **30,894,080 bytes**。SHA-256 為 `3f90f28291da3cb42cb75c4aca18014a6af397e307ee14a60516bc87e882977f`，封裝 metadata 記錄在 `data/manifest.json` 的 `lfs_assets`。
 
-遠端發布使用 `Publish and verify LFS dataset` workflow：先上傳並從空 LFS 快取下載校驗，才提交 Git pointer。公開後讀者只取這份封裝：
+已透過 [Publish and verify LFS dataset](https://github.com/birdhackor/learn_to_yolo/actions/runs/36969537551) 完成遠端上傳、空 LFS 快取下載校驗及 Git pointer 提交；本雲端另從空快取下載，封裝與四份原始檔的 SHA-256 均相符。讀者可只取這份封裝：
 
 ```bash
 GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/birdhackor/learn_to_yolo.git

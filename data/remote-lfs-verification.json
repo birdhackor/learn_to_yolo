@@ -10,5 +10,26 @@
   "failure_server": "envoy",
   "failure_content_type": "application/xml",
   "failure_code": "NotImplemented",
-  "failure_message": "A header you provided implies functionality that is not implemented"
+  "failure_message": "A header you provided implies functionality that is not implemented",
+  "direct_cloud_upload": {
+    "status": 501,
+    "code": "NotImplemented",
+    "unsupported_header": "Transfer-Encoding",
+    "small_file_probe_bytes": 29515,
+    "workaround": "GitHub-hosted Actions upload"
+  },
+  "hosted_verification": {
+    "workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/36969537551",
+    "workflow_id": 36969537551,
+    "conclusion": "success",
+    "upload_step": "success",
+    "empty_cache_download_step": "success",
+    "pointer_publication_step": "success"
+  },
+  "cloud_empty_cache_download": {
+    "result": "passed",
+    "archive_and_four_original_files_sha256": "passed",
+    "included_license": "matched"
+  },
+  "published_commit": "7b5f1db8b29eaebbd52b12566244c78c19a08ed5"
 }

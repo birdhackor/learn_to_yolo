@@ -66,7 +66,7 @@ python scripts/github_auth.py git push origin HEAD:main
 
 預期網址：**https://birdhackor.github.io/learn_to_yolo/**。
 
-workflow 目前只接受手動觸發，推送本身不發布。它只上傳 `site/`，不下載訓練資料或 LFS。採 Actions artifact 流程，不用建立 gh-pages 分支或執行 `mkdocs gh-deploy`。
+Pages 與資料發布 workflow 目前都接受手動觸發，推送本身不發布。它只上傳 `site/`，不下載訓練資料或 LFS。採 Actions artifact 流程，不用建立 gh-pages 分支或執行 `mkdocs gh-deploy`。
 
 Pages 經由 public repo 可用免費方案。此網站公開，不需要自訂網域；若以後改 private repo，另核對方案與網站 visibility。你看到的雲端環境「儲存並發布」不是 GitHub Pages 的發布流程。
 
@@ -93,7 +93,7 @@ artifacts/exports/**
 
 普通圖片、notebook、Markdown、manifest 仍在一般 Git。`data/curated/` 專放可再散布的封裝，不放說明文件；授權與索引放在 `data/licenses/`、`data/manifest.json`。
 
-已用 Fashion-MNIST 的 **26,421,880 bytes** 訓練圖，以及 Penn-Fudan 的 **53,723,336 bytes** 封裝，在隔離本地 repository 進行 add → LFS pointer → object fsck → checkout 還原，SHA-256 相符；紀錄在 `data/local-lfs-verification.json`。Penn-Fudan 只是本地測試，未將受限照片放進公開 repo。這驗證本地功能，未驗證 GitHub 上傳權限或帳號配額。
+已用 Fashion-MNIST 的 **26,421,880 bytes** 訓練圖，以及 Penn-Fudan 的 **53,723,336 bytes** 封裝，在隔離本地 repository 進行 add → LFS pointer → object fsck → checkout 還原，SHA-256 相符；紀錄在 `data/local-lfs-verification.json`。Penn-Fudan 只是本地測試，未將受限照片放進公開 repo。此外，Fashion-MNIST 完整封裝已透過 GitHub Actions 真正上傳並下載校驗；本地測試不包含把 Penn-Fudan 照片重新公開。
 
 ### 首次使用遠端 LFS
 
@@ -105,6 +105,10 @@ artifacts/exports/**
 6. 另開乾淨 checkout，只 pull 那一個 asset 並比對 manifest checksum，才算遠端上傳／下載驗證成功。
 
 Git 普通檔案 >50 MiB 警告、>100 MiB 阻擋；LFS 本身沒有「按大小自動 track」功能。目前只是準備規則，不將完整公開 dataset 全量上傳。每次大檔新版本也會占完整 storage，因此資料包少改、只保存精選 checkpoint。
+
+### 本雲端需要重新發布資料時
+
+先在 GitHub Actions 執行 **Publish and verify LFS dataset**，或以本環境的秘密認證觸發該 workflow。它下載已查核的官方檔案、重建固定 SHA-256 封裝、上傳並從空快取下載核對，成功後才提交 pointer。直接從此雲端 PUT 到 S3 的路徑曾回 Transfer-Encoding 501，重複改 token 不會修正這項傳輸問題。
 
 ### Colab 只取得指定 LFS asset
 

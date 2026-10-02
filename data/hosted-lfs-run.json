@@ -1,0 +1,67 @@
+{
+  "workflow": "prepare-lfs.yml",
+  "dispatch_started_at": "2026-10-02T05:34:20.406003+00:00",
+  "dispatch_status": 204,
+  "id": 36969537551,
+  "html_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/36969537551",
+  "head_sha": "5184c2f168050ccc570c6ca8eb92b357421b6fd8",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-02T05:34:21Z",
+  "jobs": [
+    {
+      "name": "publish",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Download and verify original dataset",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build reproducible licensed bundle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload bundle to GitHub LFS",
+          "conclusion": "success"
+        },
+        {
+          "name": "Create local pointer commit",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify download from an empty LFS cache",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish verified pointer to main",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

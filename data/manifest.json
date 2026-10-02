@@ -157,7 +157,11 @@
         "fashion-mnist/LICENSE"
       ],
       "source_dataset": "fashion-mnist",
-      "transport": "git-lfs"
+      "transport": "git-lfs",
+      "published_on": "2026-10-02",
+      "remote_upload_verified": true,
+      "remote_download_verified": true,
+      "verification_workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/36969537551"
     }
   ]
 }
