@@ -1,0 +1,44 @@
+name: Manual L4 TensorRT lesson verification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: learn-to-yolo-gpu-smoke
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      MODAL_TOKEN_ID: ${{ vars.MODAL_TOKEN_ID || secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      MODAL_ENVIRONMENT: ${{ vars.MODAL_ENVIRONMENT || 'main' }}
+      MODAL_CHECKPOINT_VOLUME: ${{ vars.MODAL_CHECKPOINT_VOLUME || vars.MODAL_VOLUME_NAME || 'learn-to-yolo-checkpoints' }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Modal client only
+        run: python -m pip install -r requirements-modal.txt
+      - name: Validate client isolation
+        run: python scripts/modal_deployment.py --validate-only
+      - name: Verify real FP32 and FP16 engines on one L4
+        run: python scripts/modal_deployment.py
+      - name: Confirm stopped with zero tasks
+        if: always()
+        run: python scripts/modal_deployment.py --confirm-stopped
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployment-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/runs/deployment/result.json
+          retention-days: 30
