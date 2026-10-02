@@ -29,7 +29,9 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 2026-10-02 的檢查結果：**42／42 節實驗執行通過，22／22 項核心測試通過**。ONNX 章實際匯出模型並用 ONNX Runtime 比對 batch 1、2、3 的結果；TensorRT 尚未執行。完整實驗輸出見 [CPU 執行紀錄](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/artifacts/checks/lesson-runtime.json)。
 
-每節另由沒有閱讀全書背景的 subagent 初讀，檢查術語、數值、圖與程式能否接起來。原始意見保留在 repository 的 `reviews/`；這是編輯審查紀錄，不是聲稱做過真人學生的學習實驗。
+42 個教材小節各由沒有閱讀全書背景的 subagent 初讀，檢查術語、數值、圖與程式能否接起來。[審查報告](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews)分開保留初讀意見與作者修訂紀錄；作者修訂本身不等於獨立 reviewer 已重新檢查通過。
+
+首頁另有[初讀與修訂版複查報告](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/homepage-fresh-reader.md)，包含圖文一致性及手機呈現的檢查。這些是編輯審查紀錄，沒有做過真人學生的學習實驗。
 
 ## 之後有 GPU 時的實驗順序
 
