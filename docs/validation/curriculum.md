@@ -82,4 +82,6 @@
 
 `python scripts/validate_curriculum_evidence.py`逐節核對目前case的SHA-256、notebook code與stdout、JSON/index及頁面證據；Pages建置也執行此檢查。它驗證版本一致，科學結論仍依獨立查核。
 
+教材固定為新的`lessons-v0.2.0`，舊`lessons-v0.1.0`保留不動。發布後從公開repo做空checkout，實際執行00／20兩種依賴組合的notebook初始化格及CPU案例，兩者通過；42節程式SHA與已審查工作區相同。[公開tag初始化驗證](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)保存完整輸出。這是本地直譯器上的公開clone驗證，沒有登入Google或聲稱測過Colab分配的GPU。
+
 真人學生學習成效、完整真實場景長訓練、INT8與攝影機實測仍屬後續工作。
