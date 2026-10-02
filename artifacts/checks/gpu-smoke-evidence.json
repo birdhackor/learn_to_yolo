@@ -1,0 +1,35 @@
+{
+  "workflow": {
+    "id": 37032967155,
+    "html_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37032967155",
+    "head_sha": "eaa0cdf073bec49b09402bfbed40db9b0648b425",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-02T16:17:53Z",
+    "updated_at": "2026-10-02T16:21:16Z"
+  },
+  "artifact": {
+    "id": 11237953086,
+    "name": "gpu-smoke-37032967155-1",
+    "size_in_bytes": 7594,
+    "expired": false
+  },
+  "job_times": [
+    {
+      "name": "verify",
+      "started_at": "2026-10-02T16:17:57Z",
+      "completed_at": "2026-10-02T16:21:15Z",
+      "conclusion": "success"
+    }
+  ],
+  "result": "artifacts/checks/gpu-smoke-37032967155.json",
+  "local_checks": {
+    "core_tests": 22,
+    "checkpoint_tests": 2,
+    "extended_checkpoint_cli_and_inference": "passed",
+    "modal_client_isolation_and_sdk_declarations": "passed",
+    "manual_only_workflow": "passed"
+  },
+  "ordinary_git_contains_weights": false,
+  "public_model_published": false
+}

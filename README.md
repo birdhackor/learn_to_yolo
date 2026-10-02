@@ -29,7 +29,9 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 此命令產生固定的紅／藍矩形，走過 data → target → loss → update → decode → NMS → held-out AP50。設定、曲線、範例圖與 checkpoint 存在 `artifacts/runs/grid-learning/`；報告預設在 `artifacts/checks/grid-learning.json`。這次固定 CPU 實驗得到 validation mAP50 約 .804、test 約 .775，只代表這個受控合成任務，不能外推到照片。
 
-較完整的預算可使用 `--epochs 20 --samples 1024`，並指定不同 `--output`／`--report` 保留對照。後續 GPU 環境先依 [PyTorch 官方安裝選擇器](https://pytorch.org/get-started/locally/) 安裝相容的 CUDA build，確認 `torch.cuda.is_available()`，再使用 `--device cuda`。目前沒有 GPU 效率或真實資料完整訓練結果。
+較完整的預算可使用 `--epochs 20 --samples 1024`，並指定不同 `--output`／`--report` 保留對照。GPU 環境先依 [PyTorch 官方安裝選擇器](https://pytorch.org/get-started/locally/) 安裝相容的 CUDA build，確認 `torch.cuda.is_available()`，再使用 `--device cuda`。
+
+已完成一次 [Modal L4／checkpoint 實測](docs/validation/gpu-smoke.md)：沿用本專案模型與訓練步驟，共 80 次 optimizer 更新；跨 container Volume、私有 HF 上下載校驗，以及恢復模型／optimizer／排程／RNG 均通過。[Actions 紀錄](https://github.com/birdhackor/learn_to_yolo/actions/runs/37032967155)保留 JSON artifact。工作流程僅接受手動觸發，不因 push 或 PR 啟動 GPU；正式 GPU 效率比較與真實資料完整訓練仍待實驗。
 
 ## 真實分類資料的短步檢查
 

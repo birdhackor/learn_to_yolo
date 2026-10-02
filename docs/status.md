@@ -29,6 +29,8 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 2026-10-02 的檢查結果：**42／42 節實驗執行通過，22／22 項核心測試通過**。ONNX 章實際匯出模型並用 ONNX Runtime 比對 batch 1、2、3 的結果；TensorRT 尚未執行。完整實驗輸出見 [CPU 執行紀錄](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.1.0/artifacts/checks/lesson-runtime.json)。
 
+另已完成 [L4／checkpoint 實測](validation/gpu-smoke.md)：真實 GridDetector 在 CUDA 上跑兩條 40 步路徑（合計 80 次更新），從私有 HF 下載的中途 checkpoint 恢復後，模型及 optimizer 與不中斷對照的最大差異為 0；排程與 RNG 也相符。Volume 經另一 container 校驗，Modal 已停止且 tasks=0。這項驗證使用目前 `main` 的新入口，不修改已發布教材的 release tag；尚未驗證真實資料長訓練或正式 GPU 效能。
+
 42 個教材小節各由沒有閱讀全書背景的 subagent 初讀，檢查術語、數值、圖與程式能否接起來。[審查報告](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews)分開保留初讀意見與作者修訂紀錄；作者修訂本身不等於獨立 reviewer 已重新檢查通過。
 
 首頁另有[初讀與修訂版複查報告](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/homepage-fresh-reader.md)，包含圖文一致性及手機呈現的檢查。這些是編輯審查紀錄，沒有做過真人學生的學習實驗。
