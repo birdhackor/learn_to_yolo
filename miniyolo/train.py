@@ -21,9 +21,30 @@ from .targets import build_targets
 from .losses import grid_loss
 from .inference import decode_grid
 from .metrics import evaluate_ap
+from .checkpoint import save_checkpoint
 
 
 CLASS_NAMES = ["red rectangle", "blue rectangle"]
+
+
+def optimizer_step(model, optimizer, images, targets, validate_gradients=False):
+    """The CLI and GPU verification share this actual detector training step."""
+    model.train()
+    losses = grid_loss(model(images), targets)
+    if not all(torch.isfinite(value) for value in losses.values()):
+        raise RuntimeError("Nonfinite detector loss")
+    optimizer.zero_grad(set_to_none=True)
+    losses["total"].backward()
+    gradient_norm = None
+    if validate_gradients:
+        gradients = [parameter.grad for parameter in model.parameters()]
+        if any(value is None or not torch.isfinite(value).all() for value in gradients):
+            raise RuntimeError("Missing or nonfinite detector gradient")
+        gradient_norm = float(torch.stack([value.detach().square().sum() for value in gradients]).sum().sqrt())
+        if not math.isfinite(gradient_norm) or gradient_norm <= 0:
+            raise RuntimeError("Detector gradient must be finite and nonzero")
+    optimizer.step()
+    return {key: float(value.detach()) for key, value in losses.items()}, gradient_norm
 
 
 def _save_json(path, contents):
@@ -39,7 +60,7 @@ def _hardware(device):
         cpu = next((line.split(":", 1)[1].strip() for line in cpuinfo.read_text().splitlines()
                     if line.startswith("model name")), "unknown")
     return {"device": str(device), "cpu": cpu, "python": platform.python_version(),
-            "torch": torch.__version__, "torch_threads": torch.get_num_threads(),
+            "torch": str(torch.__version__), "torch_threads": torch.get_num_threads(),
             "cuda_device": torch.cuda.get_device_name(device) if device.type == "cuda" else None}
 
 
@@ -82,14 +103,7 @@ def train(config, output="artifacts/runs/grid-learning", report="artifacts/check
         images = train_images[indices]
         targets = build_targets([train_targets[i] for i in indices], grid_size=config["grid_size"],
                                 image_size=config["image_size"], num_classes=2)
-        model.train()
-        losses = grid_loss(model(images), targets)
-        if not all(torch.isfinite(value) for value in losses.values()):
-            raise RuntimeError(f"step {step + 1} loss 非有限值")
-        optimizer.zero_grad()
-        losses["total"].backward()
-        optimizer.step()
-        values = {key: float(value.detach()) for key, value in losses.items()}
+        values, _ = optimizer_step(model, optimizer, images, targets)
         history.append({"step": step + 1, **values})
         epoch_values.append(values)
         if (step + 1) % steps_per_epoch == 0 or step + 1 == total_steps:
@@ -104,8 +118,7 @@ def train(config, output="artifacts/runs/grid-learning", report="artifacts/check
     final_validation, predictions = _evaluate(model, val_device, val_targets, config)
     final_test, _ = _evaluate(model, test_device, test_targets, config)
     checkpoint = run / "checkpoint.pt"
-    torch.save({"model_state_dict": model.state_dict(), "optimizer_state_dict": optimizer.state_dict(),
-                "config": config, "class_names": CLASS_NAMES, "steps_completed": total_steps}, checkpoint)
+    save_checkpoint(checkpoint, model, optimizer, config, CLASS_NAMES, total_steps)
     _save_json(run / "history.json", history)
     # 曲線只呈現這次實際 loss，不用人工假造訓練結果。
     cache = Path(__file__).resolve().parents[1] / ".cache"

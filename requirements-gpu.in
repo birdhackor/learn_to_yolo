@@ -1,0 +1,3 @@
+# Preserve every existing model dependency pin; select the CUDA wheel explicitly.
+-r requirements-model.txt
+torch==2.9.1+cu128

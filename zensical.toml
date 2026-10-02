@@ -20,6 +20,7 @@ nav = [
     { "完整閱讀路線" = "learning-path.md" },
     { "術語快速查" = "glossary.md" },
     { "驗證範圍與後續實驗" = "status.md" },
+    { "GPU／checkpoint 實測" = "validation/gpu-smoke.md" },
   ] },
   { "A. 先讓 CNN 學得動" = [
     { "一次學習的超短暖身" = "lessons/00-warmup.md" },
