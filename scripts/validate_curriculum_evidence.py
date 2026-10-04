@@ -113,6 +113,9 @@ def main():
     assert video["rgb_pixels_exact"] and video["detector_predictions_exact"] and video["overlays_exact"]
     assert all(video["capture_released"].values())
     assert len(video["tracking"]["ids"]) == video["video"]["frames"]
+    fashion = json.loads((folder / "fashion-mnist-learning.json").read_text())
+    assert (fashion["steps"], fashion["train_samples"], fashion["validation_samples"], fashion["test_samples"]) == (40, 64, 128, 128)
+    assert fashion["weights_changed"] and len(fashion["loss_history"]) == fashion["steps"]
     report = {"scope": "Every record's SHA-256 binding to its code and imported repository modules, notebook stdout, "
                        "page evidence blocks and recorded machine; correctness reviews are separate",
               "lesson_count": len(results), "passed": len(results), "results": results,

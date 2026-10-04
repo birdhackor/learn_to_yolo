@@ -53,6 +53,10 @@ COMMANDS = {
     C + "04-localization-learning.json": [[PY, "scripts/run_learning_extensions.py", "--section", "04-localization", "--record"]],
     C + "10-multiscale-learning.json": [[PY, "scripts/run_multiscale_learning.py", "--record"]],
     C + "video-file.json": [[PY, "scripts/verify_video_file.py", "--record", C + "video-file.json"]],
+    # Downloads Fashion-MNIST (30.88 MB, checked against data/manifest.json) unless data/downloads/ has it.
+    C + "fashion-mnist-learning.json": [
+        [PY, "scripts/download_data.py", "fetch", "fashion-mnist"],
+        [PY, "scripts/run_fashion_cnn.py", "--train-steps", "40", "--subset", "64", "--eval-samples", "128", "--record"]],
 }
 assert set(COMMANDS) == set(CPU_RECORDS)
 PINS = ["requirements-model.txt", "requirements-video.txt"]
