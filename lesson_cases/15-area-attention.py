@@ -40,9 +40,10 @@ def main():
     assert area_weights.numel() == tokens.shape[0] * tokens.shape[1] ** 2 // areas
     print('full affinity shape/count:', tuple(full_weights.shape), full_weights.numel())
     print('area affinity shape/count:', tuple(area_weights.shape), area_weights.numel())
-    print(f'first-token output full={full[0,0,0].item():.4f}, area={area[0,0,0].item():.4f}')
+    # token0 outputs here are multiples of 1/32, so 5 decimals print them exactly (no rounding ties).
+    print(f'first-token output full={full[0,0,0].item():.5f}, area={area[0,0,0].item():.5f}')
     print(f'changing token {changed_index} affects token {query_index}: full={full_affected}, area={area_affected}; same area={same_area}')
-    print(f'after intervention: full={full_changed[0,0,0].item():.4f}, area={area_changed[0,0,0].item():.4f}')
+    print(f'after intervention: full={full_changed[0,0,0].item():.5f}, area={area_changed[0,0,0].item():.5f}')
     optimizer = torch.optim.SGD(projection.parameters(), lr=.05)
     optimizer.zero_grad()
     loss = F.mse_loss(area, tokens)

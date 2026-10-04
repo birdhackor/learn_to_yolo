@@ -14,8 +14,15 @@ def make_batch():
     images = torch.zeros(8, 3, 32, 32)
     labels = torch.arange(8) % 2
     for i in range(8):
-        left, top = 4 + i % 3 * 4, 6 + i % 2 * 5
+        # top follows (i // 2) % 2, not the label i % 2, so height says nothing about the class
+        left, top = 4 + i % 3 * 4, 6 + (i // 2) % 2 * 5
         images[i, 0 if labels[i] == 0 else 2, top:top + 12, left:left + 12] = 1
+    shapes = images.amax(1)  # [8,32,32]: where each rectangle is, color ignored
+    tops = shapes.amax(2).argmax(1)  # first lit row of each image
+    for c in (0, 1):
+        assert sorted(tops[labels == c].tolist()) == [6, 6, 11, 11], tops  # 2 high, 2 low per class
+    # A red and a blue rectangle cover the same pixels, so only color separates the classes.
+    assert any(torch.equal(r, b) for r in shapes[labels == 0] for b in shapes[labels == 1])
     return images, labels
 
 

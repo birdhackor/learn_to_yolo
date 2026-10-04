@@ -10,7 +10,8 @@ def iou(a, b):
 
 
 def nms(boxes, scores, threshold=.5):
-    order = scores.argsort(descending=True).tolist()
+    # stable sort: equal scores keep input order, like the NMS in chapters 6 and 7
+    order = scores.argsort(descending=True, stable=True).tolist()
     keep = []
     while order:
         i = order.pop(0)
@@ -46,8 +47,9 @@ def main():
     manual_scores = torch.tensor([.92, .90, .80, .05])
     top2 = manual_scores.topk(2).indices.tolist()
     assert top2 == [0, 1]  # top-k itself cannot detect duplication
-    print('many-head scores:', many.round(decimals=3).tolist())
-    print('one-head scores:', one.round(decimals=3).tolist())
+    # round in float64 so 0.959 prints as 0.959, not as float32's nearest value 0.9589999914...
+    print('many-head scores:', many.double().round(decimals=3).tolist())
+    print('one-head scores:', one.double().round(decimals=3).tolist())
     print('many/no NMS:', many_ids, 'many/NMS:', many_after_nms, 'one/no NMS:', one_ids)
     print('top-2 on duplicate-heavy scores:', top2, '(misses object at candidate 2)')
     print(f'duplicate IoU={iou(boxes[0], boxes[1]).item():.4f}')

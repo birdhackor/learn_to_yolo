@@ -30,14 +30,37 @@ def main():
            "labels": torch.tensor([0, 1])}
     empty = {"boxes": torch.empty(0, 4), "labels": torch.empty(0, dtype=torch.long)}
     box_targets, objectness, class_ids, positive = build([two, empty])
-    assert positive.sum() == 2 and (~positive).sum() == 30
+    # Read each cell's state from the targets: a positive cell has objectness 1, a negative
+    # cell objectness 0 ("no object"); any other cell would need a third state such as ignore.
+    negative = objectness == 0
+    ignore = ~positive & ~negative
+    assert positive.sum() == 2 and negative.sum() == 30 and not ignore.any()
     assert positive[0, 0, 0] and positive[0, 2, 2] and not positive[1].any()
     assert torch.equal(box_targets[0, 0, 0], torch.tensor([.75, .75, .25, .25]))
     print(f"box_shape={tuple(box_targets.shape)}, objectness_shape={tuple(objectness.shape)}, "
           f"class_shape={tuple(class_ids.shape)}")
-    print(f"positive_cells(row,col)={positive[0].nonzero().tolist()}, "
-          f"first_target={box_targets[0, 0, 0].tolist()}, first_image_negative=14")
-    print(f"batch positives={positive.sum().item()}, negatives={(~positive).sum().item()}, ignores=0")
+    cells = positive[0].nonzero().tolist()  # [row, col] of each positive cell, row by row
+    row, col = cells[0]
+    print(f"positive_cells(row,col)={cells}, first_target={box_targets[0, row, col].tolist()}, "
+          f"first_image_negative={negative[0].sum().item()}")
+    print(f"batch positives={positive.sum().item()}, negatives={negative.sum().item()}, "
+          f"ignores={ignore.sum().item()}")
+
+    # Both boxes above have center x = y and width = height, so swapping row/col, the x/y
+    # offsets or w/h in build() would go unnoticed. Here the first box has unequal offsets and
+    # sizes, and the second sits at row 1, col 2 (a row/col swap would give row 2, col 1); it is
+    # not the page exercise's box, so the printed result does not give away the exercise's answers.
+    odd = {"boxes": torch.tensor([[2., 4., 22., 16.], [36., 12., 52., 28.]]),
+           "labels": torch.tensor([0, 1])}
+    odd_targets, _, odd_classes, odd_positive = build([odd])
+    odd_cells = odd_positive[0].nonzero().tolist()
+    odd_cell_targets = odd_targets[0][odd_positive[0]].tolist()  # same order as odd_cells
+    odd_cell_classes = odd_classes[0][odd_positive[0]].tolist()
+    assert odd_cells == [[0, 0], [1, 2]]
+    assert odd_cell_targets == [[.75, .625, .3125, .1875], [.75, .25, .25, .25]]
+    assert odd_cell_classes == [0, 1]
+    print(f"asymmetric boxes: positive_cells(row,col)={odd_cells}, targets={odd_cell_targets}, "
+          f"classes={odd_cell_classes}")
 
     collision = {"boxes": torch.tensor([[4., 4., 20., 20.], [2., 2., 10., 10.]]),
                  "labels": torch.tensor([0, 0])}

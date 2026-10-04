@@ -51,7 +51,9 @@ def main():
     giou_after = losses(box_from_center(giou_center),target)['giou']
     assert torch.allclose(giou_center,torch.tensor([39.,20.]),atol=1e-5)
     assert abs(giou_after.item()-(2-512/624)) < 1e-6 and giou_after < giou_initial
-    print('GIoU gradient',giou_gradient.tolist(),'after 1-pixel real SGD move',round(giou_after.item(),6))
+    # float32 cannot store .02 exactly (0.0199999995...); round to print the hand-computed value.
+    print('GIoU gradient',[round(value,6) for value in giou_gradient.tolist()],
+          'after 1-pixel real SGD move',round(giou_after.item(),6))
     shifted_center = torch.tensor([36.,20.],requires_grad=True)  # 4 pixels left, gap remains 4.
     shifted = losses(box_from_center(shifted_center),target)
     assert shifted['iou'].item() == 1
@@ -66,8 +68,9 @@ def main():
     after = losses(box_from_center(center),target)
     assert center[0] < before[0] and after['diou'] < initial['diou']
     print('initial losses',{k:round(v.item(),6) for k,v in initial.items()})
-    print('non-overlap plain IoU center gradient',iou_gradient.tolist())
-    print('DIoU center after one real step',center.detach().tolist(),
+    print('non-overlap plain IoU center gradient',[round(value,6) for value in iou_gradient.tolist()])
+    # Pixels get 4 decimals: near 40, adjacent float32 values are ~4e-6 apart, so a 6th decimal is noise.
+    print('DIoU center after one real step',[round(value,4) for value in center.detach().tolist()],
           'loss',round(after['diou'].item(),6))
     exact = losses(target,target)
     assert all(abs(value.item()) < 1e-6 for value in exact.values())

@@ -48,9 +48,9 @@
     },
     {
       "id": "synthetic-rgb",
-      "status": "planned",
+      "status": "generated",
       "purpose": "Shared controlled classification, single-object and multi-object experiments",
-      "format": "Generated RGB images and bounding boxes; generator not implemented",
+      "format": "Generated in code, nothing to download: miniyolo.data.ShapeDataset (shared from chapter 7) and small per-lesson generators; RGB images, class labels and pixel xyxy boxes",
       "resources": []
     },
     {

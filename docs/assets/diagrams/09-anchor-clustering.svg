@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 568" role="img" aria-labelledby="title desc">
+ <title id="title">中心對齊算尺寸 IoU，與寬高平面上的兩群聚類</title>
+ <desc id="desc">左右兩格。左格依比例繪製，1 畫素畫成 6 個單位，示範把兩個框的中心疊在一起後怎麼算尺寸 IoU：綠色實線是訓練框，紫色虛線是 16×16（本節弱基線的 anchor），黃色是交集，小十字是共同中心。上例 8×8 與 16×16：8×8 整個落在 16×16 裡，交集寬 min(寬)=8、交集高 min(高)=8，IoU=64/(64+256−64)=0.25。下例 32×16 與 16×16：兩框一樣高，16×16 整個落在 32×16 裡，交集寬 min(寬)=16、交集高 min(高)=16，IoU=256/(512+256−256)=0.5。右格是寬高平面：橫軸寬、縱軸高，單位畫素；這裡的點代表尺寸，不是圖上的位置。上方總覽依比例繪製，1 畫素畫成 8 個單位，橫軸畫 0 到 36、刻度 0、8、16、24、32，縱軸畫 0 到 20、刻度 0、8、16。六個綠點是本節的 6 個 train 尺寸 [8,8]、[9,8]、[8,9]、[32,16]、[30,16]、[32,18]：前三個歸群 0，後三個歸群 1。下方兩張放大圖用同一比例，1 畫素畫成 60 個單位：群 0 放大圖畫寬 7.3 到 9.7、高 7.3 到 9.7，群 1 放大圖畫寬 29.8 到 32.2、高 15.8 到 18.2。紫色虛線圈是初始中心 (8,8) 與 (32,18)，也就是第一筆與最後一筆尺寸；紫色菱形是第 1 輪更新後的群平均 (25/3,25/3)≈(8.33,8.33) 與 (94/3,50/3)≈(31.33,16.67)；紫色箭頭從初始中心指向群平均。第 2 輪的歸群與中心都不變，所以這兩個群平均就是最後的兩個 anchor。</desc>
+ <rect width="720" height="568" fill="#f8fafc"/>
+ <rect x="8" y="8" width="296" height="552" rx="10" fill="#fff" stroke="#e2e8f0"/>
+ <rect x="316" y="8" width="396" height="552" rx="10" fill="#fff" stroke="#e2e8f0"/>
+
+ <!-- 左格：依比例，1 畫素畫成 6 個單位。兩例的 16×16 都是 96×96 單位，左右位置對齊。 -->
+ <!-- 上例：8×8 與 16×16，共同中心畫在 (120,174)。 -->
+ <rect x="72" y="126" width="96" height="96" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="7 4"/>
+ <rect x="96" y="150" width="48" height="48" fill="#fde68a" stroke="#16a34a" stroke-width="2.5"/>
+ <path d="M115 174H125M120 169V179" stroke="#0f172a" stroke-width="1.5"/>
+ <path d="M96 203V243M144 203V243M149 150H189M149 198H189" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 2"/>
+ <path d="M102 238H138M184 156V192" stroke="#334155" stroke-width="1.5"/>
+ <path d="M96 238L103 234.5V241.5ZM144 238L137 234.5V241.5ZM184 150L180.5 157H187.5ZM184 198L180.5 191H187.5Z" fill="#334155"/>
+
+ <!-- 下例：32×16 與 16×16，共同中心畫在 (120,406)；兩框一樣高，上下邊重合。 -->
+ <rect x="72" y="358" width="96" height="96" fill="#fde68a"/>
+ <rect x="24" y="358" width="192" height="96" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+ <rect x="72" y="358" width="96" height="96" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="7 4"/>
+ <path d="M115 406H125M120 401V411" stroke="#0f172a" stroke-width="1.5"/>
+ <path d="M72 459V475M168 459V475M221 358H241M221 454H241" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 2"/>
+ <path d="M78 470H162M236 364V448" stroke="#334155" stroke-width="1.5"/>
+ <path d="M72 470L79 466.5V473.5ZM168 470L161 466.5V473.5ZM236 358L232.5 365H239.5ZM236 454L232.5 447H239.5Z" fill="#334155"/>
+
+ <g font-family="sans-serif" fill="#0f172a">
+  <text x="24" y="40" font-size="20" font-weight="700">中心疊在一起，只比寬高</text>
+  <text x="24" y="68" font-size="16">黃色交集=min(寬)×min(高)</text>
+  <g font-size="17">
+   <text x="24" y="110"><tspan fill="#15803d">8×8</tspan> 與 <tspan fill="#6d28d9">16×16</tspan></text>
+   <text x="24" y="290">IoU=64/(64+256−64)=0.25</text>
+   <text x="24" y="342"><tspan fill="#15803d">32×16</tspan> 與 <tspan fill="#6d28d9">16×16</tspan></text>
+   <text x="24" y="522">IoU=256/(512+256−256)=0.5</text>
+  </g>
+  <g font-size="15" fill="#334155">
+   <text x="120" y="260" text-anchor="middle">min(寬)=8</text>
+   <text x="192" y="170">min(高)</text><text x="192" y="190">=8</text>
+   <text x="120" y="434" text-anchor="middle" font-size="14">共同中心</text>
+   <text x="120" y="492" text-anchor="middle">min(寬)=16</text>
+   <text x="244" y="402">min(高)</text><text x="244" y="422">=16</text>
+  </g>
+ </g>
+
+ <!-- 右格上方總覽：寬高平面上的點 (w,h) 畫在 (372+8w, 272−8h)，即 1 畫素＝8 單位。 -->
+ <path d="M372 112V272H660" fill="none" stroke="#475569" stroke-width="1.5"/>
+ <path d="M372 272V277M436 272V277M500 272V277M564 272V277M628 272V277M367 272H372M367 208H372M367 144H372" stroke="#475569" stroke-width="1.5"/>
+ <g fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3">
+  <rect x="426" y="190" width="28" height="28" rx="8"/>
+  <rect x="602" y="118" width="36" height="36" rx="8"/>
+ </g>
+ <g fill="#16a34a" stroke="#fff" stroke-width="1">
+  <circle cx="436" cy="208" r="3.5"/><circle cx="444" cy="208" r="3.5"/><circle cx="436" cy="200" r="3.5"/>
+  <circle cx="628" cy="144" r="3.5"/><circle cx="612" cy="144" r="3.5"/><circle cx="628" cy="128" r="3.5"/>
+ </g>
+
+ <!-- 右格下方兩張放大圖，同一比例：1 畫素＝60 單位。
+      群 0：(w,h) 畫在 (356+60(w−7.3), 358+60(9.7−h))；群 1：(w,h) 畫在 (548+60(w−29.8), 358+60(18.2−h))。 -->
+ <rect x="356" y="358" width="144" height="144" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+ <rect x="548" y="358" width="144" height="144" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+ <path d="M398 359V501M458 359V501M357 400H499M357 460H499M560 359V501M620 359V501M680 359V501M549 370H691M549 430H691M549 490H691" stroke="#e2e8f0" stroke-width="1"/>
+ <path d="M398 502V507M458 502V507M351 400H356M351 460H356M560 502V507M620 502V507M680 502V507M543 370H548M543 430H548M543 490H548" stroke="#475569" stroke-width="1.5"/>
+ <g fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="3 2.4">
+  <circle cx="398" cy="460" r="8"/><circle cx="680" cy="370" r="8"/>
+ </g>
+ <g fill="#16a34a" stroke="#fff" stroke-width="1.5">
+  <circle cx="398" cy="460" r="5"/><circle cx="458" cy="460" r="5"/><circle cx="398" cy="400" r="5"/>
+  <circle cx="680" cy="490" r="5"/><circle cx="560" cy="490" r="5"/><circle cx="680" cy="370" r="5"/>
+ </g>
+ <path d="M403.66 454.34L410.05 447.95M676.42 377.16L645.13 439.74" stroke="#7c3aed" stroke-width="2.5"/>
+ <path d="M414.29 443.71L412.53 451.84L406.16 445.47ZM642.45 445.11L641.55 436.83L649.6 440.86Z" fill="#7c3aed"/>
+ <g fill="#7c3aed" stroke="#fff" stroke-width="1">
+  <path d="M418 434L424 440L418 446L412 440Z"/>
+  <path d="M640 444L646 450L640 456L634 450Z"/>
+ </g>
+
+ <!-- 圖例符號 -->
+ <circle cx="340" cy="65" r="4.5" fill="#16a34a"/>
+ <circle cx="446" cy="65" r="7" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="3 2.4"/>
+ <path d="M540 58L547 65L540 72L533 65Z" fill="#7c3aed"/>
+
+ <g font-family="sans-serif" fill="#0f172a">
+  <text x="332" y="40" font-size="20" font-weight="700">6 個尺寸分兩群，中心移到群平均</text>
+  <g font-size="15">
+   <text x="350" y="70">訓練框尺寸</text><text x="459" y="70">初始中心</text>
+   <!-- 整行放不下（會超出右格與 viewBox），括號另起一行，對齊「群平均」的起點。 -->
+   <text x="553" y="70">群平均<tspan x="553" y="90">（＝最後的 anchor）</tspan></text>
+  </g>
+  <g font-size="15" fill="#475569">
+   <text x="340" y="102">高（畫素）</text>
+   <text x="660" y="316" text-anchor="end">寬（畫素）</text>
+   <g text-anchor="middle">
+    <text x="372" y="294">0</text><text x="436" y="294">8</text><text x="500" y="294">16</text><text x="564" y="294">24</text><text x="628" y="294">32</text>
+    <text x="398" y="522">8</text><text x="458" y="522">9</text>
+    <text x="560" y="522">30</text><text x="620" y="522">31</text><text x="680" y="522">32</text>
+   </g>
+   <g text-anchor="end">
+    <text x="362" y="277">0</text><text x="362" y="213">8</text><text x="362" y="149">16</text>
+    <text x="348" y="405">9</text><text x="348" y="465">8</text>
+    <text x="540" y="375">18</text><text x="540" y="435">17</text><text x="540" y="495">16</text>
+   </g>
+  </g>
+  <g font-size="16">
+   <text x="462" y="210">群 0</text>
+   <text x="594" y="142" text-anchor="end">群 1</text>
+   <text x="356" y="346">群 0 放大</text>
+   <text x="548" y="346">群 1 放大</text>
+  </g>
+  <g font-size="15" fill="#6d28d9" text-anchor="middle">
+   <text x="428" y="546">(8,8) → (8.33,8.33)</text>
+   <text x="620" y="546">(32,18) → (31.33,16.67)</text>
+  </g>
+ </g>
+</svg>

@@ -27,7 +27,7 @@ def main():
     y.sum().backward()
     assert torch.equal(x.grad, torch.ones_like(x))
     print(f"x={x.detach().flatten().tolist()}, y={y.detach().flatten().tolist()}")
-    print(f"input_gradient={x.grad.flatten().tolist()}; F=0 preserves negative values too")
+    print(f"input_gradient={x.grad.flatten().tolist()}; negatives_preserved={torch.equal(y[x < 0], x[x < 0])}")
 
     trained = IdentityBlock(4)
     inputs, target = torch.randn(2, 4, 8, 8), torch.zeros(2, 4, 8, 8)

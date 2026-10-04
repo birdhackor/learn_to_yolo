@@ -39,7 +39,9 @@ def main():
     cropped_labels = labels[keep]
     assert cropped_labels.tolist() == [0] and cropped_labels.dtype == torch.long
     assert keep.tolist() == [True]
-    assert cropped[0,4:20,0:8].sum() == 128
+    expected_crop = torch.zeros(3,32,32)
+    expected_crop[0,4:20,0:8] = 1
+    assert torch.equal(cropped,expected_crop)
     _,removed,keep_strict = crop(image,boxes,16,8,32,32,.6)
     strict_labels = labels[keep_strict]
     assert removed.shape == (0,4) and keep_strict.tolist() == [False]

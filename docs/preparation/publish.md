@@ -1,50 +1,43 @@
 # GitHub Pages、Colab 與 Git LFS：操作步驟
 
-本專案已有 42 節正式教材與配對的 Colab notebook，網站使用 Zensical。`birdhackor/learn_to_yolo` 為 public、預設分支 main，Pages 已設為 GitHub Actions 模式；教材的公開驗證見 `artifacts/checks/pages-publication.json`，LFS 驗證見 `data/remote-lfs-verification.json`。
+Learn to YOLO 的 42 節教材各配一本 Colab notebook；網站用 Zensical 建成靜態網頁，由 GitHub Actions 發布到 GitHub Pages。repository `birdhackor/learn_to_yolo` 是 public，預設分支是 main。本頁依序說明本地預覽、推送、Pages 設定、Colab 入口與 Git LFS，最後是發布新版教材的完整流程。
 
 ## 1. 本地預覽與授權選擇
 
-網站的原生設定是 `zensical.toml`，文件依賴固定於 `requirements-docs.txt`。Pages workflow 手動觸發；建置時先檢查教材與 notebook 配對，再產生純靜態網站。
-
-你可先本地預覽：
+網站設定在 `zensical.toml`，建置工具的版本固定在 `requirements-docs.txt`。在 repo 根目錄建立文件環境並預覽：
 
 ```bash
-python -m venv .venv-docs
-source .venv-docs/bin/activate
-python -m pip install -r requirements-docs.txt
-python scripts/validate_preparation.py
-python scripts/validate_lessons.py
-zensical serve
+python3 -m venv .venv-docs
+.venv-docs/bin/python -m pip install -r requirements-docs.txt
+.venv-docs/bin/zensical serve
 ```
 
-Windows 使用 `.venv-docs\Scripts\activate`。瀏覽終端機顯示的本地網址。只建置則執行 `zensical build --clean --strict`：清除建置快取，並在出現警告時中止。預覽服務不需 GPU 或資料集。
+用瀏覽器打開終端機顯示的本地網址。Windows 把 `.venv-docs/bin/` 換成 `.venv-docs\Scripts\`。預覽不需要 GPU、PyTorch 或資料集。只建置不預覽時執行 `.venv-docs/bin/zensical build --clean --strict`：`--clean` 清除建置快取，`--strict` 遇到警告就中止。和 Pages 相同的整套檢查，指令見第 6 節〈跑完所有檢查〉。
 
-專案還沒有 LICENSE。公開釋出時請選自己的程式／教材條款，例如程式 MIT、原創教材 CC BY 4.0；這是待 owner 決定的選項，本輪未替你宣告。第三方資料仍遵照各自來源授權。
+repo 沒有 LICENSE 檔。程式與原創教材用什麼條款開放，由 owner 決定，例如程式用 MIT、原創教材用 CC BY 4.0；決定後在 repo 根目錄加上 LICENSE。第三方資料一律遵照各自來源的授權。
 
-## 2. 把修訂推到 GitHub
+## 2. 推送到 GitHub
 
-### 先確認推送認證
+### 推送認證
 
-本環境使用你提供的 `GIT_LFS_AUTHORIZATION` 秘密欄位，內容為完整的 `Basic …` Authorization header；允許 HTTPS 主機為 `github.com`、`api.github.com`。值只在平台的秘密設定介面填入，不寫進 repo、remote URL、Git config 或聊天。
+用你自己的 GitHub 認證推送：SSH key、Git 的 credential helper，或 fine-grained personal access token（PAT）都可以。用 PAT 推送被拒時，檢查它的權限：repository access 要包含 `learn_to_yolo`，Contents 要是 Read and write；推送 `.github/workflows/` 裡的修改還需要 Workflows: Read and write；透過 API 或 GitHub CLI 啟動 workflow 需要 Actions: Read and write。在 GitHub 網頁上按 Run workflow，用的是你登入帳號的權限。
 
-`github_auth.py` 將 header 透過子程序的暫時 Git 設定提供給 Git／LFS，並遮蔽敏感輸出。原始 Authorization 值不會成為命令列參數，也不會保存到檔案。使用方式：
+能讀取 repo、API 回 200 或有 push 權限，都不能證明 LFS 檔案已經上傳；要照第 5 節下載回來核對 checksum 才算數。
+
+**選用：`scripts/github_auth.py`。** 環境只能用一個完整的 HTTP Authorization header（例如 `Basic …`）提供認證時，把 header 的值設成環境變數 `GIT_LFS_AUTHORIZATION`，再用這個 helper 包住 git 指令：
 
 ```bash
-python scripts/github_auth.py git ls-remote origin HEAD
-python scripts/github_auth.py git push origin HEAD:main
+python3 scripts/github_auth.py git ls-remote origin HEAD
+python3 scripts/github_auth.py git push origin HEAD:main
 ```
 
-若這個秘密欄位未提供，腳本沿用既有平台／Git 認證。Git 讀取、API 回 200 與 repository 的 push 角色，不能單獨證明 LFS object 已上傳；還要下載回來核對 checksum。
+helper 透過子程序的暫時 Git 設定（`GIT_CONFIG_*` 環境變數）把 header 交給 Git 與 Git LFS，不寫進檔案、Git config 或命令列參數，並遮蔽輸出裡的 token、Authorization header 與網址裡的帳密。header 只套用在 `https://github.com/birdhackor/learn_to_yolo.git`，所以 `origin` 要是這個 HTTPS 網址；設了這個變數時，helper 也會停用 credential helper。沒設時，它照常執行 git、沿用你平常的 Git 認證，只是不會跳出帳密提示。
 
-本輪實測：LFS batch upload 認證回 200，但這個雲端的直接 S3 傳輸路徑回 501，S3 指出不支援 `Transfer-Encoding`；包含 29 KB 小檔的診斷也相同。因此準備 `Publish and verify LFS dataset` workflow，在 GitHub-hosted runner 下載官方 Fashion-MNIST、校驗來源、組成固定封裝、上傳 LFS、從空快取下載驗證，最後才提交 pointer 到 main。
+PAT 與 `GIT_LFS_AUTHORIZATION` 的值都不要寫進 remote URL（例如 `https://<token>@github.com/…`）、repo 裡的檔案或 Git config：remote URL 與 Git config 會以明文留在設定檔裡，repo 裡的檔案則可能隨 commit 公開。
 
-這個 workflow 使用 GitHub Actions 自己的 `GITHUB_TOKEN`，只需要該 job 的 `contents: write`，無需將你的 PAT 再存到 GitHub Actions secrets。Pages job 另宣告 `pages: write` 與 `id-token: write`。
+### commit 與 push
 
-若原始碼推送被拒，才檢查 PAT 的 repository access 是否包含 `learn_to_yolo`、Contents 是否為 Read and write；新增 workflow 也需要 Workflows: Read and write。透過 API 手動觸發 workflow 需要 Actions: Read and write；在 GitHub 網頁按 Run workflow 可用你的登入權限。
-
-### 推送修訂
-
-確認 diff、忽略下載快取後，以你現有的 GitHub 登入方式 commit／push。以下不會強制覆寫遠端；工作區分支即使不是 main，也將目前提交推到遠端 main：
+確認 diff 後 commit 並推送。下面的指令不會強制覆寫遠端；即使目前的分支不是 main，也會把目前的 commit 推到遠端 main：
 
 ```bash
 git status --short
@@ -52,40 +45,52 @@ git diff --check
 git add -A
 git diff --cached --check
 git commit -m "Update Learn to YOLO site"
-python scripts/github_auth.py git push origin HEAD:main
+git push origin HEAD:main
 ```
 
-`data/downloads/`、`data/processed/`、`site/` 與建置快取被忽略。提交前檢查已暫存的檔案，不納入無關修改。若遠端 main 已有新提交，先按正常 Git 流程同步／解決，不用 force push。
+`data/downloads/`、`data/processed/`、`artifacts/runs/`、`site/` 與建置快取都列在 `.gitignore`，不會被 commit。commit 前看一遍已暫存的檔案，不要夾帶無關的修改。遠端 main 有新的 commit 時，照一般 Git 流程同步、解決衝突，不要 force push。
 
 ## 3. 啟用 GitHub Pages
 
+repo 的 Pages 來源已設為 GitHub Actions。第一次設定（或重新設定）時：
+
 1. 開啟 repository：`https://github.com/birdhackor/learn_to_yolo`。
-2. **Settings → Pages → Build and deployment → Source**，選 **GitHub Actions**。
-3. 如 Actions 被停用，在 **Settings → Actions → General** 允許本 workflow 使用的官方 actions。workflow 已自行宣告所需權限，不需為它新增 PAT 或將全部 workflow 設成 write。
-4. **Settings → Environments → github-pages**：如已有部署分支規則，確保 main 可部署；可將部署來源限制為 main。
+2. **Settings → Pages → Build and deployment → Source** 選 **GitHub Actions**。
+3. Actions 被停用時，到 **Settings → Actions → General** 允許 workflow 使用的 GitHub 官方 actions。workflow 自己宣告需要的權限，不必為它另外建立 PAT，也不必把全部 workflow 的權限設成 write。
+4. **Settings → Environments → github-pages**：已有部署分支規則時，確認 main 可以部署；也可以把部署來源限制為 main。
 5. **Actions → Publish Learn to YOLO → Run workflow**，選 main 後執行。
-6. 等 build 與 deploy 都成功，從 deployment URL 或 Settings → Pages 開站。
+6. 等 build 與 deploy 都成功，從 deployment URL 或 Settings → Pages 開啟網站。
 
-預期網址：**https://birdhackor.github.io/learn_to_yolo/**。
+網址是 **<https://birdhackor.github.io/learn_to_yolo/>**。設定好之後，每次發布只需要第 5、6 步。
 
-Pages 與資料發布 workflow 目前都接受手動觸發，推送本身不發布。網站執行 `zensical build --clean --strict`，只上傳 `site/`，不下載訓練資料或 LFS。採 Actions artifact 流程，不用建立 gh-pages 分支。
+build job 依序執行下面五項，任何一項失敗都不會部署：
 
-Pages 經由 public repo 可用免費方案。此網站公開，不需要自訂網域；若以後改 private repo，另核對方案與網站 visibility。你看到的雲端環境「儲存並發布」不是 GitHub Pages 的發布流程。
+- `validate_preparation.py`：資料 manifest、頁面與 notebook 的配對、notebook 格式、網站檔案的大小與類型。
+- `validate_lessons.py`：課程頁、頁面裡的程式摘錄與程式一致、固定版本的 notebook、每一頁的審查紀錄對應目前內容、SVG。
+- `validate_curriculum_evidence.py`：每份執行紀錄都對得上目前的程式、notebook 與頁面。
+- `zensical build --clean --strict`。
+- `validate_site.py`：Zensical 版本與 `requirements-docs.txt` 相符、連結與錨點、Colab 配對、搜尋語言、Markdown 是否照原意轉成表格／編號清單／摺疊區塊／數學／連結、有沒有文字被誤當成 HTML 標籤，以及 artifact 邊界（`site/` 裡沒有 symlink 與 LFS pointer，也沒有 `.pt`、`.pth`、`.onnx`、`.ipynb`、`.zip`、`.tar`、`.gz` 檔）。
+
+建置只上傳 `site/`，不下載 LFS 資料、不安裝 PyTorch；部署用 Actions artifact，不需要 gh-pages 分支。公式用的 MathJax 3.2.2 與它的字型放在 `docs/assets/vendor/mathjax/`，隨網站提供，並附上 MathJax 的 Apache 2.0 授權（來源校驗見 `artifacts/checks/mathjax-vendor.json`）。
+
+Pages workflow 整體只有 `contents: read` 權限，只有 deploy job 另外宣告 `pages: write` 與 `id-token: write`。repo 的四個 workflow（網站、LFS 資料、兩項 GPU 檢查）都只能手動啟動：push 本身不會發布網站，也不會啟動 GPU。
+
+public repo 用免費方案就能使用 Pages，也不需要自訂網域。repo 若改成 private，要另外核對帳號方案與網站的可見範圍。
 
 ## 4. 驗證 Colab 入口
 
-1. 從網站首頁點「在 Colab 開啟環境檢查」，或直接開：
+1. 開啟環境檢查 notebook：
    `https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/main/notebooks/00_environment_check.ipynb`。
-2. 登入 Google 帳號；公開 notebook 不需另外授權 GitHub 寫入。
-3. 可以先用 CPU 執行；若要測 GPU，選 **Runtime → Change runtime type → GPU**，實際選項依 Colab 當時介面為準。
-4. 執行全部 cells，查看 Python／PyTorch／CUDA；免費 GPU 可能未分配，這項檢查不訓練模型。
-5. 要保存自己的修改，選 **File → Save a copy in Drive**。runtime 中的資料檔與權重需另行保存，notebook 副本不包含它們。
+2. 登入 Google 帳號；開啟公開的 notebook 不需要授權 GitHub 寫入。
+3. 可以先用 CPU 執行；要測 GPU 時，選 **Runtime → Change runtime type → GPU**，實際選項以 Colab 當下的介面為準。
+4. 執行全部 cell，查看 Python、PyTorch、CUDA 與 git 的狀態。免費 GPU 不一定分配得到；這份 notebook 不訓練模型。
+5. 要保存自己的修改，選 **File → Save a copy in Drive**。notebook 副本不包含 runtime 裡的資料檔與權重，這些要另外保存。
 
-notebook 格式、實驗程式的 CPU 執行與公開原始檔已檢查；Google 登入與實際 Colab GPU 尚未驗證。每節網頁另有固定 `lessons-v0.2.0` 的 Colab 入口，讀者可保存自己的副本。
+每節網頁的 Colab 按鈕開啟發布 tag 的 notebook，讀者同樣可以照第 5 步另存副本。Pages 建置前的檢查涵蓋 notebook 的格式、最後一格與 `lesson_cases/` 逐字相同，以及存著的輸出與執行紀錄一致；環境格的各個分支（沒裝 PyTorch、版本相符、版本不同、需要重新啟動工作階段、clone 到別的版本）有單元測試（`tests/test_notebook_bootstrap.py`）。這些檢查都不經過 Colab：Google 登入、Colab 的託管 runtime 與它可能分配的 GPU，只有實際在 Colab 開啟才測得到。
 
-## 5. Git LFS：已準備與你需要設定的部分
+## 5. Git LFS
 
-已設定三個專用二進位路徑：
+`.gitattributes` 只把三個路徑交給 LFS：
 
 ```text
 data/curated/**
@@ -93,41 +98,153 @@ artifacts/checkpoints/**
 artifacts/exports/**
 ```
 
-普通圖片、notebook、Markdown、manifest 仍在一般 Git。`data/curated/` 專放可再散布的封裝，不放說明文件；授權與索引放在 `data/licenses/`、`data/manifest.json`。
+一般圖片、notebook、Markdown 與 manifest 都放在一般 Git。`data/curated/` 只放可再散布的封裝，不放說明文件；授權與索引放在 `data/licenses/` 與 `data/manifest.json`。後兩個路徑保留給精選的 checkpoint 與匯出模型，repo 裡沒有這類檔案。
 
-已用 Fashion-MNIST 的 **26,421,880 bytes** 訓練圖，以及 Penn-Fudan 的 **53,723,336 bytes** 封裝，在隔離本地 repository 進行 add → LFS pointer → object fsck → checkout 還原，SHA-256 相符；紀錄在 `data/local-lfs-verification.json`。Penn-Fudan 只是本地測試，未將受限照片放進公開 repo。此外，Fashion-MNIST 完整封裝已透過 GitHub Actions 真正上傳並下載校驗；本地測試不包含把 Penn-Fudan 照片重新公開。
+LFS 裡放著 Fashion-MNIST 的封裝 `data/curated/fashion-mnist-v1.tar`（四個原始 gzip 加上游的 MIT 授權）。它由 GitHub Actions 上傳，再從空的 LFS 快取下載回來核對（`data/remote-lfs-verification.json`）。另外在隔離的本地 repository，用 Fashion-MNIST 的 **26,421,880 bytes** 訓練圖與 Penn-Fudan 的 **53,723,336 bytes** 封裝測過 add → LFS pointer → object fsck → checkout 還原，SHA-256 都相符（`data/local-lfs-verification.json`）；Penn-Fudan 只用於這項本地測試，不放進公開 repo。
 
 ### 首次使用遠端 LFS
 
-1. 安裝 [Git LFS](https://git-lfs.com/)，執行 `git lfs version` 確認。
-2. 先完成第 2 節的推送認證，再在 checkout 執行 `git lfs install --local`。`.gitattributes` 已備妥，不需要把全部 PNG／JPG 再 track 成 LFS。
-3. 到 GitHub 帳號 **Settings → Billing & licensing**（介面可能顯示 Billing & plans），查看 LFS usage 與 budgets。檔案計入 repo owner 的 storage，讀者下載亦計入 owner bandwidth。
-4. 目前 Free／Pro 的包含額度為 **10 GiB storage＋10 GiB download bandwidth**；Free／Pro 單檔上限 2 GB。這是帳號額度，非每個 repo 各一份；超額行為由帳號付款／budget 設定決定。先決定你的預算，不必為前置工作開通付費。
-5. 有確定要發布的授權清楚 asset 後，先補入大小與 SHA-256 manifest，放入上述路徑，再執行 `git add`、`git lfs ls-files`，確認清單含該檔。用 `git show :實際檔案路徑` 查看 index：應以 `version https://git-lfs.github.com/spec/v1` 開頭，再 commit／push。
-6. 另開乾淨 checkout，只 pull 那一個 asset 並比對 manifest checksum，才算遠端上傳／下載驗證成功。
+1. 安裝 [Git LFS](https://git-lfs.com/)，用 `git lfs version` 確認。
+2. 照第 2 節設定好推送認證，再在 repo 裡執行 `git lfs install --local`。`.gitattributes` 已指定上面三個路徑；不要把全部 PNG／JPG 改成 LFS。
+3. 到 GitHub 帳號的 **Settings → Billing & licensing**（介面也可能顯示 Billing & plans）查看 LFS 用量與 budget。LFS 檔案計入 repo owner 的 storage，讀者下載也計入 owner 的頻寬。
+4. Free／Pro 帳號包含 **10 GiB storage＋10 GiB 下載頻寬**，單檔上限 2 GB。這是整個帳號的額度，不是每個 repo 各一份；超額時怎麼處理，由帳號的付款方式與 budget 設定決定。GitHub 的規則會調整，以帳單頁為準。先決定預算；在包含額度內使用 LFS，不必先開通付費。
+5. 要發布新的 asset 時（授權必須允許再散布），先在 `data/manifest.json` 的 `lfs_assets` 照既有 `fashion-mnist-v1` 項目的格式加一筆，至少要有 `id`、`path`、`bytes`（位元組數）、`sha256` 與 `license`，再把檔案放進上述路徑。`git add` 後用 `git lfs ls-files` 確認清單裡有它，再用 `git show :<檔案路徑>` 查看 index：內容應以 `version https://git-lfs.github.com/spec/v1` 開頭，表示存進 Git 的是 pointer。確認後再 commit、push。
+6. 推送後，另開一個乾淨的 checkout，只 pull 那一個 asset 並比對 manifest 的 checksum，才算遠端上傳與下載都成功。`python3 scripts/verify_remote_lfs.py` 也會把 `lfs_assets` 列的每個檔案下載到空的 LFS 快取，核對大小與 SHA-256。
 
-Git 普通檔案 >50 MiB 警告、>100 MiB 阻擋；LFS 本身沒有「按大小自動 track」功能。目前只是準備規則，不將完整公開 dataset 全量上傳。每次大檔新版本也會占完整 storage，因此資料包少改、只保存精選 checkpoint。
+一般 Git 的檔案超過 50 MiB 會被警告、超過 100 MiB 會被拒絕。LFS 沒有「依檔案大小自動追蹤」的功能，只能按路徑或副檔名指定。LFS 只放精選封裝，不全量上傳完整的公開 dataset。大檔的每個新版本都會再占一份完整的 storage，所以資料包少改，checkpoint 也只保存精選的。
 
-### 本雲端需要重新發布資料時
+### 重新發布 LFS 資料
 
-先在 GitHub Actions 執行 **Publish and verify LFS dataset**，或以本環境的秘密認證觸發該 workflow。它下載已查核的官方檔案、重建固定 SHA-256 封裝、上傳並從空快取下載核對，成功後才提交 pointer。直接從此雲端 PUT 到 S3 的路徑曾回 Transfer-Encoding 501，重複改 token 不會修正這項傳輸問題。
+Fashion-MNIST 封裝要重新上傳時，在 GitHub Actions 執行 **Publish and verify LFS dataset**（在網頁上按 Run workflow，或用具 Actions: Read and write 權限的 token 透過 API 觸發）。它在 GitHub 提供的 runner 上依序下載官方的四個原始檔並核對 SHA-256、組成固定 SHA-256 的封裝（含上游授權）、上傳到 LFS、從空的 LFS 快取下載回來核對封裝與其中每個檔案，最後才把 pointer 的 commit 推到 main。這個 workflow 用 GitHub Actions 自動提供的 `GITHUB_TOKEN`，只宣告 `contents: write`，不需要把你的 PAT 存成 Actions secret。
 
 ### Colab 只取得指定 LFS asset
 
-下面是未來已有 `artifacts/checkpoints/miniyolo-demo.pt` 時的示例，不是本輪新增的模型：
+需要在 Colab 取得某個 LFS 檔時，先跳過全部 LFS 下載，再只取那一個檔。以 Fashion-MNIST 封裝為例，在 Colab 開一個 code cell，貼上下面整段（第一行 `%%bash` 讓整格在同一個 shell 裡執行，`cd` 才會生效）：
 
 ```bash
+%%bash
 apt-get -qq update
 apt-get -qq install git-lfs
 GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/birdhackor/learn_to_yolo.git
 cd learn_to_yolo
 git lfs install --local --skip-smudge
-git lfs pull --include="artifacts/checkpoints/miniyolo-demo.pt" --exclude=""
+git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""
+sha256sum data/curated/fashion-mnist-v1.tar
 ```
 
-此範例先跳過全量下載。正式小節再替換成固定的 release／commit 與確實存在的 asset，並核對 SHA-256。來源 dataset 則走下載器或來源官方下載，不走 Pages。
+最後一行印出的 SHA-256，應等於 `data/manifest.json` 的 `lfs_assets` 記的值。教材的 notebook 要用時，改成 clone 固定的發布 tag（`git clone --branch <tag>`）。每次下載都計入 owner 的 LFS 頻寬。完整的來源 dataset 走下載器（`scripts/download_data.py`）或來源的官方下載，不走 Pages。
 
-GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站可提供取得方式，資料由 Colab 取得；網頁需要的結果圖使用小型普通 Git 資源。
+GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方式，資料在 Colab 裡下載；網頁要顯示的結果圖用一般 Git 裡的小檔。
+
+## 6. 發布新版教材
+
+42 節頁面的 Colab 按鈕與 notebook 固定在同一個發布 tag：按鈕開啟這個 tag 的 notebook，notebook 的環境格也 clone 這個 tag（`section-map.json` 各節的 `source_ref` 記著它）。已發布的 `lessons-v*` tag 一律不移動、不覆寫；教材的程式或實驗結果改了，就發布一個新 tag。
+
+發布前，每份執行紀錄都要對得上目前的程式。逐節的紀錄是 `artifacts/checks/curriculum/<節>.json`，記著執行的日期（UTC）、產生它的電腦與 stdout，並用 SHA-256 綁定產生它的程式：該節程式，加上它直接或間接 import 的每個 repo 檔案。補充實驗的 CPU 紀錄與兩份 GPU 紀錄也以同樣方式綁定各自的程式，清單在 `scripts/evidence_records.py`。綁定的檔案都沒變，紀錄就一直有效，保留它的日期與電腦；任何一個改了，那份紀錄才過期。所以發布新版時只重跑過期的紀錄。
+
+以下指令都在 repo 根目錄執行。`.venv-model` 是照 README 建立的 CPU 模型環境，`.venv-docs` 是第 1 節的文件環境。
+
+1. **把 notebook 配對到新 tag。** 教材的頁面與程式都改好後執行：
+
+    ```bash
+    python3 scripts/build_lesson_notebooks.py --ref <新 tag>
+    ```
+
+    它重建 42 本 notebook，並把各節頁面的 Colab 連結與 `section-map.json` 的 `source_ref` 改成新 tag。`lesson_cases/<節>.py` 沒變的節，最後一格直接填回紀錄裡的輸出；改過的節列在輸出的最後。紀錄是否過期（包括 import 的模組有沒有改），由下一步判斷。
+
+2. **列出過期的紀錄。**
+
+    ```bash
+    .venv-model/bin/python scripts/record_evidence.py
+    ```
+
+    這只列出、不執行：哪些 GPU 紀錄要重跑、哪些 CPU 紀錄（逐節紀錄與補充紀錄）過期，以及這台電腦的規格。
+
+3. **把修改推到一個分支。** 第 4 步的 GPU workflow 跑的是 GitHub 上的程式；第 5 步若在另一台電腦記錄，那台電腦也要從 GitHub 取得這些修改。要做其中任何一件事，先照第 2 節確認 diff，再把到目前為止的修改（教材、程式與第 1 步重建的 notebook）commit 到一個分支並推上去：
+
+    ```bash
+    git switch -c <分支>
+    git add -A
+    git commit -m "<這一版的修改>"
+    git push -u origin <分支>
+    ```
+
+    已經在要推的分支上時，省略第一行。`-u` 讓之後在這個分支上直接執行 `git pull`，就能取回別處推到它的 commit。沒有過期的 GPU 紀錄，CPU 紀錄也就在這台電腦記錄時，跳過這一步。
+
+4. **重產 GPU 紀錄。** 沒有過期的 GPU 紀錄就跳過這一步。在第 3 步的分支上執行：
+
+    ```bash
+    .venv-model/bin/python scripts/record_evidence.py --gpu <分支>
+    ```
+
+    workflow 跑的是推上去的程式，所以本機的 commit 必須和 `origin/<分支>` 相同，否則它會停下。它用 GitHub CLI（`gh`，先執行 `gh auth login`）逐一啟動過期紀錄對應的 workflow（`deployment-gpu.yml`、`gpu-smoke.yml`，在 Modal 的一張 NVIDIA L4 上執行），等它跑完，再下載結果存成紀錄。workflow 需要 repository 的 Modal 設定（至少 `MODAL_TOKEN_ID` 與 `MODAL_TOKEN_SECRET`），清單見〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉。成功產生的 GPU 紀錄留在工作區，commit 後推到同一個分支。
+
+    兩種紀錄分開檢查：`--gpu` 結束前用 `validate_curriculum_evidence.py --scope gpu`，只檢查 GPU 紀錄；下一步的 `--run` 結束前用 `--scope cpu`，只檢查逐節與補充的 CPU 紀錄。另一種紀錄還過期，不會讓這兩項檢查失敗；全部紀錄到第 8 步才一起檢查。`--gpu` 失敗在這項檢查時，GPU 紀錄已經存好；`--run` 失敗在這裡時，不會執行後面的 `--push` 或 `--bundle`。
+
+    workflow 失敗時它會停下；下載得到結果時，仍把結果存進紀錄檔供你檢查。看完後先換掉這份結果，不要 commit 它。原因是結果在 workflow 一開始就寫上了它綁定的程式的 SHA-256，而 `--gpu` 只比對 SHA-256，不看結果有沒有通過：留著它，下次 `--gpu` 會把它當成現行紀錄而跳過，`validate_curriculum_evidence.py` 卻會因為它沒有通過而一直失敗。換的方法是用 `git status --short` 看停下時訊息指名的紀錄檔：顯示 `M`（git 已追蹤）就執行 `git restore --staged --worktree <紀錄檔>`，還原成最近一次 commit 的版本；顯示 `??`（git 還沒追蹤）就刪除。然後修正原因：只改 repo 以外的設定（例如 repository 的 Modal 設定）時，改好後重跑這一步；改了 repo 裡的程式時，從第 1 步重來。
+
+5. **重產 CPU 紀錄。** 既有 CPU 紀錄是在哪台電腦產生的，各紀錄裡都有記載（逐節紀錄在 `machine` 欄：作業系統、CPU、Python、PyTorch 等）。盡量在同一台電腦重跑，沒改到的計算才會得到和舊紀錄相同的數字。在那台電腦 checkout 第 3 步的分支（做了第 4 步時，要包含推上去的 GPU 紀錄），照 README 建好 `.venv-model`，再用 `.venv-model/bin/python -m pip install -r requirements-video.txt` 加裝影片套件，然後執行：
+
+    ```bash
+    .venv-model/bin/python scripts/record_evidence.py --run --push <分支>
+    ```
+
+    `--run` 先核對 Python 3.12 與 `requirements-model.txt`、`requirements-video.txt` 的固定版本，不符就停下；接著只重跑過期的部分：逐節程式交給 `verify_curriculum.py`（它同時更新 notebook 的輸出與頁尾的執行紀錄區塊，並把第 17–19 章實驗畫的圖複製到 `docs/assets/diagrams/`），補充紀錄交給各自的實驗腳本（影片檔紀錄以外的腳本，也會重畫 `docs/assets/diagrams/` 裡對應的圖）；最後用 `validate_curriculum_evidence.py --scope cpu` 檢查，並在輸出最後的 `Changed files:` 列出改動的檔案。`--push <分支>` 把這些檔案 commit 並推到該分支，回到平常編輯的電腦執行 `git pull` 即可；不方便推送時，改用 `--bundle <檔名>.tar.gz` 打包，帶回後在 repo 根目錄用 `tar -xzf` 解開。就在平常編輯的電腦記錄時，只要 `--run`。換一台電腦也能重產，新紀錄會記下新的電腦，但計時與訓練後的小數可能和舊紀錄不同。
+
+6. **從別處帶回紀錄時，連重畫的圖一起帶回，必要時重寫執行紀錄區塊。** 第 5 步改動的檔案都列在 `Changed files:` 底下：`artifacts/checks/` 的紀錄、`docs/assets/diagrams/` 裡重畫的圖，以及頁面與 notebook。`--push` 與 `--bundle` 帶回的就是這整份清單。用其他方式帶回時，清單裡的紀錄與圖都要帶回：圖只在記錄用的那台電腦上重畫，下面的 `--render-only` 不會重畫、也不會複製任何圖。少帶了圖，網站會在新的輸出旁邊顯示舊圖，而且沒有檢查會發現：`validate_curriculum_evidence.py` 不檢查圖；圖檔沒變，`review_coverage.py` 也不會要求重新審查。
+
+    頁面與 notebook 還顯示舊的輸出時（例如只帶回了紀錄與圖，或合併時保留了這邊的頁面），執行：
+
+    ```bash
+    .venv-model/bin/python scripts/verify_curriculum.py --render-only
+    ```
+
+    它不執行任何實驗，只依紀錄重寫 42 節頁尾的執行紀錄區塊、notebook 最後一格的輸出，以及紀錄索引 `artifacts/checks/curriculum/index.json`；有任何一節沒有現行紀錄就停下。
+
+7. **審查改過的頁面。** 課程頁要做兩種 AI 審查：一種模擬初學讀者（高中程度、數學好、程式新手），檢查看不看得懂、圖文與數字是否一致；另一種是技術審查，對照原始論文、固定版本的官方程式與計算。審查紀錄要記下每個發現和它的處理方式。網站向讀者說明的就是這兩種 AI 審查（見〈[驗證範圍與後續實驗](../status.md)〉），改用別的方式審查時，網站上的這些說明也要跟著改。審查涵蓋頁面文字、頁面上的 SVG，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`（課程頁是 `reviews/<節>.md`；其他頁把路徑的 `/` 換成 `-`，例如 `reviews/preparation-publish.md`），寫好後記下它涵蓋的內容：
+
+    ```bash
+    python3 scripts/review_coverage.py --write <頁面路徑>
+    ```
+
+    不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查已對不上目前內容的頁面；有這種頁面時，`validate_lessons.py` 會失敗。
+
+    審查之後又改了內容時，看改的是什麼。改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），從第 1 步重來，因為 notebook 與紀錄都可能因此過期；改了 `lesson_cases/` 卻略過第 1 步時，`validate_lessons.py` 會因為 notebook 最後一格和程式不一致而失敗，但只顯示 `AssertionError`，不說明原因。只改了頁面文字或圖，就重新審查改過的頁面，再對它執行一次 `review_coverage.py --write`。
+
+8. **跑完所有檢查。**
+
+    ```bash
+    python3 scripts/validate_preparation.py
+    python3 scripts/validate_lessons.py
+    python3 scripts/validate_curriculum_evidence.py
+    .venv-model/bin/python -m pytest tests/
+    .venv-docs/bin/zensical build --clean --strict
+    python3 scripts/validate_site.py
+    ```
+
+    除了 pytest，其餘就是 Pages workflow 部署前跑的檢查。
+
+9. **commit、建立 tag、推送。** 照第 2 節的方式 commit 所有教材與紀錄，再建立並推送新 tag：
+
+    ```bash
+    git tag -a <新 tag> -m "<這一版的說明>"
+    git push origin HEAD:main
+    git push origin <新 tag>
+    ```
+
+    已發布的 `lessons-v*` tag 不重建、不移動。Colab 按鈕與環境格都指向這個 tag；tag 推上 GitHub 之前，新版的 Colab 入口打不開。
+
+10. **發布網站。** 到 **Actions → Publish Learn to YOLO → Run workflow**，選 `main`，等 build 與 deploy 都成功。
+
+11. **驗證公開網站。** 這一步沒有腳本，要自己檢查並記錄：
+
+    - 每一頁都回應 HTTP 200，內文和第 8 步在本地建置的 `site/` 相同。比對方法：對每一頁，分別取公開網頁與本地 `site/` 裡同一個 HTML 檔的 `<article>` 元素（頁面的內文），比較兩者的 SHA-256。`<article>` 只含圖的連結、不含圖檔本身，所以頁面用到的 SVG 檔也要和 `site/` 裡的同一個檔比 SHA-256。
+    - 每節的 Colab 按鈕指向新 tag，GitHub 上讀得到這個 tag 的 notebook；已發布的舊 tag 仍指向各自的 commit。
+    - 照第 4 節，在 Colab 開一節新 tag 的 notebook，執行環境格。
+
+    結果寫進 `artifacts/checks/curriculum-publication.json`。現有的這份是上一版的驗證，先改名為 `curriculum-publication-v<上一版的版本號>.json` 保留，新檔的欄位照它的格式：驗證的 tag 與它的 commit、部署的 commit、workflow run 的編號與結果、舊 tag 各自的 commit、比對過的 SVG，以及逐頁的路徑、HTTP 狀態、`<article>` 的 SHA-256 與是否相符。再加上 Colab 的結果：開的是哪一節、環境格有沒有成功、Colab 的 PyTorch 版本、有沒有要求重新啟動工作階段。commit 並推送；這個檔案不在網站裡，不必重新部署。
+
+只更新 Zensical 主題、導覽或建置工具時，不需要新 tag：Colab 按鈕沿用目前的 tag，程式沒變，執行紀錄也都仍然有效。跑完第 8 步的檢查後，照第 10 步重新部署即可。這類修改要另外在瀏覽器裡看過閱讀頁、搜尋、快速換頁後的公式、SVG 與手機版面。
 
 ## 官方參考與研究紀錄
 
@@ -137,16 +254,3 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站可提供取得方�
 - [Colab FAQ](https://research.google.com/colaboratory/faq.html)
 - [Pages／Colab 完整研究](../research/pages-colab.md)
 - [LFS 完整研究](../research/lfs.md)
-
-## 教材的新版本發布
-
-本輪教材與42份Colab固定為 `lessons-v0.2.0`；已發布的 `lessons-v0.1.0`保留不動。修訂教材時使用新的tag，不覆寫原tag：
-
-1. 完成各節網頁、CPU案例及陌生讀者審查，下一版例如使用 `python scripts/build_lesson_notebooks.py --ref lessons-v0.3.0` 配對；這會重建notebook，須重新保存實際輸出。
-2. 執行 `python scripts/validate_preparation.py`、`python scripts/validate_lessons.py`、`.venv-model/bin/python scripts/verify_curriculum.py`、`python scripts/validate_curriculum_evidence.py`、`.venv-model/bin/python -m pytest tests/test_core.py tests/test_checkpoint.py`，最後以 `.venv-docs/bin/zensical build --clean --strict` 建站。
-3. 提交所有教材與證據，再建立新的tag，例如 `git tag lessons-v0.3.0`；不要再建立或移動已發布的0.2.0。使用前文的認證helper推送 `main` 與此tag；Colab所用的tag必須先能在GitHub讀到。
-4. 到 Actions → **Publish Learn to YOLO** → Run workflow，選 `main`。等 build與deploy都成功，再打開網站、抽查新tag的notebook。
-
-網站建置不會下載LFS資料或安裝PyTorch。公式與字型資產隨網站提供，MathJax 3.2.2保留原Apache 2.0授權與來源校驗紀錄。
-
-只更新 Zensical 主題、導覽或建置工具時，可以沿用教材 tag 與已驗證的 notebook，重新建置並部署網站即可。這類修改需檢查閱讀頁、搜尋、快速換頁後的公式、SVG 與手機排版；不必重跑模型訓練。

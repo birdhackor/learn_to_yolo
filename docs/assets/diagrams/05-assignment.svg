@@ -1,20 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 410" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 510" role="img" aria-labelledby="title desc">
  <title id="title">64乘64圖、4乘4候選格與中心責任分配</title>
- <desc id="desc">紅框4,4,20,20中心12,12由row0 col0負責；藍框36,36,52,52中心44,44由row2 col2負責。框可以跨cell，但只依中心指派。剩下14格是負樣本，本模型沒有ignore。</desc>
- <rect width="930" height="410" fill="#f8fafc"/>
- <rect x="45" y="55" width="288" height="288" fill="#0f172a"/>
- <g fill="none" stroke="#94a3b8" stroke-width="1.5"><path d="M117 55V343M189 55V343M261 55V343M45 127H333M45 199H333M45 271H333"/></g>
- <rect x="63" y="73" width="72" height="72" fill="#ef4444" fill-opacity=".4" stroke="#f87171" stroke-width="3"/>
- <rect x="207" y="217" width="72" height="72" fill="#3b82f6" fill-opacity=".4" stroke="#60a5fa" stroke-width="3"/>
- <circle cx="99" cy="109" r="5" fill="white"/><circle cx="243" cy="253" r="5" fill="white"/>
- <g font-family="sans-serif" font-size="22" fill="#0f172a">
-  <text x="45" y="33">每格16 px；column往右、row往下</text>
-  <text x="380" y="85">紅中心(12,12) → cell(row0,col0)</text>
-  <text x="380" y="124">target：[0.75,0.75,0.25,0.25]</text>
-  <text x="380" y="179">藍中心(44,44) → cell(row2,col2)</text>
-  <text x="380" y="218">target：[0.75,0.75,0.25,0.25]</text>
-  <text x="380" y="273">正樣本2格；負樣本14格；ignore0</text>
-  <text x="380" y="320">每格1 slot：同格兩物件會撞容量</text>
-  <text x="45" y="387">白點是物件中心。責任看中心，框不必完全落在負責的格內。</text>
+ <desc id="desc">依比例繪製的示意圖：64乘64圖片切成4乘4格，每格16畫素，圖上1畫素畫成4個單位。上方標 col 0 到 col 3、左側標 row 0 到 row 3，邊上刻度是 0、16、32、48、64 畫素。紅框 [4,4,20,20] 的中心黑點 (12,12) 落在淡紅色的 row 0／col 0，由這格負責；藍框 [36,36,52,52] 的中心 (44,44) 落在淡藍色的 row 2／col 2，由這格負責。兩框都壓到四格，但責任只看中心。兩框的 target 都是 [0.75, 0.75, 0.25, 0.25]，依序是格內 x/16、格內 y/16、寬/64、高/64。這張圖正格 2、負格 14，沒有 ignore 格；同一格放兩個物件會超出容量（每格只有 1 個 slot）。</desc>
+ <!-- 依比例：圖片座標 (x,y) 畫素對應圖面 (100+4x, 118+4y)；每格 64 個單位。 -->
+ <rect width="720" height="510" fill="#f8fafc"/>
+ <rect x="100" y="118" width="256" height="256" fill="#fff"/>
+ <rect id="red-cell" x="100" y="118" width="64" height="64" fill="#fee2e2"/>
+ <rect id="blue-cell" x="228" y="246" width="64" height="64" fill="#dbeafe"/>
+ <path d="M164 118V374M228 118V374M292 118V374M100 182H356M100 246H356M100 310H356" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+ <rect x="100" y="118" width="256" height="256" fill="none" stroke="#475569" stroke-width="1.5"/>
+ <path d="M100 111V118M164 111V118M228 111V118M292 111V118M356 111V118M93 118H100M93 182H100M93 246H100M93 310H100M93 374H100" stroke="#475569" stroke-width="1.5"/>
+ <rect x="101.5" y="119.5" width="61" height="61" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="7 4"/>
+ <rect x="229.5" y="247.5" width="61" height="61" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="7 4"/>
+ <rect id="red-box" x="116" y="134" width="64" height="64" fill="none" stroke="#dc2626" stroke-width="3"/>
+ <rect id="blue-box" x="244" y="262" width="64" height="64" fill="none" stroke="#2563eb" stroke-width="3"/>
+ <circle cx="148" cy="166" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+ <circle cx="276" cy="294" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+ <g font-family="sans-serif" fill="#0f172a">
+  <text x="24" y="38" font-size="22">每格 16 畫素；col 往右數、row 往下數</text>
+  <g font-size="19" fill="#334155" text-anchor="middle">
+   <text x="132" y="76">col 0</text><text x="196" y="76">col 1</text><text x="260" y="76">col 2</text><text x="324" y="76">col 3</text>
+  </g>
+  <g font-size="17" fill="#475569" text-anchor="middle">
+   <text x="100" y="104">0</text><text x="164" y="104">16</text><text x="228" y="104">32</text><text x="292" y="104">48</text><text x="356" y="104">64</text>
+  </g>
+  <g font-size="19" fill="#334155" text-anchor="end">
+   <text x="61" y="157">row 0</text><text x="61" y="221">row 1</text><text x="61" y="285">row 2</text><text x="61" y="349">row 3</text>
+  </g>
+  <g font-size="17" fill="#475569" text-anchor="end">
+   <text x="88" y="124">0</text><text x="88" y="188">16</text><text x="88" y="252">32</text><text x="88" y="316">48</text><text x="88" y="380">64</text>
+  </g>
+  <g font-size="20">
+   <text x="374" y="157" fill="#b91c1c">紅中心 (12,12) → row 0／col 0</text>
+   <text x="374" y="191">target：[0.75, 0.75, 0.25, 0.25]</text>
+   <text x="374" y="219" font-size="18" fill="#475569">[格內 x/16, 格內 y/16, 寬/64, 高/64]</text>
+   <text x="374" y="285" fill="#1d4ed8">藍中心 (44,44) → row 2／col 2</text>
+   <text x="374" y="319">target：[0.75, 0.75, 0.25, 0.25]</text>
+   <text x="374" y="366">正格 2、負格 14、ignore 0</text>
+  </g>
+  <g font-size="22">
+   <text x="24" y="425">黑點是物件中心；淡色格是負責該物件的正格。</text>
+   <text x="24" y="458">責任看中心，框不必完全落在負責的格內。</text>
+   <text x="24" y="491">同一格放兩個物件會超出容量（每格只有 1 個 slot）。</text>
+  </g>
  </g>
 </svg>

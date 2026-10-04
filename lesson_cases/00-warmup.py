@@ -21,12 +21,15 @@ def main():
     after = model.weight.item()
     model.eval()
     with torch.no_grad():
-        new_loss = ((model(x) - target) ** 2).mean().item()
+        new_prediction = model(x)
+        new_loss = ((new_prediction - target) ** 2).mean().item()
     print(f"x_shape={tuple(x.shape)}, weight_shape={tuple(model.weight.shape)}")
     print(f"prediction={prediction.item():.2f}, loss={loss.item():.2f}, gradient={gradient:.2f}")
-    print(f"weight: {before:.2f} -> {after:.2f}; new_loss={new_loss:.2f}")
+    print(f"weight: {before:.2f} -> {after:.2f}; "
+          f"new_prediction={new_prediction.item():.2f}; new_loss={new_loss:.2f}")
     assert abs(gradient + 8.0) < 1e-6
     assert abs(after - 1.8) < 1e-6 and abs(new_loss - 0.16) < 1e-5
+    assert abs(new_prediction.item() - 3.6) < 1e-5
 
     # eval() changes layer behavior; it does not disable autograd.
     assert model.training is False

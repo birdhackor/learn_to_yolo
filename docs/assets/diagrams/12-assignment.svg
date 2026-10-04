@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 572" role="img" aria-labelledby="title desc">
+ <title id="title">兩個真值、四個候選：參考點與預測框的 x 數線</title>
+ <desc id="desc">依比例繪製的 x 數線：x 座標每 1 畫成 12 個圖面單位，x＝0 在圖面 48、x＝50 在圖面 648。所有框的 y 都從 0 開始、點的 y 都是 8，所以只畫 x；真值 A、B 和 p0～p2 的預測框都是 y 0～16，p3 的預測框是 y 0～10，但它在 x 方向和 A、B 都不重疊。上方兩條綠色長條是真值框：A [0,0,20,16]，類別 0，佔 x 0～20；B [12,0,32,16]，類別 1，佔 x 12～32。淡橘色直條標出兩框的重疊 x 12～20。中間是 x 數線，標出刻度 0、8、12、16、20、24、32、40、50，小刻度間隔 2。四個黑點是候選的參考點 p0、p1、p2、p3（左側標「參考點」），在 x＝8、16、24、40；點下方註明 p0 在 A 內、p1 在 A、B 內、p2 在 B 內、p3 在兩框之外。下方四條藍色長條是四個預測框的 x 範圍，拿來和 A、B 算 IoU：p0 [0,0,10,16] 佔 x 0～10，p1 [4,0,24,16] 佔 x 4～24，p2 [14,0,32,16] 佔 x 14～32，p3 [40,0,50,10] 佔 x 40～50。圖下註明：上下分行只為看清楚，長條高度不代表框高。</desc>
+ <!-- 依比例：x 座標畫在圖面 48+12x；x 0、4、8、10、12、14、16、20、24、32、40、50 → 48、96、144、168、192、216、240、288、336、432、528、648。 -->
+ <rect width="720" height="572" fill="#f8fafc"/>
+ <!-- 真值框：A 佔 x 0～20，B 佔 x 12～32。 -->
+ <g fill="#dcfce7" stroke="#16a34a" stroke-width="2.5">
+  <rect id="gt-a" x="48" y="122" width="240" height="26"/>
+  <rect id="gt-b" x="192" y="162" width="240" height="26"/>
+ </g>
+ <!-- 重疊 x 12～20：半透明直條疊在兩框上。 -->
+ <rect id="overlap" x="192" y="114" width="96" height="82" fill="#f59e0b" fill-opacity=".3"/>
+ <!-- x 數線與刻度：大刻度 0、8、12、16、20、24、32、40、50，小刻度間隔 2。 -->
+ <path d="M48 246H648" stroke="#475569" stroke-width="2"/>
+ <path d="M48 246V256M144 246V256M192 246V256M240 246V256M288 246V256M336 246V256M432 246V256M528 246V256M648 246V256" stroke="#475569" stroke-width="2"/>
+ <path d="M72 246V252M96 246V252M120 246V252M168 246V252M216 246V252M264 246V252M312 246V252M360 246V252M384 246V252M408 246V252M456 246V252M480 246V252M504 246V252M552 246V252M576 246V252M600 246V252M624 246V252" stroke="#475569" stroke-width="1.5"/>
+ <!-- 參考點 p0～p3：x＝8、16、24、40。 -->
+ <g fill="#172554" stroke="#fff" stroke-width="1.5">
+  <circle cx="144" cy="246" r="6"/><circle cx="240" cy="246" r="6"/><circle cx="336" cy="246" r="6"/><circle cx="528" cy="246" r="6"/>
+ </g>
+ <!-- 預測框的 x 範圍：p0 0～10、p1 4～24、p2 14～32、p3 40～50。 -->
+ <g fill="#dbeafe" stroke="#2563eb" stroke-width="2.5">
+  <rect id="pred-p0" x="48" y="366" width="120" height="26"/>
+  <rect id="pred-p1" x="96" y="406" width="240" height="26"/>
+  <rect id="pred-p2" x="216" y="446" width="216" height="26"/>
+  <rect id="pred-p3" x="528" y="486" width="120" height="26"/>
+ </g>
+ <g font-family="sans-serif" font-size="18" fill="#0f172a">
+  <text x="24" y="34" font-size="22" font-weight="700">參考點決定資格，預測框拿來算 IoU</text>
+  <text x="24" y="68" fill="#334155">所有框的 y 都從 0 開始、點的 y 都是 8，所以只畫 x</text>
+  <text x="240" y="104" text-anchor="middle" fill="#b45309">重疊 12～20</text>
+  <text x="300" y="141" fill="#15803d">真值 A [0,0,20,16]，類別 0</text>
+  <text x="444" y="181" fill="#15803d">真值 B [12,0,32,16]，類別 1</text>
+  <text x="24" y="230" fill="#334155">參考點</text>
+  <g text-anchor="middle">
+   <text x="144" y="230">p0</text><text x="240" y="230">p1</text><text x="336" y="230">p2</text><text x="528" y="230">p3</text>
+  </g>
+  <g font-size="17" fill="#475569" text-anchor="middle">
+   <text x="48" y="278">0</text><text x="144" y="278">8</text><text x="192" y="278">12</text><text x="240" y="278">16</text><text x="288" y="278">20</text><text x="336" y="278">24</text><text x="432" y="278">32</text><text x="528" y="278">40</text><text x="648" y="278">50</text>
+  </g>
+  <text x="662" y="252" fill="#475569">x</text>
+  <g font-size="17" fill="#334155" text-anchor="middle">
+   <text x="144" y="306">在 A 內</text><text x="240" y="306">在 A、B 內</text><text x="336" y="306">在 B 內</text><text x="528" y="306">兩框之外</text>
+  </g>
+  <text x="24" y="350" fill="#1d4ed8">四個預測框：拿來和 A、B 算 IoU</text>
+  <g fill="#1d4ed8">
+   <text x="180" y="385">p0 [0,0,10,16]</text>
+   <text x="348" y="425">p1 [4,0,24,16]</text>
+   <text x="444" y="465">p2 [14,0,32,16]</text>
+   <text x="516" y="505" text-anchor="end">p3 [40,0,50,10]</text>
+  </g>
+  <text x="24" y="556" fill="#334155">上下分行只為看清楚，長條高度不代表框高。</text>
+ </g>
+</svg>

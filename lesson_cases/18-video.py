@@ -81,6 +81,9 @@ def run_stream(frames, model):
         t1 = time.perf_counter()
         raw = model(image[None])
         t2 = time.perf_counter()
+        # Score threshold .1, below the course's .25 display threshold (decode_grid's default):
+        # on these letterboxed frames this 160-step detector's best score is under .25 in most
+        # frames, so .1 also keeps its weaker detections. Box counts at .1 are not accuracy.
         prediction = decode_grid(raw, score_threshold=.1, nms_iou=.5)[0]
         prediction['boxes'] = undo_letterbox(prediction['boxes'], metadata)
         t3 = time.perf_counter()
@@ -95,11 +98,13 @@ def run_stream(frames, model):
                       'postprocess': (t3-t2)*1000, 'drawing': (t4-t3)*1000, 'total': (t4-started)*1000}}
 
 
-def save_panel(results, fps):
+def save_panel(results, fps, path):
     selected = [0, (len(results)-1)//2, len(results)-1]
+    frames = '、'.join(str(i) for i in selected)
     parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 290" role="img" aria-labelledby="t d">',
-             f'<title id="t">Actual moving-frame detector output: {len(results)} frames at {fps} source FPS</title>',
-             f'<desc id="d">Generated RGB frames {selected} from this run, with yellow model predictions, source timestamps and processing time. The last frame is included; predictions are not ground truth.</desc>',
+             f'<title id="t">移動畫面的實際偵測結果：{len(results)} 幀，來源每秒 {fps} 幀</title>',
+             f'<desc id="d">三格依序是這次執行產生的第一、中間與最後一幀（第 {frames} 幀）的 RGB 畫面。'
+             '黃框是模型的預測，框上的數字是 score；每格下方寫來源時間、這一幀的處理時間與框數。預測框不是真值。</desc>',
              '<rect width="960" height="290" fill="#0f172a"/>']
     for col, i in enumerate(selected):
         r = results[i]
@@ -108,16 +113,21 @@ def save_panel(results, fps):
         data = base64.b64encode(buffer.getvalue()).decode()
         x = 15 + col * 315
         parts.append(f'<image x="{x}" y="20" width="288" height="192" href="data:image/png;base64,{data}"/>')
-        parts.append(f'<text x="{x}" y="242" fill="white" font-family="sans-serif" font-size="21">frame {i}: source {r["source_timestamp_s"]:.2f}s</text>')
-        parts.append(f'<text x="{x}" y="272" fill="white" font-family="sans-serif" font-size="19">pipeline {r["ms"]["total"]:.2f}ms | boxes {len(r["prediction"]["boxes"])}</text>')
+        parts.append(f'<text x="{x}" y="242" fill="white" font-family="sans-serif" font-size="21">第 {i} 幀：來源時間 {r["source_timestamp_s"]:.2f} 秒</text>')
+        parts.append(f'<text x="{x}" y="272" fill="white" font-family="sans-serif" font-size="19">處理 {r["ms"]["total"]:.2f} ms｜框 {len(r["prediction"]["boxes"])} 個</text>')
     parts.append('</svg>')
-    Path('docs/assets/diagrams/18-video.svg').write_text('\n'.join(parts))
+    path.write_text('\n'.join(parts) + '\n')
 
 
 def main(count=12, fps=20):
     torch.manual_seed(7)
     torch.set_num_threads(2)
     model = fit_detector()
+    # Warm-up: push one throwaway copy of frame 0 through the whole pipeline and discard it,
+    # so the one-time cost of each step's first call is not charged to frame 0. Its square
+    # gets a box, so NMS and box/text drawing run too; list() is what runs the generator.
+    warmup = list(run_stream([next(synthetic_frames(count=count, fps=fps))], model))
+    assert len(warmup) == 1 and len(warmup[0]['prediction']['boxes']) > 0, 'warm-up must reach NMS and drawing'
     # Only this small GIF demo collects frames; run_stream itself remains lazy.
     results = list(run_stream(synthetic_frames(count=count, fps=fps), model))
     assert len(results) == count and all(r['image'].size == (96, 64) for r in results)
@@ -127,18 +137,18 @@ def main(count=12, fps=20):
     output.mkdir(parents=True, exist_ok=True)
     gif_duration_ms = round(1000/fps)
     results[0]['image'].save(output / 'stream.gif', save_all=True, append_images=[r['image'] for r in results[1:]], duration=gif_duration_ms, loop=0)
-    # Exclude the first frame from summary because model/runtime initialization can distort timing.
-    timing = {key: float(np.median([r['ms'][key] for r in results[1:]])) for key in results[0]['ms']}
+    # Median over all frames: the warm-up already paid the one-time setup, so frame 0 counts too.
+    timing = {key: float(np.median([r['ms'][key] for r in results])) for key in results[0]['ms']}
     summary = {'frames': len(results), 'source_fps': fps, 'source_duration_s': count/fps,
                'source_last_timestamp_s': results[-1]['source_timestamp_s'], 'gif_frame_duration_ms': gif_duration_ms,
                'source_size_hw': [64, 96], 'object_visible_per_frame': [4+4*i < 96 for i in range(count)],
                'model_input_hw': [64, 64], 'boxes_per_frame': [len(r['prediction']['boxes']) for r in results],
-               'median_ms_excluding_first': timing, 'camera_adapter': 'provided, not executed',
+               'warmup_frames': len(warmup), 'median_ms': timing, 'camera_adapter': 'provided, not executed',
                'limits': 'synthetic lazy producer; no capture/codec/display/network queue latency measured'}
     (output / 'report.json').write_text(json.dumps(summary, indent=2)+'\n')
-    save_panel(results, fps)
+    save_panel(results, fps, output / 'panel.svg')
     print(json.dumps(summary, indent=2))
-    print('GIF: artifacts/lesson-18/stream.gif; actual static panel: docs/assets/diagrams/18-video.svg')
+    print('GIF: artifacts/lesson-18/stream.gif; actual static panel: artifacts/lesson-18/panel.svg')
 
 
 if __name__ == '__main__':

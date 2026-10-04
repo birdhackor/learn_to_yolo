@@ -1,15 +1,86 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 690 410" role="img" aria-labelledby="title desc">
-<title id="title">訓練雙head與部署單head的資料路徑</title><desc id="desc">many head可反傳到backbone。one head讀detached特徵，僅更新自身。部署複製backbone及one head，沒有many；raw一致性在decode之前核對。</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
-<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
-<rect width="690" height="410" fill="white"/><text x="25" y="28" font-weight="bold">訓練：前向都看相同特徵；detach只停止反向</text>
-<rect class="node" x="30" y="95" width="130" height="62"/><text x="50" y="130">backbone</text>
-<path class="line" d="M160 110H475"/><rect class="node" x="485" y="73" width="150" height="64"/><text x="510" y="110">many head</text>
-<text x="187" y="87">many loss可更新backbone</text>
-<path class="line" d="M160 145H245V192H300"/><rect x="310" y="167" width="110" height="50" fill="#fff1f2" stroke="#be123c" stroke-width="2"/><text x="325" y="198">detach</text>
-<path class="line" d="M420 192H475"/><rect class="node" x="485" y="167" width="150" height="64"/><text x="517" y="205">one head</text>
-<text x="32" y="270">one loss只更新one head；detached特徵的數值不變</text>
-<text x="25" y="313" font-weight="bold">部署：複製已更新權重，直接移除many</text>
-<rect class="node" x="30" y="335" width="140" height="50"/><text x="45" y="367">backbone</text><path class="line" d="M170 360H245"/>
-<rect class="node" x="255" y="335" width="150" height="50"/><text x="284" y="367">one head</text><path class="line" d="M405 360H480"/>
-<text x="492" y="357">decode／top-k</text><text x="492" y="383">輸出框、分數、類別</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 504" role="img" aria-labelledby="title desc">
+ <title id="title">雙 head 的前向、梯度與部署路徑</title>
+ <desc id="desc">示意圖，方框大小與線長不代表運算量或數值。實線箭頭是前向，橘色虛線箭頭是梯度（反向）。上半是訓練，標題「訓練：前向都看相同特徵；detach 只停止反向」：backbone 的特徵直接送進 many head，也經過 detach 送進 one head；many head 接 many loss，one head 接 one loss。many loss 的梯度經 many head 傳回 backbone；one loss 的梯度經 one head 傳到 detach 就停止，沒有梯度從 detach 傳回 backbone。圖中文字：detach 後特徵數值不變，只是 one loss 的梯度不會傳回 backbone。下半是部署，標題「部署：複製已更新的 backbone 和 one，沒有 many」：部署模型沒有 many，也沒有 detach；one head 的輸出經 decode 與 top-3，輸出框、分數、類別。紫色點線連接訓練與部署兩個 one head 的輸出，標「逐值比對」與「解碼前的 raw」：比的是解碼前的 raw，不是 top-3 的回傳值。</desc>
+ <rect width="720" height="504" fill="#f8fafc"/>
+
+ <!-- 訓練：many 列中心 y=122（梯度線 y=112、前向線 y=132）；one 列中心 y=222（梯度線 y=212、前向線 y=232）。 -->
+ <g stroke-width="2">
+  <g fill="#eff6ff" stroke="#2563eb">
+   <rect x="16" y="96" width="120" height="152" rx="8"/>
+   <rect x="356" y="96" width="130" height="52" rx="8"/>
+   <rect x="356" y="196" width="130" height="52" rx="8"/>
+  </g>
+  <g fill="#fffbeb" stroke="#b45309">
+   <rect x="576" y="96" width="120" height="52" rx="8"/>
+   <rect x="576" y="196" width="120" height="52" rx="8"/>
+  </g>
+  <rect x="186" y="196" width="120" height="52" rx="8" fill="#fff1f2" stroke="#be123c"/>
+ </g>
+
+ <!-- 前向：實線；線停在箭頭底，箭頭尖碰到方框。 -->
+ <path d="M136 132H342M486 132H562M136 232H172M306 232H342M486 232H562" fill="none" stroke="#334155" stroke-width="3"/>
+ <path d="M356 132L342 126V138ZM576 132L562 126V138ZM186 232L172 226V238ZM356 232L342 226V238ZM576 232L562 226V238Z" fill="#334155"/>
+
+ <!-- 梯度：橘色虛線，從箭頭底往來源畫，讓箭頭旁第一段是實的。one loss 的梯度只到 detach，detach 與 backbone 之間沒有梯度線。 -->
+ <path d="M500 112H576M150 112H356M500 212H576M320 212H356" fill="none" stroke="#b45309" stroke-width="3" stroke-dasharray="8 6"/>
+ <path d="M486 112L500 106V118ZM136 112L150 106V118ZM486 212L500 206V218ZM306 212L320 206V218Z" fill="#b45309"/>
+
+ <g font-family="sans-serif" font-size="20" fill="#0f172a" text-anchor="middle">
+  <text x="76" y="179">backbone</text>
+  <text x="421" y="129">many head</text>
+  <text x="636" y="129">many loss</text>
+  <text x="246" y="229">detach</text>
+  <text x="421" y="229">one head</text>
+  <text x="636" y="229">one loss</text>
+ </g>
+
+ <!-- 部署：列中心 y=406；沒有 many，也沒有 detach。 -->
+ <g stroke-width="2">
+  <g fill="#eff6ff" stroke="#2563eb">
+   <rect x="16" y="378" width="120" height="56" rx="8"/>
+   <rect x="356" y="378" width="130" height="56" rx="8"/>
+  </g>
+  <rect x="576" y="378" width="120" height="56" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+ </g>
+ <path d="M136 406H342M486 406H562M636 434V448" fill="none" stroke="#334155" stroke-width="3"/>
+ <path d="M356 406L342 400V412ZM576 406L562 400V412ZM636 462L630 448H642Z" fill="#334155"/>
+
+ <!-- 逐值比對：紫色點線連接兩個 one head 的輸出（解碼前的 raw），兩端圓點落在輸出箭頭上。 -->
+ <path d="M531 232V406" fill="none" stroke="#7c3aed" stroke-width="3" stroke-dasharray="1 7" stroke-linecap="round"/>
+ <g fill="#7c3aed" stroke="#f8fafc" stroke-width="1.5">
+  <circle cx="531" cy="232" r="5.5"/>
+  <circle cx="531" cy="406" r="5.5"/>
+ </g>
+
+ <g font-family="sans-serif" fill="#0f172a">
+  <text x="16" y="34" font-size="20" font-weight="700">訓練：前向都看相同特徵；detach 只停止反向</text>
+  <g font-size="20" text-anchor="middle">
+   <text x="76" y="413">backbone</text>
+   <text x="421" y="413">one head</text>
+  </g>
+  <g font-size="18" text-anchor="middle">
+   <text x="636" y="400">decode</text>
+   <text x="636" y="424">top-3</text>
+  </g>
+  <text x="704" y="486" font-size="18" text-anchor="end">輸出框、分數、類別</text>
+  <g font-size="18">
+   <text x="16" y="290">detach 後特徵數值不變，</text>
+   <text x="16" y="316">只是 one loss 的梯度不會傳回 backbone</text>
+  </g>
+  <text x="16" y="362" font-size="20" font-weight="700">部署：複製已更新的 backbone 和 one，沒有 many</text>
+  <g fill="#6d28d9">
+   <text x="545" y="310" font-size="20">逐值比對</text>
+   <text x="545" y="336" font-size="18">解碼前的 raw</text>
+  </g>
+ </g>
+
+ <!-- 圖例 -->
+ <path d="M16 64H52" fill="none" stroke="#334155" stroke-width="3"/>
+ <path d="M66 64L52 58V70Z" fill="#334155"/>
+ <path d="M146 64H184" fill="none" stroke="#b45309" stroke-width="3" stroke-dasharray="8 6"/>
+ <path d="M132 64L146 58V70Z" fill="#b45309"/>
+ <g font-family="sans-serif" font-size="18" fill="#0f172a">
+  <text x="74" y="70">前向</text>
+  <text x="192" y="70">梯度（反向）</text>
+ </g>
+</svg>

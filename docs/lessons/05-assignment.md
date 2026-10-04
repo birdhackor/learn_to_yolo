@@ -1,90 +1,209 @@
-# 多物件輸出與責任分配：哪個預測負責哪個物件
+# 5 多物件輸出與責任分配：哪個預測負責哪個物件
 
-單物件定位每圖輸出一個框，但真實圖片可能零、一或很多物件。只把head改成「輸出更多框」仍少一件事：訓練時要告訴每個候選位置該學誰，以及哪些位置學背景。本節用固定兩物件圖，將annotation一路連到target與loss mask。前置只需懂xyxy、中心寬高與分類loss。
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/05-assignment.ipynb){ .md-button }
 
-歷史概念參考 [YOLOv1原始論文](https://arxiv.org/abs/1506.02640) 的grid與中心責任。本課MiniYOLO採每格**一個框slot**、獨立objectness、softmax類別；省略原版每格多框與其confidence/loss設計，所以不是YOLOv1重現，也不是完整多物件容量方案。
+第 4 章的單物件定位器每張圖只輸出一個框，但真實圖片可能沒有物件，也可能有好幾個。只把 head 改成「輸出更多框」還不夠：訓練時還要告訴每個輸出位置該學哪個物件，以及哪些位置該學「這裡沒有物件」。本節用一張固定有兩個物件的圖，一步步把標註變成訓練用的 target，並決定每一格各算哪幾項 loss。讀完本節，你能手算一個框由哪一格負責、target 是哪四個數，也能說明為什麼同一格放不下兩個物件。前置只需懂 xyxy、中心寬高（cxcywh）與分類 loss，見第 4 章〈[單物件分類與定位](04-localization.md)〉。
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/05-assignment.ipynb)，或 `PYTHONPATH=. python lesson_cases/05-assignment.py`。CPU案例生成target、驗證同格碰撞，再在人工feature map上更新head兩步；沒有從圖片訓練detector效果。
+先認識幾個本節常用的詞：
 
-slot是一個可輸出框的位置，annotation是圖片標註；objectness在本模型表示這格／槽是否分配到物件，logit是尚未轉成機率的原始實數。
+- 標註（annotation）：人工標好的正確答案，每個物件一個框和一個類別。
+- slot（槽）：一個可以輸出一個框的位置。本模型把圖切成 4×4 格，每格剛好 1 個 slot，所以本節說的「格」「slot」「候選」都指同一件事，一張圖有 16 個；下面多半直接說「格」。
+- 責任分配（assignment）：訓練時決定哪個候選負責哪個真實物件。
+- 正格與負格：正格（正樣本）是分到物件的格，負格（負樣本）是要學背景的格。這裡的「樣本」指一格，不是一張圖。
+- objectness：在本模型裡，表示這格是否分到物件的分數。
+- logit：還沒轉成機率的原始實數。
+
+格子（grid）與「中心所在的格負責」這兩個概念，參考 [YOLOv1 原始論文](https://arxiv.org/abs/1506.02640)。本節的 MiniYOLO 做了簡化，不是 YOLOv1 的重現，差別見下方摺疊說明。
+
+??? note "本節的 MiniYOLO 和 YOLOv1 原版差在哪"
+
+    YOLOv1 把圖切成格子，物件中心落在哪一格，就由那一格負責。原版每格預測多個框（論文的設定是 2 個），每個框各帶一個信心分數（confidence），loss 的設計也和本節不同。
+
+    本節的 MiniYOLO 每格只輸出**一個框**。「這格有沒有物件」用一個單獨的 objectness 分數表示，不是把背景當成 softmax 裡的另一個類別。這一點原版也一樣：原版每個框的 confidence 就是這種獨立的分數，也沒有背景類別。差別在要學的目標：原版負責物件的那個框，confidence 要學預測框與真值框的 IoU（第 4 章），不是固定的 1；本節的 objectness 只學 1（正格）或 0（負格）。兩個物件類別本節用 softmax；原版每格一組類別機率，不經過 softmax：最後一層是線性輸出，類別機率和其他項一樣直接用平方誤差訓練。原版的每格多框、以 IoU 為目標的 confidence 與 loss 設計，本節都省略，所以不是 YOLOv1 的重現。每格只能放一個物件，所以也不保證多個物件都放得下（見後面〈容量限制必須讓人看得見〉）。
+
+可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/05-assignment.py`。程式在 CPU 上生成 target，確認同一格放進兩個物件時會明確報錯，再用一組亂數當作人工特徵圖（feature map），讓 head 更新兩步。程式沒有用圖片訓練偵測器（detector），所以看不出偵測效果。
 
 ## 固定輸出，如何接變動數量標註
 
-Annotation每張是boxes[N,4] pixels xyxy及labels[N]，N可不同，也可0。模型head固定輸出[B,S,S,5+C]，B是圖片數、S=4是每軸格數、C=2是類別數，所以本例[B,4,4,7]。
+每張圖的標註有 `boxes`（shape [N,4]，單位 pixel，xyxy 格式）和 `labels`（shape [N]）。N 是這張圖的物件數，每張可以不同，也可以是 0。模型的 head 卻固定輸出 [B,S,S,5+C]：B 是一批的圖片數，S=4 是每軸格數，C=2 是類別數，所以本例是 [B,4,4,7]。中間兩個 S 依序是 row（列，往下數）和 col（欄，往右數）。
 
-最後7軸依序為tx、ty、tw、th、objectness logit、class0 logit、class1 logit。xy經sigmoid表示格內中心偏移，wh經sigmoid表示**整張圖**正規化寬高；obj也經sigmoid，類別經softmax。這些是本課模型的定義，不能照搬成所有YOLO版本的解釋。
+最後一軸的 7 個值（索引 0–6）依序是 tx、ty、tw、th（框的 4 個原始輸出，還沒經過 sigmoid）、objectness logit、class0 logit、class1 logit。所以後面程式的 `[..., :4]` 取索引 0–3，`[..., 4]` 取索引 4，`[..., 5:]` 取索引 5–6；其中 `...` 表示前面的軸全部保留。xy 經 sigmoid 表示格內中心偏移，wh 經 sigmoid 表示**整張圖**正規化寬高；obj 也經 sigmoid，類別經 softmax。這些是本節模型的定義，不能照搬成所有 YOLO 版本的解釋。
 
-Backbone提取特徵，neck整理或融合特徵，head輸出候選答案。本節只驗證head與監督。Sliding window逐區切圖檢查，two-stage先提proposal再分類／修框，single-stage直接輸出一組候選；這些是管線差異，不表示single-stage不需要assignment。
+Backbone 提取特徵；neck 夾在 backbone 與 head 之間，負責整理或融合特徵；head 把特徵變成每一格的輸出。本節只驗證 head 與 target、loss 的對應。其他偵測器的整體做法，放在頁尾的延伸說明。
 
-## 同一個物件走過四步
+接法是：每張圖都固定準備 S×S 格的 target，每個物件只填進它中心所在的那一格，其他格標成「沒有物件」。N 改變的只是哪些格是正格，target 的 shape 不變，所以能和固定 shape 的輸出逐格比較。
 
-![兩個物件的grid中心責任、target及正負格](../assets/diagrams/05-assignment.svg)
+## 每個物件都走這四步
 
-圖片64×64、4×4格，每格16pixels。紅框[4,4,20,20]中心(12,12)、寬高(16,16)，藍框[36,36,52,52]中心(44,44)、寬高也(16,16)。
+![兩個物件的 grid 中心責任、target 及正負格](../assets/diagrams/05-assignment.svg)
 
-1. 將中心除16，紅得到(0.75,0.75)、藍得到(2.75,2.75)。
-2. 取下整數決定column與row，紅由row0／col0負責、藍由row2／col2負責。
-3. 減掉整數格索引，兩者格內中心偏移都是(0.75,0.75)。
-4. 寬高除整圖64，都是(0.25,0.25)，不是除格尺寸16。
+圖中黑點是物件中心，淡色格就是負責的格：紅框由左上角那格（row0／col0）負責，藍框由 row2／col2 負責。
 
-因此兩個正格的box target都是[0.75,0.75,0.25,0.25]，class target分別0／1、objectness target為1。紅框跨過格邊界也沒關係，責任只看中心，不看整個框是否完全放在格裡。
+圖片 64×64，切成 4×4 格，每格 16 pixels。紅框 [4,4,20,20] 的中心是 (12,12)、寬高 (16,16)；藍框 [36,36,52,52] 的中心是 (44,44)、寬高也是 (16,16)。
 
-## 正、負、ignore與mask
+1. 將中心除以 16，紅得到 (0.75,0.75)、藍得到 (2.75,2.75)。
+2. 捨去小數（floor）決定負責的格：第 1 步得到的 x 值（中心 x÷16）取整數部分得 col（欄，往右數），y 值（中心 y÷16）取整數部分得 row（列，往下數）。所以紅由 row0／col0 負責、藍由 row2／col2 負責。存進 tensor 時，索引寫成 [圖片, row, col]，也就是先 y 後 x；[首頁](../index.md)的 `(列=1,欄=1)` 也是先寫列、再寫欄。box target 向量裡則仍是先 x 後 y。
+3. 減掉整數的格索引，兩者的格內中心偏移都是 (0.75,0.75)。偏移從所在格的左上角量起，以格寬 16 為 1。
+4. 寬高除以整圖 64，都是 (0.25,0.25)，不是除以格尺寸 16。
 
-本模型正樣本是有中心指派的2格；其餘14格是負樣本，objectness target0。**本版沒有ignore格**。Ignore是其他assignment設計可能使用的「這個候選暫不給某項loss」狀態，不能把它與背景0混在一起。
+把四步寫成一般式，改 S 時直接代入。設格寬 \(g=64/S\)（本例 64/4＝16），中心 \((c_x,c_y)\) 與寬高 \(w,h\) 都以 pixel 為單位，\(\lfloor x\rfloor\) 表示把 x 捨去小數：
 
-| 欄位 | Shape | 哪些位置進loss |
+\[
+\text{col}=\left\lfloor \frac{c_x}{g}\right\rfloor,\quad
+\text{row}=\left\lfloor \frac{c_y}{g}\right\rfloor,\quad
+\text{target}=\left[\frac{c_x}{g}-\text{col},\ \frac{c_y}{g}-\text{row},\ \frac{w}{64},\ \frac{h}{64}\right].
+\]
+
+完整程式（Colab 裡的那份）用 `build` 函式做這四步，核心是下面三行。`center` 是框中心 (x,y)、`size` 是寬高 (w,h)，單位都是 pixel；`grid` 就是 S，`image_size` 是 64，`b` 是第幾張圖。
+
+```python
+# 步驟 1：中心 ÷ 64 × 4，等於除以格寬 16
+grid_center = center / image_size * grid
+# 步驟 2：floor 捨去小數，再轉成兩個 Python 整數；
+#        第一個數來自 x，所以是 col；第二個來自 y，所以是 row
+col, row = grid_center.floor().long().tolist()
+# 步驟 3、4：把 [x 偏移, y 偏移, w/64, h/64] 存進第 b 張圖的 [row, col] 那一格
+boxes[b, row, col] = torch.cat((grid_center - grid_center.floor(), size / image_size))
+```
+
+呼叫時寫 `build(標註 list, grid=S)`：list 裡每張圖一個 dict，含 `boxes` 和 `labels`；不寫 `grid` 時 S=4。它依序回傳四個值：box target（[B,S,S,4]）、objectness（[B,S,S]，正格 1.0、負格 0.0）、class_ids（[B,S,S]）、positive（[B,S,S]，True 表示正格）。
+
+因此兩個正格的 box target 都是 [0.75,0.75,0.25,0.25]，class target 分別是 0／1，objectness target 都是 1。兩個 target 相同不是錯：「在哪一格」由它存放的 [row, col] 位置記住，target 只記格內中心偏移，以及除以整圖 64 的寬高；這兩框的偏移和寬高剛好都相同。反過來，中心 x＝(col＋x 偏移)×16：紅是 (0＋0.75)×16＝12，藍是 (2＋0.75)×16＝44。這種還原叫解碼（decode），下一節〈[人工框解碼與 NMS](06-decode-nms.md)〉會正式做。
+
+為什麼寬高除以整圖 64，中心卻以格寬 16 為單位？本模型的 wh 輸出經過 sigmoid，只能落在 0 到 1 之間。框可以比一格大，例如寬 40 pixels 除以 16 是 2.5，sigmoid 永遠輸出不了；除以整張圖的 64，圖內任何框的寬高都不會超過 1。中心偏移則本來就在 0 到 1 之間，因為中心一定在它負責的那一格裡。
+
+紅框跨過格邊界也沒關係（它其實壓到 4 格）：責任只看中心，不看整個框是否完全放在格裡。本節規定一個物件只交給一格：中心一定只落在一格，規則唯一又簡單，每個物件也只有一份 target。中心剛好落在格線上時，floor 會交給右邊或下面那一格，和首頁的約定相同。「一個物件只交給一格」是本節的選擇，不是唯一做法：讓多個候選一起學同一個物件，學習訊號比較多，但推論時同一個物件也比較容易冒出好幾個框；第 12、13 章會處理這個取捨。
+
+## 正、負、ignore 與 mask
+
+完整程式的 batch 有兩張圖（B=2）：第 1 張是上面的兩物件圖，第 2 張是 N=0 的空圖。第 1 張圖裡，物件中心落入的 2 格是正格；其餘 14 格是負格，objectness target 為 0，要學「這裡沒有物件」。空圖照樣有 [4,4] 的 target，只是 16 格全是負格。所以整批是正 2、負 30（14＋16）。
+
+**本版沒有 ignore 格**。ignore 是其他 assignment 設計可能用到的第三種狀態，意思是「這個候選暫不計入某項 loss」，不能把它和背景 0 混在一起。差別在 loss：負格的 objectness target 是 0，loss 會把它的預測推向「沒有物件」；ignore 的候選在那項 loss 裡完全不算，輸出多少都不罰。
+
+例如第 9 章會教 anchor（預設的框尺寸）：每格有多個 slot，各配一種 anchor。尺寸和物件最接近的 slot 當正樣本。尺寸接不接近用尺寸 IoU 衡量，它只比大小、不看位置。同一格的其他 slot 若和物件的尺寸 IoU 大於 0.2（第 9 章的規則），表示尺寸也還算接近，硬罰成背景不合理，就設成 ignore。ignore 不算 objectness loss，也沒有框、類別 loss。本節每格只有一個 slot，沒有這種狀態。
+
+| 欄位 | Shape | 哪些位置進 loss |
 | --- | --- | --- |
 | box | [B,4,4,4] | 只有正格 |
 | objectness | [B,4,4] | 正格與負格都計 |
 | class_ids | [B,4,4] long | 只有正格 |
-| positive | [B,4,4] bool | 決定框與類別mask |
+| positive | [B,4,4] bool | 決定框與類別 mask |
 
-負格的box填0只是容器預設值，不是在教模型「背景框應四個0」。負格class_ids填−1也不表示第−1類；class loss先用positive取出有意義的位置，才能交給cross entropy。
+負格的 box 填 0 只是容器預設值，不是在教模型「背景框應該是四個 0」。負格 class_ids 填 `-1` 也不表示第 -1 類。
+
+positive 是一張和格子同形狀的 True／False 表，標出哪些格要算框與類別的 loss；這種表叫做遮罩（mask）。對任何前三軸是 [B,4,4] 的 tensor t，`t[positive]` 都只取出 positive 為 True 的那幾格，依序排好（形狀見下面程式的註解）。框與類別的 loss 都先這樣取出正格，再交給 loss 函式。class loss 若沒先用 positive 排除負格，`-1` 交給 `cross_entropy` 會報類別越界的錯誤（IndexError）。（自己試時注意：只把下面程式的 `[positive]` 拿掉，會先因為類別 logit 在最後一軸、不在 `cross_entropy` 要求的第二軸，而報 shape 不合的錯誤；要先把 logit 攤平成 [32,2]、class_ids 攤平成 [32]，才會看到這個 IndexError。）
+
+### head 輸出與三項 loss
+
+loss 要拿 head 的輸出來算。完整程式的 head 是一個 1×1 卷積 `nn.Conv2d(4, 7, 1)`（1×1 卷積見第 3 章〈[ResNet projection shortcut](03-projection.md)〉）：4×4 的每一格都用同一組權重，把該格的 4 個特徵變成 7 個數。輸入的 `features` 是 `torch.randn` 產生的 [2,4,4,4] 亂數，用來代替 backbone 的輸出，所以 loss 的數字不代表模型學會了偵測。卷積照 PyTorch 的慣例輸出 [2,7,4,4]（7 在第二軸），程式再用 `permute(0, 2, 3, 1)` 重新排列軸（第 1 章），變成 [2,4,4,7]：中間兩軸是 row、col，每格的 7 個數排在最後一軸。網頁程式把這個結果寫成 `pred`（完整程式叫 `prediction`）；下面的 `box_target`、`obj_loss`、`cls_loss`，在完整程式裡分別叫 `box_targets`、`object_loss`、`class_loss`。
 
 ```python
+# pred: [2,4,4,7]；positive: [2,4,4]，其中 2 格是 True
+# pred[..., :4] → [2,4,4,4]；再用 [positive] 取出正格 → [2,4]（2 個正格 × 4 個框值）
 box_loss = F.mse_loss(pred[..., :4].sigmoid()[positive], box_target[positive])
+# pred[..., 4] 和 objectness 都是 [2,4,4]：32 格全算
 obj_loss = F.binary_cross_entropy_with_logits(pred[..., 4], objectness)
+# pred[..., 5:][positive] → [2,2]（2 個正格 × 2 個類別 logit）；class_ids[positive] → [2]，值是 [0,1]
 cls_loss = F.cross_entropy(pred[..., 5:][positive], class_ids[positive])
 ```
 
-F是PyTorch functional簡寫。案例用retain_grad檢查**head輸出位置**：負格的框與類別梯度為0，obj梯度非0。共享的head權重仍會由其他位置更新，不能從某個負格mask=0推論整個卷積不學。這段short loss假設batch至少有一個正樣本；全空batch的有效零loss與reduction會在Grid loss節另拆解。
+F 是 `torch.nn.functional` 的簡寫（完整程式寫成 `nn.functional`）。完整程式把三項直接相加成總 loss，沒有像第 4 章那樣替框 loss 加權。
+
+為什麼只有框先呼叫 `.sigmoid()`？`binary_cross_entropy_with_logits` 是二元交叉熵（binary cross entropy，BCE），用在「這格有沒有物件」這種是非題；名稱裡的 with_logits 表示它內部會先做 sigmoid，所以要傳原始 logit。`cross_entropy` 內部也會先做 softmax（第 1 章）。`mse_loss` 不做這種轉換，所以框要自己先 sigmoid，才能和 0 到 1 的 target 比較。有沒有物件是每格各自的是非題，所以用 sigmoid；類別是 C 個選 1 個、機率加起來要等於 1，所以用 softmax。
+
+完整程式在算出 `prediction` 後還呼叫 `prediction.retain_grad()`，用來檢查梯度落在哪些 **head 輸出位置**。PyTorch 預設會替參數保留梯度（`.grad`），但中間算出來的值不保留；呼叫 `retain_grad()` 後，backward 完也能看到 loss 對每一格輸出值的梯度。
+
+完整程式用斷言（assert）確認：負格的框與類別梯度都是 0，objectness 梯度不是 0。原因是負格的框值和類別值沒有被 positive 挑進 loss，改動它們，loss 也不會變。objectness 那一項 32 格全算，每格 logit z 的梯度是 (sigmoid(z)−target)/32；負格的 target 是 0，梯度就是 sigmoid(z)/32，不是 0。
+
+這些是 head 輸出位置的梯度，不是權重的梯度。head 的權重是所有格共用的：正格的框、類別、objectness 梯度，加上負格的 objectness 梯度，都會傳回這組權重，所以權重照樣更新（完整程式也確認了更新後權重確實改變）。負格的框輸出通常也會跟著變，只是 loss 不管它。不能因為某個負格的框梯度是 0（mask＝0），就推論整個卷積不學。
+
+這三行簡化版 loss 假設整批至少有一個正格。如果整批都是空圖，`[positive]` 會取出 0 個數；`mse_loss` 和 `cross_entropy` 預設對取出的數取平均，0 個數的平均是 0/0，結果是 NaN（not a number，非數字），總 loss 也跟著變成 NaN。第 7 章〈[Grid MiniYOLO loss](07-loss.md)〉會處理這種情況：讓這兩項改回傳一個仍連著計算圖的 0。那一節也會比較取平均（mean）和加總（sum）這兩種把多格 loss 合成一個數的方式。
 
 ## 容量限制必須讓人看得見
 
-把兩個同類紅框中心放在(12,12)與(6,6)，兩者都進row0／col0，但head只給一個slot。即使類別相同，也不能用一個框表示兩個獨立物件；案例raise ValueError，避免默默覆蓋其中一個target。
+這裡的「容量」指輸出最多能表示幾個物件：每格只有 1 個 slot，所以同一格最多 1 個物件，一張圖最多 16 個。這和前面章節說的模型表達能力不同。
 
-增加slot、更多候選位置、不同尺度或更複雜assignment都可能改善容量，代價是額外候選、配對規則與loss設計。Anchor slot與class軸是獨立的：某個slot可預測任何類別，不是「紅專用anchor、藍專用anchor」。
+把兩個同類紅框的中心放在 (12,12) 與 (6,6)，兩者都落進 row0／col0，但這格只有一個 slot。即使類別相同，也不能用一個框表示兩個獨立物件。`build` 寫入一格之前，會先檢查這格是不是已經是正格；是的話就丟出錯誤（raise ValueError），避免默默覆蓋其中一個 target。完整程式會接住這個錯誤，印出碰撞的位置。
 
-Assignment在**訓練前生成target時**決定誰負責誰；NMS則在**推論解碼後**處理同一物件的多個重複預測。兩個真實物件碰到同一個slot是輸出容量不夠，與多個slot重複預測一個物件是不同問題。NMS只能刪候選，不能補回訓練target因容量不足而遺失的第二個物件，所以不能用NMS解決本節的同格碰撞。
+要放下更多物件，可以讓一格有多個 slot（第 9 章）、把格子切得更細（更多候選位置）、同時用幾種解析度的特徵圖（不同尺度，第 10 章），或改用更複雜的 assignment。這些都可能改善容量，代價是更多候選，以及額外的配對規則與 loss 設計。slot 和類別是兩回事：每個 slot 都輸出完整的 2 個類別分數，任何類別的物件都能分給它，不是「紅色專用 slot、藍色專用 slot」。
 
-常見錯誤是row／col和xy軸顛倒、把寬高除格尺寸、讓負格也學框與類別，或覆寫同格target卻未報錯。先回到固定兩框的中心數值核對，再擴大資料。
+Assignment 在**訓練時、算 loss 之前**（生成 target 時）決定誰負責誰；NMS（非極大值抑制：刪掉重複的框）則在**推論、解碼之後**才處理同一物件的多個重複預測，下一節會教。本節的中心規則只看標註，所以本節的程式在兩步更新的迴圈之前呼叫一次 `build` 就夠了；課程的完整訓練程式 `miniyolo/train.py` 則在每個訓練步，替當步取出的那批圖重新生成 target。
+
+兩個真實物件擠進同一格，是輸出容量不夠；多個格重複預測同一個物件，是另一個問題。NMS 只能刪候選，不能補回訓練 target 因容量不足而遺失的第二個物件，所以不能用 NMS 解決本節的同格碰撞。
+
+常見錯誤有四種：
+
+- row／col 和 x／y 軸顛倒。
+- 把寬高除以格尺寸 16，而不是整圖 64。
+- 讓負格也學框與類別。
+- 同一格被寫入第二個物件、覆蓋了第一個，卻沒有報錯。
+
+核對要用 x≠y 的框；主例兩框對稱，軸寫反也看不出來。例如下面練習的藍框 [20,36,36,52]，中心的 x、y 不相等，row、col 寫反就會落到另一格，練習的斷言會失敗。
+
+??? note "連 x、y 偏移或寬、高寫反也要抓：用一個不對稱的框"
+
+    練習的藍框寬高相等，格內偏移也是 (0.75,0.75)，所以 x、y 偏移或寬、高寫反時，target 看起來還是一樣。可以另外測一個中心 x≠y、寬≠高的框，例如 [2,4,22,16]：中心 (12,10)、寬高 (20,12)。12/16＝0.75、10/16＝0.625，捨去小數後由 row0／col0 負責；寬高除以 64 是 0.3125、0.1875。所以 target 應是 [0.75,0.625,0.3125,0.1875]。若得到 [0.625,0.75,…]，是 x、y 偏移寫反；若後兩個數對調，是寬、高寫反。這個框落在 row0／col0，row、col 寫反時格子不變，所以要和練習的藍框搭配使用。
+
+    用程式核對時，和下面的練習一樣，另開一個 notebook 程式格：
+
+    ```python
+    odd = {'boxes': torch.tensor([[2., 4., 22., 16.]]), 'labels': torch.tensor([0])}
+    boxes, obj, cls, positive = build([odd])
+    assert boxes[0, 0, 0].tolist() == [0.75, 0.625, 0.3125, 0.1875]
+    ```
 
 ## 核對、練習與答案
 
-案例batch含一張兩物件圖、一張空圖，應印box [2,4,4,4]、obj [2,4,4]、正2／負30／ignore0。第一張正格為[[0,0],[2,2]]，第二張全負；同格同類案例應明確報碰撞。兩步head更新只核對mask與gradient。實跑box loss約0.0871→0.0861、obj0.7031→0.6839、class0.5235→0.4744，這些是人工features的結果。
+執行完整程式後，應看到 box target 的 shape [2,4,4,4]、objectness 的 shape [2,4,4]，以及整批正 2、負 30（第 1 張 14＋空圖 16）。輸出裡的 `first_image_negative=14` 和 `ignores=0` 都是程式固定印出的字樣，不是計算結果：14 由程式在印出前的斷言間接保證（整批只有 2 個正格，而且都在第 1 張圖），改了資料或 S 它也不會跟著變；ignore 則是本版設計上本來就沒有。第一張圖的正格 (row, col) 是 [[0,0],[2,2]]，第二張全是負格；同一格放兩個同類物件的那組測試，應明確報出碰撞。兩步 head 更新只核對 mask 與梯度。實跑 box loss 約 0.0871→0.0861、obj 0.7031→0.6839、class 0.5235→0.4744，這些是在亂數人工特徵上算出的結果。
 
-練習把藍框向左移16pixels，成[20,36,36,52]。答案中心(28,44)，由row2／col1負責，target仍[0.75,0.75,0.25,0.25]。若把S由4改8，候選由16格成64格、同圖負格62；寬高target仍0.25，但中心格索引與偏移需重算。密網格的收益是更細的候選位置，代價是更多背景候選與計算。
+自主練習：把藍框向左移 16 pixels，變成 [20,36,36,52]，紅框不動。先自己算，再展開參考答案：
 
-練習可保留原main，另開cell直接測build，避免改資料後仍撞原題固定答案：
+1. 藍框的新中心是多少？
+2. 它由哪個 row／col 負責？
+3. 它的 box target 是什麼？
+4. 若把 S 由 4 改成 8，候選由 16 格變成 64 格，每格 8 pixels。紅、藍兩框各由哪一格負責？格內偏移和寬高 target 是多少？第一張圖有幾個負格？
 
-```python
-moved = {'boxes': torch.tensor([[4.,4.,20.,20.],[20.,36.,36.,52.]]),
-         'labels': torch.tensor([0,1])}
-boxes, obj, cls, positive = build([moved])
-assert positive[0].nonzero().tolist() == [[0,0],[2,1]]
-dense_boxes, dense_obj, dense_cls, dense_positive = build([moved], grid=8)
-assert dense_positive[0].nonzero().tolist() == [[1,1],[5,3]]
-assert (~dense_positive[0]).sum() == 62
-```
+想用程式核對時，不要直接改 `main()` 裡的資料：`main()`（執行整個案例的函式）的斷言寫死了原題答案，資料一改就會失敗。請先執行本節的完整程式，讓 `build` 有定義，再另開一個 notebook 程式格（code cell），只呼叫 `build()`。參考答案裡附了可以直接貼上的程式。
 
-S=8若保留原兩框，位置則是`[[1,1],[5,5]]`、兩個格內xy都是`.5,.5`；若同batch另含空圖，整批負格為126。上面只測target，沒有修改人工head；若也要改head實驗，features空間、prediction shape及固定答案都須從4×4同步成8×8。
+??? note "參考答案"
+
+    1. 中心是 ((20+36)/2, (36+52)/2)＝(28,44)。
+    2. 28/16＝1.75、44/16＝2.75，捨去小數得 col1、row2，所以由 row2／col1 負責。若算成 row1／col2，就是把 row、col 寫反了。
+    3. 偏移是 (0.75,0.75)，寬高仍是 16/64＝0.25，所以 target 仍是 [0.75,0.75,0.25,0.25]。
+    4. S=8 時每格 64/8＝8 pixels。紅中心 (12,12)/8＝(1.5,1.5)，由 row1／col1 負責；藍中心 (28,44)/8＝(3.5,5.5)，x 得 col3、y 得 row5，所以由 row5／col3 負責，索引寫成 [5,3]。兩者的格內偏移都是 (0.5,0.5)，寬高 target 仍是 0.25。第一張圖的負格是 64−2＝62。
+
+    下面的程式用斷言核對這些答案：
+
+    ```python
+    moved = {'boxes': torch.tensor([[4.,4.,20.,20.],[20.,36.,36.,52.]]),
+             'labels': torch.tensor([0,1])}
+    boxes, obj, cls, positive = build([moved])
+    # nonzero() 列出所有 True 位置的索引，每組是 [row, col]
+    assert positive[0].nonzero().tolist() == [[0,0],[2,1]]
+    dense_boxes, dense_obj, dense_cls, dense_positive = build([moved], grid=8)  # grid 就是 S
+    assert dense_positive[0].nonzero().tolist() == [[1,1],[5,3]]
+    # ~ 用在 bool tensor 上是逐格 not，把 True、False 互換（和 Python 的 ~True 得 -2 不同），
+    # 所以 (~dense_positive[0]).sum() 是第一張圖的負格數
+    assert (~dense_positive[0]).sum() == 62
+    ```
+
+    S=8 若保留原本的兩框，位置是 `[[1,1],[5,5]]`，兩個格內 xy 都是 (0.5,0.5)；若同一個 batch 另含空圖，整批負格是 126。上面只測 target，沒有修改人工 head；若也要改 head 實驗，features 的空間大小、prediction shape 及寫死的答案，都要從 4×4 一起改成 8×8。S 請寫在 `main()` 的 `build([two, empty], grid=8)` 這一次呼叫裡，不要改 `build` 的預設 `grid=4`：碰撞測試的兩框在 S=8 時已不在同一格，程式會丟出 AssertionError，這不是 `build` 弄丟了物件，而是格子變細後兩框不再擠在同一格。印出的那行也有兩處寫死的 4×4 答案：`first_target` 固定讀 `box_targets[0, 0, 0]`（S=8 時這格是負格），`first_image_negative=14` 是固定字樣（S=8 時應是 62）。
+
+密網格的收益是更細的候選位置；代價是更多要學背景的格，計算也更多。
+
+??? note "延伸：偵測器的幾種做法"
+
+    - 滑動視窗（sliding window）：固定大小的窗在圖上逐位置移動，每個位置各跑一次分類器。
+    - 兩階段（two-stage）：先找出可能有物件的候選區域（proposal），再對每一塊分類並修正框。
+    - 單階段（single-stage，YOLO 屬於這類）：一次 forward 直接輸出所有候選框與分數。
+
+    這些是整體流程的差異。不論哪一種做法，訓練時都要決定哪個輸出負責哪個物件，這就是 assignment；YOLO 這類單階段做法也不例外。
 
 <!-- curriculum-evidence:start -->
 
-## 本輪實際執行紀錄
+## 實際執行紀錄
 
-本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
+本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
 
 ??? example "展開本次實際輸出"
 

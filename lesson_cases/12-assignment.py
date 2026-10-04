@@ -19,7 +19,7 @@ def assign(points, gt, scores, overlaps, k=2):
     if len(gt) == 0:
         return owner, torch.zeros_like(overlaps)
     inside = ((points[None] > gt[:, None, :2]) & (points[None] < gt[:, None, 2:])).all(-1)
-    metric = scores * overlaps.square()  # teaching alpha=1,beta=2; not original defaults
+    metric = scores * overlaps.square()  # teaching pair alpha=1, beta=2; TOOD uses 1, 6 and YOLOv8 0.5, 6
     selected = torch.zeros_like(inside)
     for g in range(len(gt)):
         eligible = torch.where(inside[g] & (metric[g] > 0))[0]
@@ -54,7 +54,8 @@ def main():
     loss.backward()
     assert torch.allclose(logits.grad, torch.tensor([-.125, -.125, -.125, .125]))
     optimizer.step()
-    print('inside-masked score * IoU^2:', metric.round(decimals=3).tolist())
+    # round in float64 so 0.311 prints as 0.311, not as float32's nearest value 0.3109999895...
+    print('inside-masked score * IoU^2:', metric.double().round(decimals=3).tolist())
     print('candidate owner (-1 background):', owner.tolist())
     print('foreground target:', target.tolist())
     print('gradient:', logits.grad.tolist())

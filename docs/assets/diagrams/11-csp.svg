@@ -1,18 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 350" role="img" aria-labelledby="title desc">
-<title id="title">CSP 把部分 channel 留走短路徑，最後再拼接</title><desc id="desc">上方8channel全部經兩個3乘3卷積；下方拆成4加4，其中4直接走到concat，另一半經兩個卷積，拼回8後以1乘1融合。Concat沿channel擴充，不是逐值相加。</desc>
-<style>text{font-family:system-ui,sans-serif;font-size:17px;fill:#172554}.box{fill:#eff6ff;stroke:#3b82f6;stroke-width:2}.line{fill:none;stroke:#64748b;stroke-width:2;marker-end:url(#a)}</style>
-<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10" fill="#64748b"/></marker></defs>
-<rect width="900" height="350" fill="white" rx="12"/>
-<text x="24" y="32" font-weight="bold">相同輸入與輸出 shape，路徑不同</text>
-<text x="24" y="88">Full</text><rect class="box" x="105" y="59" width="115" height="55" rx="8"/><text x="122" y="83">輸入 C=8</text><text x="122" y="105">H×W不變</text>
-<path class="line" d="M220 87H255"/><rect class="box" x="264" y="59" width="146" height="55" rx="8"/><text x="282" y="92">3×3：8→8</text><path class="line" d="M410 87H445"/>
-<rect class="box" x="454" y="59" width="146" height="55" rx="8"/><text x="471" y="92">3×3：8→8</text><path class="line" d="M600 87H632"/>
-<rect class="box" x="640" y="59" width="226" height="55" rx="8"/><text x="661" y="92">1×1融合：8→8</text>
-<text x="24" y="240">CSP</text><rect class="box" x="105" y="208" width="115" height="55" rx="8"/><text x="122" y="232">輸入 C=8</text><text x="122" y="254">split：4+4</text>
-<path class="line" d="M220 224H238V169H624V224H642"/><text x="318" y="160">直接路徑：4 channels</text>
-<path class="line" d="M220 248H252"/><rect class="box" x="260" y="216" width="137" height="55" rx="8"/><text x="274" y="249">3×3：4→4</text>
-<path class="line" d="M397 244H422"/><rect class="box" x="430" y="216" width="137" height="55" rx="8"/><text x="444" y="249">3×3：4→4</text>
-<path class="line" d="M567 244H642"/><rect class="box" x="650" y="208" width="216" height="63" rx="8"/><text x="666" y="233">concat：4+4=8</text><text x="666" y="256">1×1融合：8→8</text>
-<text x="24" y="315">本章簡化：卷積帶 bias。參數 1240 → 368；H、W 相同，尚未比較真實辨識效果。</text>
-<text x="24" y="340">concat 沿 channel 拼接；add 則要求兩支形狀相同並逐值相加。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" role="img" aria-labelledby="title desc">
+  <title id="title">CSP 讓前 4 個 channel 走旁路，最後串接再融合</title>
+  <desc id="desc">示意圖，方框大小不代表參數多寡。上下兩列是兩種 block，輸入、輸出 shape 相同，每一步的 H×W 都不變。上方 Full：輸入 C=8，經兩個 3×3 卷積，每個卷積後接 ReLU，都是 8→8；再經 1×1 融合，8→8。下方 CSP：輸入 C=8 沿 channel 切成 4+4。旁路是前 4 個 channel，不經過 3×3 卷積，直接送到 concat；卷積支路是後 4 個 channel，經兩個 3×3 卷積，每個卷積後接 ReLU，都是 4→4。concat 沿 channel 串接，4+4=8，再經 1×1 融合，8→8。兩列的對應方框上下對齊；Full 沒有 concat，所以那一欄只有箭頭。圖下說明：本節簡化，卷積帶 bias；參數從 Full 的 1240 降到 CSP 的 368；尚未比較真實辨識效果。concat 沿 channel 串接；add 則要求兩支形狀相同並逐值相加。</desc>
+  <style>
+    text{font-family:sans-serif;font-size:18px;fill:#0f172a}
+    .head{font-size:21px;font-weight:700}
+    .row{font-size:19px;font-weight:700}
+    .mid{text-anchor:middle}
+    .route{font-size:17px;fill:#334155}
+    .note{font-size:17px;fill:#334155}
+    .box{fill:#e0f2fe;stroke:#0369a1;stroke-width:2}
+    .line{fill:none;stroke:#334155;stroke-width:2.5;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#334155"/>
+    </marker>
+  </defs>
+  <!-- 欄位（兩列共用，上下對齊）：輸入 68–168、第一個 3×3 194–312、第二個 3×3 338–456、concat 482–572、1×1 融合 598–704。 -->
+  <rect width="720" height="370" fill="#f8fafc"/>
+  <text x="16" y="36" class="head">輸入、輸出 shape 相同，H×W 不變，路徑不同</text>
+
+  <!-- Full 列：方框 y 62–122，中線 y=92 -->
+  <text x="16" y="99" class="row">Full</text>
+  <g class="box">
+    <rect x="68" y="62" width="100" height="60" rx="8"/>
+    <rect x="194" y="62" width="118" height="60" rx="8"/>
+    <rect x="338" y="62" width="118" height="60" rx="8"/>
+    <rect x="598" y="62" width="106" height="60" rx="8"/>
+  </g>
+  <path class="line" d="M168 92H191"/>
+  <path class="line" d="M312 92H335"/>
+  <path class="line" d="M456 92H595"/>
+  <g class="mid">
+    <text x="118" y="98">輸入 C=8</text>
+    <text x="253" y="86">3×3＋ReLU</text><text x="253" y="109">8→8</text>
+    <text x="397" y="86">3×3＋ReLU</text><text x="397" y="109">8→8</text>
+    <text x="651" y="86">1×1 融合</text><text x="651" y="109">8→8</text>
+  </g>
+
+  <!-- CSP 列：方框 y 196–256，中線 y=226；旁路從輸入框頂端出發，在 y=172 越過卷積支路，落到 concat 框頂端 -->
+  <text x="16" y="233" class="row">CSP</text>
+  <g class="box">
+    <rect x="68" y="196" width="100" height="60" rx="8"/>
+    <rect x="194" y="196" width="118" height="60" rx="8"/>
+    <rect x="338" y="196" width="118" height="60" rx="8"/>
+    <rect x="482" y="196" width="90" height="60" rx="8"/>
+    <rect x="598" y="196" width="106" height="60" rx="8"/>
+  </g>
+  <path class="line" d="M118 196V172H527V193"/>
+  <path class="line" d="M168 226H191"/>
+  <path class="line" d="M312 226H335"/>
+  <path class="line" d="M456 226H479"/>
+  <path class="line" d="M572 226H595"/>
+  <text x="322" y="160" class="route mid">旁路：前 4 channels</text>
+  <text x="325" y="284" class="route mid">卷積支路：後 4 channels</text>
+  <g class="mid">
+    <text x="118" y="220">輸入 C=8</text><text x="118" y="243">split：4+4</text>
+    <text x="253" y="220">3×3＋ReLU</text><text x="253" y="243">4→4</text>
+    <text x="397" y="220">3×3＋ReLU</text><text x="397" y="243">4→4</text>
+    <text x="527" y="220">concat</text><text x="527" y="243">4+4=8</text>
+    <text x="651" y="220">1×1 融合</text><text x="651" y="243">8→8</text>
+  </g>
+
+  <text x="16" y="324" class="note">本節簡化：卷積帶 bias。參數 1240 → 368；尚未比較真實辨識效果。</text>
+  <text x="16" y="352" class="note">concat 沿 channel 串接；add 則要求兩支形狀相同並逐值相加。</text>
 </svg>

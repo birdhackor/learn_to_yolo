@@ -14,6 +14,8 @@ import time
 
 import modal
 
+from evidence_records import bound_code
+
 ROOT = Path(__file__).resolve().parents[1]
 HF_HUB_VERSION = "2.1.1"
 
@@ -203,6 +205,7 @@ def main():
     commit = os.environ.get("GITHUB_SHA", "")
     run_key = "github-" + os.environ.get("GITHUB_RUN_ID", "local") + "-" + os.environ.get("GITHUB_RUN_ATTEMPT", "1") + "-" + commit[:12]
     result = {"created_at": datetime.now(timezone.utc).isoformat(), "code_commit": commit, "run_key": run_key,
+              "dependencies_sha256": bound_code("artifacts/checks/gpu-smoke.json"),
               "github_run_url": os.environ.get("GITHUB_SERVER_URL", "https://github.com") + "/" + os.environ.get("GITHUB_REPOSITORY", "birdhackor/learn_to_yolo") + "/actions/runs/" + os.environ.get("GITHUB_RUN_ID", ""),
               "modal_environment": environment, "modal_volume": volume_name,
               "hf_release_repo_configured": bool(os.environ.get("HF_RELEASE_REPO")),

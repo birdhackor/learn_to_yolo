@@ -1,12 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 235" role="img" aria-labelledby="title desc">
-<title id="title">四邊距離的pixel解碼</title><desc id="desc">候選點80,80，左上右下距離1.25、2.5、18、3格，stride8，解碼為70,60,224,104。圖是座標示意，沒有對應輸入照片。</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
-<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
-<rect width="800" height="235" fill="white"/><text x="25" y="28" font-weight="bold">同一候選點，解碼四邊距離</text>
-<rect x="42" y="84" width="308" height="88" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-<circle cx="62" cy="124" r="5" fill="#be123c"/>
-<path d="M62 124H350M62 124H42M62 124V84M62 124V172" stroke="#475569" stroke-dasharray="4 3"/>
-<text x="164" y="115">r=18格=144px</text><text x="20" y="65">l=1.25格=10px</text>
-<text x="77" y="98">t=2.5格=20px</text><text x="77" y="165">b=3格=24px</text>
-<text x="25" y="206">紅點：(80,80)；藍框：[70,60,224,104]</text>
-<text x="460" y="87">一格＝stride 8 pixel</text><text x="460" y="130">x1=80−10；x2=80+144</text><text x="460" y="173">y1=80−20；y2=80+24</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" role="img" aria-labelledby="title desc">
+ <title id="title">DFL 與直接回歸共用同一套解碼</title>
+ <desc id="desc">按比例繪製：每 1 畫素畫成 3.25 個單位（一格 8 畫素畫成 26 個單位）；畫素座標 (x,y) 畫在 SVG 的 (3.25x−50, 3.25y−104)，x 向右、y 向下。紅點是候選點 (84,84)，stride 8，一格＝8 畫素；它是 x、y 都在 80～88 那一格的中心：(10＋0.5)×8＝84（從 0 起算的第 10 欄、第 10 列）。從紅點到藍框四邊的四個雙箭頭是四個距離：左 l＝1.25 格＝10 畫素，上 t＝2.5 格＝20 畫素，右 r＝18 格＝144 畫素，下 b＝3 格＝24 畫素。圖下方列出解碼公式 x1=84−1.25×8=74、y1=84−2.5×8=64、x2=84+18×8=228、y2=84+3×8=108，得到藍框 xyxy [74,64,228,108]；DFL 的期望距離和直接回歸輸出的數，都用這同一套解碼。x＝204 的橘色虛線標出 K=16 時 DFL 最遠 15 格＝120 畫素：stride 8 時，從候選點往右最遠到 84＋15×8＝204。藍框右邊在 x＝228，超出這條線 24 畫素（3 格）。框下方的刻度是 x 座標 74、84、204、228，單位是畫素。本圖只有座標，沒有對應的輸入圖片。</desc>
+ <rect width="720" height="440" fill="#f8fafc"/>
+ <!-- 畫素座標 (x,y) 畫在 SVG 的 (3.25x−50, 3.25y−104)：x 74、84、204、228 → 190.5、223、613、691；y 64、84、108 → 104、169、247。 -->
+ <rect x="190.5" y="104" width="500.5" height="143" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+ <!-- K=16 的 DFL 最遠 15 格：x＝84＋15×8＝204。虛線下端兼作 204 的刻度。 -->
+ <path d="M613 64V257" stroke="#b45309" stroke-width="2.5" stroke-dasharray="8 5"/>
+ <!-- 四個雙箭頭：一端停在框線內緣，另一端停在紅點外 7 單位。 -->
+ <path d="M200 169H208M223 113.5V154M223 184V237.5M238 169H681.5" fill="none" stroke="#334155" stroke-width="2"/>
+ <path d="M192 169L200 165V173ZM216 169L208 165V173ZM223 105.5L219 113.5H227ZM223 162L219 154H227ZM223 176L219 184H227ZM223 245.5L219 237.5H227ZM230 169L238 165V173ZM689.5 169L681.5 165V173Z" fill="#334155"/>
+ <circle cx="223" cy="169" r="5.5" fill="#dc2626" stroke="#f8fafc" stroke-width="1.5"/>
+ <!-- x 刻度（畫素）。 -->
+ <path d="M190.5 249V257M223 249V257M691 249V257" stroke="#475569" stroke-width="1.5"/>
+ <g font-family="sans-serif" font-size="18" fill="#475569" text-anchor="middle">
+  <text x="190.5" y="278">74</text><text x="223" y="278">84</text><text x="613" y="278">204</text><text x="691" y="278">228</text>
+  <text x="168" y="278" text-anchor="end">x 座標（畫素）</text>
+ </g>
+ <g font-family="sans-serif" font-size="18" fill="#0f172a">
+  <text x="24" y="36" font-size="22" font-weight="700">DFL 與直接回歸共用同一套解碼</text>
+  <text x="605" y="84" text-anchor="end" fill="#b45309">K=16 時 DFL 最遠 15 格＝120 畫素</text>
+  <text x="181" y="175" text-anchor="end">l＝1.25 格＝10 畫素</text>
+  <text x="234" y="140">t＝2.5 格＝20 畫素</text>
+  <text x="498" y="159" text-anchor="middle">r＝18 格＝144 畫素</text>
+  <text x="234" y="217">b＝3 格＝24 畫素</text>
+  <text x="24" y="322">解碼（stride 8，一格＝8 畫素）：</text>
+  <text x="24" y="354">左上</text><text x="76" y="354">x1=84−1.25×8=74</text><text x="262" y="354">y1=84−2.5×8=64</text>
+  <text x="24" y="386">右下</text><text x="76" y="386">x2=84+18×8=228</text><text x="262" y="386">y2=84+3×8=108</text>
+  <text x="24" y="422">紅點：候選點 (84,84)，stride 8 的格中心；藍框：xyxy [74,64,228,108]</text>
+ </g>
+</svg>

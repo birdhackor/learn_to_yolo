@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 764" role="img" aria-labelledby="title desc">
+  <title id="title">部署流程：grid.onnx 只包模型本身，前後處理在外部 Python</title>
+  <desc id="desc">示意圖，方框大小與箭頭長短不代表時間或運算量。流程呈 U 字形。左上是原圖：uint8、HWC、RGB，每個值 0～255。實線箭頭往右進入橘色的「外部 Python：前處理」，框內右上註明 PyTorch 與 ORT 共用：轉成 float32、換成 CHW、除以 255，letterbox 到 64×64，metadata 另外保留。前處理往下送出輸入 images：[B,3,64,64]、float32、RGB、0～1，只有 B 可變，進入藍色區塊「模型本身：grid.onnx 裡只有這一段」，區塊右上註明三個 backend 擇一執行。藍色區塊裡由上到下三列。第一列是「PyTorch 模型」：PyTorch 直接執行原本的模型，不讀 .onnx 檔。灰色虛線箭頭標「torch.onnx.export 事先匯出（opset 17）」，指到第二列「grid.onnx」：ONNX Runtime 讀這個檔，在 CPU 執行；旁邊紫色圓圈 1 是第一層 checker，查檔案結構，不查數值。再一條灰色虛線箭頭標「TensorRT 事先建置（build）」，指到第三列的虛線框「engine」：TensorRT 載入 engine，在 NVIDIA GPU 執行，本節 CPU 範例沒跑這條。灰色虛線是事先做一次的步驟，不是每張圖推論時都要做。藍色區塊往下輸出 raw_grid：[B,4,4,7]，4×4 格，每格 7 個數，還沒 decode；箭頭右邊紫色圓圈 2 是第二層：比 raw，PyTorch 與 ORT 逐值比較。接著進入右下橘色的「外部 Python：後處理」，同樣註明 PyTorch 與 ORT 共用：decode，分數低於 0.05 的候選丟掉；按類別做 NMS，IoU 門檻 0.5；undo_letterbox 用 metadata 還原到原圖。metadata 走右側的橘色線，從前處理繞過模型，直接送到還原這一步。最後箭頭往左，到左下的「原圖上的框」：框座標（原圖畫素）、分數、類別；下方紫色圓圈 3 是第三層：比還原後的框、分數、類別。</desc>
+  <defs>
+    <marker id="flow" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L12 6L0 12Z" fill="#334155"/></marker>
+    <marker id="prep" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#64748b"/></marker>
+    <marker id="meta" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309"/></marker>
+  </defs>
+  <rect width="720" height="764" fill="#f8fafc"/>
+
+  <!-- 上排：原圖 → 外部 Python 前處理。 -->
+  <rect x="16" y="16" width="200" height="112" rx="8" fill="#fff" stroke="#64748b" stroke-width="2"/>
+  <rect x="258" y="16" width="398" height="112" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <!-- 中段：模型本身，grid.onnx 只包這一段。三列是三個 backend；左側白框是各自執行的模型形式。 -->
+  <rect x="16" y="204" width="640" height="296" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <g fill="#fff" stroke="#2563eb" stroke-width="2">
+    <rect x="34" y="252" width="160" height="48" rx="8"/>
+    <rect x="34" y="344" width="160" height="48" rx="8"/>
+    <rect x="34" y="436" width="160" height="48" rx="8" stroke-dasharray="7 5"/>
+  </g>
+  <!-- 下排：外部 Python 後處理 → 原圖上的框。 -->
+  <rect x="258" y="576" width="398" height="136" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <rect x="16" y="594" width="200" height="100" rx="8" fill="#fff" stroke="#64748b" stroke-width="2"/>
+
+  <!-- 實線：每張圖推論時走的資料流。路徑終點在目標前 10 個單位，箭頭尖剛好碰到目標。 -->
+  <g fill="none" stroke="#334155" stroke-width="3" marker-end="url(#flow)">
+    <path d="M216 72H248"/>
+    <path d="M400 128V194"/>
+    <path d="M400 500V566"/>
+    <path d="M258 644H226"/>
+  </g>
+  <!-- 灰色虛線：事先做一次的匯出與建置。 -->
+  <g fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#prep)">
+    <path d="M114 300V336"/>
+    <path d="M114 392V428"/>
+  </g>
+  <!-- 橘線：metadata 繞過模型，直接送到 undo_letterbox。 -->
+  <path d="M656 100H684V688H666" fill="none" stroke="#b45309" stroke-width="2.5" marker-end="url(#meta)"/>
+
+  <g font-family="sans-serif" fill="#0f172a">
+    <g text-anchor="middle">
+      <text x="116" y="50" font-size="19" font-weight="700">原圖</text>
+      <text x="116" y="80" font-size="18">uint8、HWC、RGB</text>
+      <text x="116" y="108" font-size="18">每個值 0～255</text>
+      <text x="114" y="282" font-size="18">PyTorch 模型</text>
+      <text x="114" y="374" font-size="18">grid.onnx</text>
+      <text x="114" y="466" font-size="18">engine</text>
+      <text x="116" y="626" font-size="19" font-weight="700">原圖上的框</text>
+      <text x="116" y="656" font-size="18">框座標（原圖畫素）</text>
+      <text x="116" y="682" font-size="18">分數、類別</text>
+    </g>
+    <text x="276" y="46" font-size="19" font-weight="700" fill="#92400e">外部 Python：前處理</text>
+    <text x="638" y="46" font-size="16" fill="#92400e" text-anchor="end">PyTorch 與 ORT 共用</text>
+    <text x="276" y="78" font-size="18">轉成 float32、換成 CHW、除以 255</text>
+    <text x="276" y="106" font-size="18">letterbox 到 64×64，metadata 另外保留</text>
+    <g font-size="18" text-anchor="end">
+      <text x="386" y="158">輸入 images：[B,3,64,64]</text>
+      <text x="386" y="186">float32、RGB、0～1，只有 B 可變</text>
+      <text x="386" y="530">輸出 raw_grid：[B,4,4,7]</text>
+      <text x="386" y="558">4×4 格，每格 7 個數，還沒 decode</text>
+    </g>
+    <text x="34" y="234" font-size="19" font-weight="700" fill="#1e40af">模型本身：grid.onnx 裡只有這一段</text>
+    <text x="638" y="234" font-size="17" fill="#1e3a8a" text-anchor="end">三個 backend 擇一執行</text>
+    <text x="212" y="272" font-size="18">PyTorch：直接執行原本的模型</text>
+    <text x="212" y="296" font-size="17" fill="#334155">不讀 .onnx 檔</text>
+    <text x="212" y="362" font-size="18">ONNX Runtime：讀這個檔，在 CPU 執行</text>
+    <text x="212" y="456" font-size="18" fill="#334155">TensorRT：載入 engine，在 NVIDIA GPU 執行</text>
+    <text x="212" y="480" font-size="17" fill="#475569">本節 CPU 範例沒跑這條</text>
+    <g font-size="16" fill="#475569">
+      <text x="130" y="328">torch.onnx.export 事先匯出（opset 17）</text>
+      <text x="130" y="420">TensorRT 事先建置（build）</text>
+    </g>
+    <text x="276" y="606" font-size="19" font-weight="700" fill="#92400e">外部 Python：後處理</text>
+    <text x="638" y="606" font-size="16" fill="#92400e" text-anchor="end">PyTorch 與 ORT 共用</text>
+    <text x="276" y="638" font-size="18">decode，分數低於 0.05 的候選丟掉</text>
+    <text x="276" y="666" font-size="18">按類別做 NMS，IoU 門檻 0.5</text>
+    <text x="276" y="694" font-size="18">undo_letterbox：用 metadata 還原到原圖</text>
+  </g>
+
+  <!-- 三層檢查的位置（紫色圓圈）：1 在 grid.onnx 旁、2 在 raw_grid 輸出、3 在原圖上的框。 -->
+  <g fill="#6d28d9">
+    <circle cx="223" cy="384" r="12"/>
+    <circle cx="428" cy="524" r="12"/>
+    <circle cx="28" cy="718" r="12"/>
+  </g>
+  <g font-family="sans-serif" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">
+    <text x="223" y="389.5">1</text>
+    <text x="428" y="529.5">2</text>
+    <text x="28" y="723.5">3</text>
+  </g>
+  <g font-family="sans-serif" font-size="17" fill="#5b21b6">
+    <text x="241" y="390">第一層 checker：查檔案結構，不查數值</text>
+    <text x="448" y="530">第二層：比 raw</text>
+    <text x="448" y="558">PyTorch 與 ORT 逐值比較</text>
+    <text x="48" y="724">第三層：比還原後的</text>
+    <text x="48" y="748">框、分數、類別</text>
+  </g>
+</svg>

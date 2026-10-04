@@ -47,7 +47,7 @@ def main():
         optimizer.step()
     after = F.mse_loss(module(x), target).item()
     assert module(x).shape == x.shape and after < before
-    # Inspect direct concat slots separately from each path's total gradient.
+    # Inspect direct concat segments separately from each path's total gradient.
     # b1's total gradient also includes its downstream use as the input to b2.
     optimizer.zero_grad()
     output, paths, joined = module(x, inspect=True)
@@ -58,18 +58,18 @@ def main():
     hidden = module.project.out_channels // 2
     assert len(paths) == 2 + len(module.blocks)
     for i, path in enumerate(paths):
-        slot = slice(i * hidden, (i + 1) * hidden)
-        assert torch.equal(joined[:, slot], path)
+        segment = slice(i * hidden, (i + 1) * hidden)
+        assert torch.equal(joined[:, segment], path)
         assert path.grad is not None and path.grad.abs().sum() > 0
-        assert joined.grad[:, slot].abs().sum() > 0
+        assert joined.grad[:, segment].abs().sum() > 0
     assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in module.parameters())
     print('input/output:', tuple(x.shape), tuple(module(x).shape))
     channels = ' + '.join(str(hidden) for _ in paths)
     print(f'concatenated channels: {channels} = {module.fuse.in_channels}; fuse {module.fuse.in_channels} -> {module.fuse.out_channels}')
     print('parameters plain / split:', sum(p.numel() for p in plain.parameters()), sum(p.numel() for p in module.parameters()))
     print(f'local transformation MSE {before:.4f} -> {after:.4f}')
-    print('concat order, each direct concat-slot gradient, and each path total gradient: verified')
-    print('direct concat-slot gradient L1:', [round(float(joined.grad[:, i*hidden:(i+1)*hidden].abs().sum()), 4) for i in range(len(paths))])
+    print('concat order, each direct concat-segment gradient, and each path total gradient: verified')
+    print('direct concat-segment gradient L1:', [round(float(joined.grad[:, i*hidden:(i+1)*hidden].abs().sum()), 4) for i in range(len(paths))])
 
 
 if __name__ == '__main__':

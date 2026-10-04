@@ -2,6 +2,7 @@
 import base64
 import io
 import json
+import statistics
 import time
 from pathlib import Path
 import torch
@@ -125,63 +126,93 @@ def draw(image, target, prediction, threshold=.25):
     return canvas
 
 
-def save_panel(images, targets, baseline, changed, baseline_weight, changed_weight):
-    # Select hardest baseline examples, then show the exact same images for both runs.
+KIND = {'background': '背景誤報', 'localization': '定位不準', 'wrong_class': '類別錯誤', 'duplicate': '重複框'}
+
+
+def png(image, scale=3):
+    rgb = (image.permute(1, 2, 0).numpy() * 255).round().astype('uint8')
+    buffer = io.BytesIO()
+    Image.fromarray(rgb).resize((rgb.shape[1] * scale, rgb.shape[0] * scale), Image.NEAREST).save(buffer, format='PNG')
+    return base64.b64encode(buffer.getvalue()).decode()
+
+
+def boxes_svg(x, y, boxes, color, width=2, dash='', scale=3):
+    dashed = f' stroke-dasharray="{dash}"' if dash else ''
+    return [f'<rect x="{x + float(b[0]) * scale:.1f}" y="{y + float(b[1]) * scale:.1f}" '
+            f'width="{(float(b[2]) - float(b[0])) * scale:.1f}" height="{(float(b[3]) - float(b[1])) * scale:.1f}" '
+            f'fill="none" stroke="{color}" stroke-width="{width}"{dashed}/>' for b in boxes]
+
+
+def tag_svg(x, y, box, text, scale=3):
+    # "class:score" on a dark tag above the box, or just inside it when the box touches the top edge.
+    left, top = x + float(box[0]) * scale, y + float(box[1]) * scale
+    baseline = top - 4 if float(box[1]) * scale >= 18 else top + 15
+    return [f'<rect x="{left:.1f}" y="{baseline - 13:.1f}" width="{8.4 * len(text) + 6:.1f}" height="17" rx="2" '
+            'fill="#111827" fill-opacity="0.85"/>',
+            f'<text x="{left + 3:.1f}" y="{baseline:.1f}" font-size="14">{text}</text>']
+
+
+def tile(x, y, image, target, prediction, threshold):
+    parts = [f'<image x="{x}" y="{y}" width="192" height="192" href="data:image/png;base64,{png(image)}"/>']
+    parts += boxes_svg(x, y, target['boxes'], '#22c55e')
+    shown = prediction['scores'] >= threshold
+    parts += boxes_svg(x, y, prediction['boxes'][shown], '#f59e0b')
+    for box, score, label in zip(prediction['boxes'][shown], prediction['scores'][shown], prediction['labels'][shown]):
+        parts += tag_svg(x, y, box, f'{int(label)}:{float(score):.2f}')
+    return parts
+
+
+def save_panel(images, targets, baseline, changed, baseline_weight, changed_weight, path):
+    # Select the hardest baseline examples, then show the exact same images for both runs.
     ranks = []
     for i, (pred, target) in enumerate(zip(baseline, targets)):
         stats = diagnostics([pred], [target])
         ranks.append((stats['iou10_to_50'] + stats['below_iou10'], i))
     chosen = [i for _, i in sorted(ranks, reverse=True)[:4]]
-    parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 810" role="img" aria-labelledby="t d">',
-             f'<title id="t">Capstone actual validation examples: box weights {baseline_weight} and {changed_weight}</title>',
-             f'<desc id="d">Same four validation images. Top: baseline weight{baseline_weight}; second row: weight{changed_weight}. Green is GT, orange is prediction with score at least .25. Evaluation uses .05. A baseline unmatched prediction is highlighted red below at the evaluation threshold.</desc>',
-             '<rect width="860" height="810" fill="#0f172a"/>',
+    parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 866" role="img" aria-labelledby="t d">',
+             f'<title id="t">結業任務的實際驗證圖：box weight {baseline_weight} 與 {changed_weight}</title>',
+             f'<desc id="d">同樣四張驗證圖。第一列是基準 box weight {baseline_weight}，第二列只把它改成 {changed_weight}。'
+             '綠框是 GT，橘框是 score 至少 0.25 的預測，標籤寫「類別:score」。'
+             '最下面放大一個基準模型在候選截斷門檻 0.05 下的誤報，用紫色虛線框標出。</desc>',
+             '<rect width="860" height="866" fill="#0f172a"/>',
              '<g fill="white" font-family="sans-serif" font-size="20">',
-             f'<text x="20" y="28">Baseline: box weight {baseline_weight} | green GT, orange prediction</text>',
-             f'<text x="20" y="275">One change: box weight {changed_weight} | display score ≥ .25</text>']
+             f'<text x="20" y="34">基準：box weight {baseline_weight}（綠框＝GT，橘框＝score ≥ 0.25 的預測）</text>',
+             f'<text x="20" y="312">只改一項：box weight {changed_weight}</text>']
     for row, predictions in enumerate((baseline, changed)):
         for col, i in enumerate(chosen):
-            buffer = io.BytesIO()
-            draw(images[i], targets[i], predictions[i]).save(buffer, format='PNG')
-            data = base64.b64encode(buffer.getvalue()).decode()
-            x, y = 20 + col * 210, 42 + row * 247
-            parts.append(f'<image x="{x}" y="{y}" width="192" height="192" href="data:image/png;base64,{data}"/>')
-            parts.append(f'<text x="{x}" y="{y+217}">validation #{i}</text>')
+            x, y = 20 + col * 210, 50 + row * 278
+            parts += tile(x, y, images[i], targets[i], predictions[i], .25)
+            parts.append(f'<text x="{x}" y="{y + 216}">驗證圖 #{i}</text>')
     errors = error_diagnostics(baseline, targets)
     cases = errors['false_positive_cases']
     if cases:
         example = next((case for case in cases if case['kind'] in ('background', 'wrong_class')), cases[0])
         i, prediction_id = example['image'], example['prediction']
-        canvas = draw(images[i], targets[i], baseline[i], threshold=.05)
-        pen = ImageDraw.Draw(canvas)
-        pen.rectangle(tuple(float(v)*3 for v in baseline[i]['boxes'][prediction_id]), outline='#ef4444', width=3)
-        buffer = io.BytesIO()
-        canvas.save(buffer, format='PNG')
-        data = base64.b64encode(buffer.getvalue()).decode()
-        parts.extend(['<text x="20" y="540">Inspect an actual baseline FP at evaluation score .05</text>',
-                      f'<image x="20" y="556" width="192" height="192" href="data:image/png;base64,{data}"/>',
-                      f'<text x="235" y="596">validation #{i}: red = {example["kind"]} FP</text>',
-                      f'<text x="235" y="636">class {example["class"]}, score {example["score"]:.3f}</text>',
-                      f'<text x="235" y="676">best IoU with any GT: {example["best_any_iou"]:.3f}</text>',
-                      '<text x="235" y="716">Orange shows all candidates with score ≥ .05.</text>'])
-    parts.extend(['</g>', '<text x="20" y="790" fill="white" font-family="sans-serif" font-size="18">Actual CPU run; tiny synthetic split. AP is reported separately at score .05.</text>', '</svg>'])
-    output = Path('docs/assets/diagrams/17-capstone.svg')
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text('\n'.join(parts))
+        parts.append('<text x="20" y="596">基準模型的一個誤報（評估用的候選截斷門檻 0.05）</text>')
+        parts += tile(20, 612, images[i], targets[i], baseline[i], .05)
+        parts += boxes_svg(20, 612, baseline[i]['boxes'][prediction_id:prediction_id + 1], '#e879f9', 3, '6 3')
+        parts += [f'<text x="235" y="652">驗證圖 #{i}：紫色虛線框是{KIND[example["kind"]]}</text>',
+                  f'<text x="235" y="692">類別 {example["class"]}，score {example["score"]:.3f}</text>',
+                  f'<text x="235" y="732">和任何 GT 的最大 IoU：{example["best_any_iou"]:.3f}</text>',
+                  '<text x="235" y="772">這張圖的橘框是 score ≥ 0.05 的所有候選</text>']
+    parts.extend(['</g>', '<text x="20" y="846" fill="white" font-family="sans-serif" font-size="18">'
+                  'CPU 上實際執行；資料是很小的合成圖。AP 另外在候選截斷門檻 0.05 下計算。</text>', '</svg>'])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text('\n'.join(parts) + '\n')
 
 
 @torch.no_grad()
-def end_to_end_ms(model, image, target, iterations=12):
+def end_to_end_ms(model, image, target, runs=12, warmup=3):
     rgb = (image.permute(1, 2, 0).numpy() * 255).round().astype('uint8')
     samples = []
-    for i in range(iterations + 3):
+    for i in range(warmup + runs):
         start = time.perf_counter()
         tensor = torch.from_numpy(rgb.copy()).permute(2, 0, 1).float() / 255
-        pred = decode_grid(model(tensor[None]), score_threshold=.05)[0]
+        pred = decode_grid(model(tensor[None]), score_threshold=.05, nms_iou=.5)[0]
         draw(tensor, target, pred)
-        if i >= 3:
+        if i >= warmup:
             samples.append((time.perf_counter() - start) * 1000)
-    return float(torch.tensor(samples).median())
+    return statistics.median(samples), len(pred['boxes'])
 
 
 def main(baseline_weight=5, changed_weight=10):
@@ -190,6 +221,11 @@ def main(baseline_weight=5, changed_weight=10):
     train_x, train_y = batch(1100, 32)
     val_x, val_y = batch(2200, 16)
     test_x, test_y = batch(3300, 16)
+    # Untimed warm-up fit, so one-time setup costs of the first fit in a process do not land in the baseline's
+    # train_seconds. 10 steps, not 2: fit() also asserts last loss < first loss, and with 2 steps that compares
+    # the second batch's loss after one update with the first batch's loss, which can fail even when the 160-step
+    # runs train fine. fit() reseeds, so the two timed fits below are unchanged.
+    fit(train_x, train_y, baseline_weight, steps=10)
     baseline, base_seconds = fit(train_x, train_y, baseline_weight)
     base_metrics, base_preds = evaluate(baseline, val_x, val_y)
     changed, change_seconds = fit(train_x, train_y, changed_weight)
@@ -199,22 +235,33 @@ def main(baseline_weight=5, changed_weight=10):
     keep = change_metrics['map'] >= base_metrics['map'] + .01
     chosen = changed if keep else baseline
     test_metrics, _ = evaluate(chosen, test_x, test_y)
-    milliseconds = end_to_end_ms(chosen, val_x[0], val_y[0])
-    save_panel(val_x, val_y, base_preds, change_preds, baseline_weight, changed_weight)
+    # Time the validation image on which the chosen model leaves the most candidates, so NMS and drawing do real work.
+    chosen_preds = change_preds if keep else base_preds
+    timed = max(range(len(val_x)), key=lambda i: (len(chosen_preds[i]['boxes']), -i))
+    milliseconds, timed_candidates = end_to_end_ms(chosen, val_x[timed], val_y[timed])
+    # The timed path rounds the image to uint8 and runs batch 1, so its count can differ by a candidate
+    # scoring right at .05 from the batch evaluation above; it only has to leave NMS and drawing work to do.
+    assert timed_candidates > 0
+    panel = Path('artifacts/lesson-17/validation.svg')
+    save_panel(val_x, val_y, base_preds, change_preds, baseline_weight, changed_weight, panel)
     report = {'data_seeds': [1100, 2200, 3300], 'train_samples': 32, 'validation_samples': 16, 'test_samples': 16,
               'steps_per_run': 160, 'box_weights': [baseline_weight, changed_weight], 'score_threshold': .05, 'display_threshold': .25,
               'eval_iou': .5, 'baseline_validation': base_metrics, 'changed_validation': change_metrics,
               'baseline_coverage': diagnostics(base_preds, val_y), 'changed_coverage': diagnostics(change_preds, val_y),
               'baseline_errors': error_diagnostics(base_preds, val_y), 'changed_errors': error_diagnostics(change_preds, val_y),
               'keep_change': keep, 'chosen_test': test_metrics, 'parameters': sum(p.numel() for p in chosen.parameters()),
-              'train_seconds': [base_seconds, change_seconds], 'chosen_end_to_end_median_ms': milliseconds,
-              'timing_scope': 'uint8 RGB -> tensor -> model -> decode/NMS -> drawing; CPU, batch1, threads2; no file I/O',
+              'train_seconds': [base_seconds, change_seconds],
+              'train_timing_scope': 'only the training loop of each run, after one untimed 10-step warm-up fit; CPU, 2 threads',
+              'chosen_end_to_end_median_ms': milliseconds,
+              'timed_validation_image': timed, 'timed_image_candidates': timed_candidates,
+              'timing_scope': 'uint8 RGB -> tensor -> model -> decode/NMS at score .05 -> drawing, on the validation image '
+                              'with the most candidates; CPU, batch 1, 2 threads; median of 12 runs after 3 warm-up runs; no file I/O',
               'limits': 'single initialization, tiny synthetic rectangles; no real-image or multi-seed evidence'}
     output = Path('artifacts/lesson-17')
     output.mkdir(parents=True, exist_ok=True)
     (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
-    print('actual validation panel: docs/assets/diagrams/17-capstone.svg')
+    print(f'actual validation panel: {panel}')
 
 
 if __name__ == '__main__':

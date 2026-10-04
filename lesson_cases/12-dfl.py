@@ -39,7 +39,8 @@ def main():
     distance = expected_distance(logits).detach()
     assert abs(distance.item() - 1.25) < .02
     assert probs[0, 1] > .73 and probs[0, 2] > .24
-    print('learned bin probabilities:', probs.round(decimals=4).tolist())
+    # round in float64 so 0.0025 prints as 0.0025, not as float32's nearest value 0.0024999999...
+    print('learned bin probabilities:', probs.double().round(decimals=4).tolist())
     print(f'learned expectation={distance.item():.4f} cells = {8 * distance.item():.4f} pixels at stride 8')
     # An expectation alone does not fix the distribution.
     a, b = torch.tensor([0., .75, .25, 0.]), torch.tensor([.375, 0., .625, 0.])

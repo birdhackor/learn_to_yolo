@@ -1,21 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 350" role="img" aria-labelledby="title desc">
- <title id="title">NMS移除人工重複框，但保留高分錯框</title>
- <desc id="desc">人工真值框28,24,44,32有兩個類別0候選score0.72與0.64，重疊IoU0.538，NMS0.5移除0.64。遠處錯框score0.855不重疊，仍保留。三框變兩框不代表所有錯誤消失。</desc>
- <rect width="910" height="350" fill="#f8fafc"/>
- <g fill="#0f172a"><rect x="45" y="70" width="192" height="192"/><rect x="345" y="70" width="192" height="192"/></g>
- <g fill="#4ade80" fill-opacity=".35"><rect x="129" y="142" width="48" height="24"/><rect x="429" y="142" width="48" height="24"/></g>
- <g fill="none" stroke="#38bdf8" stroke-width="3">
-  <rect x="129" y="142" width="48" height="24"/><rect x="429" y="142" width="48" height="24"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 604" role="img" aria-labelledby="title desc">
+ <title id="title">NMS 移除人工重複框，但保留高分錯框</title>
+ <desc id="desc">人工案例。同一張 64 乘 64 輸入圖畫成左右兩張，按比例繪製：每 1 畫素畫成 4.5 個 SVG 單位，每張 288 乘 288；淡色格線把圖切成 4 乘 4 格，每格 16 畫素。左圖是分數篩選後的 3 個候選，框旁數字是候選索引：索引 0 是黃虛線框 [23.2,24,39.2,32]，score 0.64，是重複預測；索引 1 是藍框 [28,24,44,32]，score 0.72，和綠色填色的唯一真值（類別 0 的 [28,24,44,32]）完全重合；索引 2 是紅框 [4,52,12,60]，score 0.855，是背景誤報。藍黃兩框的 IoU 約 0.5385，大於 NMS IoU 門檻 0.5，所以黃框被刪掉。右圖是 NMS 後保留的索引 [2,1]：紅框和藍框。框變少不代表錯誤都消失；score 門檻提高到 0.75 時，只會留下紅色錯框。</desc>
+ <rect width="720" height="604" fill="#f8fafc"/>
+ <!-- 按比例：圖上座標 (x,y) 畫素，左圖畫在 (24+4.5x, 52+4.5y)，右圖畫在 (408+4.5x, 52+4.5y)；格線在 x、y＝16、32、48。 -->
+ <g fill="#0f172a"><rect x="24" y="52" width="288" height="288"/><rect x="408" y="52" width="288" height="288"/></g>
+ <g fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-opacity=".55">
+  <path d="M96 52V340M168 52V340M240 52V340M24 124H312M24 196H312M24 268H312"/>
+  <path d="M480 52V340M552 52V340M624 52V340M408 124H696M408 196H696M408 268H696"/>
  </g>
- <rect x="114.6" y="142" width="48" height="24" fill="none" stroke="#facc15" stroke-dasharray="6 4" stroke-width="3"/>
- <g fill="none" stroke="#fb7185" stroke-width="3"><rect x="57" y="226" width="24" height="24"/><rect x="357" y="226" width="24" height="24"/></g>
- <g font-family="sans-serif" font-size="21" fill="#0f172a">
-  <text x="45" y="42">篩分後：3個人工候選</text><text x="345" y="42">NMS後：2框</text>
-  <text x="45" y="295">藍0.72，黃0.64，紅0.855</text>
-  <text x="345" y="295">黃框被去重；紅錯框仍在</text>
-  <text x="575" y="103">綠填色：唯一真值</text><text x="575" y="150">黃虛線：重複預測</text>
-  <text x="575" y="197">紅實線：背景誤報</text><text x="575" y="244">NMS IoU門檻＝0.5</text>
-  <text x="45" y="333">人工案例，非訓練成果。提高score門檻到0.75，會只留下紅色錯框。</text>
+ <g fill="#4ade80" fill-opacity=".35"><rect x="150" y="160" width="72" height="36"/><rect x="534" y="160" width="72" height="36"/></g>
+ <g fill="none" stroke="#38bdf8" stroke-width="3"><rect x="150" y="160" width="72" height="36"/><rect x="534" y="160" width="72" height="36"/></g>
+ <rect x="128.4" y="160" width="72" height="36" fill="none" stroke="#facc15" stroke-dasharray="6 4" stroke-width="3"/>
+ <g fill="none" stroke="#fb7185" stroke-width="3"><rect x="42" y="286" width="36" height="36"/><rect x="426" y="286" width="36" height="36"/></g>
+ <!-- 框旁數字是候選索引，順序同 decode 的輸出（先 row 後 col）：0 黃、1 藍、2 紅。 -->
+ <g font-family="sans-serif" font-size="24" font-weight="700" text-anchor="middle">
+  <text x="139.2" y="150" fill="#facc15">0</text><text x="211.2" y="150" fill="#38bdf8">1</text><text x="111" y="313" fill="#fb7185">2</text>
+  <text x="595.2" y="150" fill="#38bdf8">1</text><text x="495" y="313" fill="#fb7185">2</text>
  </g>
- <path d="M257 157H319M308 149L319 157L308 165" fill="none" stroke="#334155" stroke-width="3"/>
+ <path d="M326 196H392M381 188L392 196L381 204" fill="none" stroke="#334155" stroke-width="3"/>
+ <!-- 圖例色塊畫在深色底上，和圖中一樣。 -->
+ <g fill="#0f172a"><rect x="24" y="457" width="36" height="24" rx="4"/><rect x="257" y="457" width="36" height="24" rx="4"/><rect x="490" y="457" width="36" height="24" rx="4"/><rect x="24" y="491" width="36" height="24" rx="4"/></g>
+ <rect x="30" y="462" width="24" height="14" fill="#4ade80" fill-opacity=".35"/>
+ <rect x="263" y="462" width="24" height="14" fill="none" stroke="#facc15" stroke-dasharray="6 4" stroke-width="3"/>
+ <rect x="496" y="462" width="24" height="14" fill="none" stroke="#fb7185" stroke-width="3"/>
+ <rect x="30" y="496" width="24" height="14" fill="none" stroke="#38bdf8" stroke-width="3"/>
+ <g font-family="sans-serif" font-size="20" fill="#0f172a">
+  <text x="24" y="34" font-size="22">分數篩選後：3 個人工候選</text><text x="408" y="34" font-size="22">NMS 後：2 框</text>
+  <text x="24" y="372">索引 0：黃框，score 0.64</text>
+  <text x="24" y="400">索引 1：藍框，score 0.72</text>
+  <text x="24" y="428">索引 2：紅框，score 0.855</text>
+  <text x="408" y="372">NMS IoU 門檻＝0.5</text>
+  <text x="408" y="400">保留索引 [2,1]</text>
+  <text x="408" y="428">黃框被刪掉，紅錯框仍在</text>
+  <text x="69" y="476">綠填色：唯一真值</text><text x="302" y="476">黃虛線：重複預測</text><text x="535" y="476">紅實線：背景誤報</text>
+  <text x="69" y="510">藍框：保留下來的正確預測（與綠色真值重合）</text>
+  <text x="24" y="550">框旁數字：候選索引；淡色格線：4×4 格，每格 16 畫素</text>
+  <text x="24" y="584">人工案例，非訓練成果。提高 score 門檻到 0.75，會只留下紅色錯框。</text>
+ </g>
 </svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 882" role="img" aria-labelledby="title desc">
+ <title id="title">粗細兩種格子上的小框、大框與正負格</title>
+ <desc id="desc">依比例繪製的示意圖：64×64 圖片，1 畫素畫成 6 個單位，圖片座標 (x,y) 畫素對應圖面 (88+6x, 150+6y)。粗線是 coarse 的 4×4 格（stride 16，每格 16 畫素），細線是 fine 的 8×8 格（stride 8，每格 8 畫素）。上方與左側標 coarse 的格編號 gx、gy 0 到 3，以及畫素刻度 0、16、32、48、64；下方與右側標 fine 的格編號 gx、gy 0 到 7。紅色小框 [5,5,13,13] 的中心 (9,9)：9÷16=0.5625，落在 coarse 格 (0,0)；9÷8=1.125，落在 fine 格 (1,1)。藍色大框 [32,32,56,56] 的中心 (44,44)：44÷16=2.75，落在 coarse 格 (2,2)；44÷8=5.5，落在 fine 格 (5,5)。淡色格是訓練時的正格：淡紅的 fine 格 (1,1) 負責小框，淡藍的 coarse 格 (2,2) 負責大框。灰色斜線格是中心所在、但訓練時不負責的負格：coarse 格 (0,0) 與 fine 格 (5,5)。斜線一律疊在淡色上面，兩處畫法相同：coarse 格 (0,0) 整格都有斜線，它的右下四分之一就是 fine 格 (1,1)，所以那一塊是淡紅加斜線；coarse 格 (2,2) 整格淡藍，它的右下四分之一就是 fine 格 (5,5)，所以那一塊是淡藍加斜線。格子下方的圖例寫明：淡紅是 fine 格 (1,1)，正格；淡藍是 coarse 格 (2,2)，正格；斜線是 coarse 格 (0,0)、fine 格 (5,5)，負格。本節訓練時小框只交給 fine、大框只交給 coarse，正格以外全是負格；小框在 coarse 格 (0,0) 的 target 只用來核對編碼與還原，不進訓練 loss。</desc>
+ <defs>
+  <pattern id="neg-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+   <line x1="0" y1="0" x2="0" y2="8" stroke="#64748b" stroke-width="2"/>
+  </pattern>
+ </defs>
+ <!-- 依比例：圖片座標 (x,y) 畫素對應圖面 (88+6x, 150+6y)；coarse 格 96 單位、fine 格 48 單位。 -->
+ <rect width="720" height="882" fill="#f8fafc"/>
+ <rect x="88" y="150" width="384" height="384" fill="#fff"/>
+ <!-- 格子上色：先畫兩個正格的淡色，再把兩個負格的斜線疊在上面，讓負格整格都看得到斜線（兩處同一種疊法）。 -->
+ <rect id="fine-1-1-positive" x="136" y="198" width="48" height="48" fill="#fecaca"/>
+ <rect id="coarse-2-2-positive" x="280" y="342" width="96" height="96" fill="#bfdbfe"/>
+ <rect id="coarse-0-0-negative" x="88" y="150" width="96" height="96" fill="url(#neg-hatch)"/>
+ <rect id="fine-5-5-negative" x="328" y="390" width="48" height="48" fill="url(#neg-hatch)"/>
+ <!-- 細線：fine 才有的格線，在 8、24、40、56 畫素；16、32、48 的格線兩種格子共用，由下面的粗線畫。 -->
+ <path d="M136 150V534M232 150V534M328 150V534M424 150V534M88 198H472M88 294H472M88 390H472M88 486H472" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+ <!-- 粗線：coarse 4×4 格線，在 16、32、48 畫素（外框另畫）。 -->
+ <path d="M184 150V534M280 150V534M376 150V534M88 246H472M88 342H472M88 438H472" fill="none" stroke="#475569" stroke-width="3"/>
+ <rect x="88" y="150" width="384" height="384" fill="none" stroke="#475569" stroke-width="3"/>
+ <path d="M88 143V150M184 143V150M280 143V150M376 143V150M472 143V150M81 150H88M81 246H88M81 342H88M81 438H88M81 534H88" stroke="#475569" stroke-width="1.5"/>
+ <!-- 框與中心 -->
+ <rect id="small-box" x="118" y="180" width="48" height="48" fill="none" stroke="#dc2626" stroke-width="3"/>
+ <rect id="large-box" x="280" y="342" width="144" height="144" fill="none" stroke="#2563eb" stroke-width="3"/>
+ <circle cx="142" cy="204" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+ <circle cx="352" cy="414" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+ <g font-family="sans-serif" fill="#0f172a">
+  <!-- 圖例：線的粗細與每格大小 -->
+  <path d="M24 26H60" stroke="#475569" stroke-width="3"/>
+  <path d="M24 58H60" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="70" y="32" font-size="20">粗線：coarse 4×4 格，stride 16（每格 16 畫素）；編號標在上、左</text>
+  <text x="70" y="64" font-size="20">細線：fine 8×8 格，stride 8（每格 8 畫素）；編號標在下、右</text>
+  <!-- coarse 編號（上、左）與畫素刻度 -->
+  <g font-size="17" font-weight="700" fill="#334155" text-anchor="middle">
+   <text x="136" y="112">gx 0</text><text x="232" y="112">gx 1</text><text x="328" y="112">gx 2</text><text x="424" y="112">gx 3</text>
+  </g>
+  <g font-size="16" fill="#475569" text-anchor="middle">
+   <text x="88" y="137">0</text><text x="184" y="137">16</text><text x="280" y="137">32</text><text x="376" y="137">48</text><text x="472" y="137">64</text>
+  </g>
+  <g font-size="17" font-weight="700" fill="#334155" text-anchor="end">
+   <text x="50" y="204">gy 0</text><text x="50" y="300">gy 1</text><text x="50" y="396">gy 2</text><text x="50" y="492">gy 3</text>
+  </g>
+  <g font-size="16" fill="#475569" text-anchor="end">
+   <text x="77" y="156">0</text><text x="77" y="252">16</text><text x="77" y="348">32</text><text x="77" y="444">48</text><text x="77" y="540">64</text>
+  </g>
+  <!-- fine 編號（下、右） -->
+  <g font-size="16" fill="#64748b" text-anchor="middle">
+   <text x="112" y="560">gx 0</text><text x="160" y="560">gx 1</text><text x="208" y="560">gx 2</text><text x="256" y="560">gx 3</text><text x="304" y="560">gx 4</text><text x="352" y="560">gx 5</text><text x="400" y="560">gx 6</text><text x="448" y="560">gx 7</text>
+  </g>
+  <g font-size="16" fill="#64748b">
+   <text x="482" y="180">gy 0</text><text x="482" y="228">gy 1</text><text x="482" y="276">gy 2</text><text x="482" y="324">gy 3</text><text x="482" y="372">gy 4</text><text x="482" y="420">gy 5</text><text x="482" y="468">gy 6</text><text x="482" y="516">gy 7</text>
+  </g>
+  <!-- 右欄：框與中心 -->
+  <rect x="534" y="168" width="16" height="16" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <text x="560" y="182" font-size="17" fill="#b91c1c">小框 [5,5,13,13]</text>
+  <circle cx="542" cy="206" r="5" fill="#172554"/>
+  <text x="560" y="212" font-size="17">中心 (9,9)</text>
+  <rect x="534" y="364" width="16" height="16" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <text x="560" y="378" font-size="17" fill="#1d4ed8">大框 [32,32,56,56]</text>
+  <circle cx="542" cy="402" r="5" fill="#172554"/>
+  <text x="560" y="408" font-size="17">中心 (44,44)</text>
+  <!-- 圖例：淡色與斜線各是哪一種格子的哪一格 -->
+  <g font-size="20">
+   <rect x="24" y="590" width="20" height="20" fill="#fecaca" stroke="#94a3b8"/>
+   <text x="54" y="607">淡紅：fine 格 (1,1)，正格</text>
+   <rect x="330" y="590" width="20" height="20" fill="#bfdbfe" stroke="#94a3b8"/>
+   <text x="360" y="607">淡藍：coarse 格 (2,2)，正格</text>
+   <rect x="24" y="624" width="20" height="20" fill="url(#neg-hatch)" stroke="#94a3b8"/>
+   <text x="54" y="641">斜線：coarse 格 (0,0)、fine 格 (5,5)，負格</text>
+  </g>
+  <!-- 表：中心 ÷ stride，整數部分就是格編號 -->
+  <g font-size="18" fill="#334155" font-weight="700">
+   <text x="96" y="688">coarse（4×4，stride 16）</text>
+   <text x="420" y="688">fine（8×8，stride 8）</text>
+  </g>
+  <path d="M24 704H696M24 752H696" stroke="#cbd5e1" stroke-width="1.5"/>
+  <g font-size="20">
+   <text x="24" y="735" fill="#b91c1c">小框</text>
+   <text x="96" y="735">9÷16=0.5625 → 格 (0,0)：<tspan fill="#475569">負格</tspan></text>
+   <text x="420" y="735">9÷8=1.125 → 格 (1,1)：<tspan fill="#b91c1c" font-weight="700">正格</tspan></text>
+   <text x="24" y="783" fill="#1d4ed8">大框</text>
+   <text x="96" y="783">44÷16=2.75 → 格 (2,2)：<tspan fill="#1d4ed8" font-weight="700">正格</tspan></text>
+   <text x="420" y="783">44÷8=5.5 → 格 (5,5)：<tspan fill="#475569">負格</tspan></text>
+  </g>
+  <g font-size="20" fill="#334155">
+   <text x="24" y="829">訓練時小框只交給 fine、大框只交給 coarse，正格以外全是負格。</text>
+   <text x="24" y="862">小框在 coarse 格 (0,0) 的 target 只用來核對編碼與還原，不進訓練 loss。</text>
+  </g>
+ </g>
+</svg>

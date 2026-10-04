@@ -81,18 +81,20 @@ def main():
                                                  record["precision"], record["recall"]), 1):
         print(f"rank={rank}, score={score:.2f}, {'TP' if flag else 'FP'}, "
               f"precision={p.item():.4f}, recall={r.item():.4f}")
+    # mAP50 averages AP only over classes that have GT; class 1 has none, so its AP is None.
+    ap_per_class = [None if ap is None else round(ap, 6) for ap in result["ap_per_class"]]
     print(f"TP={result['tp']}, FP={result['fp']}, FN={result['fn']}, "
-          f"AP50={result['map']:.6f}, ap_per_class={result['ap_per_class']}")
+          f"mAP50={result['map']:.6f}, ap_per_class={ap_per_class}")
     truncated = [{key: values[p["scores"] >= .85] for key, values in p.items()} for p in predictions]
     short_result = evaluate(truncated, targets)
     assert abs(short_result["map"] - 1 / 6) < 1e-6
-    print(f"candidate threshold .85: AP50={short_result['map']:.6f}, recall={short_result['recall']:.4f}")
+    print(f"candidate threshold .85: mAP50={short_result['map']:.6f}, recall={short_result['recall']:.4f}")
     # Remove a known artificial false positive, without changing GT.
     cleaned = [{"boxes": predictions[0]["boxes"][1:], "scores": predictions[0]["scores"][1:],
                 "labels": predictions[0]["labels"][1:]}, predictions[1]]
     clean_result = evaluate(cleaned, targets)
     assert abs(clean_result["map"] - 5 / 9) < 1e-6
-    print(f"remove known high-score FP: AP50={clean_result['map']:.6f}")
+    print(f"remove known high-score FP: mAP50={clean_result['map']:.6f}")
     empty = {"boxes": torch.empty(0, 4), "scores": torch.empty(0), "labels": torch.empty(0, dtype=torch.long)}
     no_predictions = evaluate([empty, empty], targets)
     assert no_predictions["map"] == 0 and no_predictions["fn"] == 3

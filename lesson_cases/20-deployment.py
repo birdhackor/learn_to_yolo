@@ -41,6 +41,24 @@ def median_ms(function, iterations=20):
     return statistics.median(times)
 
 
+def paired_median_ms(function_a, function_b, rounds):
+    """Medians (ms) of a, of b and of the per-round differences a - b; each round runs both in alternating order."""
+    for _ in range(3):
+        function_a()
+        function_b()
+    times_a, times_b = [], []
+    for i in range(rounds):
+        order = [(function_a, times_a), (function_b, times_b)]
+        if i % 2 == 1:
+            order.reverse()
+        for function, times in order:
+            start = time.perf_counter()
+            function()
+            times.append((time.perf_counter() - start) * 1000)
+    differences = [a - b for a, b in zip(times_a, times_b)]
+    return statistics.median(times_a), statistics.median(times_b), statistics.median(differences)
+
+
 def main():
     torch.manual_seed(7)
     torch.set_num_threads(2)
@@ -70,7 +88,7 @@ def main():
     processed = [preprocess(rgb) for rgb in sources]
     batch = torch.stack([item[0] for item in processed])
     metadata = [item[1] for item in processed]
-    errors = []
+    errors, box_counts = [], []
     batches_checked = [1, 2, 3]
     with torch.no_grad():
         for b in batches_checked:
@@ -86,6 +104,9 @@ def main():
                 torch.testing.assert_close(a['boxes'], o['boxes'], rtol=1e-5, atol=1e-4)
                 torch.testing.assert_close(a['scores'], o['scores'], rtol=1e-5, atol=1e-6)
                 assert torch.equal(a['labels'], o['labels'])
+            # Two empty results also pass the comparison above, so each source image in this batch must yield boxes.
+            box_counts = [len(a['boxes']) for a in pytorch_predictions]
+            assert all(c > 0 for c in box_counts), f'B={b}: a source has no restored box {box_counts}'
     try:
         session.run(['raw_grid'], {'images': np.zeros((1, 3, 80, 80), dtype=np.float32)})
     except InvalidArgument:
@@ -105,15 +126,22 @@ def main():
         with torch.no_grad():
             raw = model(image[None]).numpy()
         return restore(raw, [meta])
-    end_to_end_ms = median_ms(ort_pipeline)
-    torch_end_to_end_ms = median_ms(torch_pipeline)
+    # Both pipelines run in every round, alternating which goes first, so a slow drift of the machine
+    # (e.g. clock speed) lands on both sides of each per-round difference instead of on one whole series.
+    end_to_end_rounds = 40
+    torch_end_to_end_ms, ort_end_to_end_ms, end_to_end_difference_ms = paired_median_ms(
+        torch_pipeline, ort_pipeline, end_to_end_rounds)
     batch2_ms = median_ms(lambda: session.run(['raw_grid'], {'images': batch[:2].numpy()}))
     report = {'onnx': str(onnx_path), 'opset': 17, 'providers': session.get_providers(),
               'input_shape': session.get_inputs()[0].shape, 'batches_checked': batches_checked, 'max_abs_raw_errors': errors,
-              'decoded_boxes_scores_labels_match': True, 'dynamic_spatial': False, 'spatial80_rejected': spatial_rejected,
+              'decoded_boxes_scores_labels_match': True, 'restored_boxes_per_source': box_counts,
+              'dynamic_spatial': False, 'spatial80_rejected': spatial_rejected,
               'median_ms': {'torch_raw_batch1': pytorch_ms, 'ort_raw_batch1': ort_ms,
                             'torch_preprocess_to_restored_boxes': torch_end_to_end_ms,
-                            'ort_preprocess_to_restored_boxes': end_to_end_ms, 'ort_raw_batch2': batch2_ms},
+                            'ort_preprocess_to_restored_boxes': ort_end_to_end_ms,
+                            'paired_torch_minus_ort_preprocess_to_restored_boxes': end_to_end_difference_ms,
+                            'ort_raw_batch2': batch2_ms},
+              'end_to_end_paired_rounds': end_to_end_rounds,
               'ort_raw_batch2_images_per_second': 2000 / batch2_ms,
               'versions': {'torch': torch.__version__, 'onnx': onnx.__version__, 'onnxruntime': ort.__version__},
               'limits': 'CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented'}

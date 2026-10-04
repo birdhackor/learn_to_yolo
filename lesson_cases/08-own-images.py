@@ -28,8 +28,10 @@ def main():
     assert prepared.shape == (3,64,64)
     restored = undo_letterbox(input_boxes,meta)
     assert torch.allclose(restored,original_box,atol=1e-4)
-    print('original CHW',tuple(image.shape),'input box',input_boxes.tolist())
-    print('metadata',meta,'roundtrip',restored.tolist())
+    # Round in float64 to 4 decimals: float32 math returns 60 as 59.999996..., and a float32
+    # 10.6667 would still print as 10.66670036...
+    print('original CHW',tuple(image.shape),'input box',input_boxes.double().round(decimals=4).tolist())
+    print('metadata',meta,'roundtrip',restored.double().round(decimals=4).tolist())
     # Actually update parameters, save them, and apply the saved state_dict.
     dataset = ShapeDataset(n=4,size=64,seed=7,max_objects=1,allow_empty=False)
     train_images, train_anns = collate([dataset[i] for i in range(4)])
@@ -59,8 +61,12 @@ def main():
     assert output_path.is_file() and output_path.with_suffix('.json').is_file()
     with Image.open(output_path) as saved:
         assert saved.size == (120,80)
-    print('3-step checkpoint safely reloaded: exact logits; original-space box count',len(report['boxes']))
-    print('annotated PNG and JSON saved:', output_path, output_path.with_suffix('.json'))
+    # Boxes are drawn at the display threshold .25, not at config's AP-evaluation cutoff .05.
+    assert report['score_threshold'] == .25
+    assert all(score >= report['score_threshold'] for score in report['scores'])
+    print('3-step checkpoint safely reloaded: exact logits; original-space box count',len(report['boxes']),
+          'at score threshold',report['score_threshold'])
+    print('prediction PNG and JSON saved:', output_path, output_path.with_suffix('.json'))
     print('pipeline evidence only, not photo detection quality')
     bad_path = folder/'wrong-class-count.pt'
     torch.save({'model_state_dict':model.state_dict(),'config':config,
@@ -81,7 +87,7 @@ def main():
     known = decode_grid(fixture,64,.25,.5)[0]
     known_original = undo_letterbox(known['boxes'],meta)
     assert torch.allclose(known_original,original_box,atol=1e-3)
-    print('artificial known box restored',known_original.tolist())
+    print('artificial known box restored',known_original.double().round(decimals=4).tolist())
 
 if __name__ == '__main__':
     main()

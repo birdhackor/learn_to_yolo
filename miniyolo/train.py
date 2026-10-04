@@ -1,6 +1,7 @@
 """可選 CPU/CUDA 的合成矩形訓練：python -m miniyolo.train --steps 160。
 
-預設從零初始化；train/validation/test 以不同 seed 產生。CLI 不下載資料。
+從頭訓練：權重用 PyTorch 預設的隨機初始化（head 的 wh／obj bias 另設起點），不載入預訓練權重；
+train/validation/test 以不同 seed 產生。CLI 不下載資料。
 固定 step 實驗與長 epoch 實驗共用一條資料→監督→loss→解碼→評估管線。
 """
 
@@ -22,9 +23,12 @@ from .losses import grid_loss
 from .inference import decode_grid
 from .metrics import evaluate_ap
 from .checkpoint import save_checkpoint
+from .provenance import cpu_model, repo_dependencies
 
 
 CLASS_NAMES = ["red rectangle", "blue rectangle"]
+# loss.png 與網站的 loss 曲線圖（scripts/render_learning_evidence.py）共用這組配色。
+LOSS_COLORS = {"total": "#1d4ed8", "box": "#dc2626", "objectness": "#059669", "classification": "#7c3aed"}
 
 
 def optimizer_step(model, optimizer, images, targets, validate_gradients=False):
@@ -54,12 +58,7 @@ def _save_json(path, contents):
 
 
 def _hardware(device):
-    cpu = platform.processor()
-    cpuinfo = Path("/proc/cpuinfo")
-    if not cpu and cpuinfo.is_file():
-        cpu = next((line.split(":", 1)[1].strip() for line in cpuinfo.read_text().splitlines()
-                    if line.startswith("model name")), "unknown")
-    return {"device": str(device), "cpu": cpu, "python": platform.python_version(),
+    return {"device": str(device), "cpu": cpu_model(), "python": platform.python_version(),
             "torch": str(torch.__version__), "torch_threads": torch.get_num_threads(),
             "cuda_device": torch.cuda.get_device_name(device) if device.type == "cuda" else None}
 
@@ -72,8 +71,11 @@ def _evaluate(model, images, targets, config):
     return evaluate_ap(predictions, targets, num_classes=2, iou_threshold=config["eval_iou"]), predictions
 
 
-def train(config, output="artifacts/runs/grid-learning", report="artifacts/checks/grid-learning.json"):
-    """執行固定順序、完整 batch 的學習；不足一個 batch 時循環索引補齊。"""
+def train(config, output="artifacts/runs/grid-learning", report=None):
+    """執行固定順序、完整 batch 的學習；不足一個 batch 時循環索引補齊。
+
+    report 預設寫在 output 目錄的 report.json；正式紀錄另以 artifacts/checks/grid-learning.json 指定。
+    """
     torch.manual_seed(config["seed"])
     torch.set_num_threads(config["threads"])
     device = torch.device(config["device"])
@@ -81,6 +83,7 @@ def train(config, output="artifacts/runs/grid-learning", report="artifacts/check
         raise ValueError("要求 CUDA，但此環境無可用 CUDA；CPU 驗證請用 --device cpu")
     run = Path(output)
     run.mkdir(parents=True, exist_ok=True)
+    report = Path(report) if report else run / "report.json"
     dataset = ShapeDataset(n=config["samples"], size=config["image_size"], seed=config["train_seed"])
     validation = ShapeDataset(n=config["validation_samples"], size=config["image_size"], seed=config["validation_seed"])
     test = ShapeDataset(n=config["test_samples"], size=config["image_size"], seed=config["test_seed"])
@@ -128,10 +131,14 @@ def train(config, output="artifacts/runs/grid-learning", report="artifacts/check
     import matplotlib
     matplotlib.use("Agg")
     from matplotlib import pyplot as plt
+    # 圖上文字用英文：Colab 等環境多半沒有中文字型，PNG 裡的中文會變成方框。box 畫的是還沒乘 5 的原始值。
+    labels = {"total": "total = 5×box + objectness + classification", "box": "box (raw, before ×5)",
+              "objectness": "objectness", "classification": "classification"}
     fig, axis = plt.subplots(figsize=(7, 4))
-    for key in ("total", "box", "objectness", "classification"):
-        axis.plot([row["step"] for row in history], [row[key] for row in history], label=key)
-    axis.set(xlabel="optimizer steps", ylabel="training loss", title="Synthetic grid MiniYOLO")
+    for key, color in LOSS_COLORS.items():
+        axis.plot([row["step"] for row in history], [row[key] for row in history], color=color, label=labels[key])
+    axis.set(xlabel="optimizer step (each point: loss before that update)", ylabel="training loss",
+             title=f"Synthetic grid MiniYOLO: {total_steps} steps, batch {config['batch_size']}")
     axis.legend()
     fig.tight_layout()
     fig.savefig(run / "loss.png", dpi=140)
@@ -147,6 +154,8 @@ def train(config, output="artifacts/runs/grid-learning", report="artifacts/check
     result = {
         "created_at": datetime.now(timezone.utc).isoformat(), "config": config,
         "steps_completed": total_steps, "hardware": _hardware(device),
+        # 本檔與它直接、間接 import 的 repo 模組的 SHA-256；正式紀錄靠它判斷程式是否改過。
+        "dependencies_sha256": repo_dependencies(__file__),
         "training_seconds": elapsed, "checkpoint": str(checkpoint), "class_names": CLASS_NAMES,
         "history_path": str(run / "history.json"), "curve_path": str(run / "loss.png"),
         "initial_validation": initial, "final_validation": final_validation, "final_test": final_test,
@@ -157,9 +166,12 @@ def train(config, output="artifacts/runs/grid-learning", report="artifacts/check
             "recall": "micro TP/(TP+FN); each same-image same-class GT matched at most once",
             "score": "sigmoid(objectness) * max softmax(class logits)",
             "loss": "5*positive-cell sigmoid-coordinate MSE + all-cell BCEWithLogits + positive-cell class CE",
+            "loss_history": "one row per optimizer step: that step's training-batch losses, computed before its update; "
+                            "box is the unweighted MSE (total = 5*box + objectness + classification)",
         },
-        "limitations": "Early observation on synthetic colored rectangles; no real-image detection claim. Runtime describes this hardware/run only.",
+        "limitations": "One seeded run on synthetic colored rectangles; no real-image detection claim. Runtime describes this hardware/run only.",
         "validation_examples": examples,
+        "loss_history": history,
     }
     _save_json(report, result)
     print(json.dumps({"event": "final_validation", **final_validation}))
@@ -191,7 +203,7 @@ def main():
     parser.add_argument("--eval-iou", type=float, default=.5)
     parser.add_argument("--threads", type=int, default=2)
     parser.add_argument("--output", default="artifacts/runs/grid-learning", help="checkpoint、曲線與範例圖目錄")
-    parser.add_argument("--report", default="artifacts/checks/grid-learning.json")
+    parser.add_argument("--report", help="完整報告 JSON；預設是 --output 目錄的 report.json")
     args = parser.parse_args()
     config = vars(args).copy()
     output, report = config.pop("output"), config.pop("report")

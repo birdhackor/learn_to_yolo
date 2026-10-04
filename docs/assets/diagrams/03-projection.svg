@@ -1,25 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 340" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 344" role="img" aria-labelledby="title desc">
   <title id="title">兩條路徑對齊 shape 的 projection block</title>
-  <desc id="desc">輸入為 B乘3乘4乘4，主分支以stride2卷積輸出B乘6乘2乘2，shortcut用1乘1 stride2卷積得到相同shape，再逐值相加。Projection有18個可學權重，不是複製輸入。</desc>
-  <rect width="940" height="340" fill="#f8fafc"/>
+  <desc id="desc">示意圖，方框大小不代表權重多寡。輸入 x 的 shape 是 B 乘 3 乘 4 乘 4，分成兩支。上方主分支 F：3 乘 3 卷積，stride 2、padding 1，channel 3 變 6；經過 ReLU 後再接 3 乘 3 卷積，stride 1、padding 1，channel 6 變 6；輸出 B 乘 6 乘 2 乘 2，共 486 個可學權重。下方 shortcut P：1 乘 1 卷積，stride 2、padding 0，channel 3 變 6；輸出也是 B 乘 6 乘 2 乘 2，共 18 個可學權重，不是複製輸入。兩支每一軸都一致，才逐值相加成 P(x)+F(x)，shape 仍是 B 乘 6 乘 2 乘 2。圖下說明：s 是 stride，p 是 padding。</desc>
+  <rect width="720" height="344" fill="#f8fafc"/>
   <g fill="#e0f2fe" stroke="#0369a1" stroke-width="2">
-    <rect x="20" y="132" width="190" height="66" rx="8"/>
-    <rect x="290" y="38" width="350" height="76" rx="8"/>
-    <rect x="290" y="222" width="350" height="76" rx="8"/>
-    <circle cx="730" cy="165" r="29"/>
-    <rect x="795" y="132" width="125" height="66" rx="8"/>
+    <rect x="16" y="117" width="116" height="72" rx="8"/>
+    <rect x="172" y="16" width="316" height="106" rx="8"/>
+    <rect x="172" y="184" width="316" height="106" rx="8"/>
+    <circle cx="532" cy="153" r="26"/>
+    <rect x="578" y="117" width="126" height="72" rx="8"/>
   </g>
   <g stroke="#334155" stroke-width="3" fill="none">
-    <path d="M210 165H248V76H290M248 165V260H290M640 76H730V136M640 260H730V194M759 165H795"/>
+    <path d="M132 153H152V69H172M152 153V237H172M488 69H532V127M488 237H532V179M558 153H578"/>
   </g>
-  <g font-family="sans-serif" font-size="21" text-anchor="middle" fill="#0f172a">
-    <text x="115" y="159">輸入 x</text><text x="115" y="186">[B,3,4,4]</text>
-    <text x="465" y="59" font-size="19">F：3×3 s2 p1（3→6）</text>
-    <text x="465" y="82" font-size="19">ReLU → 3×3 s1 p1（6→6）</text>
-    <text x="465" y="106" font-size="19">[B,6,2,2]；s=stride，p=padding</text>
-    <text x="465" y="253">P：1×1、stride 2</text><text x="465" y="282">[B,6,2,2]；18個學得的權重</text>
-    <text x="730" y="173" font-size="32">+</text>
-    <text x="857" y="157" font-size="19">P(x)+F(x)</text><text x="857" y="184" font-size="17">[B,6,2,2]</text>
-    <text x="465" y="166">相加前，兩支每一軸都要一致</text>
+  <path d="M532 141V165M520 153H544" stroke="#0f172a" stroke-width="3" fill="none"/>
+  <g font-family="sans-serif" font-size="22" text-anchor="middle" fill="#0f172a">
+    <text x="74" y="146">輸入 x</text><text x="74" y="174">[B,3,4,4]</text>
+    <text x="330" y="48">F：3×3 s2 p1（3→6）</text>
+    <text x="330" y="77">ReLU → 3×3 s1 p1（6→6）</text>
+    <text x="330" y="106">[B,6,2,2]；486 個可學權重</text>
+    <text x="330" y="160" font-size="20">相加前，兩支每一軸都要一致</text>
+    <text x="330" y="230">P：1×1 s2 p0（3→6）</text>
+    <text x="330" y="259">[B,6,2,2]；18 個可學權重</text>
+    <text x="641" y="146">P(x)+F(x)</text><text x="641" y="174">[B,6,2,2]</text>
   </g>
+  <text x="16" y="326" font-family="sans-serif" font-size="18" fill="#334155">s=stride，p=padding</text>
 </svg>

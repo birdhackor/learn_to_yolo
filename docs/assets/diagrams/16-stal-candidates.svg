@@ -1,12 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 355" role="img" aria-labelledby="title desc">
-<title id="title">STAL小物件候選池的幾何檢查</title><desc id="desc">2乘2真值中心8,8。16乘16候選資格框容納四個stride8格心4,4、12,4、4,12、12,12；原真值沒有擴大，四點不等於四個正樣本。</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
-<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
-<rect width="780" height="355" fill="white"/><text x="28" y="28" font-weight="bold">候選資格擴張：原GT仍保留2×2</text>
-<rect x="80" y="50" width="256" height="256" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3" stroke-dasharray="8 5"/>
-<path d="M208 50V306M80 178H336" stroke="#cbd5e1"/>
-<rect x="192" y="162" width="32" height="32" fill="#bbf7d0" stroke="#15803d" stroke-width="3"/>
-<text x="72" y="332">0</text><text x="201" y="332">8</text><text x="322" y="332">16 px</text>
-<text x="395" y="95">綠框 GT：[7,7,9,9]</text><text x="395" y="133">紫框 資格：[0,0,16,16]</text>
-<text x="395" y="187">藍點：stride 8 的格心</text><text x="395" y="225">資格：0點 → 4點</text>
-<text x="395" y="270">四點進池，尚未ranking／分配</text><text x="395" y="303">回歸真值仍是原綠框</text><circle cx="144" cy="114" r="6" fill="#2563eb"/><text x="114" y="142">(4,4)</text><circle cx="272" cy="114" r="6" fill="#2563eb"/><text x="242" y="142">(12,4)</text><circle cx="144" cy="242" r="6" fill="#2563eb"/><text x="114" y="270">(4,12)</text><circle cx="272" cy="242" r="6" fill="#2563eb"/><text x="242" y="270">(12,12)</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 406" role="img" aria-labelledby="title desc">
+ <title id="title">STAL 小物件候選池的幾何檢查</title>
+ <desc id="desc">按比例繪製：每 1 畫素畫成 16 個 SVG 單位，畫出 x、y 都從 0 到 16 畫素的範圍。用影像座標：左上角是 (0,0)，x 向右、y 向下增加；上方是 x 刻度 0、4、8、12、16，左側是 y 刻度 0、4、8、12、16，所以 (4,12) 在 (4,4) 正下方。綠框是原真值框 GT [7,7,9,9]，2×2 畫素，中心 (8,8)。紫色虛線框是候選資格框 [0,0,16,16]，只用來判斷資格。灰線是 x=8 與 y=8 的 stride 8 格線，把範圍分成四個 8×8 的格。四個藍點是這四格的格心 (4,4)、(12,4)、(4,12)、(12,12)：都不在原 GT 內，都在資格框內，所以有資格的格心由 0 點變成 4 點。四點只是進入候選池，尚未 ranking 與分配，不等於四個正樣本；回歸真值仍是原綠框，沒有擴大。</desc>
+ <rect width="720" height="406" fill="#f8fafc"/>
+ <text x="16" y="34" font-family="sans-serif" font-size="22" font-weight="bold" fill="#0f172a">候選資格擴張：原 GT 仍保留 2×2</text>
+ <!-- 影像座標 (x,y) 畫在 SVG 的 (76+16x, 84+16y)，即 1 畫素＝16 單位。 -->
+ <rect x="76" y="84" width="256" height="256" fill="#f5f3ff"/>
+ <path d="M204 84V340M76 212H332" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+ <rect x="76" y="84" width="256" height="256" fill="none" stroke="#7c3aed" stroke-width="3" stroke-dasharray="8 5"/>
+ <rect x="188" y="196" width="32" height="32" fill="#bbf7d0" stroke="#15803d" stroke-width="3"/>
+ <g fill="#2563eb">
+  <circle cx="140" cy="148" r="6"/><circle cx="268" cy="148" r="6"/>
+  <circle cx="140" cy="276" r="6"/><circle cx="268" cy="276" r="6"/>
+ </g>
+ <!-- 刻度線：上方 x、左側 y，每 4 畫素一條。 -->
+ <path d="M76 77V84M140 77V84M204 77V84M268 77V84M332 77V84M69 84H76M69 148H76M69 212H76M69 276H76M69 340H76" stroke="#475569" stroke-width="1.5" fill="none"/>
+ <g font-family="sans-serif" font-size="20" fill="#475569">
+  <g text-anchor="middle">
+   <text x="76" y="68">0</text><text x="140" y="68">4</text><text x="204" y="68">8</text><text x="268" y="68">12</text><text x="332" y="68">16</text>
+  </g>
+  <g text-anchor="end">
+   <text x="65" y="91">0</text><text x="65" y="155">4</text><text x="65" y="219">8</text><text x="65" y="283">12</text><text x="65" y="347">16</text>
+  </g>
+  <text x="366" y="68">x →</text>
+  <text x="24" y="206" text-anchor="middle">y</text><text x="24" y="234" text-anchor="middle">↓</text>
+ </g>
+ <g font-family="sans-serif" font-size="20" fill="#0f172a" text-anchor="middle">
+  <text x="140" y="176">(4,4)</text><text x="268" y="176">(12,4)</text>
+  <text x="140" y="304">(4,12)</text><text x="268" y="304">(12,12)</text>
+ </g>
+ <!-- 圖例 -->
+ <rect x="377" y="95" width="17" height="17" fill="#bbf7d0" stroke="#15803d" stroke-width="2.5"/>
+ <rect x="377" y="129" width="17" height="17" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="4 3"/>
+ <circle cx="385.5" cy="171" r="6" fill="#2563eb"/>
+ <path d="M376 205H395" stroke="#94a3b8" stroke-width="2" fill="none"/>
+ <g font-family="sans-serif" font-size="20" fill="#0f172a">
+  <text x="406" y="110">綠框：原 GT [7,7,9,9]</text>
+  <text x="406" y="144">紫框：候選資格框 [0,0,16,16]</text>
+  <text x="406" y="178">藍點：stride 8 的格心</text>
+  <text x="406" y="212">灰線：stride 8 的格線</text>
+  <text x="376" y="254">有資格的格心：0 點 → 4 點</text>
+  <text x="376" y="288">四點只是進入候選池，</text>
+  <text x="376" y="316">尚未 ranking／分配</text>
+  <text x="376" y="350">回歸真值仍是原綠框</text>
+  <text x="16" y="388">影像座標：x 向右、y 向下增加，單位是畫素。</text>
+ </g>
+</svg>

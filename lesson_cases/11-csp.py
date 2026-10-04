@@ -48,7 +48,8 @@ def main():
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         assert torch.isfinite(x.grad).all()
-        assert all(torch.isfinite(p.grad).all() for p in model.parameters() if p.grad is not None)
+        assert all(p.grad is not None and torch.isfinite(p.grad).all() and p.grad.abs().sum() > 0
+                   for p in model.parameters())
         assert x.grad[:,:4].abs().sum() > 0
         assert x.grad[:,4:].abs().sum() > 0
         optimizer.step()

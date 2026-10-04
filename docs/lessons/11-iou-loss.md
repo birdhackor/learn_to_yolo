@@ -1,59 +1,219 @@
-# IoU 類 loss：沒有重疊時還能往哪裡移
+# 11.4 IoU 類 loss：沒有重疊時還能往哪裡移
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-iou-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/11-iou-loss.ipynb){ .md-button }
 
-前置：[IoU與框](04-localization.md)、[grid loss](07-loss.md)。座標MSE衡量各數字的差，評估卻依框重疊判定。這次只研究定位loss，固定兩個pixel框與框表示，不同時修改head、assignment或augmentation。
+第 7 章用座標 MSE 當框 loss：把預測框和真值框的四個數字逐一相減、平方再平均。評估時看的卻是兩框重疊多少：用 IoU（交集面積÷聯集面積）判斷框找得對不對，例如第 6 章的 AP50 要 IoU 至少 0.5 才算找對。這兩件事並不一致。第 4 章算過，同樣往右、往下各偏 2 px，12×12 的框 IoU 約 0.53，4×4 的框只剩約 0.14，兩者的正規化座標 MSE 卻一樣。
 
-歷史來源：[GIoU](https://arxiv.org/abs/1902.09630) 引入最小包圍框項；[DIoU／CIoU](https://arxiv.org/abs/1911.08287) 再考慮中心距離與長寬比；[YOLOv4](https://arxiv.org/abs/2004.10934) 使用CIoU。本章以一個可微中心參數實驗四個定位loss，不重現完整v4/v5訓練配置。起始是相同的人工框；實驗後確認梯度行為，是否在detector保留仍需固定資料與預算評估。
+所以很自然會想直接拿 \(1-\text{IoU}\) 當 loss：IoU 越大越好、loss 越小越好，兩框完全重合時 loss 是 0。問題是兩框分開、完全沒有重疊時，IoU 一直是 0，這個 loss 的梯度也是 0，模型不知道框該往哪裡移。本節比較三種改良版的 IoU 類 loss，看它們怎麼補上這個方向。讀完你能手算 \(1-\text{IoU}\) 與這三種改良版共四種 loss，並說出兩框不重疊時，哪些 loss 還有梯度、會把框往哪裡推。
 
-![真值G、預測P、包圍框C與中心距離](../assets/diagrams/11-iou-loss.svg)
+前置：[IoU 與框](04-localization.md)（xyxy 寫法與 IoU 怎麼算）、[grid loss](07-loss.md)（第 7 章怎麼算框 MSE）。
 
-## 兩個16×16框，卻完全不碰
+本節只換定位 loss，head、assignment（哪個預測負責哪個物件）與資料增強都不動。實驗用一個固定的真值框 G 和一個可以移動的預測框 P，兩者都用 pixel 的 xyxy（[左,上,右,下]）表示。四個 loss 都從同一對人工框算起。
 
-GT紅框 `G=[8,12,24,28]`，中心 `(16,20)`；prediction `P=[32,12,48,28]`，中心 `(40,20)`。寬高都16，面積各256。交集0、union512，因此IoU=0，`L_IoU=1−IoU=1`。
+歷史來源：[GIoU](https://arxiv.org/abs/1902.09630)（Generalized IoU，廣義 IoU）引入最小包圍框項，也就是多看一個能同時框住兩框的最小矩形。[DIoU／CIoU](https://arxiv.org/abs/1911.08287) 這篇論文提出兩種：DIoU（Distance-IoU）加上中心距離，CIoU（Complete IoU）再加上寬高比。[YOLOv4](https://arxiv.org/abs/2004.10934) 使用 CIoU；固定版本 YOLOv5 v6.0 的定位 loss 也用 CIoU（見 [v6.0 loss.py](https://github.com/ultralytics/yolov5/blob/v6.0/utils/loss.py)）。本節只做一個小實驗，不重現完整的 v4／v5 訓練設定。
 
-框P尚未碰到G，小幅左右移動仍沒有交集。此處交集寬的clamp落在負值區，導數為0，所以單純IoU loss對中心的梯度是`[0,0]`。這是本例的非重疊區，不是說IoU在所有位置都沒有梯度；邊界處還有分段與不可微的細節。
+![真值 G、預測 P、包圍框 C 與中心距離](../assets/diagrams/11-iou-loss.svg)
 
-pixel xyxy的MSE則是 `(24²+0²+24²+0²)/4=288`，與normalized loss的尺度不同；不能拿這個288和本節約1的數字直接比較效果。本節都用pixel幾何計算，IoU比例自身無單位。
+圖中小寫 c 是包圍框 C 的對角線長，union 是聯集。綠框 G 就是第 7 章的紅框，這裡依全書慣例用綠色畫真值。
 
-符號補充：ρ是兩個中心的距離，c是包圍框對角線長度，平方後都用pixel²；π是圓周率。atan是反正切，把寬高比轉成角度再比較。alpha／α是控制長寬比懲罰份量的係數，不是optimizer learning rate。clamp(min=...)是把過小值設到下限，避免分母0；detach只在反傳時把該係數當常數。
+## 兩個 16×16 框，卻完全不碰
+
+先說明實驗設定。真值框 G 固定不動。預測框 P 的寬高固定是 16，唯一能被梯度更新的參數是 P 的中心 \((c_x,c_y)\)，起點是 `(40,20)`，所以 P＝\([c_x-8,\ c_y-8,\ c_x+8,\ c_y+8]\)。這就像第 0 章暖身只有一個可學參數 w，只是這裡有兩個數。下文說「中心梯度 [a,b]」，指的是 \([\partial L/\partial c_x,\ \partial L/\partial c_y]\)。
+
+G＝`[8,12,24,28]`（沿用第 7 章的紅框），中心 `(16,20)`；P＝`[32,12,48,28]`，中心 `(40,20)`。兩框寬高都是 16，面積各 256。
+
+交集的寬是「兩框右界的較小者減去兩框左界的較大者」：min(24,48)−max(8,32)＝24−32＝−8。負數表示兩框在 x 方向沒有重疊。程式用 `clamp(min=0)` 把小於 0 的值改成 0，也就是第 4 章「算出來小於 0 就取 0」那一步，所以交集寬是 0，交集面積＝0×16＝0。聯集（union）＝256＋256−0＝512，IoU＝0/512＝0，\(L_{\text{IoU}}=1-\text{IoU}=1\)。
+
+clamp 在完整程式裡還有第二種用途：`clamp(min=1e-6)` 讓分母至少是 1e-6（\(10^{-6}\)），不會除以 0。1e-6 這種很小的正數，習慣叫 epsilon（ε）。
+
+P 小幅移動時，交集寬仍是負數，clamp 後還是 0；交集一直是 0，\(L_{\text{IoU}}\) 一直是 1。loss 在這附近像一塊平地，斜率是 0，所以單純 IoU loss 的中心梯度是 `[0,0]`。
+
+這個 0 只限於本例兩框分開的這一段，不是說 IoU loss 在所有位置都沒有梯度。本節的 loss 用到 min、max、clamp，是分段函數：不同區間用不同的式子。例如 `clamp(min=0)` 就是 \(\max(t,0)\)：\(t<0\) 時是 0，\(t>0\) 時是 \(t\)，在 \(t=0\) 有個折角，左右兩側的斜率不同（0 和 1）。這種轉折點沒有單一的斜率，叫做不可微。本例 P 往左移 8 pixel、剛好碰到 G 時，交集寬會從「一直是 0」轉成開始變大，那裡就是轉折點，不能沿用上面的零梯度結論。本例還有另一種轉折點（兩框上下緣對齊），下面算 GIoU 梯度時會遇到。
+
+對照：如果照第 7 章的做法改用座標 MSE，直接拿 pixel xyxy 算，四個座標的誤差是 24、0、24、0，平均平方誤差是 \((24^2+0^2+24^2+0^2)/4=288\)。把 P 寫成中心的式子，四個誤差依序是 \(c_x-16\)、\(c_y-20\)、\(c_x-16\)、\(c_y-20\)；兩種誤差各出現兩次，平方和是 \(2(c_x-16)^2+2(c_y-20)^2\)，除以 4 得到 \(\text{MSE}=\bigl((c_x-16)^2+(c_y-20)^2\bigr)/2\)。對中心微分得 \([c_x-16,\ c_y-20]=[24,0]\)（這是手算，完整程式沒有算 MSE）。所以 MSE 在兩框不重疊時也有方向；它的問題不是沒有梯度，而是只看四個數字各差多少，不看兩框重疊多少。
+
+288 的單位是 pixel²；第 7 章用正規化座標算的框 MSE 沒有單位（那裡的例子約 0.109）。本節都用 pixel 座標計算，但 IoU 類 loss 由比例組成，沒有單位，約為 1。三者的量尺不同，不能直接比大小。
 
 ## 包圍框與中心距離補上訊號
 
-最小包圍框C為 `[8,12,48,28]`，寬40、高16、面積640。GIoU=`IoU−(area(C)−union)/area(C)=0−128/640=−.2`，所以`L_GIoU=1.2`。負GIoU合法，說明兩框相隔，不能clamp成0而丟掉訊號。
+四種 loss 都從 \(1-\text{IoU}\) 出發，差別在後面另外加上的懲罰項（加在 loss 上的額外罰分）。先看總表；表裡的 C、ρ、c、α、v 在下面用到時逐一說明。
 
-若P往左移1pixel，union仍512，C寬從40變39、面積640變624，`L_GIoU=2−512/624=1.179487`，比1.2低，且兩框仍未碰到。本例GIoU中心梯度是`[.02,0]`；SGD減去正的x梯度，所以x變小。case真的以lr50做一步，把中心40移到39，驗證數值與方向。
+| loss | 式子 | 多看什麼 | 本例的值 |
+| --- | --- | --- | --- |
+| IoU loss | \(L_{\text{IoU}}=1-\text{IoU}\) | 只看重疊 | 1 |
+| GIoU loss | \(L_{\text{GIoU}}=1-\text{IoU}+(\text{area}(C)-\text{union})/\text{area}(C)\) | 包圍框 C 裡的空白比例 | 1.2 |
+| DIoU loss | \(L_{\text{DIoU}}=1-\text{IoU}+\rho^2/c^2\) | 兩個中心的距離 | 1.310345 |
+| CIoU loss | \(L_{\text{CIoU}}=L_{\text{DIoU}}+\alpha v\) | 再加上寬高比的差異 | 1.310345 |
 
-DIoU加入中心平方距離除以包圍框對角平方：`ρ²=24²=576`，`c²=40²+16²=1856`，`L_DIoU=1−IoU+ρ²/c²=1.310345`。ρ²與c²都是pixel²，比例本身無單位。向左移可減小中心項，所以梯度下降有方向，儘管第一步後仍不一定重疊。
+### GIoU：扣掉包圍框裡的空白
 
-CIoU再加長寬比項`αv`，其中 `v=(4/π²)(atan(wG/hG)−atan(wP/hP))²`。本例兩者比例都1，v=0，所以CIoU等於DIoU。若比例不同纔有額外項。案例以detach的alpha權重計算梯度，明確展示一個常見實現選擇，不把它當成所有庫的唯一寫法。
+最小包圍框 C 是能同時框住 G 和 P 的最小矩形。它的四個座標是兩框左界、上界的較小者，以及右界、下界的較大者：C＝[min(8,32), min(12,12), max(24,48), max(28,28)]＝`[8,12,48,28]`，寬 40、高 16、面積 640。\(\text{area}(C)-\text{union}=640-512=128\)，正是兩框中間那塊寬 8、高 16 的空白。GIoU 從 IoU 扣掉「空白占 C 的比例」，兩框離得越遠，空白越多，扣得越多：
 
-```python
-center_penalty = squared_center_distance / squared_enclosing_diagonal
-v = 4 / math.pi**2 * (atan(gt_ratio)-atan(pred_ratio))**2
-alpha = (v / (1-iou+v).clamp(min=1e-6)).detach()
-ciou_loss = 1-iou + center_penalty + alpha*v
-```
+\[
+\text{GIoU}=\text{IoU}-\frac{\text{area}(C)-\text{union}}{\text{area}(C)}=0-\frac{128}{640}=-0.2,
+\]
 
-分母下限處理相同框時iou=1、v=0造成的0/0；此時alpha與v的乘積為0，CIoU loss也為0。正文與case都使用相同clamp。
+\[
+L_{\text{GIoU}}=1-\text{GIoU}=1.2.
+\]
 
-## 實際一次更新的核對
+本例 GIoU＝−0.2，是因為兩框分開、C 裡有 20% 是空白。反過來不一定成立：兩框有重疊、但 C 很大時，GIoU 也可能是負的。例如兩個交叉的細長框 `[0,4,10,6]` 與 `[4,0,6,10]`：交集 2×2＝4、聯集 36，IoU 約 0.111；C＝`[0,0,10,10]`，面積 100，GIoU 約 0.111−64/100≈−0.529。而兩框剛好相接時（本例 P 左移 8 pixel），C 剛好由兩框拼成，沒有空白，GIoU 是 0。GIoU 介於 −1 和 1 之間，負值是合法的訊號；若把它 clamp 成 0，兩框分開時的方向就丟了。
 
-執行 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/11-iou-loss.ipynb 或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。初始loss應為IoU1、GIoU1.2、DIoU／CIoU1.310345；純IoU中心gradient為零。也核對GIoU梯度`.02,0`與左移1pixel後1.179487。再以DIoU做一次真實SGD，檢查x中心小於40、loss下降且梯度有限。學習率100在這個pixel中心的區域性實驗中用來讓變化可見，不能直接複製到detector所有網路參數。完全相同的GT與prediction時四項都為0。
+P 往左移 1 pixel，變成 `[31,12,47,28]`：交集仍是 0，聯集仍是 512；C 變成 `[8,12,47,28]`，寬 39、面積 624，空白變成 7×16＝112。代入同一個式子：
 
-收益是定位目標與框幾何更直接相連，GIoU／DIoU在本例沒有交集時提供訊號；代價是分段幾何、數值保護、權重與梯度行為需要重新驗證。CIoU的額外項不代表每一種資料一定更好；非正格仍不應計算定位loss，objectness／class也不會被它自動取代。
+\[
+L_{\text{GIoU}}=1-\Bigl(0-\frac{112}{624}\Bigr)=1+\frac{112}{624}\approx1.179487.
+\]
 
-正式整合時保持decoder、target與mask不變，只把正格定位loss換掉，重新檢查總loss權重與空正格分支。fixed train/validation/test、輸入尺寸及預算，再報告held-out AP與收斂；本節一框移動不能證明AP提升。
+loss 比 1.2 低，而兩框仍未碰到。IoU＝0 時，\(L_{\text{GIoU}}=1+(\text{area}(C)-\text{union})/\text{area}(C)=2-\text{union}/\text{area}(C)\)，所以這個值也可以寫成 \(2-512/624\)，完整程式的斷言（assert）就是這樣寫的。
 
-本例前提是 GT 有有限座標、`x2>x1`、`y2>y1`，即寬高都為正；程式會拒絕不合法 GT。epsilon 只保護分母，不能修復錯誤標註。這次兩框長寬比相同，因此沒有驗證非零 CIoU 長寬比項的梯度；alpha 的 detach 把它當固定權重，仍保留 v 與中心項的梯度。
+這個下降可以寫成梯度。在 \(c_y=20\)、P 在 G 右側且兩框不重疊時，C 的左界固定在 8，右界是 \(c_x+8\)，所以 C 的寬剛好是 \(c_x\)，面積是 \(16c_x\)：
 
-常見錯誤：xyxy次序反了產生負面積；沒有epsilon導致零框除0；把GIoU限制到[0,1]；以IoU loss代替全部objectness／class監督。自主練習：若P=G，C面積與union都是256、中心距離0、比例項0，四個loss是多少？答案：都0。若只把P往左移4pixel，變`[28,12,44,28]`，兩框仍隔4pixel，plain IoU仍是1且梯度為0，DIoU則`1+400/(36²+16²)=1.257732`。左移8pixel會剛碰到分段邊界，不能沿用這個零梯度結論。
+\[
+L_{\text{GIoU}}=2-\frac{512}{16c_x}=2-\frac{32}{c_x},
+\]
+
+\[
+\frac{\partial L_{\text{GIoU}}}{\partial c_x}=\frac{32}{c_x^2}=\frac{32}{40^2}=0.02.
+\]
+
+用差分對照也差不多：左移 1 pixel，loss 少了 1.2−1.179487≈0.0205。
+
+y 分量呢？\(c_y=20\) 時，P 與 G 的上下緣剛好對齊；P 不論往上或往下移，C 都會變高，所以這裡也是一個轉折點（折角），兩側的斜率不同。PyTorch 在這種點會給一個值，本例 y 分量給 0。所以本例 GIoU 的中心梯度是 `[0.02,0]`；其中的 0 是轉折點上取的值，不代表 y 方向沒有影響。
+
+SGD 的更新是「參數減去學習率×梯度」：x 梯度是正的，減掉之後 \(c_x\) 變小，P 往左移。完整程式真的用學習率 lr=50 做一步：50×0.02＝1，一步剛好左移 1 pixel，中心從 40 到 39，可以直接對照上面手算的 1.179487。lr=50 就是為了這個對照刻意挑的。
+
+### DIoU：把兩個中心拉近
+
+DIoU 改加中心距離項 \(\rho^2/c^2\)。ρ（rho）是兩個中心的距離；c 是包圍框 C 的對角線長。注意小寫 c 是 C 的對角線，和第 7 章的類別數 C 無關。本例：
+
+\[
+\rho^2=(40-16)^2+(20-20)^2=24^2=576,\qquad c^2=40^2+16^2=1856,
+\]
+
+\[
+L_{\text{DIoU}}=1-\text{IoU}+\frac{\rho^2}{c^2}=1-0+\frac{576}{1856}\approx1.310345.
+\]
+
+為什麼要除以 c²？兩個中心都在 C 裡面，ρ 不會超過 C 的對角線 c，所以 \(\rho^2/c^2\) 一定在 0 和 1 之間。ρ² 與 c² 的單位都是 pixel²，相除後沒有單位；圖片放大或縮小時，這個比例也不變。
+
+P 往左移時中心距離變小，可是 c 也跟著變小，這個比例一定會降嗎？算梯度就知道。在 \(c_y=20\)、P 在 G 右側且兩框不重疊時，\(\rho^2=(c_x-16)^2\)、\(c^2=c_x^2+16^2\)（\(c_x\) 是 P 中心的 x 座標，這裡剛好等於 C 的寬；16 是 C 的高），所以
+
+\[
+L_{\text{DIoU}}=1+\frac{(c_x-16)^2}{c_x^2+256},
+\]
+
+\[
+\frac{\partial L_{\text{DIoU}}}{\partial c_x}=\frac{2(c_x-16)(256+16c_x)}{(c_x^2+256)^2},
+\]
+
+代入 \(c_x=40\)：
+
+\[
+\frac{2\cdot24\cdot(256+16\cdot40)}{1856^2}\approx0.0125>0.
+\]
+
+梯度是正的，往左走 loss 會下降，所以梯度下降有方向。完整程式用 DIoU 做一次真正的 SGD 更新，學習率 lr=100：一步左移約 1.25 pixel，中心從 40 到約 38.75，\(L_{\text{DIoU}}\) 從 1.310345 降到約 1.294497。兩框的間隙從 8 變成約 6.75，走完一步仍未重疊。lr=100 只是為了讓位移看得見；這兩個學習率都只為這個只動中心的小實驗而挑，不能直接搬到偵測器的網路參數上。
+
+??? note "GIoU 也有失靈的時候：一框整個在另一框裡"
+
+    本例 GIoU 已經能把 P 往左推，為什麼還需要 DIoU？看一個 GIoU 失靈的情況（手算例子，完整程式沒有這一段）。把 8×8 的 P＝`[10,14,18,22]` 放進 G 裡面：P 的中心是 `(14,18)`，G 的中心是 `(16,20)`。P 整個在 G 裡，C 就是 G，空白項＝(256−256)/256＝0，GIoU 退化成 IoU：\(L_{\text{GIoU}}=L_{\text{IoU}}=1-64/256=0.75\)。P 在 G 裡小幅移動時，交集、聯集與 C 都不變，所以這兩個 loss 的中心梯度都是 `[0,0]`，不會把 P 往哪裡推。
+
+    DIoU 多了中心項。C 就是 G，\(c^2=16^2+16^2=512\) 固定不變，中心項只剩 \(\rho^2/512\)。本例 \(\rho^2=2^2+2^2=8\)，\(L_{\text{DIoU}}=0.75+8/512=0.765625\)。ρ 越小 loss 越小，所以梯度下降會把 P 的中心推向 G 的中心 `(16,20)`。
+
+    DIoU 論文指出：框有包含關係時，GIoU loss 會退化成 IoU loss；IoU 與 GIoU loss 也有收斂慢（要訓練更多步，loss 才會降下來並穩定）與框回歸不準的問題。
+
+### CIoU：再比較寬高比
+
+CIoU 在 DIoU 上再加一項 \(\alpha v\)。v 衡量兩框的寬高比（寬÷高）差多少，寬高比相同時 v＝0。本例兩框的寬高比都是 1，v＝0，所以 \(L_{\text{CIoU}}=L_{\text{DIoU}}\approx1.310345\)；寬高比不同時才有額外的 αv。
+
+??? note "CIoU 的細節：v、α、detach 與程式（本例 v＝0，可先跳過）"
+
+    v 與 α 的式子如下；\(w_G,h_G\) 是 G 的寬、高，\(w_P,h_P\) 是 P 的寬、高：
+
+    \[
+    v=\frac{4}{\pi^2}\Bigl(\arctan\frac{w_G}{h_G}-\arctan\frac{w_P}{h_P}\Bigr)^2,
+    \]
+
+    \[
+    \alpha=\frac{v}{(1-\text{IoU})+v}.
+    \]
+
+    為什麼用 arctan（反正切，程式裡寫 atan）？寬高比可以從接近 0 一直到無限大，直接相減的話，差值沒有上限。arctan 把正的寬高比變成 0 到 π/2 之間的角度，正方形是 arctan 1＝π/4。兩個角度的差介於 −π/2 和 π/2 之間，平方後小於 π²/4，乘上 4/π² 就讓 v 落在 0 到 1 之間（到不了 1）。
+
+    α 是 v 的權重，和學習率 lr 無關。同樣的 v 之下，重疊越少（1−IoU 越大），α 越小，αv 的份量也越小，loss 主要用來拉近位置、增加重疊；IoU 接近 1 時 1−IoU 接近 0，α 才變大，開始重視寬高比。
+
+    以下是改寫自完整程式的示意，不能單獨執行；atan 對應完整程式的 `torch.atan`：
+
+    ```python
+    center_penalty = squared_center_distance / squared_enclosing_diagonal  # ρ² / c²
+    v = 4 / math.pi**2 * (atan(gt_ratio)-atan(pred_ratio))**2  # gt_ratio＝wG/hG，pred_ratio＝wP/hP
+    alpha = (v / (1-iou+v).clamp(min=1e-6)).detach()  # α：分母下限 1e-6，再 detach
+    ciou_loss = 1-iou + center_penalty + alpha*v
+    ```
+
+    `.detach()`（第 2 章說過：把 tensor 從計算圖剪下）讓 α 在反傳時被當成常數權重：梯度不會經過 α 的算式，αv 這一項的梯度只經過 v。完整程式用它明確展示一種常見的實作選擇，不把它當成所有函式庫的唯一寫法。
+
+    兩框完全相同時，IoU＝1、v＝0，α 的分母 (1−IoU)+v 是 0，會變成 0/0。`clamp(min=1e-6)` 把分母下限設成 epsilon（1e-6），α＝0/1e-6＝0，αv＝0，CIoU loss 也是 0。示意裡 α 分母的 clamp 和完整程式相同；完整程式在中心項的分母也加了同樣的 clamp，示意裡省略了。
+
+## 兩次單步更新的核對
+
+在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/11-iou-loss.ipynb) 執行本節，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。完整程式對 GIoU（lr=50）和 DIoU（lr=100）各做一次單步更新，兩次互相獨立，都從中心 `(40,20)` 出發。對照下方執行紀錄逐項核對：
+
+- 初始 loss：\(L_{\text{IoU}}=1\)、\(L_{\text{GIoU}}=1.2\)、\(L_{\text{DIoU}}=L_{\text{CIoU}}=1.310345\)。輸出裡的 `'iou'`、`'giou'` 等鍵存的都是 loss，例如 `'iou': 1.0` 是 \(L_{\text{IoU}}\)，不是 IoU。
+- 單純 IoU loss 的中心梯度：`[0,0]`。
+- GIoU 的中心梯度：`[0.02,0]`（輸出的 0.0199999… 就是 0.02，差別來自浮點數的捨入）。lr=50 走一步後，完整程式用斷言確認中心是 `(39,20)`，並印出 \(L_{\text{GIoU}}=1.179487\)。
+- DIoU 用 lr=100 走一步後：中心約 `(38.75,20)`，\(L_{\text{DIoU}}\) 約 1.294497。完整程式也用斷言確認 x 中心小於 40、loss 下降，而且梯度是有限數值（不是 inf 無限大或 NaN）。
+- P＝G 時，四項 loss 都是 0。
+
+完整程式的 `losses` 函式開頭也用斷言檢查真值框：座標都是有限數，而且 \(x_2>x_1\)、\(y_2>y_1\)，也就是寬高都為正；不合法的真值框會直接報錯。epsilon 只保護分母，不能修復錯誤標註。
+
+本例只學中心、寬高固定，而 v 只依寬高，所以不論兩框寬高比是否相同，CIoU 對中心的梯度都和 DIoU 相同；這個實驗測不到 v 的梯度。要驗證它，得把寬高也設成可學參數。α 的 detach 把 α 當固定權重，仍保留 v 與中心項的梯度，所以也不會從 α 多出一條對中心的梯度。
+
+## 收益與代價
+
+收益是 loss 直接看重疊。同樣偏幾 pixel，小框的 IoU 掉得比較多，IoU 類 loss 也就罰得比較重（見第 4 章的例子）；而且 GIoU、DIoU 在本例兩框不重疊時，仍給出讓 P 往左移的梯度。
+
+代價是要多處理幾件事：剛好相接、上下緣對齊這類轉折點；用 clamp 與 epsilon 防止除以 0；和 objectness、class loss 之間的權重要重新調整；梯度也要重新檢查。CIoU 的額外項不代表每一種資料都一定更好。非正格（沒有負責物件的格子）仍不應計算定位 loss，objectness／class 的監督也不會被它自動取代。
+
+## 放進 MiniYOLO 時要注意
+
+正式整合時，推論用的 decoder、target 與 mask 都不變，只把正格的定位 loss 換掉。但第 7 章 head 輸出的不是 xyxy：框的四個數經 sigmoid 後，是格內偏移與相對全圖的寬高；target 也是同樣的格內 x、格內 y、寬、高。所以要先用與第 7 章 decode 相同的換算（格內偏移加上格子位置得到中心，再配上寬高），把正格的預測和 target 都轉成同一座標系的 xyxy，再算 IoU 類 loss。
+
+預測這一側的換算要留在計算圖裡：不能直接呼叫 `decode_grid`（它在 `no_grad` 下執行，還包含 score 門檻與 NMS），也不能 detach，否則梯度傳不回模型。
+
+總 loss 的權重也要重新檢查：第 7 章例子的框 MSE 約 0.109，乘上權重 5 才加進總 loss；本節的 IoU 類 loss 約 1 到 1.3，大小差很多。沒有任何正格時令框 loss 為 0 的分支（[grid loss](07-loss.md) 的〈空圖：沒有正格時〉）也要重新檢查。
+
+這個實驗只確認了梯度行為。要不要在偵測器裡改用 IoU 類 loss，得先固定 train/validation/test 切分、輸入尺寸及訓練預算，再比較獨立資料（held-out）上的 AP 與收斂快慢（loss 要多少步才降下來並穩定）。本節只移動一個框，不能證明 AP 會提升。
+
+## 常見錯誤與自主練習
+
+常見錯誤：
+
+- xyxy 的次序反了（例如左右對調），算出負的寬高與面積。
+- 沒有 epsilon 時，寬或高為 0 的退化框可能讓分母變成 0。
+- 把 GIoU 限制到 [0,1]，丟掉兩框分開時的負值訊號。
+- 以為 IoU loss 能代替全部 objectness／class 的監督。
+
+自主練習（紙筆題；先自己算，再展開答案）：
+
+1. 若 P＝G＝`[8,12,24,28]`：C 的面積、聯集、ρ、v 各是多少？四個 loss 各是多少？
+2. 若 P 只往左移 4 pixel，變成 `[28,12,44,28]`（中心 `(36,20)`，兩框仍隔 4 pixel）：\(L_{\text{IoU}}\) 與它的中心梯度是多少？\(L_{\text{GIoU}}\)、\(L_{\text{DIoU}}\) 呢？
+3. G 不變，P＝`[28,12,60,28]`（寬 32、高 16）：求 v、α 與 \(L_{\text{CIoU}}\)。這題完整程式沒有對應的 assert；算完可以先在 notebook 依序執行環境格和「本節可修改的完整實驗」那一格（`losses` 才會存在），再新增一格，呼叫完整程式的 `losses(torch.tensor([28.,12.,60.,28.]), torch.tensor([8.,12.,24.,28.]))` 核對 \(L_{\text{CIoU}}\)（`losses` 接受任意 xyxy 框，寫死 16×16 的只有 `box_from_center`，不能用它做出這個 P；`losses` 也不回傳 v 與 α）。
+
+??? note "參考答案"
+
+    **第 1 題**：C 就是 G，面積 256；聯集也是 256。兩個中心重合，ρ＝0；寬高比相同，v＝0。IoU＝1，所以四個 loss 都是 0。這時 α 的分母是 0，靠 `clamp(min=1e-6)` 避開 0/0（見上方 CIoU 的摺疊說明）。完整程式最後用斷言核對這個情況，並印出 `exact boxes: all four losses zero`。
+
+    **第 2 題**：交集寬＝min(24,44)−max(8,28)＝24−28＝−4，取 0 後交集是 0。IoU 仍是 0，所以單純 IoU loss 仍是 1，梯度仍是 `[0,0]`。C＝`[8,12,44,28]`，面積 36×16＝576，\(L_{\text{GIoU}}=2-512/576\approx1.111111\)。ρ＝36−16＝20，\(c^2=36^2+16^2=1552\)，\(L_{\text{DIoU}}=1+400/1552\approx1.257732\)。完整程式裡的 `shifted_center` 就是這個例子，用斷言核對了 \(L_{\text{IoU}}\)、梯度與 \(L_{\text{DIoU}}\)；\(L_{\text{GIoU}}\) 沒有對應的 assert。再左移到 8 pixel 時會剛好碰到 G，那是轉折點，不能沿用這個零梯度結論。
+
+    **第 3 題**：P 的中心是 `(44,20)`。交集寬＝min(24,60)−max(8,28)＝24−28＝−4，取 0 後 IoU＝0。P 的寬高比是 32/16＝2，G 是 1，所以 \(v=\frac{4}{\pi^2}(\arctan1-\arctan2)^2\approx0.041956\)，\(\alpha=v/(1+v)\approx0.040267\)。C＝`[8,12,60,28]`，\(c^2=52^2+16^2=2960\)，\(\rho^2=(44-16)^2=784\)，\(L_{\text{DIoU}}=1+784/2960\approx1.264865\)。最後 \(L_{\text{CIoU}}=L_{\text{DIoU}}+\alpha v\approx1.264865+0.001689\approx1.266554\)。
 
 <!-- curriculum-evidence:start -->
 
-## 本輪實際執行紀錄
+## 實際執行紀錄
 
-本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-iou-loss.json)
+本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-iou-loss.json)
 
 ??? example "展開本次實際輸出"
 

@@ -23,8 +23,9 @@ def main():
     assert torch.allclose(attention[0, 0], row)
     assert torch.allclose(output_tokens[0, 0], torch.tensor([row[0] + row[2], row[1] + row[2]]))
     print('tokens:', tokens.tolist())
-    print('first attention row:', attention[0, 0].detach().round(decimals=4).tolist())
-    print('first weighted value:', output_tokens[0, 0].detach().round(decimals=4).tolist())
+    # round in float64 so 0.3349 prints as 0.3349, not as float32's nearest value 0.3348999917...
+    print('first attention row:', attention[0, 0].detach().double().round(decimals=4).tolist())
+    print('first weighted value:', output_tokens[0, 0].detach().double().round(decimals=4).tolist())
     print('shape feature -> tokens -> affinity -> feature:', tuple(feature.shape), tuple(tokens.shape), tuple(attention.shape), tuple(output.shape))
     # Exercise runs before SGD, while the shared projection is still identity.
     # Keep all original-input assertions intact.
@@ -37,13 +38,21 @@ def main():
         expected_row = torch.tensor([1., 0., 1., 2.]).div(math.sqrt(2)).softmax(0)
         assert torch.allclose(exercise_weights[0, 0], expected_row)
         assert torch.allclose(exercise_output[0, 0], torch.tensor([1.3395, .3302]), atol=1e-4)
-        print('exercise fourth-token [2,0], first weight row:', exercise_weights[0, 0].round(decimals=4).tolist())
-        print('exercise first output:', exercise_output[0, 0].round(decimals=4).tolist())
+        print('exercise fourth-token [2,0], first weight row:', exercise_weights[0, 0].double().round(decimals=4).tolist())
+        print('exercise first output:', exercise_output[0, 0].double().round(decimals=4).tolist())
     optimizer = torch.optim.SGD(qkv.parameters(), lr=.1)
     optimizer.zero_grad()
-    loss = F.mse_loss(output, feature)
+    # Halve channel 1: with target=feature the example is symmetric under a channel swap,
+    # so from the identity start Q and K would get identical gradients.
+    target = feature * torch.tensor([1., .5]).view(1, 2, 1, 1)
+    loss = F.mse_loss(output, target)
     loss.backward()
-    assert all(part.abs().sum() > 0 for part in qkv.weight.grad.chunk(3, dim=0))
+    grad_q, grad_k, grad_v = qkv.weight.grad.chunk(3, dim=0)
+    assert all(part.abs().sum() > 0 for part in (grad_q, grad_k, grad_v))
+    # allclose, not equal: rounding alone can make mathematically equal gradients differ.
+    assert not torch.allclose(grad_q, grad_k)
+    assert not torch.allclose(grad_q, grad_v)
+    assert not torch.allclose(grad_k, grad_v)
     old = qkv.weight.detach().clone()
     optimizer.step()
     assert not torch.equal(old, qkv.weight)

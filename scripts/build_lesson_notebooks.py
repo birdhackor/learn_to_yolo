@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -13,36 +14,46 @@ REPOSITORY = "birdhackor/learn_to_yolo"
 
 def optional_experiment(lesson_id: str) -> str:
     if lesson_id in {"01-small-cnn", "03-comparison", "04-localization"}:
-        command = f"!python scripts/run_learning_extensions.py --section {lesson_id}"
-        return ("\n\n### 可選：40步學習實驗\n\n完成下面的完整案例後，另開code cell執行：\n\n"
-                f"```python\n{command}\nfrom IPython.display import SVG, display\n"
-                f"display(SVG(filename='docs/assets/diagrams/{lesson_id}-learning.svg'))\n```\n\n"
-                "資料、optimizer與結果的限制見網頁；這是獨立補充，不取代下方三步檢查。")
+        return ("\n\n### 可選：40 步學習實驗\n\n跑完下面的完整實驗後，另開一個 code cell 執行：\n\n"
+                f"```python\n!python scripts/run_learning_extensions.py --section {lesson_id}\n"
+                "from IPython.display import SVG, display\n"
+                f"display(SVG(filename='artifacts/runs/learning/{lesson_id}/learning.svg'))\n```\n\n"
+                "資料、optimizer 與結果的限制見網頁；這是另外的補充實驗，不取代下面的完整實驗。")
     if lesson_id == "10-multiscale":
-        return ("\n\n### 可選：兩尺度40步與實際預測\n\n完整案例後另開code cell：\n\n"
+        return ("\n\n### 可選：兩尺度 40 步與實際預測\n\n跑完完整實驗後，另開一個 code cell：\n\n"
                 "```python\n!python scripts/run_multiscale_learning.py\nfrom IPython.display import SVG, display\n"
-                "display(SVG(filename='docs/assets/diagrams/10-multiscale-learning.svg'))\n```\n\n"
-                "這只訓練一張圖；小框可能未達IoU .5，應按實際report解讀。")
+                "display(SVG(filename='artifacts/runs/multiscale-learning/learning.svg'))\n```\n\n"
+                "這只訓練一張圖；小框不一定達到 IoU 0.5，請照實際的報告解讀。")
     if lesson_id == "07-training":
-        return ("\n\n### 可選：160步合成圖與held-out評估\n\n下方主例只跑三步。完成後另開code cell：\n\n"
+        return ("\n\n### 可選：160 步合成圖與 held-out 評估\n\n下面的主例只更新三步。跑完後另開一個 code cell：\n\n"
                 "```python\n!python -m miniyolo.train --steps 160 --samples 32 --device cpu\n"
                 "from IPython.display import display\nfrom PIL import Image\n"
                 "display(Image.open('artifacts/runs/grid-learning/loss.png'))\n```\n\n"
-                "另存checkpoint.pt、history.json與validation PNG；完整指標在artifacts/checks/grid-learning.json。")
+                "checkpoint.pt、history.json、validation 圖與完整指標 report.json 都存在 artifacts/runs/grid-learning/。")
     if lesson_id == "08-own-data":
-        return ("\n\n### 可選：JSON資料完整短訓練\n\n主例檢查一步更新；完成後另開code cell：\n\n"
+        return ("\n\n### 可選：JSON 資料的完整短訓練\n\n主例只檢查一步更新；跑完後另開一個 code cell：\n\n"
                 "```python\n!python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001\n"
                 "from IPython.display import SVG, display\n"
                 "display(SVG(filename='artifacts/runs/custom-data-learning/learning.svg'))\n```\n\n"
-                "三類PNG/JSON、checkpoint與結果保存於artifacts/runs/custom-data-learning。"
-                "自己的資料改用--annotations與--root；具體格式與指標解讀见網頁。")
+                "三類 PNG／JSON、checkpoint 與結果都存在 artifacts/runs/custom-data-learning/。"
+                "換成自己的資料時改用 --annotations 與 --root；格式與指標的解讀見網頁。")
     if lesson_id in {"18-video", "19-tracking"}:
-        return ("\n\n### 可選：真正影片檔案與tracking接線\n\n主例完成後另開code cell：\n\n"
+        return ("\n\n### 可選：真正的影片檔案與 tracking 接線\n\n跑完主例後另開一個 code cell：\n\n"
                 "```python\n!python -m pip install -r requirements-video.txt\n"
                 "!python scripts/verify_video_file.py\n```\n\n"
-                "自行產生12幀無損AVI，實際讀檔、模型推論、按class 0配track ID，"
-                "並檢查RGB/框一致及capture釋放；沒有測實體相機。")
+                "它自行產生 12 幀的無損 AVI，實際讀檔、模型推論、只替 class 0 配 track ID，"
+                "並檢查 RGB 與框一致、影片資源有釋放；結果寫在 artifacts/runs/video-file/。沒有測實體相機。")
     return ""
+
+
+def recorded_output(lesson_id: str, case: Path) -> str | None:
+    """The saved stdout of this exact case, so rebuilding a notebook keeps its recorded run."""
+    path = ROOT / "artifacts/checks/curriculum" / f"{lesson_id}.json"
+    if not path.is_file():
+        return None
+    record = json.loads(path.read_text())
+    digest = hashlib.sha256(case.read_bytes()).hexdigest()
+    return record["stdout"] if record.get("passed") and record.get("case_sha256") == digest else None
 
 
 def cell(kind: str, source: str) -> dict:
@@ -78,7 +89,8 @@ actual_ref = subprocess.check_output(
 if actual_ref != REF:
     raise RuntimeError("程式版本不同，請使用新的 runtime 或移除舊 clone 後重試。")
 
-# 逐節範例預設 CPU；L4 訓練與部署的實測另見網站驗證頁。保留相同版本的 CPU/CUDA build。
+# 各節實驗都在 CPU 上執行，執行紀錄用的是 PyTorch 2.9.1。已經是 2.9.1 就沿用（CPU 或 CUDA 版都可以）；
+# 其他版本會改裝成 2.9.1 的 CPU 版，之後這個工作階段就用不到 GPU，但各節實驗本來就不需要。
 try:
     torch_version = importlib.metadata.version("torch").split("+")[0]
 except importlib.metadata.PackageNotFoundError:
@@ -99,10 +111,11 @@ print("目前目錄：", repository)
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ref", default="lessons-v0.3.0")
+    parser.add_argument("--ref", required=True, help="the release tag the notebooks and Colab links pin, e.g. lessons-v0.4.0")
     args = parser.parse_args()
     registry_path = ROOT / "section-map.json"
     registry = json.loads(registry_path.read_text())
+    missing = []
     for section in registry["sections"]:
         if section["kind"] != "lesson":
             continue
@@ -122,15 +135,21 @@ def main() -> None:
             "cells": [
                 cell("markdown", f"# {section['title']}\n\n"
                      f"[完整圖文教材](https://birdhackor.github.io/learn_to_yolo/lessons/{lesson_id}/)\n\n"
-                     "先執行環境格，再閱讀、執行下方完整實驗。各節互相獨立，不需要上一節的 runtime。\n\n"
-                     "本節在 CPU 逐節執行並保存輸出；合成資料短訓練、L4 與部署紀錄見網站驗證頁。真實場景長訓練仍待安排。"
-                     "這些範例沒有預訓練權重，也不需下載資料。"),
+                     "先執行下一格的環境格，再閱讀、執行最後的完整實驗。各節互相獨立，不需要先跑其他節。\n\n"
+                     "最後一格存著這段程式在 CPU 上實際執行的輸出；執行環境與其他實驗紀錄見網站的〈驗證範圍與後續實驗〉。"
+                     "範例不用預訓練權重，也不需要下載資料。"),
                 cell("code", bootstrap(args.ref, lesson_id == "20-deployment")),
                 cell("markdown", "## 本節可修改的完整實驗\n\n先預測結果，再執行；確認輸出後，試做網頁的自主練習。"
                      + optional_experiment(lesson_id)),
                 cell("code", case.read_text()),
             ],
         }
+        record = recorded_output(lesson_id, case)
+        if record is None:
+            missing.append(lesson_id)
+        else:
+            notebook["cells"][-1].update(execution_count=1, outputs=[
+                {"output_type": "stream", "name": "stdout", "text": record.splitlines(keepends=True)}])
         for index, item in enumerate(notebook["cells"]):
             item["id"] = f"{lesson_id}-{index}"
         notebook_path.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + "\n")
@@ -144,9 +163,12 @@ def main() -> None:
         page.write_text(text)
         section.update(status="ready", page=str(page.relative_to(ROOT)),
                        notebook=str(notebook_path.relative_to(ROOT)), source_ref=args.ref)
-    registry["note"] = "ready means authored files exist; CPU execution and review evidence are recorded separately. Bounded L4 training/checkpoint evidence and per-section results are recorded separately; full real-world training is pending."
+    registry["note"] = ("status ready means the page, lesson program and notebook exist; execution records are in "
+                        "artifacts/checks/curriculum/ and reviews in reviews/.")
     registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n")
-    print("Paired 42 authored lessons with version-pinned notebooks.")
+    print(f"Paired 42 authored lessons with notebooks pinned to {args.ref}.")
+    if missing:
+        print("No current execution record (run scripts/verify_curriculum.py): " + ", ".join(missing))
 
 
 if __name__ == "__main__":

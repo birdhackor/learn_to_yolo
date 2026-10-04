@@ -28,21 +28,34 @@ def main():
     records = []
     with tempfile.TemporaryDirectory() as folder:
         root = Path(folder)
-        for source,split in [('video_A','train'),('video_B','validation'),('video_C','test')]:
+        # One scene per source (background gray level, yellow box): no image repeats
+        # across splits. video_A, black with box [20,10,60,30], is the train data below.
+        for source,split,background,box in [('video_A','train',0,[20,10,60,30]),
+                                            ('video_B','validation',60,[70,40,100,66]),
+                                            ('video_C','test',120,[10,44,34,74])]:
             for index in range(2):
                 relative = f'{source}/{index}.png'
-                pixels = np.zeros((80,120,3),dtype=np.uint8)
+                pixels = np.full((80,120,3),background,dtype=np.uint8)
                 if index == 0:
-                    pixels[10:30,20:60,:2] = 255
+                    x1,y1,x2,y2 = box
+                    pixels[y1:y2,x1:x2] = (255,255,0)
                 path = root/relative
                 path.parent.mkdir(parents=True,exist_ok=True)
                 Image.fromarray(pixels).save(path)
                 records.append({'path':relative,'width':120,'height':80,'source_id':source,
-                                'split':split,'boxes':[[20,10,60,30]] if index==0 else [],
+                                'split':split,'boxes':[box] if index==0 else [],
                                 'labels':[2] if index==0 else []})
         manifest = root/'annotations.json'
         manifest.write_text(json.dumps({'classes':classes,'images':records}))
         validate_annotations(records,classes)
+        # validate_annotations never opens the images: it rejects one source_id in two
+        # splits or a repeated path, not a copy saved under another path and source_id.
+        # So also remember each decoded image's first split (catches identical pixels only).
+        split_of_image = {}
+        for r in records:
+            with Image.open(root/r['path']) as image:
+                key = (image.size,image.convert('RGB').tobytes())
+            assert split_of_image.setdefault(key,r['split']) == r['split'],'same image in two splits'
         bad = copy.deepcopy(records); bad[1]['split'] = 'test'
         expect_rejection(bad,classes,'source leakage')
         bad = copy.deepcopy(records); bad[0]['boxes'] = [[20,10],[60,30]]

@@ -1,63 +1,168 @@
 # 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
 
-[開啟 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.3.0/notebooks/13-dual-assignment.ipynb) · 原始碼：`lesson_cases/13-dual-assignment.py`
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/13-dual-assignment.ipynb){ .md-button }
 
-前置是 sample assignment、分類 loss 和 decoupled head。第 12 章讓一個 GT 監督多個候選，提供較密集的學習訊號；這些候選卻可能都在推論時報出同一物件。如果每個 GT 只教一個候選，重複較容易被壓低，但可用正訊號也變少。YOLOv10 的 dual assignment 在訓練保留兩種分支，推論使用一對一分支。
+第 6 章（[人工框解碼與 NMS](06-decode-nms.md)）在推論的最後用 NMS（非極大值抑制：保留高分框，刪掉和它重疊太多的框）清掉同一物件的重複框。本節要回答：怎樣訓練，模型推論時才能不靠 NMS，也不輸出重複框？讀完本節，你能說出 YOLOv10 訓練時為什麼接兩個 head、推論時為什麼只留一個。你也能手算一張小品質表的兩種分配，並用程式確認梯度各自走到哪裡。
 
-歷史機制是 consistent dual assignments：一對多和一對一使用相容的品質排序，減少兩套監督方向不一致。本次起點是同一組共享特徵；簡化成兩個分類 head、三個候選、兩個 GT。為清楚看「全域一對一」約束，實驗另外用列舉求最優配對；**這不是宣稱 YOLOv10 使用 Hungarian algorithm**。官方 YOLOv10 的一對一 assignment 採 task-aligned top-1 型選擇。本例不重現官方完整 loss 或框回歸。
+YOLOv10 論文指出 NMS 的三個問題：拖慢推論；偵測效果容易受 NMS 的參數（例如 NMS 的 IoU 門檻）影響；也妨礙端到端部署（模型的輸出直接就是最後的框，不必再另外跑 NMS）。所以 YOLOv10 想讓模型自己就不輸出重複框，推論時直接省掉 NMS，這叫 NMS-free。
+
+要讓模型自己不重複，得從訓練時「哪些候選被教成正樣本」下手。[12.3](12-assignment.md) 的 sample assignment 讓一個 GT（人工標註的真值物件）教好幾個候選，這叫一對多（one-to-many）。這樣學習訊號多，但這些候選推論時可能都對同一物件給高分，只好靠 NMS 刪。一對一（one-to-one）則是每個 GT 只教一個候選，一個候選也最多負責一個 GT。其他沒被選中的候選都被教成背景，同一物件的重複框分數因此被壓低；代價是正樣本變少，學習訊號偏弱。
+
+YOLOv10 的 dual assignment（雙重分配）兩種都用：訓練時接兩個 head，一個用一對多的 target 訓練，提供較多正樣本；另一個用一對一的 target 訓練。推論時丟掉一對多 head，只用一對一 head。這兩個 head 不是 [12.2](12-decoupled-head.md) 的分類、框兩條分支；官方的每個 head 裡面，都還各有分類與框兩條分支。
+
+論文把這套做法叫 consistent dual assignments（一致的雙重分配）。「一致」是指兩個 head 挑候選時，用同一個品質公式排名：
+
+\[
+m=s\cdot p^{\alpha}\cdot\text{IoU}^{\beta}
+\]
+
+其中 s 表示候選點是否在 GT 框內（在框內為 1，否則為 0，就是 12.3 檢查的資格），p 是模型對該 GT 類別給的分類分數，IoU 是預測框與 GT 框的重疊程度（交集÷聯集）。12.3 用的 `score×IoU²` 就是 α=1、β=2 的情形；官方程式用 α=0.5、β=6。論文讓一對一的 α、β 都是一對多的 r 倍，並在分析時假設兩個 head 的初始權重相同，對每一對候選與 GT 都算出相同的 p 與 IoU。在這個假設下，一對一的 m 等於把一對多的 m 取 r 次方；r 是正數時，候選的排名不變；預設 r=1，兩邊的公式完全相同。所以每個 GT 在一對一的首選，就是它在一對多的第一名。
+
+本節的實驗縮到最小：一組共享特徵、兩個只做分類的 head、三個候選、兩個 GT。一對一的部分改用列舉求「全域最優」，和官方做法不同；差在哪裡，下一小節的最後一起整理。前置是 12.3 的品質排名與 top-k（每個 GT 挑幾個候選）、分類 loss（BCE），以及 12.2 的共享 backbone 與梯度檢查。
 
 ## 一對多不等於一個候選有多份 target
 
-品質表 shape `[G,P]=[2,3]`，每列一個真值，每欄一個候選，數字越大越適合負責：
+品質表的 shape 是 `[G,P]=[2,3]`：G 是 GT 數，P 是候選數。每列一個 GT（A、B），每欄一個候選（p0、p1、p2），數字越大，表示這個候選越適合負責這個 GT。本例不算公式，直接給數字；可以把它們想成算好的 m。表頭的 p0、p1、p2 只是候選的名字，和公式裡的分類分數 p 無關。
 
-| GT／candidate | p0 | p1 | p2 |
+| GT／候選 | p0 | p1 | p2 |
 | --- | --- | --- | --- |
-| A | .90 | .85 | .10 |
-| B | .88 | .10 | .20 |
+| A | 0.90 | 0.85 | 0.10 |
+| B | 0.88 | 0.10 | 0.20 |
 
-一對多先讓 A 選 p0、p1，B 選 p0、p2；p0 衝突後交給品質較高的 A，結果 owner `[0,0,1]`。一個 GT 有多個正候選，一個候選最後仍只擁有一個 GT。GT A 的兩個候選都被鼓勵報出 A，這就是推論重複的來源之一。
+一對多沿用 12.3 的 top-k 規則：每個 GT 各選品質最高的 2 個候選（top-2；官方 YOLOv10 的 k 是 10）。A 選 p0、p1，B 選 p0、p2。p0 被兩個 GT 選中，但一個候選只能負責一個 GT，所以要解衝突。12.3 的教學版比的是 IoU（官方程式比的是負值截成 0 的 CIoU，而且是在參考點落在框內的所有 GT 之間比，見 12.3 例子後的摺疊區）；本例沒有框，改比品質：A 的 0.90 高於 B 的 0.88，p0 歸 A。
 
-本次一對一列舉所有不同欄配對。把 A 給 p1、B 給 p0，總品質為 `.85+.88=1.73`，owner `[1,0,-1]`。未使用的 p2 學背景。若貪心先把最大 .90 的 p0 給 A，B 只能選 p2 的 .20，總和為 1.10。這是可驗證的反例：逐次拿當前最大值不是全域最佳。列舉是極小案例的精確解，不是把貪心更名為 Hungarian。
+結果寫成 owner `[0,0,1]`。owner 的第 0、1、2 格依序寫 p0、p1、p2 歸哪個 GT：0＝A、1＝B、−1＝背景。所以這裡 p0、p1 歸 A，p2 歸 B。一個 GT 有多個正候選，一個候選最後仍只擁有一個 GT。GT A 的兩個候選都被鼓勵報出 A，這就是推論時重複框的來源之一。
+
+本例的一對一要求每個 GT 恰好配一個候選，兩個 GT 不能共用同一個候選，而且整張表的總品質要最大，這叫全域最優；它和讓每個 GT 各挑自己最好的不一樣。這種「配對」是訓練時決定哪個候選負責哪個 GT（assignment），不是 [6.2](06-evaluation.md) 評估時判定 TP 的 matching。最好的配法是 A→p1、B→p0，總品質 0.85+0.88=1.73，owner `[1,0,-1]`：p0 歸 B、p1 歸 A，沒被選中的 p2 學背景。
+
+為什麼不把 A 最好的 p0 留給 A？先看貪心（greedy）的做法：每一步先拿眼前最大的數，拿了就不再改。全表最大的是 0.90（A→p0），先定下來；B 只剩 p1（0.10）和 p2（0.20），最多 0.20，總和 1.10。全域最優反而把 p0 讓給 B：A 從 p0 改用 p1 只少 0.05，B 從 p0 改用 p2 卻少 0.68，所以 A→p1、B→p0 的 1.73 比較大。這是可驗證的反例：每一步拿當下最大的值，不保證整體最好。
+
+完整程式的 `exact_one_to_one` 函式用列舉求全域最優，核心是這兩行（寫法略有簡化）：
 
 ```python
 best = max(permutations(range(P), G),
            key=lambda cols: sum(quality[g, c] for g, c in enumerate(cols)))
 ```
 
-這種搜尋有 `P!/(P−G)!` 種選擇，G=2、P=3 只有6種；G、P稍大便不能這樣做。若要放大本例的「總品質最大」問題，需要最優指派solver；官方YOLOv10採另一種top1規則，沒有本例這段全域搜尋。官方 top-1 與本例全域最優的計算、正樣本覆蓋不同，讀者不能把本例 owner 當成官方模型必然輸出。
+以本例 P=3、G=2 逐段看：
+
+- `permutations(range(3), 2)`（Python 標準函式庫 `itertools` 的函式）依序列出從 3 個候選挑 2 個不同候選的所有排法：(0,1)、(0,2)、(1,0)、(1,2)、(2,0)、(2,1)。每組的第一個數是 A 拿到的候選欄，第二個數是 B 的；例如 (1,0) 表示 A→p1、B→p0。
+- `lambda cols: ...` 是寫在一行裡的臨時函式。輸入一種配法 `cols`，`enumerate(cols)` 依序給出（GT 編號 g, 候選欄 c），把 `quality[g, c]` 加起來，就是這種配法的總品質。例如 `cols=(1,0)` 時依序給出 (0,1)、(1,0)，總品質是 `quality[0,1]+quality[1,0]`，也就是 0.85+0.88=1.73。
+- `max(..., key=...)` 依 key 算出的總品質比大小，回傳總品質最大的那一組。
+
+| 配法 `cols` | A 拿 | B 拿 | 總品質 |
+| --- | --- | --- | --- |
+| (0,1) | p0 | p1 | 0.90+0.10=1.00 |
+| (0,2) | p0 | p2 | 0.90+0.20=1.10（就是貪心的結果） |
+| (1,0) | p1 | p0 | 0.85+0.88=1.73（最大） |
+| (1,2) | p1 | p2 | 0.85+0.20=1.05 |
+| (2,0) | p2 | p0 | 0.10+0.88=0.98 |
+| (2,1) | p2 | p1 | 0.10+0.10=0.20 |
+
+所以 `best=(1,0)`。注意方向：`best` 寫的是「每個 GT 拿哪個候選」，A 拿候選 1、B 拿候選 0。owner 反過來寫「每個候選歸哪個 GT」：p0 歸 B（1）、p1 歸 A（0）、p2 沒人拿（−1），所以是 `[1,0,-1]`；完整程式用 `owner[c] = i` 做這個翻譯。這題的 `best` 和 owner 前兩格剛好都是 1、0，看起來很像，方向卻相反；自己改表時，不要把 `best` 後面補一個 −1 就當成 owner。
+
+這種搜尋要試 `P!/(P−G)!` 種配法。本例 A 先有 3 個候選可選，B 剩 2 個，共 3×2=6 種，就是高中學的排列數。候選與 GT 變多時，這個數字增加得非常快。例如 640×640 的輸入用 stride 8、16、32 三層特徵圖，各有 80×80、40×40、20×20 格，每格一個候選，共 8400 個候選；圖上有 10 個 GT 時，要試 8400×8399×…×8391≈1.7×10³⁹ 種，不可能一一列舉。
+
+「每個 GT 配一個不同的候選，讓總品質最大」這類問題叫指派問題。匈牙利演算法（Hungarian algorithm）是指派問題的經典解法：不必列出全部組合，就能有效率地求出最佳解；DETR（另一類也不用 NMS 的偵測器）訓練時就用它做一對一配對。YOLOv10 沒有用它：論文說，一對一改成每個 GT 只取第一名（top-1，沿用 12.3 那種 task-aligned 的品質排名），效果和匈牙利配對相當，額外的訓練時間更少。
+
+本例的一對一和官方不同，差別在表上看得到。p0 在一對多歸 A，在本例的一對一卻歸 B；A 在一對一拿到的 p1，也不是它在一對多的第一名 p0。兩邊用的是同一張品質表，差別出在選法：本例的一對一用全域最優，不是官方的每 GT top-1。結果 p0 在兩個 head 收到相反的 target：一對多教它報 A，一對一教它報 B（下一小節寫成 `[1,0]` 和 `[0,1]`）。所以光共用同一張品質表還不夠，選法也要配合：在同一張品質表上，官方的一對一每個 GT 取 top-1，選中的一定是該 GT 在一對多的第一名。這是對每個 GT 各自的保證；兩個 GT 搶同一個候選時，同一個候選仍可能在兩邊歸不同的 GT（例子見下方〈收益、代價與留下的問題〉的「代價」那段）。
+
+??? note "本例與官方 YOLOv10 的差別"
+
+    | 項目 | 本例 | 官方 YOLOv10 |
+    | --- | --- | --- |
+    | 品質分數 | 直接給數字 | 用開頭的公式 m 計算，α=0.5、β=6，兩個 head 用相同的 α、β；公式裡的 IoU，程式實際算的是第 11 章的 CIoU（負值截成 0） |
+    | 一對多 | 每個 GT 取 top-2，衝突時比品質 | 每個 GT 取 top-10，衝突時比 IoU（程式裡比的也是同一個 CIoU） |
+    | 一對一 | 列舉所有配法，取總品質最大（全域最優） | 每個 GT 取 top-1，衝突規則和一對多相同 |
+    | head 與 loss | 兩個只做分類的線性 head，只算分類 BCE | 兩個結構相同的 head，各有分類與框分支，分類與框都算 loss |
+    | 一對一 head 的輸入 | 先 detach | 先 detach（官方 head.py） |
+
+    官方的 top-1 放到這張表會怎樣？A 的第一名是 p0（0.90），B 的第一名也是 p0（0.88），兩個 GT 搶同一個候選。照本頁比品質的規則，p0 歸 A，B 這一步就沒有一對一正樣本，owner 是 `[0,-1,-1]`。這只是示意：本表沒有框，這裡用品質代替 IoU 解衝突，不是官方程式的輸出。
+
+    全域最優保證 A、B 各拿一個候選，代價是 A 只拿到次佳的 p1。本節教全域最優，是為了在小表上看清楚「每個 GT 恰好一個、候選不能共用」這個限制。它不是官方做法，所以不能把本例的 owner 當成官方模型必然的輸出。
 
 ## 兩個 head 與一條共享路徑
 
-輸入 `[3,4]` 每列一個候選的四維特徵，backbone 線性層後仍為 `[3,4]`；兩個 head 都輸出 `[3,2]`，兩個 GT 恰好是兩類。owner 轉成 two-class target：一對多是 `[[1,0],[1,0],[0,1]]`，一對一是 `[[0,1],[1,0],[0,0]]`。
+輸入的 shape 是 `[3,4]`：3 列代表 3 個候選，每列是 4 個特徵數字。完整程式用 `torch.randn` 隨機產生這些數字，代替真實 CNN 算出的特徵。backbone 是一個線性層，輸出仍是 `[3,4]`；兩個 head 各輸出 `[3,2]`，也就是每個候選 2 個類別 logits。
+
+本例設定 A 屬類別 0、B 屬類別 1，所以 owner 裡的 GT 編號剛好能直接當類別欄號；一般情況要先由 owner 找到 GT，再取那個 GT 的類別。每欄各自做 sigmoid 與 BCE：第 c 欄的 target 為 1，表示學成類別 c；背景候選兩欄都填 0。把 owner 換成這種兩類別的 0／1 target：
+
+- 一對多：`[[1,0],[1,0],[0,1]]`，p0、p1 學 A，p2 學 B。
+- 一對一：`[[0,1],[1,0],[0,0]]`，p0 學 B，p1 學 A，p2 學背景。
+
+p0 那一列，一對多是 `[1,0]`、一對一是 `[0,1]`，就是上一小節說的「相反的 target」。
+
+下面依完整程式整理，變數名相同，另加中文註解：
 
 ```python
-features = backbone(inputs)
-many_logits = many_head(features)
-one_logits = one_head(features.detach())
-loss = many_bce + one_bce
+features = backbone(inputs)                 # [3,4] → [3,4]
+many_logits = many_head(features)           # [3,2]
+one_logits = one_head(features.detach())    # [3,2]；輸入先 detach，梯度到這裡就停
+# targets() 把 owner 換成上面那兩個 [3,2] 的 0／1 target
+many_loss = F.binary_cross_entropy_with_logits(many_logits, targets(many_owner))
+one_loss = F.binary_cross_entropy_with_logits(one_logits, targets(one_owner))
+loss = many_loss + one_loss  # 完整程式沒有這個變數，直接寫 (many_loss + one_loss).backward()
 ```
 
-官方 YOLOv10 路徑對一對一分支的特徵做 detach：該分支仍訓練自己的 head，卻不直接把梯度送到共享 backbone。程式先只 backward 一對一 loss，assert backbone `.grad is None`、one head 梯度非零；再反傳總 loss，backbone 由一對多分支得到梯度，一次 step 更新兩個 head。detach 不能放在 head 輸出後，否則連 head 都學不到。
+官方 YOLOv10 程式的 detach 也放在同一個位置：一對一 head 的輸入。第 2 章說過，detach 保留數值，但把計算圖從這裡剪斷。所以一對一 head 仍會訓練自己的參數，它的 loss 卻完全不把梯度送回共享的 backbone。
 
-執行 `PYTHONPATH=. python lesson_cases/13-dual-assignment.py`，應得到 many owner `[0,0,1]`、global one owner `[1,0,-1]`、品質 1.73 對 1.10，以及梯度路徑確認。這是可獨立執行的 CPU 監督實驗，沒有宣稱 NMS-free AP 或推論速度。
+這和 12.2 不同。12.2 的分類、框兩條分支都要訓練共享特徵，所以不在分支前 detach。這裡共享特徵只交給一對多 head 訓練，和論文的說法一致：兩個 head 一起訓練，讓 backbone 與 neck（夾在 backbone 與 head 之間整理特徵的部分）享有一對多 assignment 提供的豐富監督。一對一 head 只在這份特徵上學「挑一個候選給高分」。論文正文沒有提到這個 detach，它是官方程式（head.py）的做法。
+
+完整程式分兩次反傳，確認梯度真的這樣走：
+
+1. 先只反傳一對一 loss，再用斷言（assert）確認 backbone 的 `.grad is None`，而一對一 head 的梯度不是零。
+2. 第二次反傳前，先用 `optimizer.zero_grad()` 清掉第一次的梯度，所以一對一 head 的梯度不會重複累加。接著反傳總 loss：backbone 這次有梯度，而且只來自一對多 head。最後做一次 `optimizer.step()`，斷言兩個 head 的權重都改變了。
+
+detach 不能放在 head 輸出後：梯度會在 head 的輸出就被剪斷，連 head 自己都學不到。
+
+執行 `PYTHONPATH=. python lesson_cases/13-dual-assignment.py`。前三行應印出一對多 owner `[0, 0, 1]`、全域一對一 owner `[1, 0, -1]`，以及全域最優與貪心的總品質 1.73 對 1.10；第四行英文的意思是「detach 過的一對一 head 只訓練自己，backbone 只由一對多 head 的 loss 訓練」，也就是上面的梯度路徑確認。這是可在 CPU 獨立執行的小實驗，只檢查 target 與梯度怎麼接；它沒有量測拿掉 NMS 後的 AP 或推論速度。
 
 ## 收益、代價與留下的問題
 
-一對多提供較多正樣本供共享特徵學習，一對一分支學會讓較少候選取得高分；推論若只保留後者，可以減少需要消除的重複。代價是訓練 head、assignment 與 loss 增加，特徵 detach 的位置也成為契約。兩套品質規則若差很大，可能選出互相矛盾的負責人；所以歷史設計強調 consistent 的度量。
+收益：共享特徵從一對多 head 得到較多正樣本的訊號；推論時只用一對一 head，不跑 NMS（NMS-free）。論文說，推論時丟掉一對多 head，所以部署時不增加推論成本。官方程式直接從一對一 head 取分數最高的 k 個框（預設最多 300 個），再用 score 門檻（拿每個框自己的分數去比）濾掉低分框；中間沒有 NMS 那種兩兩比 IoU、刪掉重疊框的步驟。這個推論時的 top-k，和訓練時每個 GT 取 top-1／top-10 的 assignment 是兩回事。
 
-常見錯誤是「只用一對一 target」卻叫 dual、兩分支共享同一個最後 head 卻給矛盾 labels、把一對一誤認成整張圖只准一個物件，以及把訓練 assignment 和 inference top-k 混用。是否已成功 NMS-free，必須進一步檢查held-out重複與漏檢，下一節先用人工已知框驗證原因。
+代價：訓練時多一個 head、多一套 assignment 和 loss。detach 的位置也要寫對：放在一對一 head 的輸入。放到 head 輸出後，一對一 head 就學不到；拿掉它，一對一 loss 也會改動 backbone。兩個 head 若用不同的品質規則，或像本例一樣用不同的選法，同一個候選可能在兩邊被教成不同的答案（本例的 p0）；所以 YOLOv10 讓兩邊用同一個品質公式，一對一再取每 GT top-1，讓每個 GT 在一對一選中的，就是它在一對多的第一名，縮小兩邊的差距。但這只對每個 GT 各自成立。例如把品質表改成 A＝0.95、0.90、0.10，B＝0.10、0.88、0.20：一對多時 A 選 p0、p1，B 選 p1、p2，p1 衝突，比品質（0.90 高於 0.88）歸 A；一對一時 A 取 p0、B 取 p1，p1 就歸 B，仍會在兩邊學相反的類別。
 
-自主練習：把B的p2品質改為.95。答案為全域配對A→p0、B→p2，總約1.85；one_owner要同步改為`[0,-1,1]`，many_owner仍是`[0,0,1]`。原先「optimal嚴格大於greedy」assert也要改為`abs(optimum-greedy_value)<1e-6`；兩者用同樣Python float求和，不拿float32／float64末位差異當提升。原先非最佳的貪心在這張表變得最佳，說明一個成功案例不能證明貪心總是正確。再把GT數改為4、候選仍3，應停止並重新定義允許unmatched GT的問題，不能用permutations悄悄丟掉一個物件。
+常見錯誤：
 
-來源查覈：2026-10-02。[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[作者官方 repository，固定 commit](https://github.com/THU-MIG/yolov10/tree/453c6e38a51e9d1d5a2aa5fb7f1014a711913397)、[雙分支與 detach 實作](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)。
+- 只用一對一 target 訓練，卻叫它 dual assignment：少了一對多 head，共享特徵就失去較多正樣本帶來的學習訊號。
+- 一對多、一對一共用同一個 head（同一組權重）：上面看過，p0 在一對多、一對一兩套 target 裡要學相反的類別；p2 在一對多要學 B（`[0,1]`），在一對一要學背景（`[0,0]`）。同一個輸出被要求相反的答案。就算照官方用 top-1，一對多每個 GT 最多選 10 個、一對一只選 1 個，像 p2 這種「一邊是正樣本、一邊是背景」的候選仍然很常見；所以官方替一對一另外複製了一份 head。
+- 把一對一誤認成整張圖只准一個物件：一對一是每個 GT 各配一個候選；圖上有兩個物件，就該有兩個正樣本。
+- 把訓練的 assignment 和推論的 top-k 混為一談：訓練時的 top-1／top-10 是每個 GT 各挑候選；推論的 top-k 是整張圖依分數取前 k 個框，它不知道哪些框屬於同一物件，本身不會刪重複（[13.2](13-nms-free.md) 有反例）。
 
-本例兩路共用同一quality表，只示意評分來源一致，不重現官方指數相容條件。兩個GT配三候選時，A先有3個選項，B剩2個，因此共3×2=6種；permutations列出這六種不同候選的配對，再找總品質最大。
+是否真的做到 NMS-free，要在沒參與訓練的資料（held-out）上檢查重複框與漏檢。下一節用位置已知的人工框，驗證「只把一個候選教成正樣本」是否真的讓重複框的分數變低，並比較拿掉 NMS 後的結果。
+
+自主練習：在 Colab 裡改「本節可修改的完整實驗」下面那一格程式；本機則改 `lesson_cases/13-dual-assignment.py`，兩者是同一份程式。
+
+1. 把 `main()` 裡 `quality` 的第二列 `[.88, .10, .20]` 改成 `[.88, .10, .95]`，也就是 B 對 p2 的品質改為 0.95。先手算：一對一的全域最優配法和總品質是多少？貪心呢？一對一、一對多的 owner 各變成什麼？完整程式的斷言寫死了原表的答案，直接執行會在斷言停下；想想哪幾個斷言要改、改成什麼。
+2. 再把 GT 改成 4 個（`quality` 改成 4 列，每列 3 個數），候選仍是 3 個。執行時會發生什麼事？應該怎麼處理？
+
+自己設計別的表時要留意：完整程式算一對多 owner 的 `many_owner = quality.masked_fill(~selected, -1).argmax(0)`，假設每個候選至少被一個 GT 選中。沒被任何 GT 選中的候選，那一欄全是 −1，`argmax` 會取第一列，把它算成 A（0），而不是背景（−1）；練習 1 的表三個候選都被選中，不受影響。
+
+??? note "參考答案"
+
+    **第 1 題**：六種配法的總品質依序是 1.00、1.85、1.73、1.80、0.98、0.20，最大的是 (0,2)：A→p0、B→p2，總和 0.90+0.95=1.85。`best=(0,2)` 翻成「每個候選歸誰」，一對一 owner 是 `[0,-1,1]`，不是 `[0,2,-1]`。一對多 owner 仍是 `[0,0,1]`：A 仍選 p0、p1，B 改選 p2、p0，p0 仍因 0.90 高於 0.88 歸 A。
+
+    新表最大的數是 0.95，所以貪心先給 B→p2，再給 A→p0，總和同樣是 1.85。原本不是最好的貪心，在這張表變成最好；一個成功的例子，不能證明貪心總是對的。
+
+    完整程式裡要改兩個斷言，`many_owner` 那一行不用改：
+
+    - `assert one_owner.tolist() == [1, 0, -1]` 改成 `assert one_owner.tolist() == [0, -1, 1]`。
+    - `assert optimum > greedy_value + 1e-7` 檢查「全域最優嚴格大於貪心」。新表兩者相等，這行會失敗；改成 `assert abs(optimum - greedy_value) < 1e-6`，意思是兩者相等。
+
+    改好後執行，第三行印出 `global quality=1.85; greedy quality=1.85`；一對一的 target 變了，最後一行的 one loss 也會跟著變。程式裡的 0.90、0.95 以 float32 儲存，存進去時有極小的捨入，所以實際算出 1.8499999642…，印出時才四捨五入成 1.85。這裡 `optimum` 和 `greedy_value` 是同樣兩個數相加，結果完全相同；用 `abs` 比較只是保險，極小的捨入誤差不能算成「全域比貪心好」。
+
+    另外，`greedy_value = float(quality[0, 0]) + float(quality[1, 2])` 是照原表的貪心結果（A→p0、B→p2）寫死的，程式並沒有真的跑貪心。這題的貪心剛好仍是 A→p0、B→p2，所以不用改；改其他格子時，要自己重算。
+
+    **第 2 題**：3 個候選排不出 4 個不同的位置，`permutations(range(3), 4)` 什麼都不產生，`max()` 會報 `ValueError`（Python 3.12 的訊息是 `max() iterable argument is empty`）。程式在第一次呼叫 `exact_one_to_one` 時就停下，後面的一對多與訓練都不會執行。這個報錯是對的：一對一不可能讓 4 個物件各拿一個候選，至少有一個 GT 沒有一對一正樣本，也就是沒配到候選的 GT（unmatched GT）。不要為了讓錯誤消失，改成只配其中 3 個 GT 卻不記錄丟了誰，那會讓一個物件被默默忽略。建議先明確允許 GT 沒配到，並把它們列出來；或增加候選數。這是本節建議的做法，不是 YOLOv10 的規則。
+
+來源查核：2026-10-02。[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[作者官方 repository，固定 commit](https://github.com/THU-MIG/yolov10/tree/453c6e38a51e9d1d5a2aa5fb7f1014a711913397)、[雙分支與 detach 實作](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)。
 
 <!-- curriculum-evidence:start -->
 
-## 本輪實際執行紀錄
+## 實際執行紀錄
 
-本節範例已於 2026-10-02 使用 PyTorch 2.9.1+cpu 在 CPU 執行，程式中的斷言全部通過。以下是該次輸出；人工輸入、短步更新與模型效果的意義仍依本頁說明區分。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
+本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
 
 ??? example "展開本次實際輸出"
 

@@ -1,5 +1,72 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 395" role="img" aria-labelledby="title desc">
-<title id="title">Area attention的連續token分區</title><desc id="desc">左圖四條水平帶、右圖兩條水平帶。Query0與token3同區，token15在其他區。圖上的分區與4乘4 row-major reshape一致。</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker></defs>
-<style>text{font-family:system-ui,sans-serif;fill:#172554;font-size:18px}.line{fill:none;stroke:#475569;stroke-width:2;marker-end:url(#arrow)}.node{fill:#eff6ff;stroke:#2563eb;stroke-width:2}</style>
-<rect width="710" height="395" fill="white"/><text x="28" y="28" font-weight="bold">4×4 positions，沿列由左到右編號</text><text x="30" y="62">A=4：每組 4 tokens</text><rect x="30" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="54" y="117">0</text><rect x="33" y="85" width="58" height="49" fill="none" stroke="#be123c" stroke-width="3"/><rect x="96" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="120" y="117">1</text><rect x="162" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="186" y="117">2</text><rect x="228" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="252" y="117">3</text><rect x="231" y="85" width="58" height="49" fill="none" stroke="#7c3aed" stroke-width="3"/><rect x="30" y="139" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="54" y="174">4</text><rect x="96" y="139" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="120" y="174">5</text><rect x="162" y="139" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="186" y="174">6</text><rect x="228" y="139" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="252" y="174">7</text><rect x="30" y="196" width="64" height="55" fill="#fef3c7" stroke="#94a3b8"/><text x="54" y="231">8</text><rect x="96" y="196" width="64" height="55" fill="#fef3c7" stroke="#94a3b8"/><text x="120" y="231">9</text><rect x="162" y="196" width="64" height="55" fill="#fef3c7" stroke="#94a3b8"/><text x="186" y="231">10</text><rect x="228" y="196" width="64" height="55" fill="#fef3c7" stroke="#94a3b8"/><text x="252" y="231">11</text><rect x="30" y="253" width="64" height="55" fill="#fae8ff" stroke="#94a3b8"/><text x="54" y="288">12</text><rect x="96" y="253" width="64" height="55" fill="#fae8ff" stroke="#94a3b8"/><text x="120" y="288">13</text><rect x="162" y="253" width="64" height="55" fill="#fae8ff" stroke="#94a3b8"/><text x="186" y="288">14</text><rect x="228" y="253" width="64" height="55" fill="#fae8ff" stroke="#94a3b8"/><text x="252" y="288">15</text><rect x="231" y="256" width="58" height="49" fill="none" stroke="#7c3aed" stroke-width="3"/><text x="360" y="62">A=2：每組 8 tokens</text><rect x="360" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="384" y="117">0</text><rect x="363" y="85" width="58" height="49" fill="none" stroke="#be123c" stroke-width="3"/><rect x="426" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="450" y="117">1</text><rect x="492" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="516" y="117">2</text><rect x="558" y="82" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="582" y="117">3</text><rect x="561" y="85" width="58" height="49" fill="none" stroke="#7c3aed" stroke-width="3"/><rect x="360" y="139" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="384" y="174">4</text><rect x="426" y="139" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="450" y="174">5</text><rect x="492" y="139" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="516" y="174">6</text><rect x="558" y="139" width="64" height="55" fill="#dbeafe" stroke="#94a3b8"/><text x="582" y="174">7</text><rect x="360" y="196" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="384" y="231">8</text><rect x="426" y="196" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="450" y="231">9</text><rect x="492" y="196" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="516" y="231">10</text><rect x="558" y="196" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="582" y="231">11</text><rect x="360" y="253" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="384" y="288">12</text><rect x="426" y="253" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="450" y="288">13</text><rect x="492" y="253" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="516" y="288">14</text><rect x="558" y="253" width="64" height="55" fill="#dcfce7" stroke="#94a3b8"/><text x="582" y="288">15</text><rect x="561" y="256" width="58" height="49" fill="none" stroke="#7c3aed" stroke-width="3"/><text x="30" y="340">紅線：query 0；紫線：可干預的 token 3、15</text><text x="30" y="372">A=4：0 可讀 3；A=2：0 可讀 0–7；兩者都無法直接讀 15</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 528" role="img" aria-labelledby="title desc">
+ <title id="title">Area attention 的連續 token 分區</title>
+ <desc id="desc">示意圖：每格代表一個位置（token），格子等大，只表示排列順序，不是畫素座標。16 個 token 排成 4×4，逐列由左到右編號 0 到 15（row-major）。A 是區域數，也就是程式裡的 areas；底色相同、沒有被粗線隔開的格子在同一區。左圖 A=4，每區 4 個 token，四區是四條水平帶：0–3、4–7、8–11、12–15。右圖 A=2，每區 8 個 token，兩區是 0–7 與 8–15。兩圖都用紅框標出 query，也就是 token0；用紫框標出本節會改動的 token：15 是主實驗，3 是練習。A=4 時 token0 可讀 0–3；A=2 時可讀 0–7；兩種分法都讀不到 token15。</desc>
+ <rect width="720" height="528" fill="#f8fafc"/>
+ <!-- A=4：token i 在第 i // 4 區；格子左上角 (24+78·欄, 134+62·列)。 -->
+ <g stroke="#94a3b8" stroke-width="1">
+  <rect x="24" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="102" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="180" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="258" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="24" y="196" width="76" height="60" fill="#dcfce7"/>
+  <rect x="102" y="196" width="76" height="60" fill="#dcfce7"/>
+  <rect x="180" y="196" width="76" height="60" fill="#dcfce7"/>
+  <rect x="258" y="196" width="76" height="60" fill="#dcfce7"/>
+  <rect x="24" y="258" width="76" height="60" fill="#fef3c7"/>
+  <rect x="102" y="258" width="76" height="60" fill="#fef3c7"/>
+  <rect x="180" y="258" width="76" height="60" fill="#fef3c7"/>
+  <rect x="258" y="258" width="76" height="60" fill="#fef3c7"/>
+  <rect x="24" y="320" width="76" height="60" fill="#e2e8f0"/>
+  <rect x="102" y="320" width="76" height="60" fill="#e2e8f0"/>
+  <rect x="180" y="320" width="76" height="60" fill="#e2e8f0"/>
+  <rect x="258" y="320" width="76" height="60" fill="#e2e8f0"/>
+ </g>
+ <path d="M16 195H342M16 257H342M16 319H342" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none"/>
+ <rect x="28" y="138" width="68" height="52" fill="none" stroke="#dc2626" stroke-width="3.5"/>
+ <rect x="262" y="138" width="68" height="52" fill="none" stroke="#7c3aed" stroke-width="3.5"/>
+ <rect x="262" y="324" width="68" height="52" fill="none" stroke="#7c3aed" stroke-width="3.5"/>
+ <!-- A=2：token i 在第 i // 8 區；格子左上角 (386+78·欄, 134+62·列)。 -->
+ <g stroke="#94a3b8" stroke-width="1">
+  <rect x="386" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="464" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="542" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="620" y="134" width="76" height="60" fill="#dbeafe"/>
+  <rect x="386" y="196" width="76" height="60" fill="#dbeafe"/>
+  <rect x="464" y="196" width="76" height="60" fill="#dbeafe"/>
+  <rect x="542" y="196" width="76" height="60" fill="#dbeafe"/>
+  <rect x="620" y="196" width="76" height="60" fill="#dbeafe"/>
+  <rect x="386" y="258" width="76" height="60" fill="#dcfce7"/>
+  <rect x="464" y="258" width="76" height="60" fill="#dcfce7"/>
+  <rect x="542" y="258" width="76" height="60" fill="#dcfce7"/>
+  <rect x="620" y="258" width="76" height="60" fill="#dcfce7"/>
+  <rect x="386" y="320" width="76" height="60" fill="#dcfce7"/>
+  <rect x="464" y="320" width="76" height="60" fill="#dcfce7"/>
+  <rect x="542" y="320" width="76" height="60" fill="#dcfce7"/>
+  <rect x="620" y="320" width="76" height="60" fill="#dcfce7"/>
+ </g>
+ <path d="M378 257H704" stroke="#334155" stroke-width="3" stroke-linecap="round" fill="none"/>
+ <rect x="390" y="138" width="68" height="52" fill="none" stroke="#dc2626" stroke-width="3.5"/>
+ <rect x="624" y="138" width="68" height="52" fill="none" stroke="#7c3aed" stroke-width="3.5"/>
+ <rect x="624" y="324" width="68" height="52" fill="none" stroke="#7c3aed" stroke-width="3.5"/>
+ <rect x="25" y="405" width="22" height="22" fill="#ffffff" stroke="#dc2626" stroke-width="3.5"/>
+ <rect x="25" y="443" width="22" height="22" fill="#ffffff" stroke="#7c3aed" stroke-width="3.5"/>
+ <g font-family="sans-serif" font-size="22" fill="#0f172a">
+  <text x="24" y="40" font-size="24" font-weight="700">16 個 token 排成 4×4，逐列由左到右編號 0–15</text>
+  <text x="24" y="78">A＝區域數 areas；底色相同的格子屬於同一區，粗線是區域邊界</text>
+  <text x="24" y="118">A=4：每區 4 個 token</text>
+  <text x="386" y="118">A=2：每區 8 個 token</text>
+  <text x="58" y="424">紅框：query 0</text>
+  <text x="58" y="462">紫框：本節會改動的 token（15 是主實驗，3 是練習）</text>
+  <text x="24" y="508">A=4：0 可讀 0–3；A=2：0 可讀 0–7；兩者都讀不到 15</text>
+ </g>
+ <g font-family="sans-serif" font-size="24" fill="#0f172a" text-anchor="middle">
+  <text x="62" y="173">0</text><text x="140" y="173">1</text><text x="218" y="173">2</text><text x="296" y="173">3</text>
+  <text x="62" y="235">4</text><text x="140" y="235">5</text><text x="218" y="235">6</text><text x="296" y="235">7</text>
+  <text x="62" y="297">8</text><text x="140" y="297">9</text><text x="218" y="297">10</text><text x="296" y="297">11</text>
+  <text x="62" y="359">12</text><text x="140" y="359">13</text><text x="218" y="359">14</text><text x="296" y="359">15</text>
+  <text x="424" y="173">0</text><text x="502" y="173">1</text><text x="580" y="173">2</text><text x="658" y="173">3</text>
+  <text x="424" y="235">4</text><text x="502" y="235">5</text><text x="580" y="235">6</text><text x="658" y="235">7</text>
+  <text x="424" y="297">8</text><text x="502" y="297">9</text><text x="580" y="297">10</text><text x="658" y="297">11</text>
+  <text x="424" y="359">12</text><text x="502" y="359">13</text><text x="580" y="359">14</text><text x="658" y="359">15</text>
+ </g>
+</svg>

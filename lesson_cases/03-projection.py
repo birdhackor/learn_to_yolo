@@ -32,6 +32,17 @@ def main():
     print(f"input={tuple(image.shape)}, main={tuple(block.branch(image).shape)}, "
           f"projection={tuple(block.projection(image).shape)}, output={tuple(output.shape)}")
     print(f"first output channel={output[0, 0].detach().tolist()}; 1*1 + 2*10 + 3*100 = 321")
+    # Position probe: the constant image cannot show which positions P reads. Here input
+    # channel 0 holds 10*row + col and channels 1, 2 stay 0; its weight is 1, so each value
+    # in the first output channel is the value P read (tens digit = row, units digit = col).
+    probe = torch.zeros(1, 3, 4, 4)
+    for row in range(4):
+        for col in range(4):
+            probe[0, 0, row, col] = 10 * row + col
+    probe_output = block(probe)[0, 0].detach()
+    assert torch.equal(probe_output, torch.tensor([[0.0, 2.0], [20.0, 22.0]]))  # rows/cols 0, 2
+    print(f"position probe (input channel 0 = 10*row + col): "
+          f"first output channel={probe_output.tolist()}")
 
     learned = ProjectionBlock()
     inputs = torch.randn(2, 3, 4, 4)

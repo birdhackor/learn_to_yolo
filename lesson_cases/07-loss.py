@@ -26,9 +26,13 @@ def main():
     assert (prediction.grad[~pos][..., 5:] == 0).all()
     assert torch.allclose(prediction.grad[..., 4][pos], torch.full((1,), -1/32))
     assert torch.allclose(prediction.grad[..., 4][~pos], torch.full((15,), 1/32))
+    # Positive-cell class gradient: (softmax - one-hot) / Npositive = [-.5, .5].
+    # An extra softmax before cross_entropy (a common mistake) would give [-.25, .25].
+    assert torch.allclose(prediction.grad[0, 1, 1, 5:], torch.tensor([-.5, .5]))
     print({k: round(v.item(), 6) for k, v in parts.items()})
     print('positive/background objectness gradients',
           prediction.grad[0, 1, 1, 4].item(), prediction.grad[0, 0, 0, 4].item())
+    print('positive-cell class gradients', prediction.grad[0, 1, 1, 5:].tolist())
     empty = {"boxes": torch.empty(0, 4), "labels": torch.empty(0, dtype=torch.long)}
     empty_pred = torch.zeros(1, 4, 4, 7, requires_grad=True)
     empty_parts = grid_loss(empty_pred, build_targets([empty], 4, 64, 2))

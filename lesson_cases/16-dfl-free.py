@@ -41,11 +41,12 @@ def main():
     dfl_target = torch.zeros(k)
     dfl_target[1], dfl_target[2] = .75, .25
     assert torch.allclose((dfl_target * torch.arange(k)).sum(), target[0, 0])
-    points = torch.tensor([[80., 80.]])
+    # Candidate point: center of feature cell column 10, row 10, i.e. ((10+.5)*8, (10+.5)*8).
+    points = torch.tensor([[84., 84.]])  # pixel x,y
     decoded = decode(points, distance.detach(), stride=8)
-    assert torch.allclose(decoded, torch.tensor([[70., 60., 224., 104.]]), atol=1e-3)
+    assert torch.allclose(decoded, torch.tensor([[74., 64., 228., 108.]]), atol=1e-3)
     signed_box = decode(points, torch.tensor([[-1., 2., 3., 4.]]), stride=8)
-    assert torch.allclose(signed_box, torch.tensor([[88., 64., 104., 112.]]))
+    assert torch.allclose(signed_box, torch.tensor([[92., 68., 108., 116.]]))
     assert (signed_box[..., 2:] > signed_box[..., :2]).all()
     b, p, classes = 1, 100, 2
     raw_dfl = torch.zeros(b, p, 4 * k + classes)

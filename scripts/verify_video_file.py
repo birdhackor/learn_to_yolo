@@ -22,6 +22,7 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from miniyolo.provenance import machine_info, repo_dependencies  # noqa: E402
 
 
 def load_lesson(sid):
@@ -37,7 +38,7 @@ def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def verify(output):
+def verify(output, record=None):
     started = time.perf_counter()
     torch.set_num_threads(2)
     video = load_lesson("18-video")
@@ -112,12 +113,15 @@ def verify(output):
     from_file[0]["image"].save(output / "first-overlay.png")
     report = {
         "verified_at_utc": datetime.now(timezone.utc).isoformat(),
-        "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "code_commit_scope": "Base checkout commit before the extension is committed; script and lesson SHA-256 identify the executed working-tree bytes",
+        # The code is identified by dependencies_sha256; the commit is extra context (None outside a git checkout).
+        "code_commit": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip() or None,
+        "code_commit_scope": "Commit of the checkout (None outside git); dependencies_sha256 identifies the executed files",
         "script_sha256": sha256(__file__),
         "lesson_case_sha256": {sid: sha256(ROOT / f"lesson_cases/{sid}.py")
                                for sid in ("18-video", "19-tracking")},
-        "device": "cpu", "torch": str(torch.__version__), "numpy": str(np.__version__),
+        "dependencies_sha256": repo_dependencies(__file__, ROOT / "lesson_cases/18-video.py",
+                                                 ROOT / "lesson_cases/19-tracking.py"),
+        "device": "cpu", "machine": machine_info(), "torch": str(torch.__version__), "numpy": str(np.__version__),
         "opencv": str(cv2.__version__), "model_parameters": sum(p.numel() for p in model.parameters()),
         "training": {"steps": 160, "samples": 32, "seed": 7, "data_seed": 4100,
                      "batch_size": 8, "optimizer": "Adam", "learning_rate": .01},
@@ -137,17 +141,19 @@ def verify(output):
         "verification_timing_scope": "Inside verify(), including fixture encoding, decoding and resource checks, model initialization/training, two inference streams, tracking, first-overlay save and hashes; excludes imports, process startup and final JSON write",
         "limits": "Controlled lossless generated video, CPU only; no physical camera, lossy MP4/color-space parity, variable-frame-rate PTS, live/network latency or formal throughput benchmark",
     }
-    destination = ROOT / "artifacts/checks/curriculum/video-file.json"
-    destination.write_text(json.dumps(report, indent=2) + "\n")
     (output / "result.json").write_text(json.dumps(report, indent=2) + "\n")
+    if record is not None:
+        Path(record).write_text(json.dumps(report, indent=2) + "\n")
     return report
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/runs/video-file")
+    parser.add_argument("--record", type=Path,
+                        help="also write the website record, e.g. artifacts/checks/curriculum/video-file.json")
     args = parser.parse_args()
-    print(json.dumps(verify(args.output), indent=2))
+    print(json.dumps(verify(args.output, args.record), indent=2))
 
 
 if __name__ == "__main__":

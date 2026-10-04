@@ -53,22 +53,25 @@ def main():
     fill(logits, 3, 0, [.5, .5, .125, .125], .95, [.9, .1])
     boxes, scores, labels = decode(logits)
     assert len(boxes) == 3
-    assert torch.allclose(boxes[1], torch.tensor([28., 24., 44., 32.]), atol=1e-5)
+    # hand-computed boxes, in grid order (row, then col) rather than fill order: cells (1,1), (1,2), (3,0)
+    expected_boxes = torch.tensor([[23.2, 24., 39.2, 32.], [28., 24., 44., 32.], [4., 52., 12., 60.]])
+    assert torch.allclose(boxes, expected_boxes, atol=1e-5)
     assert torch.allclose(scores, torch.tensor([.64, .72, .855]), atol=1e-6)
     overlap = iou(boxes[1], boxes[:1]).item()
     assert abs(overlap - 7 / 13) < 1e-5
     kept = class_nms(boxes, scores, labels)
     assert kept.tolist() == [2, 1]
-    print(f"candidate_boxes={boxes.tolist()}")
+    # round in float64 to print the hand-computed 23.2 and 4.0 (float32 holds 23.200000762... and 3.9999995...)
+    print(f"candidate_boxes={boxes.double().round(decimals=3).tolist()}")
     print(f"scores={[round(s.item(), 3) for s in scores]}, duplicate_IoU={overlap:.4f}")
     print(f"NMS keep_indices={kept.tolist()}, kept_scores={[round(s.item(), 3) for s in scores[kept]]}")
     strict_boxes, strict_scores, _ = decode(logits, score_threshold=.75)
     assert len(strict_boxes) == 1 and torch.allclose(strict_boxes[0], boxes[2])
     print(f"threshold .75 keeps only artificial false positive, score={strict_scores.item():.3f}")
     # Independent exercises: preserve the baseline arrays, thresholds, and assertions.
-    keep06 = class_nms(boxes, scores, labels, threshold=.6)
-    assert keep06.tolist() == [2, 1, 0]
-    print(f"exercise NMS .6 keeps original candidate indices={keep06.tolist()}")
+    keep_iou06 = class_nms(boxes, scores, labels, threshold=.6)
+    assert keep_iou06.tolist() == [2, 1, 0]
+    print(f"exercise NMS .6 keeps original candidate indices={keep_iou06.tolist()}")
     boxes70, scores70, labels70 = decode(logits, score_threshold=.70)
     assert len(boxes70) == 2 and labels70.tolist() == [0, 0]
     assert torch.allclose(scores70, torch.tensor([.72, .855]), atol=1e-6)

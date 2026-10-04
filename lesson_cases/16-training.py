@@ -10,7 +10,7 @@ def weights(epoch, epochs, final_many=.1):
     return many, 1 - many
 
 
-def train(progressive, epochs=30, final_many=.1):
+def train(progressive, epochs=30, final_many=.1, fixed_weights=(.8, .2)):
     torch.manual_seed(7)  # paired initialization and fixed data
     features = torch.tensor([[-1.], [0.], [1.], [2.]])
     target = 2 * features + 1
@@ -19,7 +19,7 @@ def train(progressive, epochs=30, final_many=.1):
     history = []
     first_step = {}
     for epoch in range(epochs):
-        a, b = weights(epoch, epochs, final_many) if progressive else (.8, .2)
+        a, b = weights(epoch, epochs, final_many) if progressive else fixed_weights
         optimizer.zero_grad()
         lm = F.mse_loss(many(features), target)
         one_prediction = one(features)
@@ -39,20 +39,35 @@ def train(progressive, epochs=30, final_many=.1):
     return F.mse_loss(one(features), target).item(), history, first_step
 
 
+def total_one_weight(history):
+    """Sum of the one-head loss weight b over all epochs of one run."""
+    return sum(b for _, b, _ in history)
+
+
 def main():
     torch.manual_seed(7)
     torch.set_num_threads(2)
     final_many = .1  # Change only this value to .3 for the schedule exercise.
-    fixed, _, _ = train(False)
+    fixed, fixed_history, _ = train(False)
     progressive, history, first_step = train(True, final_many=final_many)
     assert abs(history[0][0] - .8) < 1e-7 and abs(history[-1][0] - final_many) < 1e-7
+    # The heads are independent: a scales only the many head's gradient, b only the one head's.
+    # Matched control: fixed weights with the schedule's sum of b. Against fixed .8/.2 the schedule
+    # differs in both shape and sum of b; against this control only the shape differs.
+    matched_one = total_one_weight(history) / len(history)
+    matched_weights = (1 - matched_one, matched_one)
+    matched, matched_history, _ = train(False, fixed_weights=matched_weights)
+    assert abs(total_one_weight(matched_history) - total_one_weight(history)) < 1e-9
     actual = torch.tensor([first_step[k] for k in ('weight', 'bias', 'one_mse', 'weighted_dw', 'weighted_dbias', 'updated_weight', 'updated_bias')])
     expected = torch.tensor([.318423, .313781, 5.866377, -1.146190, -.610803, .375733, .344321])
     assert torch.allclose(actual, expected, atol=2e-6, rtol=1e-6)
-    assert progressive < fixed
     print('many/one weight first:', tuple(round(v, 3) for v in history[0][:2]))
     print('many/one weight last:', tuple(round(v, 3) for v in history[-1][:2]))
-    print(f'one-head MSE fixed={fixed:.6f}, progressive={progressive:.6f}')
+    runs = ((f'fixed many/one {tuple(round(v, 3) for v in fixed_history[0][:2])}', fixed, fixed_history),
+            ('progressive', progressive, history),
+            (f'matched fixed many/one {tuple(round(v, 3) for v in matched_weights)}', matched, matched_history))
+    for name, mse, run_history in runs:
+        print(f'{name}: sum of b={total_one_weight(run_history):.3f}, one-head MSE={mse:.6f}')
     print('one-head first forward/backward/step:', json.dumps(first_step))
     # STAL-style eligibility only: retain the actual GT for regression.
     gt = torch.tensor([7., 7., 9., 9.])

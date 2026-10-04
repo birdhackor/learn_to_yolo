@@ -1,8 +1,8 @@
 # learn_to_yolo 的 Git LFS 準備建議
 
-> 這是研究代理在子任務當時的查核報告。後續整合已套用前置配置並下載部分資料；目前狀態與操作步驟請以「前置準備」頁為準。
+> 本頁記錄 GitHub 與 Git LFS 規則的查核，以及據此整理的使用建議；本 repo 實際採用的 LFS 路徑、封裝、驗證結果與操作步驟，見〈[發布與帳號設定](../preparation/publish.md)〉的 Git LFS 一節。
 
-查核日期：2026-10-02 UTC。研究範圍只使用 GitHub 與 Git LFS 專案官方文件。本文件是建議，未修改 `birdhackor/learn_to_yolo`、Git 設定、LFS tracking 或遠端狀態；未登入、push、發佈或下載 dataset。檢查時 checkout 只有 `.git` 與空的 `README.md`，尚無資產需要遷移。
+查核日期：2026-10-02 UTC。研究範圍只使用 GitHub 與 Git LFS 專案官方文件。
 
 ## 結論與課程資產分工
 
@@ -30,25 +30,25 @@
 | LFS 帳單形式 | 預付 data packs 已改為按使用量計費；bandwidth 的免費額度每 billing cycle 重置；storage 依每小時占用累計 | 舊文常見的 1 GB + 1 GB／預購 packs 不應用於新規劃 |
 | LFS storage | 每個完整檔案版本計入 owner storage；500 MB 檔案即使只改 1 byte，新版本仍再占約 500 MB | 把資料 pack 做成低頻更新的不可變版本；不要每次訓練都推 checkpoint |
 | LFS bandwidth | 下載計入 owner；上傳不計 bandwidth；Actions 下載及包含 LFS 的 archive 下載也計 bandwidth；fork／pull 仍影響 parent owner | 公開課程的讀者數，比單次資料大小更容易形成負擔 |
-| 超額／budget | `$0` budget 超額會阻止 LFS 使用；刪除 budget 意味沒有 spending limit；無有效付款方式在額度用完後阻止使用 | 不自動調整帳單或預算；首次遠端試驗前由 owner 核對目前額度與 budget |
+| 超額／budget | `$0` budget 超額會阻止 LFS 使用；刪除 budget 意味沒有 spending limit；無有效付款方式在額度用完後阻止使用 | 不自動調整帳單或預算；上傳前由 owner 核對目前額度與 budget |
 
 上述分別見 [S1]–[S3]。單檔上限原文使用 **GB**，LFS 專用 billing 頁的免費額度使用 **GiB**，此處保留原文單位。一般「included product usage」表顯示 GB，本建議以 LFS 專用頁為額度來源。
 
-GitHub 官方計算器目前列額外 storage **US$0.07／GiB**、額外 data transfer out **US$0.0875／GiB**；storage 的月份成本依 billing 文件按 GiB-hours 換算 GiB-months。[S3][S10] 計算器同頁仍有「In the future ... switch to metered billing」舊措辭；是否已採按量計費以目前 billing 文件的明確說明為準。實際付款與 budget 設定應以 owner 的帳單頁為準，本研究沒有開啟或修改帳單設定。
+GitHub 官方計算器目前列額外 storage **US$0.07／GiB**、額外 data transfer out **US$0.0875／GiB**；storage 的月份成本依 billing 文件按 GiB-hours 換算 GiB-months。[S3][S10] 計算器同頁仍有「In the future ... switch to metered billing」舊措辭；是否已採按量計費以目前 billing 文件的明確說明為準。實際付款與 budget 設定應以 owner 的帳單頁為準。
 
 例：如果一個子集為 **500 MiB**，10 GiB 免費下載額度只約等於 **20 次**完整下載；200 位讀者各下載一次約為 97.66 GiB。這還沒算其他 repo、CI 或重複下載。分章、只下載選定路徑，以及在讀者自己的 runtime／Drive 保留快取都有實際意義。
 
-刪掉目前工作樹檔案或增加 `.gitignore`，不會移除 Git 歷史內的 blob，也不會保證清除歷史 LFS storage。LFS 官方 FAQ 明確說只對既有檔案加入 tracking 並重新 stage，不會修改歷史；完整 migration 會重寫歷史。[S8] 本 repo 目前沒有需要 migration 的資產，不應為準備工作先執行 `git lfs migrate --everything` 或 force push。
+刪掉目前工作樹檔案或增加 `.gitignore`，不會移除 Git 歷史內的 blob，也不會保證清除歷史 LFS storage。LFS 官方 FAQ 明確說只對既有檔案加入 tracking 並重新 stage，不會修改歷史；完整 migration 會重寫歷史。[S8] 本 repo 的一般 Git 歷史沒有需要遷移的大檔；不要為了改用 LFS 執行 `git lfs migrate --everything` 或 force push。
 
 ## GitHub Pages 的界線
 
-GitHub 官方明文：**“Git LFS cannot be used with GitHub Pages sites.”**[S2] Pages 提供教材 HTML、圖片、Colab 按鈕與資料下載說明；dataset／模型由 Colab 透過選定 LFS 路徑或外部來源取得。不要把 LFS pointer 路徑當作 Pages 的 dataset URL，也不要把 LFS 當成 Pages 的資料 CDN。
+GitHub 官方明文：**“Git LFS cannot be used with GitHub Pages sites.”**[S2] Pages 提供教材 HTML、圖片、Colab 按鈕與資料下載說明；dataset／模型在需要時由 Colab 透過選定 LFS 路徑或外部來源取得。不要把 LFS pointer 路徑當作 Pages 的 dataset URL，也不要把 LFS 當成 Pages 的資料 CDN。
 
-Pages 已發佈站點還有 **1 GB** 上限、**100 GB／月** soft bandwidth limit 等限制。[S9] 自訂 Actions build 可自行下載 LFS 成實體檔，但下載仍計 LFS bandwidth，輸出仍受 Pages 限制；不能因此宣稱 Pages 直接支援 LFS，亦不建議用這條路發布 dataset。若需要大檔發行，GitHub 官方也提出 Releases 作為散布二進位檔的選項。[S1] 本研究未建立 Release 或上傳資產。
+Pages 已發佈站點還有 **1 GB** 上限、**100 GB／月** soft bandwidth limit 等限制。[S9] 自訂 Actions build 可自行下載 LFS 成實體檔，但下載仍計 LFS bandwidth，輸出仍受 Pages 限制；不能因此宣稱 Pages 直接支援 LFS，亦不建議用這條路發布 dataset。若需要大檔發行，GitHub 官方也提出 Releases 作為散布二進位檔的選項。[S1]
 
-## 建議 `.gitattributes` 模式（尚未套用）
+## `.gitattributes` 模式建議
 
-先保留明確的小範圍資產目錄，只針對已選定的用途追蹤。例如：
+本 repo 的 `.gitattributes` 只對 `data/curated/**`、`artifacts/checkpoints/**`、`artifacts/exports/**` 三個專用路徑啟用 LFS。挑選這類路徑時，先保留明確的小範圍資產目錄，只針對已選定的用途追蹤。例如：
 
 ```gitattributes
 data/lfs/mini-voc/*.tar.gz filter=lfs diff=lfs merge=lfs -text
@@ -57,25 +57,25 @@ artifacts/reference/*.pt filter=lfs diff=lfs merge=lfs -text
 artifacts/reference/*.onnx filter=lfs diff=lfs merge=lfs -text
 ```
 
-這些是規劃目錄，不是 repo 中已存在的路徑。只加入真的會使用的行，不必為未選修的部署或影片預先放資產。若一章只有一個確定的 archive，也可把 pattern 限定到確切檔名。避免全 repo 的 `*.jpg`、`*.png`、`*.zip`、`*.pt`，以免把網站圖、其他小檔或使用者生成輸出一起變成 LFS。路徑名稱統一小寫；matching 有大小寫區別。[S8]
+這些是示意路徑，repo 中沒有這些目錄。只加入真的會使用的行，不必為未選修的部署或影片預先放資產。若一章只有一個確定的 archive，也可把 pattern 限定到確切檔名。避免全 repo 的 `*.jpg`、`*.png`、`*.zip`、`*.pt`，以免把網站圖、其他小檔或使用者生成輸出一起變成 LFS。路徑名稱統一小寫；matching 有大小寫區別。[S8]
 
-官方建議將 `.gitattributes` 一起 commit，讓 fresh clone／fork 可重現相同 tracking，而不依賴作者的 global attributes。[S4] 同時需要 `.gitignore` 忽略下載的外部完整 dataset、runtime cache、個人訓練輸出；具體 ignore 路徑待教材目錄確定後再設定。
+官方建議將 `.gitattributes` 一起 commit，讓 fresh clone／fork 可重現相同 tracking，而不依賴作者的 global attributes。[S4] 同時用 `.gitignore` 忽略下載的外部完整 dataset、runtime cache 與個人訓練輸出；本 repo 分別是 `data/downloads/`、`.cache/` 與 `artifacts/runs/`。
 
 ## 本地到遠端：按步驟完成的建議
 
-以下是後續實作建議，**此研究未執行**：
+以下步驟從本地檢查到遠端下載，逐步確認 LFS 可用。本 repo 的本地與遠端驗證紀錄分別是 `data/local-lfs-verification.json` 與 `data/remote-lfs-verification.json`。在本 repo 新增 LFS asset 時，還要先在 `data/manifest.json` 的 `lfs_assets` 登記一筆（`scripts/verify_remote_lfs.py` 只對這份清單裡的檔案核對大小與 SHA-256），實際步驟見〈[發布與帳號設定](../preparation/publish.md)〉的 Git LFS 一節。
 
-1. 先列出首章實際需要的檔案、bytes、來源、可散布條件、SHA-256、與教材版本的關係。先挑一個小而真實的 asset 作端到端試驗，避免用完整 dataset 驗證 LFS。
+1. 先列出要放進 LFS 的檔案，記下各自的 bytes、來源、可散布條件、SHA-256 與教材版本的關係。先挑一個小而真實的 asset 作端到端試驗，避免用完整 dataset 驗證 LFS。
 2. 檢查 `git lfs version`。Git LFS 是另行安裝的程式，只有 Git 並不足夠。[S5] 若需初始化，明確選 `git lfs install --local`，不用全域設定；若 repo 已有 hooks，按 Git LFS 的 `--manual` 指引整合，不盲目 `--force` 覆蓋。[S6]
 3. 對選定路徑執行如 `git lfs track 'data/lfs/mini-voc/*.tar.gz'`，檢查生成的 `.gitattributes`；stage `.gitattributes` 與該測試 asset。`git show :path/to/file` 應看到 `version https://git-lfs.github.com/spec/v1`、`oid sha256:...`、`size ...` 的 pointer，而不是檔案內容。[S2][S4]
 4. 本地檢查 `git lfs status`、`git lfs ls-files`，在完整持有本次測試 objects 的測試 repo 中執行 `git lfs fsck --dry-run`，並比較原檔 checksum。這能證明 pointer／本地 object 一致；若另在隔離本地 repo 測 clone／還原，也仍只證明本地環節。
-5. 遠端上傳是另一項檢查：需要實際 owner／collaborator 的寫入權限、GitHub LFS endpoint 可達、未用盡配額與合適 budget。現有 HTTPS Git read 或本地 LFS 成功都不能取代此項驗證；本研究沒有 push，遠端上傳未驗證。
-6. 在未來已授權的上傳完成後，使用乾淨 clone、跳過 smudge、只 `pull` 該測試路徑，確認大小與 SHA-256，再測最小讀檔／影像解碼。這才證明 GitHub LFS 實際可供讀者使用。Git commit 可見而 LFS object 缺失仍會造成讀者只拿到 pointer 或下載失敗。
+5. 遠端上傳是另一項檢查：需要實際 owner／collaborator 的寫入權限、GitHub LFS endpoint 可達、未用盡配額與合適 budget。能以 HTTPS 讀取 repo，或本地 LFS 測試成功，都不能取代這項驗證。
+6. 上傳完成後，使用乾淨 clone、跳過 smudge、只 `pull` 該測試路徑，確認大小與 SHA-256，再測最小讀檔／影像解碼。這才證明 GitHub LFS 實際可供讀者使用。Git commit 可見而 LFS object 缺失仍會造成讀者只拿到 pointer 或下載失敗。
 7. 確認小試驗後才納入首個資料 pack；在教材中標示 archive 大小、下載量與可選性。持續保存可重現的資料 manifest，避免為小修改重製大型 archive。
 
-## Colab 的選定下載範本（尚未執行）
+## Colab 的選定下載範本
 
-目前 repo 沒有 `mini-voc-v1.tar.gz` 或對應 manifest，下列為未來 notebook 的範本。每章替換成實際路徑，**不要直接把不存在的路徑當成已驗證 setup**：
+教材各節 notebook 的環境格以 `GIT_LFS_SKIP_SMUDGE=1` clone 固定的 tag，不下載 LFS 資料。需要某個 LFS 檔時，可照下列範本只取那一個檔；範本以示意路徑 `data/lfs/mini-voc/mini-voc-v1.tar.gz` 為例，repo 中沒有這個檔與對應的 manifest。使用時換成實際路徑，**不要直接把不存在的路徑當成已驗證 setup**。範本 clone 的是預設分支；在教材的 notebook 裡用時，改成 clone 固定的發布 tag（`git clone --branch <tag>`），才能確定取得的 LFS 檔和該版教材一致。
 
 ```bash
 %%bash

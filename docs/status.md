@@ -1,49 +1,97 @@
-# 這版驗證了什麼，還缺什麼
+# 驗證範圍與後續實驗
 
-把「程式執行成功」、「模型學到合成圖形」、「真實照片上的效果」分開，讀者才能知道結果支援哪個結論。
+教材裡的「通過」和各種數字，能證明的事不一樣。本頁把「程式執行成功」、「模型學到合成圖形」、「真實照片上的效果」分開，讀完你會知道每種結果能支持哪個結論，以及哪些事沒有驗證。
+
+每節頁面最下方的「實際執行紀錄」，就是該節程式跑出的輸出，並寫明那次執行的日期、CPU 型號與 PyTorch 版本；這些紀錄怎麼產生、什麼時候重跑，見下方〈執行紀錄〉。
+
+**第一次讀：**先看開頭和表格每列的最後一欄就好；讀完第 7、8、20 章後，再回來看其餘部分。
 
 ## 各種結果各代表什麼
 
-| 結果型別 | 本版用途 | 可以支援的結論 |
-| --- | --- | --- |
-| 人工已知答案 | 座標、target、NMS、AP、assignment、DFL 等 | 此實作在所列例子符合定義；不是學得的效果 |
-| CPU 短步更新 | 檢查 loss 有限、gradient 連得上、參數確實更新 | 訓練程式可跑；少數步驟不代表已收斂 |
-| 固定合成資料短訓練 | 小 MiniYOLO 與獨立 seed 的幾何圖形 | 此模型能學這個受控任務；不能外推到真實影像 |
-| L4訓練／checkpoint／TensorRT數值 | 已完成小規模實測 | 原專案模型能在CUDA更新、持久保存恢復及跨runtime核對；不是正式速度比較 |
-| 真實資料完整對照 | 未完成；Fashion僅40步管線檢查 | 真實偵測AP、泛化、各機制效果差異與正式GPU效率仍待測 |
+表格前兩列屬於「程式執行成功」，第 3 列屬於「模型學到合成圖形」，第 4 列是 GPU 訓練、存檔續訓與匯出模型的工程檢查，第 5 列才是「真實照片上的效果」。
 
-[全套實驗與審查清單](validation/curriculum.md)列出42節逐項紀錄及補充訓練。各節 notebook 儲存其 CPU 實驗的文字輸出。這些輸出來自對應程式；演示用人工高分框會明說來源。沒有訓練的模型畫出框，只代表管線能接起來。
+| 結果類型 | 做了什麼 | 能支持的結論 |
+| --- | --- | --- |
+| 人工已知答案 | 用答案事先算好的小例子，檢查座標、target、NMS、AP、assignment、DFL 等計算 | 程式在這些例子上符合定義；不是模型學到的效果 |
+| CPU 少數幾步更新 | 只更新幾步（例如第 0 章 1 步、第 7 章 3 步），檢查 loss 是有限值（不是 NaN 或無限大）、梯度能從 loss 傳回要學的參數（都是有限值、總量大於 0）、參數確實改變 | 訓練程式跑得動；少數幾步不代表已收斂（loss 降下來並趨於穩定） |
+| 合成圖形短訓練 | 在程式畫的幾何圖形上練比較多步（例如第 1、3、4、10 章的 40 步補充實驗、第 7 章 160 步、第 8 章 1600 步）；第 7、8 章另用不同 seed（亂數種子）畫的新圖評估 | 小模型有能力學會這種受控的簡化任務（各章結果不一，例如第 3 章沒有捷徑的 plain 網路就沒學會）；不能外推到真實照片。其中第 1、4、10 章的 40 步實驗只看訓練圖，只能說明模型對訓練圖記得多少 |
+| 雲端 GPU（NVIDIA L4）小規模實測 | 第 7 章的 GridDetector 在 GPU 上短訓練、中途存檔再續訓；另一次把練了 40 步的同款模型匯出，交給 ONNX Runtime 與 TensorRT（NVIDIA 的推論加速工具）執行，和 PyTorch 比對輸出 | 已完成小規模實測：能用 CUDA（NVIDIA 的 GPU 運算平台）在 GPU 上更新參數；中途存檔、讀回後續訓，結果和不中斷相同；PyTorch、ONNX Runtime、TensorRT 的輸出在容許誤差內一致。不是正式速度比較 |
+| 真實資料完整對照 | 只用 Fashion-MNIST（28×28 灰階衣物小圖、10 類的分類資料，沒有框）跑 40 步，確認分類管線接得起來；不算偵測結果 | 不支持任何偵測結論：真實照片的偵測 AP、泛化（對沒看過的照片也做得好）、各機制的效果差異與正式 GPU 效率都沒有測 |
+
+42 節的逐項紀錄和補充訓練，見[全套實驗與審查頁的〈逐節執行清單〉與〈補充實驗清單〉](validation/curriculum.md)。各節 notebook 都存著該節 CPU 實驗印出的文字，這些輸出都由對應的程式實際跑出；示範用的人工高分框會註明來源。沒有訓練的模型畫出框，只代表管線能接起來。
+
+## 沒有驗證的事
+
+- 真實照片上的偵測 AP 與泛化。
+- 用真實偵測資料長時間訓練：例如 Penn-Fudan 的行人照片，教材沒有它的格式轉換程式，也沒有用它訓練（見[資料規劃頁](preparation/data.md)）。
+- 各機制在相同資料與訓練預算（例如訓練步數）下的效果差異。
+- 正式的 GPU 速度與效能測試。
+- 在 Google Colab 上逐節執行 notebook 的實驗：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出；環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試在本機模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。在 Colab 上實際開啟 notebook、執行環境格的結果，記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)（網站發布後檢查公開網站與 Colab 入口的 JSON 檔）。Colab 可能分配給你的 GPU 沒有測。
+- 用 TensorRT 跑更大的模型，或改用其他數值精度（例如強制全部用 FP16、INT8）時的結果。
+- 接上實體攝影機當影片來源。
+- 真人學生的學習效果。
+
+所以教材裡的 AP 與 loss，只能說明程式算得對、機制照定義運作，以及小模型學得會合成圖形；要用在真實照片上，需要照本頁最後的〈用真實資料做正式實驗的順序〉重做實驗。
+
+## 執行紀錄
+
+每節程式實際執行後，印出的文字會存成一份紀錄（JSON 檔，放在 `artifacts/checks/curriculum/<節的編號>.json`），再放進該節的 notebook 和頁面最下方。紀錄寫明執行日期、產生它的電腦（作業系統、CPU 型號、執行緒數、Python 與 PyTorch 版本等）和全部輸出，並用 SHA-256 綁定產生它的程式：該節程式，加上它直接或間接 import 的每個本專案檔案（`miniyolo/`、`scripts/` 裡的模組）。SHA-256 是由檔案內容算出的「指紋」，內容改一點就會不同。第 1、3、4、10 章的 40 步實驗、第 7 章的 160 步訓練、第 8 章的 160 步與 1600 步訓練，以及第 18、19 章的影片檔實驗，也各有一份紀錄，同樣記下電腦並綁定程式。
+
+綁定的檔案都沒變，紀錄就一直有效；只要其中一個改了，那份紀錄就過期。發布新版時只重跑過期的紀錄（`scripts/record_evidence.py` 會列出並重新產生），其餘沿用，紀錄裡的日期與電腦也不變，所以各節紀錄的日期不一定相同。
+
+- **CPU 紀錄的電腦：**Linux x86_64（kernel 6.18、glibc 2.41）、AMD EPYC 9V74 80-Core Processor，Python 3.12.14、PyTorch 2.9.1+cpu，用 2 個執行緒。
+- **GPU 紀錄：**GPU 上的實測只有兩項：第 20 章的 ONNX／TensorRT 核對，以及 GPU 上的存檔續訓（見下方〈已完成的檢查〉）。兩項都由手動啟動的 GitHub Actions（GitHub 提供的自動執行程式服務）工作流程，在 Modal 雲端的一張 NVIDIA L4 上執行（PyTorch 2.9.1+cu128），紀錄同樣綁定所執行的程式。
+
+網站建置前，`scripts/validate_curriculum_evidence.py` 會確認以上每份 CPU 與 GPU 紀錄綁定的程式都沒有改過；42 節的紀錄另外要和該節 notebook 存的輸出一字不差，該節頁面也要寫著這份紀錄的日期、CPU 型號與 PyTorch 版本。任何一項不符，網站就無法發布。
+
+計時和訓練後得到的數字會因電腦而略有不同；程式的邏輯、tensor 的 shape 和 assert 檢查不會。你在 Colab 或自己的電腦上看到的計時與小數末幾位和紀錄不同，是正常的。
 
 ## 執行方式
 
-本版作者驗證環境為 Python 3.12、PyTorch 2.9.1 CPU。Colab 有版本固定的初始化格；如果你已在同一工作階段匯入舊 PyTorch，更新後需按 notebook 指示重啟工作階段。每個實驗都可單獨執行。
+各節的 Colab 按鈕開啟固定在 `lessons-v0.4.0` 的 notebook，環境格也下載同一版的教材程式。執行紀錄用的是 Python 3.12、PyTorch 2.9.1（CPU 版）。Colab 預先裝好的 PyTorch 版本可能不同；環境格發現版本不是 2.9.1 時，會改裝成 2.9.1 的 CPU 版（預先裝好的若已是 2.9.1，不論 CPU 版或 CUDA 版都保留不動）；改裝後就用不到 GPU。各節實驗都只用 CPU，不必選 GPU 執行階段。若需要改裝，而這個工作階段已經 import 過 torch，環境格會停下並提示重新啟動工作階段；照做後從第一格重跑。每個實驗都可單獨執行。
 
-本機完整步驟與依賴版本見 [repository README](https://github.com/birdhackor/learn_to_yolo#readme)。已設定環境後，在 repository 根目錄：
+想在自己的電腦上執行：完整步驟與套件版本見 [repository README](https://github.com/birdhackor/learn_to_yolo#readme)。照 README 設定好環境後，在 repository 根目錄（教材專案資料夾的最上層）執行：
 
 ```bash
+# 跑第 0 章暖身；可換成其他節的檔名
 PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
+# 用 pytest（Python 的自動測試工具）跑核心與 checkpoint（訓練中途的存檔）測試；
+# 全部通過時，最後一行會顯示幾項 passed，沒有 failed 或 error
 .venv-model/bin/python -m pytest tests/test_core.py tests/test_checkpoint.py
+# 依序執行 42 節 notebook 的實驗格，每節印一行 PASS 或 FAIL，並註明輸出是否和紀錄一字不差；
+# 報告寫在 artifacts/runs/lesson-runtime.json，repo 裡 git 追蹤的檔案都不會改變
 .venv-model/bin/python scripts/check_lesson_runtime.py
 ```
 
-`check_lesson_runtime.py` 執行 notebook 中的實驗格，逐節記錄 stdout、錯誤與通過狀態。它不登入 Google，也不聲稱測過 Google 分配的 GPU。核心測試則檢查空圖、錯誤標註、同格碰撞、座標取整還原、重複框配對等容易壞的地方。
+`.venv-model` 是照 README 建好的虛擬環境，也就是專給本教材用、裝好固定版本套件的 Python 環境；`.venv-model/bin/python` 就是這個環境裡的 Python。
 
-本輪逐節重跑的檢查結果：**42／42 節實驗執行通過，24／24 項核心與checkpoint測試通過**。ONNX 章實際匯出模型並用 ONNX Runtime 比對 batch 1、2、3 的結果；TensorRT另完成L4的Python API建置與B1–4比對，詳見[部署章](lessons/20-deployment.md)。完整實驗輸出見 [CPU 執行紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/index.json)。
+核心測試檢查容易出錯的地方，例如空圖、錯誤標註、兩個物件落在同一格、座標縮放取整後的還原，以及重複預測框的配對。
 
-另已完成 [L4／checkpoint 實測](validation/gpu-smoke.md)：真實 GridDetector 在 CUDA 上跑兩條 40 步路徑（合計 80 次更新），從私有 HF 下載的中途 checkpoint 恢復後，模型及 optimizer 與不中斷對照的最大差異為 0；排程與 RNG 也相符。Volume 經另一 container 校驗，Modal 已停止且 tasks=0。這項驗證使用目前 `main` 的新入口，不修改已發布教材的 release tag；尚未驗證真實資料長訓練或正式 GPU 效能。
+`check_lesson_runtime.py` 在你自己的電腦上用 CPU 逐節執行，記錄每節印出的文字（stdout）、錯誤與是否通過，並和 `artifacts/checks/curriculum/` 裡的執行紀錄比對。報告寫在 `artifacts/runs/lesson-runtime.json`；各節程式畫的圖也存在 git 不追蹤的位置（例如第 17 章的 `artifacts/lesson-17/`），所以跑完後 repo 裡 git 追蹤的檔案都不會改變。換一台電腦，計時和部分數字的末幾位可能和紀錄不同，報告會標出這些節；輸出不同本身不算失敗，只要程式完整跑完、沒有報錯，該節仍算 PASS。加上 `--section 07-training` 就只檢查這一節。`check_lesson_runtime.py` 不經過 Colab，所以測不到 Colab 上的實際執行，包括 Colab 可能分配給你的 GPU。
 
-本輪以六位全新讀者subagent逐節檢查42節的理解、圖文與數字，再以另外六位技術reviewer核對原始論文、固定官方程式碼及計算。必要修改已由reviewer獨立複查；[12份審查與覆蓋紀錄](validation/curriculum.md)保留原始發現與關閉結果。
+## 已完成的檢查
 
-收尾另補[自有JSON／PNG訓練閉環](lessons/08-own-data.md)：三類模型固定1600個CPU步驟後，train AP50=1.0；獨立validation／新test為.388889／.666667，checkpoint重讀與原圖座標推論通過。最初160步定位不足的證據保留，沒有只靠loss下降宣布overfit。另完成12幀實際AVI讀檔、RGB／預測一致、capture釋放及[真正預測接tracking](lessons/19-tracking.md)；實體攝影機仍未測。新增內容另經四位獨立reviewer檢查，見[收尾紀錄](validation/curriculum.md)。
+- **逐節執行紀錄：**42 節實驗全部執行通過（**42／42**；通過＝程式完整跑完、沒有報錯，任何 assert 檢查不成立都會報錯停下）。這只代表程式跑得動、算得對，不代表模型在真實照片上準。[42 節通過總表（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/index.json)列出每節是否通過與執行日期；各節印出的輸出，在每節頁面最下方的「實際執行紀錄」，完整紀錄在 `artifacts/checks/curriculum/<節的編號>.json`（例如 `00-warmup.json`）。你自己跑 `check_lesson_runtime.py` 的結果，則寫在 `artifacts/runs/lesson-runtime.json`。
+- **核心與 checkpoint 測試：**`tests/test_core.py` 與 `tests/test_checkpoint.py` 的測試全部通過；測試內容見上方〈執行方式〉。
+- **匯出與部署：**第 20 章把模型匯出成 ONNX（一種通用的模型檔格式），在 batch 大小 B=1、2、3 時，比對 ONNX Runtime（執行 ONNX 檔的程式）與 PyTorch 的輸出。另在 NVIDIA L4（資料中心 GPU，透過 Modal 雲端租用）上，把另一份練了 40 步的模型，用 TensorRT 的 Python 介面（Python API）建成 engine（為這張 GPU 最佳化後的模型檔，要由 TensorRT 載入才能執行），在 B=1～4 時和同一張 L4 上的 PyTorch 比對輸出（ONNX Runtime 也先和這份 PyTorch 輸出比對過）。兩處的差異都在容許範圍內，詳見[第 20 章〈ONNX／TensorRT〉](lessons/20-deployment.md)。
+- **雲端 GPU 存檔續訓：**也在 L4 上，用第 7 章的 GridDetector 和 8 張合成圖練兩次：一次連續練 40 步；另一次練 20 步後存檔，在另一個全新開啟的雲端 GPU 環境讀回存檔，再練 20 步（兩次合計 80 次更新）。最後兩者的模型與 optimizer 逐一相減，最大差異為 0；學習率排程（StepLR，每隔固定步數把學習率乘上固定比例）與亂數產生器（RNG）的狀態也相同。存檔時連這兩種狀態也一起存，續訓才能和不中斷時完全一樣。紀錄見 [GPU／checkpoint 實測](validation/gpu-smoke.md)。
+- **第 8 章自己的資料：**第 8 章「JSON 標註＋PNG 圖片」的[完整訓練流程](lessons/08-own-data.md)，用的是 48 張程式畫的三類矩形合成圖，不是真實照片。最初只訓練 160 步時，用全部 24 張訓練圖算的 loss 從 1.55017 降到 0.16921，但 train AP50（在訓練圖上算的偵測評分，最高 1.0）只有 0.00680，validation 是 0。每一步的 loss 紀錄顯示，第 154–158 步出現 loss 尖峰，160 步的評估正好落在這次不穩之後。這次失敗的紀錄也保存著；接著只把步數加到事先固定的 1600 步（在 CPU 上）。1600 步後，train AP50 達到 1.0（已背熟訓練圖）；沒參與訓練的 validation 是 0.388889（三類各自 AP50 的平均，等於 7/18），換新 seed 畫的 test 是 0.666667（同樣是三類平均，等於 2/3）。這兩組各只有 9 個物件，差距不代表穩定的泛化高低。存檔重新載入，以及在原尺寸圖片上推論，也都通過檢查。
+- **第 18、19 章影片檔與追蹤：**把 12 幀畫面（影片中連續的 12 張圖）寫成無損 AVI 影片檔再讀回：讀回的 RGB 畫素和模型預測，都和直接用記憶體裡的畫面時相同；讀到檔尾、提前停止或開檔失敗時，程式都會關閉影片（`capture.release()`）。最後把模型的實際預測接上[第 19 章的追蹤器（tracker）](lessons/19-tracking.md)。沒有測實體攝影機。
 
-首頁另有[初讀與修訂版複查報告](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/homepage-fresh-reader.md)，包含圖文一致性及手機呈現的檢查。這些是編輯審查紀錄，沒有做過真人學生的學習實驗。
+## 誰檢查過內容
 
-## 之後有 GPU 時的實驗順序
+教材的審查者都是 AI，分兩種：模擬初學讀者的 AI，檢查看不看得懂、圖文與數字是否一致；AI 技術審查者，對照原始論文、固定版本的官方程式碼和計算。審查報告存在 repository 的 `reviews/` 資料夾，記下每個發現的問題與處理方式。審查的範圍與報告清單，見[全套實驗與審查頁](validation/curriculum.md)。
 
-1. 先重跑少量資料，確認圖片與框對齊、參數更新、loss 有限，然後少量 overfit。這一步失敗就先修管線。
-2. 固定 train／validation／test 切分、類別、圖片大小、score 截斷、NMS 與 AP 定義。只用 validation 選設定，test 留到設定確定後。
-3. 跑真實資料 baseline，儲存設定、seed、checkpoint、成功與失敗圖，以及端到端時間。
-4. 每次只改一項機制，在相同資料與訓練預算下比較；記錄候選數、參數量、記憶體與額外設定。不因某個 seed 的小差異就宣佈勝負。
-5. 對有希望的設定增加 seed，再試影片與部署。TensorRT已有本教材小模型的L4核對；更大模型、真實場景與其他精度仍須分別驗證。
+這些都是編輯審查，沒有做過真人學生的學習實驗：沒有請真人學生實際用本教材學習，再測量學習效果。
 
-YOLO26 之後的分支，只有在找到可核實原文或公開實作後加入。已介紹版本的來源固定到論文或官方程式 commit；這份教材沒有為尚未確認的版本編造架構。
+## 用真實資料做正式實驗的順序
+
+L4 上只做過小規模的功能測試（8 張合成圖的短訓練、存檔續訓與 TensorRT 數值核對），沒有用真實資料長時間訓練，也沒有公平比較各機制。這類正式實驗可以照下面的順序做；你自己做偵測專案時，也適用。
+
+1. 先用少量資料跑，確認圖片與框對齊、參數真的更新、loss 是有限值（不是 NaN 或無限大），再讓模型在這幾張圖上練到幾乎全對（少量資料的 overfit）。這一步失敗就先修管線。
+2. 固定 train／validation／test 切分、類別、圖片大小、score 門檻（候選框的分數低於它就丟掉）、NMS 與 AP 定義。只用 validation 選設定，test 留到設定確定後。
+3. 跑真實資料的 baseline（之後每個改動都拿來比較的基準），儲存設定、seed、checkpoint、成功與失敗圖，以及端到端時間（從讀入圖片到輸出框的總時間）。
+4. 每次只改一項機制，在相同資料與訓練預算下比較；記錄候選數、參數量、記憶體與額外設定。不因某個 seed 的小差異就宣布勝負。
+5. 對有希望的設定，換幾個不同的 seed（亂數種子，決定初始權重等隨機結果）各跑一次，確認優勢不是運氣；再試影片與部署。TensorRT 只核對過本教材小模型在 L4 上的輸出；換成更大的模型、真實場景或其他數值精度（例如強制全部用 FP16、INT8），都要分別驗證。
+
+教材介紹到 YOLO26 為止，不包含之後的新版本或分支；只寫找得到原文或公開程式碼可以查證的設計，不為無法確認的版本編造架構。每個已介紹的 YOLO 版本，都以原論文或官方程式碼的某個固定版本為準（commit：程式碼某一次存檔的編號），而不是會隨時變動的最新版。

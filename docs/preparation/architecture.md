@@ -4,29 +4,55 @@
 
 採用 **Zensical** 的 modern 主題：Markdown 與小型圖片建成純靜態 GitHub Pages。`zensical.toml` 管理中文導覽、內建搜尋、深淺色模式與快速換頁；`requirements-docs.txt` 固定建置版本。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
 
+Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。
+
 ```text
-docs/                       網頁文字、圖與已保存的閱讀結果
-zensical.toml               網站設定、主題與小節導覽
-docs/planning/              大綱與研究，目前已有
-docs/preparation/           前置規劃，目前已有
-notebooks/                  可獨立開啟的 Colab notebook
-data/manifest.json          資料來源與校驗碼
-data/downloads/             本地或 Colab 快取，不進 Git
-data/curated/               授權清楚的精選資料，使用 LFS
-artifacts/checkpoints/      精選模型權重，使用 LFS
-artifacts/exports/          精選匯出模型，使用 LFS
-scripts/                    下載與基礎配置檢查
-section-map.json            小節 ID、閱讀頁、notebook 與資料版本配對
+zensical.toml                 網站設定、主題與小節導覽
+requirements-docs.txt         網站建置的固定版本
+overrides/                    主題覆寫（404 頁）
+docs/                         網頁文字、圖與已保存的閱讀結果
+docs/lessons/                 42 節閱讀頁，頁尾附實際執行紀錄
+docs/assets/                  示意圖、實驗結果圖與公式用的 MathJax
+docs/validation/              全套實驗與審查、GPU／checkpoint 實測
+docs/preparation/             資料規劃、發布與帳號設定、網頁與 Colab 規格
+docs/planning/                課程大綱、公開課程研究、讀者與學習心得
+docs/research/                資料、平台與版本來源查核
+notebooks/                    每節一本可獨立開啟的 Colab notebook，另有一本環境檢查
+lesson_cases/                 各節完整實驗程式，與 notebook 最後一格逐字相同
+miniyolo/                     資料、模型、targets、loss、推論、評估與訓練套件
+tests/                        核心計算、checkpoint 續訓與 notebook 環境格的測試
+requirements-model.txt        模型與實驗的固定版本
+requirements-video.txt        選用的影片檔讀寫套件（OpenCV），18、19 節讀寫真實影片時用
+scripts/                      資料下載、notebook 配對、補充實驗、執行紀錄、審查涵蓋與網站檢查
+section-map.json              小節 ID 與閱讀頁、notebook、固定版本的配對
+data/manifest.json            資料來源、校驗碼與 LFS 封裝資訊
+data/curated/                 授權清楚的精選資料，使用 LFS
+data/licenses/                精選資料的原授權文字
+data/downloads/               本地或 Colab 下載快取，不進 Git
+artifacts/checks/             執行紀錄、發布驗證與其他查核紀錄
+artifacts/checks/curriculum/  每節一份執行紀錄 <節>.json、彙總 index.json，另有多數補充實驗與第 20 章 GPU 紀錄
+artifacts/*.png               部分小節程式畫出的圖（例如 01-small-cnn.png），不進 Git
+artifacts/lesson-*/           部分小節程式寫出的檔案（例如 lesson-17/），不進 Git
+artifacts/runs/               補充實驗、訓練、推論與檢查工具的輸出，不進 Git
+artifacts/checkpoints/        .gitattributes 指定給 LFS 的模型權重路徑，目錄不存在
+artifacts/exports/            .gitattributes 指定給 LFS 的匯出模型路徑，目錄不存在
+reviews/                      網站每一頁的審查紀錄；coverage.json 記下每份審查涵蓋的內容
+.github/workflows/            手動啟動的 Pages 發布、GPU 紀錄與 LFS 資料工作流程
+requirements-modal.txt        GPU 工作流程在 GitHub Actions 上安裝的 Modal 用戶端，不含 PyTorch
+requirements-gpu.in           GPU 紀錄的套件：沿用 requirements-model.txt，PyTorch 改用 CUDA 版
+requirements-gpu.lock         由 requirements-gpu.in 產生、附雜湊的完整清單，Modal 的 GPU 環境照它安裝（第 20 章另加 TensorRT）
 ```
+
+補充實驗紀錄與兩份 GPU 紀錄各在哪個路徑、綁定哪些程式，列在 `scripts/evidence_records.py`。
 
 ## 每個小節的出版約定
 
 1. 網頁先寫本節問題、前置知識與完成條件。
-2. 說明、公式的符號／shape、示意圖與關鍵程式片段放在網頁。
-3. 保存固定實驗的設定、成功／失敗圖與觀察，說明結果能支持什麼。網頁能直接閱讀這些成果。
-4. 同一節附「在 Colab 執行」按鈕，以及先下載哪些資料、使用哪個模型分支、預期資源。
-5. notebook 可由全新 runtime 從頭執行；先固定程式版本，再按需下載本節資料，不依賴上一節的隱藏狀態或自己的 Google Drive 路徑。
-6. 正式教材的說明與 notebook 實驗對應同一個固定 release tag／commit。網站主題與建置工具可以獨立更新，不覆寫教材 tag；修改實驗或教學結果時才配對新版本。原始資料固定 checksum 與 split；不讓讀者看到新版說明卻執行另一版程式。
+2. 說明、公式的符號／shape、示意圖與關鍵程式片段放在網頁。從 `lesson_cases/`、`miniyolo/` 或 `scripts/` 逐字摘錄的程式區塊要標出來源檔：把區塊開頭的 `python` 換成 `{ .python data-excerpt="lesson_cases/07-loss.py" }`，引號裡寫從 repository 根目錄算起的路徑。`validate_lessons.py` 檢查區塊裡的每行程式（不計註解、空行與 `...` 省略行）都出自那個檔；開頭仍是 `python` 的區塊若有三行以上程式、每行都能在這三個目錄的同一個檔裡找到，檢查也會失敗，要求補上標記。
+3. 保存固定實驗的設定、實際輸出與觀察，說明結果能支持什麼；網頁能直接閱讀這些成果。對照實驗都從零訓練，並使用同一資料及預算。
+4. 頁首附「在 Colab 執行本節」按鈕；頁尾的「實際執行紀錄」寫明那次執行的日期、CPU 與執行緒數、PyTorch 版本，並附那次印出的輸出。各節範例的資料都由程式當場產生，不必下載。
+5. notebook 設計成可在全新 runtime 從第一格依序執行，不依賴上一節的隱藏狀態或自己的 Google Drive 路徑：環境格（每本 notebook 的第二格）先取得固定版本的程式與套件。
+6. 正式教材的說明與 notebook 實驗對應同一個固定的 release tag。網站主題與建置工具可以獨立更新，不覆寫教材 tag；修改實驗或教學結果時才配對新版本。下載的原始資料固定 checksum 與 split，程式產生的資料固定 seed；不讓讀者看到新版說明卻執行另一版程式。
 
 Colab URL 格式：
 
@@ -34,21 +60,23 @@ Colab URL 格式：
 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/notebooks/<section>.ipynb
 ```
 
-`section-map.json` 記錄 42 個教學小節 ID，各自配對網頁與獨立 notebook。`ready` 表示兩份檔案已建立；CPU 執行與讀者審查的證據另行保存，不把此標記當成 GPU 訓練或效果驗證。正式教材的 notebook 與初始化程式固定到同一個 release tag，避免改標題讓外部連結失效。
+`section-map.json` 記錄 42 個教學小節 ID，各自配對網頁、獨立 notebook 與固定的 release tag（`source_ref`）；另有一筆首頁連結的 Colab 環境檢查 notebook，指向 `main`。教學小節標成 `ready`，表示閱讀頁、實驗程式與 notebook 都存在；執行紀錄在 `artifacts/checks/curriculum/`，審查紀錄在 `reviews/`，`ready` 本身不代表 GPU 訓練或效果驗證。網址與檔名都用小節 ID，不用標題，改標題不會讓外部連結失效。
+
+`scripts/build_lesson_notebooks.py --ref <tag>` 產生 42 本 notebook，並讓各頁的 Colab 連結與 `section-map.json` 都指向這個 tag。每本 notebook 有四格：說明、環境格、實驗說明、完整實驗程式；最後一格與 `lesson_cases/<節>.py` 逐字相同，並存著執行紀錄的輸出。環境格 clone 這個 tag 並確認版本相符；PyTorch 不是 2.9.1 時改裝 2.9.1 的 CPU 版（已經是 2.9.1 就沿用，CPU 或 CUDA 版都可以），若改裝前 torch 已載入，改裝後就停下，要求重新啟動工作階段。各節實驗都只用 CPU。環境格在這幾種情況下的行為有單元測試（`tests/test_notebook_bootstrap.py`，pip 與 git 都換成假的，不實際安裝或 clone）。
 
 ## 純閱讀模式如何保留成果
 
-網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，要在作者的固定實驗後存成文字、表格、SVG／PNG 等網頁資源，再建置 Pages。notebook 保留必要的小型輸出即可，避免巨型 base64 讓 Git 與 Colab 變慢。
+網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，都在固定實驗跑完後存成文字、表格與 SVG／PNG 圖，再建置進網頁；各節頁尾的「實際執行紀錄」由 `scripts/verify_curriculum.py` 從 `artifacts/checks/curriculum/<節>.json` 寫入。notebook 只在最後一格存執行紀錄的文字輸出，不存圖片的 base64，避免 Git 與 Colab 變慢。
 
-大權重、原始資料與影片不放進 Pages artifact。LFS 檔案的 Git pointer 也不能直接當圖片或下載內容；需要閱讀的圖使用普通 Git 的小型資源。發布流程只上傳 `site/`。
+大權重、原始資料、影片與 notebook 都不放進 Pages artifact。LFS 檔在 Git 裡只是 pointer（只記雜湊與大小的小文字檔），不能當圖片或下載內容；需要閱讀的圖使用普通 Git 的小型資源。`validate_preparation.py` 確認 `docs/` 裡每個檔案都小於 5 MB，沒有權重檔（`.pt`、`.pth`、`.onnx`）、打包檔（`.zip`、`.tar`、`.gz`）或 LFS pointer；`validate_site.py` 在建置結果裡再擋一次這些類型與 `.ipynb`。發布流程只上傳 `site/`。
 
 ## Colab 取得資料與 LFS 的約定
 
-主要資料從已查核來源下載到 runtime 快取，驗證 checksum，原始資料與衍生 split 分開記錄。runtime 中斷後可能須重新下載，因此各小節只取自己需要的部分。
+各節 notebook 不下載資料，也不用預訓練權重，所以不需要 LFS：環境格 clone 時設 `GIT_LFS_SKIP_SMUDGE=1`，LFS 檔只留下 pointer，不下載內容。讀者不必設定 LFS，也不需要付費帳號。
 
-clone repository 時可用 `GIT_LFS_SKIP_SMUDGE=1`，避免同時抓完所有版本的權重與資料。必要時才裝好 `git-lfs`，再對指定 LFS 路徑執行 pull。沒有 LFS 需求的段落，不要求讀者設定 LFS 或付費帳號。
+需要真實資料時（例如 `scripts/run_fashion_cnn.py` 的 Fashion-MNIST 分類檢查），`scripts/download_data.py fetch <資料集 ID>` 從 `data/manifest.json` 記錄的已查核來源下載到快取（預設 `data/downloads/`，不進 Git），並核對 bytes 與 SHA-256；`--asset` 只下載指定檔案，`--output` 可改到 Colab 的 `/content/data` 等位置。下載的檔案存在 `<output>/<資料集 ID>/`；`run_fashion_cnn.py` 預設讀 `data/downloads/fashion-mnist/`，所以用 `--output /content/data` 下載時，執行它要加 `--data-root /content/data/fashion-mnist`。Colab runtime 中斷後可能要重新下載，所以只取自己需要的部分。原始資料與衍生 split 分開記錄。
 
-預訓練權重用於免訓練推論展示時，網頁清楚標示。從零訓練的對照實驗使用同一資料及預算，不能把預訓練收益歸因給某個架構改動。
+repository 裡唯一的 LFS 檔是 `data/curated/fashion-mnist-v1.tar`（Fashion-MNIST 四個原始檔加 MIT 授權），42 節教材沒有用到。要用時才裝好 `git-lfs`，以 `git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""` 只取這一個檔；完整步驟見〈[資料規劃](data.md)〉。
 
 ## 官方參考
 

@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import time
 import modal
+from evidence_records import bound_code
 from modal_gpu_smoke import confirm_stopped, save_result
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,6 +72,7 @@ def main():
     commit = os.environ.get("GITHUB_SHA", "")
     run_key = "github-" + os.environ.get("GITHUB_RUN_ID", "local") + "-" + os.environ.get("GITHUB_RUN_ATTEMPT", "1") + "-" + commit[:12]
     result = {"status": "running", "code_commit": commit, "run_key": run_key,
+              "dependencies_sha256": bound_code("artifacts/checks/curriculum/deployment-gpu.json"),
               "modal_environment": environment, "limits": {"gpu": "L4:1", "gpu_timeout_seconds": 600,
               "max_containers": 1, "retries": 0, "billing_limits_changed": False}}
     save_result(destination, result)

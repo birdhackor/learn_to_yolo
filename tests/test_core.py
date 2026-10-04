@@ -203,6 +203,17 @@ def test_ap_sorts_across_images_and_interpolates_all_points():
     assert result["precision"] == .5 and result["recall"] == 1
 
 
+def test_map_is_the_mean_of_per_class_ap():
+    # 類別 0 全中（AP=1）；類別 1 兩個 GT 只找到一個（AP=.5）。mAP 是兩者平均，不是最大值或合併計算。
+    result = evaluate_ap(
+        [prediction([[0, 0, 10, 10], [20, 20, 30, 30]], [.9, .8], [0, 1])],
+        [target([[0, 0, 10, 10], [20, 20, 30, 30], [40, 40, 50, 50]], [0, 1, 1])],
+    )
+    assert result["ap_per_class"] == {0: 1., 1: .5}
+    assert result["map"] == pytest.approx(.75)
+    assert result["precision"] == 1 and result["recall"] == pytest.approx(2 / 3)
+
+
 def test_ap_no_gt_class_is_excluded_but_false_positives_still_count():
     result = evaluate_ap(
         [prediction([[0, 0, 10, 10], [20, 20, 30, 30]], [.9, .99], [0, 1])],
