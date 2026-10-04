@@ -1,7 +1,21 @@
 {
   "status": "passed",
-  "code_commit": "e64ea79207ed3485208a91c824da3840962aff56",
-  "run_key": "github-37035865497-1-e64ea79207ed",
+  "code_commit": "463d3f59fb8042f8edc07fcc18581fab2c6bb418",
+  "run_key": "github-37217013901-1-463d3f59fb80",
+  "dependencies_sha256": {
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/checkpoint.py": "2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/deployment_gpu.py": "2318d8e8d8c97cad7511e4f43ced748cee0c63ccc7cf56a7dc437c67cc543f7d",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "miniyolo/train.py": "aa5567f11be6ca7aee97bd082b9d5964414b12b73453763c915c7ffb409c4276"
+  },
   "modal_environment": "main",
   "limits": {
     "gpu": "L4:1",
@@ -10,10 +24,10 @@
     "retries": 0,
     "billing_limits_changed": false
   },
-  "modal_app_id": "ap-cmJqI2YJQU65SWaiCaPAx7",
+  "modal_app_id": "ap-LGRDavULt4dsUDlSJ7GDEU",
   "gpu": {
     "passed": true,
-    "code_commit": "e64ea79207ed3485208a91c824da3840962aff56",
+    "code_commit": "463d3f59fb8042f8edc07fcc18581fab2c6bb418",
     "gpu": "NVIDIA L4",
     "torch": "2.9.1+cu128",
     "torch_cuda": "12.8",
@@ -22,7 +36,7 @@
     "parameters": 15511,
     "optimizer_steps": 40,
     "initial_loss": 0.9847670793533325,
-    "final_loss": 0.07104769349098206,
+    "final_loss": 0.07104771584272385,
     "engines": [
       {
         "precision_flag": "fp32",
@@ -30,40 +44,40 @@
         "batches": [
           {
             "batch": 1,
-            "max_abs_raw_error": 1.9073486328125e-06,
-            "max_abs_box_pixel_error": 0.0,
-            "max_abs_score_error": 0.0,
+            "max_abs_raw_error": 2.5033950805664062e-06,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
+            "max_abs_score_error": 7.450580596923828e-09,
             "decoded_candidates": 2,
             "decoded_labels_and_order_match": true
           },
           {
             "batch": 2,
             "max_abs_raw_error": 2.86102294921875e-06,
-            "max_abs_box_pixel_error": 7.62939453125e-06,
-            "max_abs_score_error": 0.0,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
+            "max_abs_score_error": 7.450580596923828e-09,
             "decoded_candidates": 4,
             "decoded_labels_and_order_match": true
           },
           {
             "batch": 3,
             "max_abs_raw_error": 2.86102294921875e-06,
-            "max_abs_box_pixel_error": 1.1444091796875e-05,
-            "max_abs_score_error": 1.4901161193847656e-08,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
+            "max_abs_score_error": 7.450580596923828e-09,
             "decoded_candidates": 6,
             "decoded_labels_and_order_match": true
           },
           {
             "batch": 4,
-            "max_abs_raw_error": 4.76837158203125e-06,
-            "max_abs_box_pixel_error": 1.1444091796875e-05,
-            "max_abs_score_error": 1.4901161193847656e-08,
+            "max_abs_raw_error": 7.62939453125e-06,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
+            "max_abs_score_error": 7.450580596923828e-09,
             "decoded_candidates": 7,
             "decoded_labels_and_order_match": true
           }
         ],
-        "raw_batch1_median_ms": 0.16021750000128065,
+        "raw_batch1_median_ms": 0.1469210000006882,
         "timing_scope": "3 warmup, 20 measurements; shape/address setup, output allocation, enqueue and stream/device synchronization; excludes preprocessing, decode, copies, engine build and container startup",
-        "engine_sha256": "fc674923aa1f406954d35ebb2207f7402cef10c55f7b8337d7649a8a75ba56cb"
+        "engine_sha256": "95ab2e5a0bc5d73d06c8d0d1ea93a124912991d9b594c72fb473f254bd8d30f1"
       },
       {
         "precision_flag": "fp16",
@@ -71,64 +85,64 @@
         "batches": [
           {
             "batch": 1,
-            "max_abs_raw_error": 1.9073486328125e-06,
-            "max_abs_box_pixel_error": 9.5367431640625e-07,
+            "max_abs_raw_error": 2.86102294921875e-06,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
             "max_abs_score_error": 0.0,
             "decoded_candidates": 2,
             "decoded_labels_and_order_match": true
           },
           {
             "batch": 2,
-            "max_abs_raw_error": 4.76837158203125e-06,
-            "max_abs_box_pixel_error": 7.62939453125e-06,
-            "max_abs_score_error": 0.0,
+            "max_abs_raw_error": 2.86102294921875e-06,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
+            "max_abs_score_error": 1.4901161193847656e-08,
             "decoded_candidates": 4,
             "decoded_labels_and_order_match": true
           },
           {
             "batch": 3,
-            "max_abs_raw_error": 4.76837158203125e-06,
-            "max_abs_box_pixel_error": 7.62939453125e-06,
+            "max_abs_raw_error": 2.86102294921875e-06,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
             "max_abs_score_error": 1.4901161193847656e-08,
             "decoded_candidates": 6,
             "decoded_labels_and_order_match": true
           },
           {
             "batch": 4,
-            "max_abs_raw_error": 4.76837158203125e-06,
-            "max_abs_box_pixel_error": 7.62939453125e-06,
+            "max_abs_raw_error": 7.62939453125e-06,
+            "max_abs_box_pixel_error": 3.814697265625e-06,
             "max_abs_score_error": 1.4901161193847656e-08,
             "decoded_candidates": 7,
             "decoded_labels_and_order_match": true
           }
         ],
-        "raw_batch1_median_ms": 0.1616084999973566,
+        "raw_batch1_median_ms": 0.1469620000023042,
         "timing_scope": "3 warmup, 20 measurements; shape/address setup, output allocation, enqueue and stream/device synchronization; excludes preprocessing, decode, copies, engine build and container startup",
-        "engine_sha256": "e25347e30d410ef3a6c7302037083dcb835c137cb78d9712619a2eb21419ed4a"
+        "engine_sha256": "e0c4fd34bd0058f452b41ebf009a15b67bb1d92ab08d91c3d50a21933718590e"
       }
     ],
-    "onnx_sha256": "229c63239757854d6ba0e8acd35342df174e869374b92f729d177e213d2f7fe0",
+    "onnx_sha256": "5791bc52be74619ca5dfbf14a1cc988d4a3b2ebec0ca5366de09bd6fde8228f2",
     "limits": "L4 single device, fixed synthetic training/evaluation images, not held-out quality or full YOLO performance; FP16 flag permits mixed precision, not a guarantee every layer uses FP16; INT8 untested",
     "volume_committed": true,
-    "container_task_id": "ta-01M3YR5QQKJ41W0B9RS5ESBHDR"
+    "container_task_id": "ta-01M43W1RVR1N09Z6ZET3JS25SR"
   },
   "storage": {
     "files": {
-      "grid-fp16.engine": "e25347e30d410ef3a6c7302037083dcb835c137cb78d9712619a2eb21419ed4a",
-      "grid-fp32.engine": "fc674923aa1f406954d35ebb2207f7402cef10c55f7b8337d7649a8a75ba56cb",
-      "grid.onnx": "229c63239757854d6ba0e8acd35342df174e869374b92f729d177e213d2f7fe0",
-      "report.json": "4bd187ab948c2f8bfd2ffc67a10d726eb13239d98f60f8b40afdc59fc8aed98f"
+      "grid-fp16.engine": "e0c4fd34bd0058f452b41ebf009a15b67bb1d92ab08d91c3d50a21933718590e",
+      "grid-fp32.engine": "95ab2e5a0bc5d73d06c8d0d1ea93a124912991d9b594c72fb473f254bd8d30f1",
+      "grid.onnx": "5791bc52be74619ca5dfbf14a1cc988d4a3b2ebec0ca5366de09bd6fde8228f2",
+      "report.json": "e0a6094c876e89b3ca1f07c1729a8f6a33ef2d7870df6db22d5106eca9d68d2b"
     },
-    "container_task_id": "ta-01M3YR6Y0XDS0P1YC2ASDV81WR",
+    "container_task_id": "ta-01M43W2S4JYPN99EV7DTYN3QYR",
     "sha256_verified": true
   },
   "gpu_calls_finished": true,
-  "client_wall_seconds_including_build_startup_transfer": 223.40593737799998,
+  "client_wall_seconds_including_build_startup_transfer": 39.20043576100001,
   "modal_stop_confirmation": {
     "verified": true,
-    "app_id": "ap-cmJqI2YJQU65SWaiCaPAx7",
+    "app_id": "ap-LGRDavULt4dsUDlSJ7GDEU",
     "state": "stopped",
     "running_tasks": 0,
-    "stopped_at": "2026-10-02 16:47:31+00:00"
+    "stopped_at": "2026-10-04 16:31:21+00:00"
   }
 }
