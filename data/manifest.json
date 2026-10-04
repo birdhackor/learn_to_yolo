@@ -104,17 +104,17 @@
       "resources": [
         {
           "filename": "annotations_trainval2017.zip",
-          "url": "https://images.cocodataset.org/annotations/annotations_trainval2017.zip",
+          "url": "https://s3.amazonaws.com/images.cocodataset.org/annotations/annotations_trainval2017.zip",
           "bytes": 252907541
         },
         {
           "filename": "val2017.zip",
-          "url": "https://images.cocodataset.org/zips/val2017.zip",
+          "url": "https://s3.amazonaws.com/images.cocodataset.org/zips/val2017.zip",
           "bytes": 815585330
         },
         {
           "filename": "train2017.zip",
-          "url": "https://images.cocodataset.org/zips/train2017.zip",
+          "url": "https://s3.amazonaws.com/images.cocodataset.org/zips/train2017.zip",
           "bytes": 19336861798
         }
       ]

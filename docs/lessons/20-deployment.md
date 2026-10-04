@@ -48,7 +48,7 @@ ONNX 檔只包含模型本身，也就是產生 raw 的那一段。前處理與�
 
 `grid.onnx` 只包藍色這一段，也就是模型本身；橘色的前處理與後處理在外部 Python，由 PyTorch 與 ORT 共用。右側那條橘線是 metadata（letterbox 的縮放比例與補邊量），它不經過模型，直接送到後處理用來還原框。藍色區塊左側三個白框，是三個 backend 各自執行的東西：PyTorch 直接執行原本的模型，ORT 讀 `grid.onnx`，TensorRT 則先從 `grid.onnx` 建置出 engine；紫色圓圈 1、2、3 是下方三層驗證各自檢查的位置。
 
-下面是匯出與建立 ORT session 的摘錄，加了中文註解。session 是 ORT 載入 `.onnx` 檔後建立的物件，之後可以反覆呼叫 `session.run` 來執行模型：
+下面是匯出與建立 ORT session 的簡化寫法，加了中文註解；和完整程式不同的地方（檔名、樣本的名字、執行緒設定），註解裡都有寫。另外省略了建立 session 後確認輸入規格的斷言（見下方「動態 batch 不是動態空間」）。session 是 ORT 載入 `.onnx` 檔後建立的物件，之後可以反覆呼叫 `session.run` 來執行模型：
 
 ```python
 # example 就是完整程式的 images[:1]：一張 [1,3,64,64] 的樣本圖
@@ -92,18 +92,36 @@ ort_raw = session.run(['raw_grid'], {'images': batch[:b].numpy()})[0]
 第二、三層比的是 PyTorch 和 ORT 兩邊；第一層只檢查 ONNX 檔本身。三層各抓不同的錯：
 
 1. **第一層：checker。** `onnx.checker` 檢查 ONNX 檔的結構是否符合規格，例如用到的運算在 opset 17 裡是否存在、每個運算的輸入輸出個數對不對、運算的屬性（寫在運算裡的固定設定，例如卷積核大小 `kernel_shape`）是否齊全、格式是否正確。本節照預設呼叫，不會核對每個運算收到的資料型別（dtype，例如 float32）與 shape 合不合規，要加 `full_check=True` 才會；它也不檢查數值，所以不能證明算出來的數和 PyTorch 一樣。
-2. **第二層：比 raw。** 用 ORT 執行 B=1、2、3，和 PyTorch 的 raw 逐值比較，斷言（assert）要求 `atol=1e-5, rtol=1e-5`。本輪三種 batch 的最大絕對差都約 `4.77e-7`，也就是 \(4.77\times10^{-7}\)＝0.000000477，低於容許差；這些數值也寫進了 report。
+2. **第二層：比 raw。** 用 ORT 執行 B=1、2、3，和 PyTorch 的 raw 逐值比較，斷言（assert）要求 `atol=1e-5, rtol=1e-5`。頁尾紀錄中，三種 batch 的最大絕對差都約 `4.77e-7`，也就是 \(4.77\times10^{-7}\)＝0.000000477，低於容許差；report 的 `max_abs_raw_errors` 記下了這三個數。
 3. **第三層：比還原後的框。** 兩份 raw 各自經過同一套 decode、NMS 與還原，再比較每張原圖上的結果：框座標（原圖畫素）`atol=1e-4, rtol=1e-5`；分數 `atol=1e-6, rtol=1e-5`；類別必須完全相同。框座標以畫素計、數值比較大，所以容許差比 raw 寬。
 
-raw 已經很接近，為什麼還要第三層？因為 decode 和 NMS 裡有門檻：數值只要跨過門檻，候選的去留就會改變。舉一個假設的情境（不是本輪實測）：某個候選在 PyTorch 的分數是 0.0500001，在 ORT 是 0.0499999。候選截斷門檻是 0.05，於是 PyTorch 留下它、ORT 丟掉它，兩邊留下的候選就不一樣，最後的框數也可能不同；可是兩邊的 raw 只差一點點，第二層照樣通過。NMS 也一樣：兩個框的 IoU 若剛好在 0.5 附近，可能一邊刪掉、一邊保留。所以第三層不能省略。
+raw 已經很接近，為什麼還要第三層？因為 decode 和 NMS 裡有門檻：數值只要跨過門檻，候選的去留就會改變。舉一個假設的情境（不是實測結果）：某個候選在 PyTorch 的分數是 0.0500001，在 ORT 是 0.0499999。候選截斷門檻是 0.05，於是 PyTorch 留下它、ORT 丟掉它，兩邊留下的候選就不一樣，最後的框數也可能不同；可是兩邊的 raw 只差一點點，第二層照樣通過。NMS 也一樣：兩個框的 IoU 若剛好在 0.5 附近，可能一邊刪掉、一邊保留。所以第三層不能省略。
 
-第三層也有限制：程式沒有檢查解出的框數大於 0；如果門檻高到兩邊都沒有框，第三層就只是在比兩個空結果。實際部署時，還要放入空圖、小物件、長寬比極端的圖和擁擠的圖，並記錄差異出在哪個階段。本例比較了三張非正方形的來源，但沒有驗證所有圖片。
+完整程式在 B 迴圈裡、第二層的比較之後，這樣做第三層：
+
+``` { .python data-excerpt="lesson_cases/20-deployment.py" }
+# 兩份 raw 各自 decode、NMS、還原到原圖；每張原圖得到一組框、分數與類別
+pytorch_predictions, ort_predictions = restore(torch_raw, metadata[:b]), restore(ort_raw, metadata[:b])
+for a, o in zip(pytorch_predictions, ort_predictions):  # 一次比一張原圖
+    torch.testing.assert_close(a['boxes'], o['boxes'], rtol=1e-5, atol=1e-4)
+    torch.testing.assert_close(a['scores'], o['scores'], rtol=1e-5, atol=1e-6)
+    assert torch.equal(a['labels'], o['labels'])  # 類別必須完全相同
+# 兩個空結果也會通過上面的比較，所以每張原圖都至少要解出一個框
+box_counts = [len(a['boxes']) for a in pytorch_predictions]
+assert all(c > 0 for c in box_counts), f'B={b}: a source has no restored box {box_counts}'
+```
+
+最後兩行防的是另一個漏洞。少了這兩行，門檻一旦高到兩邊都沒有框，每張圖比的就是兩個空結果：沒有框可比，上面三個比較都找不到差異，照樣通過，第三層等於什麼都沒驗證。所以 B=1、2、3 每一圈，都要求每張原圖至少解出一個框（`all(...)` 要裡面每一項都成立，才是 True）；練習 5 會實際觸發這個斷言。
+
+report 的 `restored_boxes_per_source` 記下 B=3 那一圈三張原圖各自的框數，是 `[16, 16, 16]`：4×4＝16 格的候選全部留下，都通過了截斷門檻，NMS 也沒有刪掉任何一個。這些框不是偵測結果：來源是雜訊圖，模型也只更新過一步，分數都只略高於 0.05 的截斷門檻；它們只是讓第三層有實際的框可比。其中 80×48 與 48×80 兩張圖，各有 8 個框完全落在 letterbox 的補邊上，還原時被裁到原圖範圍內，寬或高變成 0。所以這個斷言保證的是兩邊確實有框可比，不保證每個框都落在原圖的內容上。
+
+實際部署時，還要放入空圖、小物件、長寬比極端的圖和擁擠的圖，並記錄差異出在哪個階段。本例比較了三張非正方形的來源，但沒有驗證所有圖片。
 
 ## 動態 batch 不是動態空間
 
 ORT 回報的輸入規格（`session.get_inputs()[0].shape`）是 `['batch',3,64,64]`。第 0 軸寫成名字 `'batch'`，表示這一軸的長度可變；其他三軸是固定的數字。所以只有 B 可變，B=1、2、3 都實際通過；完整程式也用斷言確認了這個規格。
 
-完整程式每次執行前，先 assert 輸入確實是 `[B,3,64,64]`，再 assert 兩個 backend 的 raw 都是 `[B,4,4,7]`。為什麼要先檢查輸入？Python 與 PyTorch 的切片超出長度不會報錯：只有 2 張時，`batch[:3]` 仍回傳 2 張，程式會默默把「B=3 的測試」跑成 B=2。先 assert shape 是 `(3,3,64,64)`，就能擋下這種情況。
+B 迴圈的每一圈，完整程式先 assert 輸入確實是 `[B,3,64,64]`，再 assert 兩個 backend 的 raw 都是 `[B,4,4,7]`。為什麼要先檢查輸入？Python 與 PyTorch 的切片超出長度不會報錯：只有 2 張時，`batch[:3]` 仍回傳 2 張，程式會默默把「B=3 的測試」跑成 B=2。先 assert shape 是 `(3,3,64,64)`，就能擋下這種情況。
 
 輸入 80×80 會被 ORT 拒絕。完整程式故意送一張 80×80 的輸入，並 assert 它被拒絕，避免把「PyTorch 模型吃得下別的尺寸」誤當成「ONNX 檔也支援」。兩邊為什麼不同？GridDetector 裡的 `AdaptiveAvgPool2d` 不管輸入多大，都會平均成 4×4，所以 PyTorch 模型吃 80×80 也能跑。但這時每格代表 80÷4＝20 畫素，decode 卻仍以 64×64（每格 16 畫素）換算，框就會放錯位置。ORT 這邊則在算之前就擋下：前面說過，輸入規格的高、寬照樣本固定成 64，80 對不上，ORT 就報錯，模型一層都沒算。就算放寬輸入規格也不行：匯出時，`AdaptiveAvgPool2d` 這一層依 64×64 的樣本被記成固定的 2×2 平均池化，80×80 會算出 5×5 格，不是 4×4。所以這個 ONNX 檔只適用 64×64。
 
@@ -111,9 +129,14 @@ H、W 若要可變，需要重新匯出，確認池化、候選生成與 decode 
 
 ## 同一台裝置上，量 raw 與整條管線
 
-完整程式在 CPU 上固定用 2 個執行緒（threads）。每一項都先空跑 3 次不計時（warmup，暖機），再量 20 次、取中位數（median）。量的項目有：PyTorch 與 ORT 的 raw（只有模型本身），以及兩者各自的整條管線（RGB 前處理 → raw → decode／NMS → 還原到原圖框，以下稱端到端）；另外量 ORT 一次跑 2 張（batch 2）的 raw。這些時間不含讀寫磁碟、顯示畫面或相機佇列（camera queue）的時間。
+完整程式在 CPU 上固定用 2 個執行緒（threads）。量的項目有：PyTorch 與 ORT 的 raw（只有模型本身），以及兩者各自的整條管線（RGB 前處理 → raw → decode／NMS → 還原到原圖框，以下稱端到端）；另外量 ORT 一次跑 2 張（batch 2）的 raw。這些時間不含讀寫磁碟、顯示畫面或相機佇列（camera queue）的時間。兩類項目的量法不同：
 
-本輪實測如下（單位：毫秒，取中位數）：
+- **raw**（`median_ms` 函式）：每一項先空跑 3 次不計時（warmup，暖機），再連續量 20 次，取中位數（median）。
+- **端到端**（`paired_median_ms` 函式）：兩條管線先各空跑 3 次，再量 40 輪。每一輪兩條管線各跑一次，先後輪流：第 1 輪 PyTorch 先，第 2 輪 ORT 先，依此交替。每條管線取自己 40 次的中位數；每一輪再算 PyTorch 減 ORT 的時間差，這 40 個差也取中位數。
+
+端到端為什麼要成對量？假如先把 PyTorch 的 40 次量完、再量 ORT，電腦中途變快或變慢（例如 CPU 調整時脈，或別的程式開始搶 CPU），這個變化就只會算到其中一邊。成對量時，同一輪的兩次執行緊接著發生，條件差不多；先後輪流，則讓兩邊都不會一直排在第二個跑。
+
+頁尾紀錄那次執行的實測如下（單位：毫秒，取中位數）：
 
 | 項目 | PyTorch | ORT |
 |---|---|---|
@@ -121,14 +144,28 @@ H、W 若要可變，需要重新匯出，確認池化、候選生成與 decode 
 | 端到端，batch 1 | 2.329 | 2.144 |
 | raw，batch 2 | 未量 | 0.043 |
 
+表中沒有列出同一輪 PyTorch 減 ORT 的差，它記在頁尾紀錄的 `median_ms` 欄。這一欄放的是所有計時的中位數（表中的數字也在這裡），和上面同名的 `median_ms` 函式不是同一個東西。同一輪的差是欄裡的 `paired_torch_minus_ort_preprocess_to_restored_boxes`，由 `paired_median_ms` 算出，正值表示 ORT 比較快。它是 40 個差的中位數，一般不等於表中端到端兩格相減，所以要直接讀這一項。
+
+??? note "為什麼不能拿表中兩格相減"
+
+    兩個中位數的差，一般不等於每一輪差值的中位數。舉一個只有 3 輪的假設例子（單位：毫秒）：
+
+    | 輪 | PyTorch | ORT | 同一輪的差 |
+    |---|---|---|---|
+    | 1 | 2 | 4 | −2 |
+    | 2 | 3 | 1 | 2 |
+    | 3 | 6 | 5 | 1 |
+
+    PyTorch 的中位數是 3（第 2 輪），ORT 的中位數是 4（第 1 輪），相減得 −1，看起來 ORT 比較慢；可是三輪裡有兩輪是 ORT 比較快，三個差 −2、2、1 的中位數是 1。兩個中位數取自不同的輪，那兩輪電腦的狀況不一定一樣；同一輪相減，比的是緊接著發生、條件差不多的兩次執行。
+
 怎麼讀這張表：
 
 - raw：ORT 約快 4.2 倍，也就是 ORT 的時間約是 PyTorch 的 1/4.2（用頁尾紀錄的完整數字算：0.15258÷0.03642≈4.19）。ORT 為什麼比較快，本節沒有驗證。
-- 端到端：以 PyTorch 的 2.329 毫秒為基準，ORT 少了約 7.9%。
-- 模型只占 PyTorch 端到端的約 6.6%（0.153÷2.329）；其餘約 2.18 毫秒花在前處理、decode／NMS 與還原。所以模型快了 4.2 倍，整條流程只少約 7.9%：前後處理不能忽略。
-- 端到端省下約 0.185 毫秒（2.329−2.144），比 raw 省下的約 0.117 毫秒（0.153−0.036）還多約 0.068 毫秒。多出的部分可能來自計時波動或兩條管線的少量差異，所以 7.9% 只能當粗略的數字，不全是模型變快的功勞。換一台電腦或重跑，這個百分比可能變大、變小，甚至變成 ORT 端到端比較慢（同一段程式其他次執行的紀錄裡就出現過），這不代表哪裡做錯；比較穩定的是 ORT 的 raw 明顯比較快，以及模型只占端到端的一小部分。
+- 模型只占 PyTorch 端到端的約 6.6%（0.153÷2.329）；其餘約 2.18 毫秒花在前處理、decode／NMS 與還原，這些步驟兩條管線用的是同一套程式。
+- 端到端：兩條管線只有中間的模型那一步不同，所以同一輪的差，主要就是模型那一步在管線裡的差距，可以和 raw 的差距對照（用頁尾紀錄的完整數字算：0.15258−0.03642≈0.116 毫秒）。兩者不必相等，因為模型執行時的條件不同：量 raw 時，同一個模型連續呼叫，一次緊接著一次；管線裡，模型那一步前後夾著前處理和後處理，每次輪到模型時，電腦剛做完別的工作。同一段程式換了執行條件，花的時間就可能不同，兩個 backend 受到的影響也不一定一樣；各受到多少影響，本節沒有逐項量測。把同一輪的差除以 PyTorch 端到端的中位數，可以估計 ORT 讓整條流程少掉幾成。
+- 所以模型快了約 4.2 倍，整條流程只少掉模型那一小段的差距：前後處理不能忽略。這是一台電腦上一次執行的結果。成對量只能抵消兩條管線一起受到的變化；電腦同時忙著跑別的程式時，如果干擾剛好拖慢其中一條，結果仍可能改變，甚至變成 ORT 端到端比較慢，這不代表哪裡做錯。比較穩定的是 ORT 的 raw 明顯比較快，以及模型只占端到端的一小部分。
 
-重新執行時，`artifacts/lesson-20/report.json` 會記下當次兩個 backend 的端到端數字。只看 raw 的加速倍數（speedup＝原本時間÷新時間），不能直接宣傳成產品的總加速。
+重新執行時，`artifacts/lesson-20/report.json` 會記下當次兩個 backend 的端到端中位數、同一輪相減的差的中位數（`paired_torch_minus_ort_preprocess_to_restored_boxes`）與輪數（`end_to_end_paired_rounds`，40）。只看 raw 的加速倍數（speedup＝原本時間÷新時間），不能直接宣傳成產品的總加速。
 
 **部署前也要決定 batch 的服務策略。** 服務（serving）是把模型放在伺服器上，接收使用者送來的圖片、回傳結果；策略是指每來一張就馬上算，還是等湊滿幾張再一起算。B=2 的 batch latency（延遲）是一次算完兩張所需的時間；raw throughput（吞吐量）＝2÷batch latency（以秒計），單位是張／秒。用上表 ORT 的數字：
 
@@ -137,13 +174,13 @@ H、W 若要可變，需要重新匯出，確認池化、候選生成與 decode 
 
 兩張一起算，吞吐量約是 1.7 倍；但吞吐量不能當成單張請求的服務延遲。假設每 10 毫秒才來一張圖（這只是假設的情境），第一張得等第二張到了才能一起算，就多等約 10 毫秒；一起算省下的計算時間卻只有約 0.03 毫秒（兩張分開算是 2×0.036 毫秒，一起算是 0.043 毫秒）。所以流量低時，等湊滿 batch 可能反而讓單張的回應變慢。產品要的是即時回應，還是大量離線處理的吞吐，會影響要不要湊 batch。
 
-**自己執行**：`PYTHONPATH=. python lesson_cases/20-deployment.py`，需要安裝 `onnx==1.19.1` 與 `onnxruntime==1.23.2`。本機執行前，先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件，並在 repository 根目錄執行；Colab 則先跑本節的環境格。本輪用的是 ONNX 1.19.1、ORT 1.23.2、PyTorch 2.9.1 CPU 版，這些版本也寫進了 report。成功條件是：真的產生 `artifacts/lesson-20/grid.onnx`、checker 通過、ORT 實際執行三種 batch、raw 與原圖框的比對都通過。只是能 import 套件或印出 provider 名稱，不算完成。
+**自己執行**：`PYTHONPATH=. python lesson_cases/20-deployment.py`，需要安裝 `onnx==1.19.1` 與 `onnxruntime==1.23.2`。本機執行前，先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件，並在 repository 根目錄執行；Colab 則先跑本節的環境格。頁尾紀錄用的是 ONNX 1.19.1、ORT 1.23.2、PyTorch 2.9.1 CPU 版，report 的 `versions` 欄也記下了這些版本。成功條件是：真的產生 `artifacts/lesson-20/grid.onnx`、checker 通過、ORT 實際執行三種 batch、raw 與原圖框的比對都通過，而且每一圈的每張原圖都至少解出一個框。只是能 import 套件或印出 provider 名稱，不算完成。
 
 ## 自主練習
 
 練習都在完整程式上做：在 Colab 裡改「本節可修改的完整實驗」下面那一格；本機則改 `lesson_cases/20-deployment.py`，兩者是同一份程式。會用到的是下面這幾行（摘自完整程式，`...` 表示省略的部分）：
 
-```python
+``` { .python data-excerpt="lesson_cases/20-deployment.py" }
 # 三張來源；array shape 依序是高、寬、通道
 sources = [rng.integers(0, 256, shape, dtype=np.uint8)
            for shape in ((64, 96, 3), (48, 80, 3), (80, 48, 3))]
@@ -164,7 +201,7 @@ with torch.no_grad():  # 不記錄計算圖；少了這行，model(...).numpy() 
 
 ??? note "參考答案"
 
-    `processed` 和 `metadata` 都是三份，每張來源一份；`batch` 疊了三張圖。加的那行印出 `3 3 torch.Size([3, 3, 64, 64])`。B=3 那一圈，`batch[:3]` 是 `[3,3,64,64]`，`ort_raw` 是 `[3,4,4,7]`，兩個斷言都通過。輸出的 `batches_checked` 是 `[1, 2, 3]`，`max_abs_raw_errors` 有三個數（每種 batch 一個）。最後一行印出 `real ONNX export + checker + ORT CPU + restored-box parity completed`，表示 raw 與三張原圖的還原框都比對通過。
+    `processed` 和 `metadata` 都是三份，每張來源一份；`batch` 疊了三張圖。加的那行印出 `3 3 torch.Size([3, 3, 64, 64])`。B=3 那一圈，`batch[:3]` 是 `[3,3,64,64]`，`ort_raw` 是 `[3,4,4,7]`，兩個斷言都通過。輸出的 `batches_checked` 是 `[1, 2, 3]`，`max_abs_raw_errors` 有三個數（每種 batch 一個），`restored_boxes_per_source` 也有三個數（B=3 那一圈每張原圖一個）。最後一行印出 `real ONNX export + checker + ORT CPU + restored-box parity completed`，表示 raw 與三張原圖的還原框都比對通過，每張原圖也都解出了框。
 
 **練習 2**：把 `sources` 裡的 `(80, 48, 3)` 刪掉，只留兩張來源，其他程式都不改。執行前先預測：哪一行斷言會失敗？在 B 等於多少時失敗？
 
@@ -183,6 +220,12 @@ with torch.no_grad():  # 不記錄計算圖；少了這行，model(...).numpy() 
 ??? note "參考答案"
 
     \(10^{-5}+10^{-5}\times3.2=4.2\times10^{-5}\)，也就是 0.000042。差值不超過 0.000042 就通過；參考值的絕對值越大，允許差也越大。
+
+**練習 5**：三張來源都在的情況下，把 `restore` 函式裡 `decode_grid(...)` 的 `score_threshold=.05` 改成 `score_threshold=.07`。先預測：第三層的三個比較（框、分數、類別）會不會失敗？哪一行斷言會擋下，在 B 等於多少時？
+
+??? note "參考答案"
+
+    第三層的三個比較都不會失敗；擋下的是框數的斷言。B=1 那一圈，`assert all(c > 0 for c in box_counts)` 失敗，訊息是 `B=1: a source has no restored box [0]`。門檻 0.07 比每個候選的分數都高，兩邊的候選全部被丟掉，都是空結果；兩個空結果逐一比較時找不到任何差異，所以兩個 `assert_close` 和 `torch.equal` 都通過。這正是框數斷言要擋下的情況。做完記得改回 `.05`。
 
 ## 有 NVIDIA GPU 時，TensorRT 怎麼接
 
@@ -242,9 +285,9 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
 - **把 FP16 的誤差當成一定可以忽略**：FP16 只有約 3 位有效數字，分數靠近門檻時，可能改變框的去留。
 - **在沒有 GPU 的環境寫「TensorRT 已驗證」**：TensorRT 要在 NVIDIA GPU 上執行，CPU 範例並沒有跑它。
 
-參考：[PyTorch ONNX 官方文件](https://pytorch.org/docs/stable/onnx.html)、[ONNX Runtime Python 入門](https://onnxruntime.ai/docs/get-started/with-python.html)、[TensorRT 10.13 官方 trtexec 範例](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/trtexec/README.md#example-3-running-an-onnx-model-with-full-dimensions-and-dynamic-shapes)與 [flags 定義](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/common/sampleOptions.cpp)。
+參考來源：[PyTorch ONNX 官方文件](https://pytorch.org/docs/stable/onnx.html)、[ONNX Runtime Python 入門](https://onnxruntime.ai/docs/get-started/with-python.html)、[TensorRT 10.13 官方 trtexec 範例](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/trtexec/README.md#example-3-running-an-onnx-model-with-full-dimensions-and-dynamic-shapes)與 [flags 定義](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/common/sampleOptions.cpp)。
 
-## 本輪 L4 的實際 TensorRT 結果 { #l4-results }
+## L4 GPU 上的 TensorRT 實測 { #l4-results }
 
 作者透過 Modal 雲端租用一張 NVIDIA L4 資料中心 GPU，用 TensorRT 的 Python 介面（不是上面的 trtexec 命令）建置了兩個 engine：一個是 FP32（關閉 TF32），一個允許 FP16。兩個 engine 都分別對 B=1、2、3、4 執行，並和同一張 L4 上的 PyTorch 比對（CPU 上的 ORT 也先和它比對過）。raw、decode 後的框、類別、候選順序與分數全部通過，而且 decode 後確實有框，不是空對空。
 
@@ -252,22 +295,20 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
 
 |建置設定|raw 最大絕對差|框最大差（畫素）|raw B=1 中位數|
 |---|---|---|---|
-|FP32、TF32 停用|4.77e−6|1.14e−5|0.160 ms|
-|允許 FP16、TF32 停用|4.77e−6|7.63e−6|0.162 ms|
+|FP32、TF32 停用|7.63e−6|3.81e−6|0.147 ms|
+|允許 FP16、TF32 停用|7.63e−6|3.81e−6|0.147 ms|
 
-**允許 FP16 不等於每層都以 FP16 執行。** 建置時，builder（TensorRT 裡負責建 engine 的元件）會替每一層試幾種實作方法（tactic），挑最快的。FP16 flag 只是「允許」用 FP16：如果 FP32 的實作比較快，或某層沒有 FP16 的實作，它仍會選 FP32，所以同一個 engine 可能混用兩種精度。這次兩列的誤差與時間幾乎一樣，可能是多數層仍用 FP32；但本次沒有逐層精度稽核（沒有逐層查看實際用了哪種精度），無法確定，誤差與時間接近也不能說 FP16 一定提速。以上是建置 flag 的結果，不是強制全部 FP16 的品質或效能對照。INT8 未測。
+**允許 FP16 不等於每層都以 FP16 執行。** 建置時，builder（TensorRT 裡負責建 engine 的元件）會替每一層試幾種實作方法（tactic），挑最快的。FP16 flag 只是「允許」用 FP16：如果 FP32 的實作比較快，或某層沒有 FP16 的實作，它仍會選 FP32，所以同一個 engine 可能混用兩種精度。這次兩列的誤差與時間幾乎一樣，可能是多數層仍用 FP32；但這次執行沒有逐層精度稽核（沒有逐層查看實際用了哪種精度），無法確定，誤差與時間接近也不能說 FP16 一定提速。以上是建置 flag 的結果，不是強制全部 FP16 的品質或效能對照。INT8 未測。
 
-這份 L4 模型和上方 CPU 案例是同一個架構（GridDetector(width8)、15,511 個參數），但權重不同（Adam 40 步對 SGD 1 步），所以輸出與框不能互相對照。硬體（L4 GPU 對 CPU）、執行程式與計時範圍也不同，所以速度也不能比：L4 的時間包含設定與同步的成本，不只是 GPU 計算本身。兩邊都沒有評估 AP。
+這份 L4 模型和上方 CPU 案例是同一個架構（GridDetector（width 8）、15,511 個參數），但權重不同（Adam 40 步對 SGD 1 步），所以輸出與框不能互相對照。硬體（L4 GPU 對 CPU）、執行程式與計時範圍也不同，所以速度也不能比：L4 的時間包含設定與同步的成本，不只是 GPU 計算本身。兩邊都沒有評估 AP。
 
 ??? note "實驗紀錄與重跑方式（可略過）"
 
-    - **實測紀錄**：[Actions 實測 37035865497](https://github.com/birdhackor/learn_to_yolo/actions/runs/37035865497)。版本是 PyTorch 2.9.1+cu128（+cu128 表示這版 PyTorch 是針對 CUDA 12.8 編譯的）／CUDA build 12.8、TensorRT 10.13.3.9，GPU 是 NVIDIA L4。模型在固定 8 張合成圖上用 Adam 更新 40 次（loss 0.9848→0.0710）後匯出。
+    - **實測紀錄**：[Actions 實測 37217013901](https://github.com/birdhackor/learn_to_yolo/actions/runs/37217013901)。版本是 PyTorch 2.9.1+cu128（+cu128 表示這版 PyTorch 是針對 CUDA 12.8 編譯的）／CUDA build 12.8、TensorRT 10.13.3.9，GPU 是 NVIDIA L4。模型在固定 8 張合成圖上用 Adam 更新 40 次（loss 0.9848→0.0710）後匯出。
     - **Python 介面的步驟**：建置出 engine 後，把它反序列化（deserialize：把存成位元組的 engine 還原成能執行的物件），再用 `set_input_shape`（設定這次輸入的 shape）、`set_tensor_address`（告訴 engine 輸入、輸出放在 GPU 記憶體的哪裡）、`execute_async_v3`（把計算排進 GPU 的佇列）執行。optimization profile 是 B=1～4、固定 64×64。
-    - **計時範圍**：先暖機 3 次，再取 20 次的中位數。包含 shape／address 設定、輸出 buffer（存放輸出的記憶體）配置、enqueue 與 stream／device 同步（等 GPU 做完）；不含前處理、decode、CPU 拷貝、engine 建置與 container（容器：打包好程式與執行環境的獨立執行單位）啟動。Actions client（在 GitHub Actions 上呼叫 Modal 的程式）的總時間 223.41 秒，則包含建置、啟動與傳輸。這個小模型的單次測試，不能當成正式訓練或服務的效能。
-    - **檔案保存**：ONNX 與兩份 engine 存在專案專用的 Modal Volume（Modal 的雲端儲存空間）`projects/learn-to-yolo/deployment/github-37035865497-1-e64ea79207ed/`。明確 commit（正式寫入，讓其他容器讀得到）後，由另一個 CPU container 重新讀取，三個檔案的 SHA-256（由檔案內容算出的指紋，內容改一點就會不同）都相符。模型與 engine 沒有放進普通的 Git。
-    - **雲端資源**：Modal 已停止，執行中的任務數為 0（tasks=0）。
+    - **計時範圍**：先暖機 3 次，再取 20 次的中位數。包含 shape／address 設定、輸出 buffer（存放輸出的記憶體）配置、enqueue 與 stream／device 同步（等 GPU 做完）；不含前處理、decode、CPU 拷貝、engine 建置與 container（容器：打包好程式與執行環境的獨立執行單位）啟動。Actions client（在 GitHub Actions 上呼叫 Modal 的程式）的總時間 39.20 秒，則包含建置、啟動與傳輸。這個小模型的單次測試，不能當成正式訓練或服務的效能。
+    - **檔案保存**：ONNX 與兩份 engine 存在專案專用的 Modal Volume（Modal 的雲端儲存空間）`projects/learn-to-yolo/deployment/github-37217013901-1-463d3f59fb80/`。明確 commit（正式寫入，讓其他容器讀得到）後，由另一個 CPU container 重新讀取，三個檔案的 SHA-256（由檔案內容算出的指紋，內容改一點就會不同）都相符。模型與 engine 沒有放進普通的 Git。
     - **重跑方式**：[完整 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/deployment-gpu.json)。重跑入口是手動觸發的 workflow（GitHub Actions 的自動化流程）`deployment-gpu.yml`；一般的 push（上傳提交）或 PR（請求合併修改）不會啟動 GPU。
-    - **兩份紀錄的範圍**：頁尾 CPU 執行紀錄（CPU JSON）裡的限制說明，只描述 CPU 案例；GPU 另有獨立的 Actions 紀錄，不能把兩份 report 的範圍混為一談。
 
 <!-- curriculum-evidence:start -->
 

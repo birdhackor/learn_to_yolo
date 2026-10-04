@@ -70,12 +70,13 @@ SGD 用學習率 \(\eta=0.1\) 控制步伐。學習率是倍率：每步從 w �
 
 ## 對應到五行程式
 
-下面兩段程式摘自完整程式（Colab 裡的那份，也就是 `lesson_cases/00-warmup.py`）。完整程式還多了幾行，例如印出數字、自動核對答案。
+下面兩段程式摘自完整程式（Colab 裡的那份，也就是 `lesson_cases/00-warmup.py`）。完整程式還多了幾行，例如印出數字、自動核對答案。摘錄裡單獨一行的 `...` 表示那裡省略了完整程式的幾行。
 
 先建立與手算相同的設定。程式用 `torch.nn.Linear`（線性層：把輸入乘上權重、通常再加上一個常數 bias 的層）當作那台只有一個旋鈕的機器。`bias=False` 讓模型只有 w，避免多一個截距；線性層的權重預設是隨機初始值，因此要明確把它設為 1：
 
-```python
+``` { .python data-excerpt="lesson_cases/00-warmup.py" }
 import torch
+...                          # 省略：def main(): 和兩行與手算無關的設定
 # Linear(1, 1)：每筆輸入 1 個數、輸出 1 個數；bias=False：只有 w 一個參數
 model = torch.nn.Linear(1, 1, bias=False)
 with torch.no_grad():        # 縮排內的動作不記進計算圖（不包會報錯）
@@ -89,11 +90,12 @@ x, target = torch.tensor([[2.0]]), torch.tensor([[4.0]])  # x=2，目標 y=4
 
 手算符號在程式裡的名字：\(w\)→`model.weight`、\(\hat y\)→`prediction`、\(y\)→`target`、\(L\)→`loss`、\(g\)→`model.weight.grad`（backward 之後才有值）、\(\eta\)→`lr`。下面五行就是訓練一步：
 
-```python
+``` { .python data-excerpt="lesson_cases/00-warmup.py" }
 optimizer.zero_grad(set_to_none=True)
 prediction = model(x)                         # forward
 loss = ((prediction - target) ** 2).mean()   # scalar
 loss.backward()                              # 填入參數的 .grad
+...                                          # 省略兩行：把梯度和更新前的 w 存成 gradient、before
 optimizer.step()                             # 修改參數
 ```
 
@@ -112,7 +114,7 @@ snapshot = model.weight.detach().clone()  # 副本：step 之後仍是 1.0
 
 `detach()` 只把 tensor 從計算圖剪下來，數字仍和參數共用；`clone()` 才複製出自己的一份數字。所以只寫 `detach()` 存下的舊值，step 之後也會變成 1.8。完整程式則用 `before = model.weight.item()`：`.item()` 把只含一個數的 tensor 取成普通的 Python 數字，同樣不會跟著變。
 
-backward 要沿著計算圖從 loss 一路走回參數，所以算 loss 時計算圖不能斷。`.item()` 取出的普通數字不記得自己是怎麼算出來的；`.detach()` 會刻意把 tensor 從計算圖剪下；NumPy 是另一個常用的數值計算套件，它的陣列也不記錄計算圖。若把預測先 `.detach()`、轉成 NumPy，或用 `.item()` 算出新的 loss，計算圖就斷了。在本例，這三種做法都會讓程式報錯。例如 `loss = (prediction.item() - 4.0) ** 2` 算出的是普通的 Python 浮點數（float），根本沒有 `.backward()` 可以呼叫。記錄數值可以用 `.item()`，計算 loss 時要保留 tensor。
+backward 要沿著計算圖從 loss 一路走回參數，所以算 loss 時計算圖不能斷。`.item()` 取出的普通數字不記得自己是怎麼算出來的；`.detach()` 會刻意把 tensor 從計算圖剪下；NumPy 是另一個常用的數值計算套件，它的陣列也不記錄計算圖。若把預測先 `.detach()`、轉成 NumPy，或先用 `.item()` 取成普通數字再算 loss，計算圖就斷了。在本例，這三種做法都會讓程式報錯。例如 `loss = (prediction.item() - 4.0) ** 2` 算出的是普通的 Python 浮點數（float），根本沒有 `.backward()` 可以呼叫。記錄數值可以用 `.item()`；要拿來 backward 的 loss，計算時要保留 tensor。
 
 ## 兩個常混在一起的開關
 
@@ -120,15 +122,19 @@ backward 要沿著計算圖從 loss 一路走回參數，所以算 loss 時計�
 
 `model.train()` 切到訓練模式，`model.eval()` 切到評估／推論模式。兩者只影響某些層：例如 Dropout（訓練時隨機把部分數值設成 0 的層）只在 train 模式遮值；BatchNorm（用平均與變異數把數值標準化的層）在 train 模式會更新它記錄的平均與變異數。本課程的程式沒用到這兩種層，只要記得：有些層在訓練與推論時行為不同。本節這個單純的線性層，兩種模式結果相同。
 
-`eval()` 本身不會關掉梯度記錄，完整程式裡有斷言（assert）驗證這件事。斷言的意思是「條件不成立就報錯停下」，用來自動核對答案：
+完整程式在更新參數之後，兩個開關都用上：先切到 eval 模式，再在 `torch.no_grad()` 裡重算預測與 loss；接著用斷言（assert）驗證 `eval()` 本身不會關掉梯度記錄。斷言的意思是「條件不成立就報錯停下」，用來自動核對答案：
 
-```python
+``` { .python data-excerpt="lesson_cases/00-warmup.py" }
 model.eval()                    # 切到評估／推論模式
+with torch.no_grad():           # 縮排內不記錄計算圖
+    new_prediction = model(x)   # 更新後的預測
+    new_loss = ((new_prediction - target) ** 2).mean().item()
+...                             # 省略：印出前 3 行輸出、核對答案的斷言
 assert model.training is False  # 確認已切到 eval 模式
 assert model(x).requires_grad   # eval 模式下，輸出仍連著計算圖
 ```
 
-`requires_grad` 為 True，表示這個結果還連著計算圖，能拿來算梯度。`torch.no_grad()` 常見兩種用途：一是像前面那樣手動改參數，二是推論時省下記錄計算圖的成本（記憶體與時間）。完整程式算 `new_loss` 時，就是先呼叫 `model.eval()`，再把計算包在 `torch.no_grad()` 裡。
+`requires_grad` 為 True，表示這個結果還連著計算圖，能拿來算梯度。最後一行寫在 `with torch.no_grad():` 的縮排外面，只有 eval 模式在作用，所以輸出仍連著計算圖。`torch.no_grad()` 常見兩種用途：一是像前面那樣手動改參數，二是推論時省下記錄計算圖的成本（記憶體與時間）。重算 `new_prediction` 與 `new_loss` 屬於第二種：只看更新後的結果，不再更新參數。`new_loss` 只用來印出和核對、不拿來 backward，所以可以直接用 `.item()` 取成普通數字。
 
 ## 重建模型時，optimizer 也要重建
 
@@ -143,34 +149,35 @@ optimizer 內部記住的是**當初交給它的參數物件**，不是 `model` 
 ```text
 x_shape=(1, 1), weight_shape=(1, 1)
 prediction=2.00, loss=4.00, gradient=-8.00
-weight: 1.00 -> 1.80; new_loss=0.16
+weight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16
 eval still tracks gradients; replacement optimizer points to replacement model
 ```
 
-第 1 行是正文講過的 shape，第 2、3 行就是本節手算的數字。第 1 行的 `(1, 1)`、正文寫的 `[1,1]`，和自己執行 `print(x.shape)` 會看到的 `torch.Size([1, 1])`，是同一個 shape 的不同印法。完整程式印出前 3 行後，會用斷言核對梯度、新權重與新 loss。第 4 行要等所有斷言都通過才會印出，意思是：切到 eval 模式後，輸出仍連著計算圖；替換用的 optimizer 指向替換後的模型。
+第 1 行是正文講過的 shape，第 2、3 行就是本節手算的數字。第 2 行的 `prediction=2.00` 是更新前的預測；第 3 行的 `new_prediction=3.60` 是更新後的預測，也就是手算的 \(1.8\times2=3.6\)。第 1 行的 `(1, 1)`、正文寫的 `[1,1]`，和自己執行 `print(x.shape)` 會看到的 `torch.Size([1, 1])`，是同一個 shape 的不同印法。完整程式印出前 3 行後，會用斷言核對梯度、新權重、更新後的預測與新 loss。第 4 行要等所有斷言都通過才會印出，意思是：切到 eval 模式後，輸出仍連著計算圖；替換用的 optimizer 指向替換後的模型。
 
 你的輸出和上面 4 行相同、而且沒有錯誤訊息，本節就完成了。之後章節的訓練，基本上就是把前面那五行程式（也就是訓練一步）重複很多次。模型和資料會變大；loss 可能改用更複雜的算法，optimizer 也可能換成別種（例如第 7 章的訓練改用 Adam）。收益是每一步都能追到具體數字；代價是這個線性問題不含影像、非線性與泛化（對沒看過的資料也做得好），不能用它判斷 CNN（卷積神經網路）的準確率。
 
 ## 自主練習與答案
 
-**練習 1**：把學習率改成 0.25，先用手算預測新的 w、更新後的預測值與 new_loss，再執行驗證。新的 w 與 new_loss 會印在輸出第 3 行；程式沒有印出更新後的預測值，請用新的 w 乘上 x=2 自己核對。輸出第 2 行的 `prediction=2.00` 是更新前算的預測，改了學習率也不會變。在 Colab 裡改「本節可修改的完整實驗」下面那一格；本機則改 `lesson_cases/00-warmup.py`，兩者是同一份程式。要改的是建立主 optimizer 的那行 `optimizer = torch.optim.SGD(model.parameters(), lr=0.1)`：把 `lr=0.1` 改成 `lr=0.25`。程式後段還有一個 `lr=0.1`，屬於替換用的 `new_optimizer`，和下面的斷言無關，不要改。
+**練習 1**：把學習率改成 0.25，先用手算預測新的 w、更新後的預測值與 new_loss，再執行驗證。這三個數都印在輸出第 3 行；第 2 行的 `prediction=2.00` 是更新前的預測，改了學習率也不會變。在 Colab 裡改「本節可修改的完整實驗」下面那一格；本機則改 `lesson_cases/00-warmup.py`，兩者是同一份程式。要改的是建立主 optimizer 的那行 `optimizer = torch.optim.SGD(model.parameters(), lr=0.1)`：把 `lr=0.1` 改成 `lr=0.25`。程式後段還有一個 `lr=0.1`，屬於替換用的 `new_optimizer`，和下面的斷言無關，不要改。
 
-完整程式印出數字之後，用這兩行斷言核對答案：
+完整程式印出數字之後，用這三行斷言核對答案：
 
-```python
+``` { .python data-excerpt="lesson_cases/00-warmup.py" }
 assert abs(gradient + 8.0) < 1e-6
 assert abs(after - 1.8) < 1e-6 and abs(new_loss - 0.16) < 1e-5
+assert abs(new_prediction.item() - 3.6) < 1e-5
 ```
 
-`after` 是更新後的 w。`abs(a - b) < 1e-6` 表示 a 和 b 相差不到 10⁻⁶，用來容許小數計算的微小誤差。例如 `after` 實際上是 1.7999999523…，寫成 `after == 1.8` 反而不成立。
+`gradient` 是 backward 之後記下的梯度，`after` 是更新後的 w，`new_prediction` 是更新後的預測。`new_prediction` 是 tensor；第三行先用 `.item()`（前面存 `before` 時介紹過）把它取成普通數字，和 `after`、`new_loss` 一樣用普通數字比較。`abs(a - b) < 1e-6` 表示 a 和 b 相差不到 10⁻⁶（`1e-5` 則是相差不到 10⁻⁵），用來容許小數計算的微小誤差。例如 `after` 實際上是 1.7999999523…，`new_prediction` 是 3.5999999046…，寫成 `after == 1.8` 或 `new_prediction.item() == 3.6` 反而不成立。
 
-只改學習率就執行，前 3 行照樣會印出（第 3 行已換成新的 w 與 new_loss），接著第二行斷言出現 AssertionError。這是預期中的錯誤：它還在核對舊答案 1.8 與 0.16。把這兩個數字換成你預測的新 w 與 new_loss，再執行一次；不再報錯，就表示你的預測對了。第一行核對梯度，不用改，因為梯度在更新之前就算好了，和學習率無關。不要刪掉斷言來讓錯誤消失。
+只改學習率就執行，前 3 行照樣會印出（第 3 行已換成新的 w、更新後的預測與 new_loss），接著第二行斷言出現 AssertionError。這是預期中的錯誤：第二、三行斷言還在核對舊答案 1.8、0.16 與 3.6。把這三個數字換成你預測的新 w、new_loss 與更新後的預測，再執行一次；不再報錯、第 4 行也印出來，就表示你的預測對了。只改了第二行、忘了改第三行，就換成第三行斷言報錯。第一行核對梯度，不用改，因為梯度在更新之前就算好了，和學習率無關。不要刪掉斷言來讓錯誤消失。
 
 **練習 2**：只呼叫 `backward`，會改變 w 嗎？
 
 ??? note "參考答案"
 
-    **練習 1**：\(w=1-0.25(-8)=3\)，預測 6，loss 又是 4。第二行斷言要改成 `assert abs(after - 3.0) < 1e-6 and abs(new_loss - 4.0) < 1e-5`。前面說過，最理想的 w 是 2；w 從 1 跳到 3，越過 2 到了另一側同樣遠的地方，誤差大小同樣是 2，所以 loss 又是 4。方向正確仍可能走過頭。
+    **練習 1**：\(w=1-0.25(-8)=3\)，預測 \(3\times2=6\)，loss 是 \((6-4)^2=4\)。第二行斷言要改成 `assert abs(after - 3.0) < 1e-6 and abs(new_loss - 4.0) < 1e-5`，第三行改成 `assert abs(new_prediction.item() - 6.0) < 1e-5`。三行斷言都通過時，輸出第 3 行是 `weight: 1.00 -> 3.00; new_prediction=6.00; new_loss=4.00`。前面說過，最理想的 w 是 2；w 從 1 跳到 3，越過 2 到了另一側同樣遠的地方，誤差大小同樣是 2，所以 loss 又是 4。方向正確仍可能走過頭。
 
     延伸：學習率多少，才能一步剛好走到 w=2？要讓 \(1-\eta(-8)=2\)，也就是 \(8\eta=1\)，所以 \(\eta=0.125\)。
 

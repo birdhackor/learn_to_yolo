@@ -58,7 +58,7 @@
 
 模型永遠輸出 `[B,4,4,7]`。decoder 把每一格當成一個候選，並替它選機率最大的類別，所以每張圖有 4×4=16 個候選；再經過分數過濾和 NMS，留下 N 個框。每張圖的 N 可以不同，也可以是 0。
 
-`decode_grid` 回傳長度 B 的 list；`result[i]` 是第 i 張圖的 dict（字典：用鍵名取值，例如 `result[0]['boxes']`），有三個鍵：
+`decode_grid` 回傳長度 B 的 list。把回傳值叫做 `result`，`result[i]` 就是第 i 張圖的 dict（字典：用鍵名取值，例如 `result[0]['boxes']`），有三個鍵：
 
 - `boxes`：形狀 `[N,4]` 的 pixel xyxy 框；
 - `scores`：形狀 `[N]`，由高到低排；
@@ -70,19 +70,25 @@
 - 第 1 張：只有紅，1 個框；
 - 第 2 張：全黑，0 個框。
 
-第 1 張是把原圖複製一份，再把藍色方塊的畫素設成 0，讓畫素和「只有紅框」的標註一致；不能只刪藍框的標註，卻留下藍色畫素。這些畫素只給未訓練模型那一步用；人工 fixture 只依標註填數字，不讀畫素。
+第 1 張是把原圖複製一份，再把藍色方塊的畫素設成 0，讓畫素和「只有紅框」的標註一致；不能只刪藍框的標註，卻留下藍色畫素。程式用斷言（assert：條件不成立就報錯停下）確認這件事：第 1 張藍色通道的值加起來是 0（沒有藍色畫素），紅色通道加起來仍是 16×16=256（紅色方塊完整）。這些畫素只給未訓練模型那一步用；人工 fixture 只依標註填數字，不讀畫素。
 
-```python
-# model：剛建立、未訓練的 GridDetector；images：上面三張圖，形狀 [3,3,64,64]
-# （完整程式把 result 取名為 smoke）
-model.eval()
+下面是完整程式裡組成 batch、讓未訓練模型的輸出走一次 decoder 的幾行。`image`、`one_image` 是第 0、1 張圖，`torch.zeros_like(image)` 是全黑的第 2 張；`two`、`one`、`empty` 依序是 2、1、0 個框的標註。`collate`（見[資料頁](07-data.md)）把三張圖疊成 `images`；標註不疊，原樣放進長度 3 的 list `anns`。
+
+``` { .python data-excerpt="lesson_cases/07-inference.py" }
+images, anns = collate([(image,two), (one_image,one), (torch.zeros_like(image),empty)])
+# 剛建立、未訓練的模型；.eval() 切到推論模式，並回傳模型本身
+model = GridDetector(num_classes=2, grid_size=4, width=8).eval()
 with torch.inference_mode():
     raw = model(images)  # [3,4,4,7]
-    result = decode_grid(raw, image_size=64,
-                         score_threshold=.25, nms_iou=.5)
+    smoke = decode_grid(raw, image_size=64, score_threshold=.25, nms_iou=.5)
+assert len(smoke) == 3
+assert all(p['boxes'].shape == (len(p['scores']),4) for p in smoke)
+print('untrained model candidate counts (no quality claim)', [len(p['boxes']) for p in smoke])
 ```
 
-這裡的 model 剛建立、還沒訓練。它的 head 把 obj 的 bias 設成 −2（見[三步訓練](07-training.md)），實際算出的 obj logit 約為 −2，sigmoid(−2)≈0.12；兩個類別的機率都約 0.5。每格的 score 約 0.12×0.5≈0.06，低於門檻 0.25，所以本次執行印出 `[0, 0, 0]`。這是預期內的結果，不是 decoder 壞了。這一步只檢查每張圖都回傳一個結果、`boxes` 的形狀是 `[N,4]`（這裡 N=0），不代表模型的好壞。
+程式把這一步的結果取名 `smoke`，取自冒煙測試（smoke test）：只確認程式接得上、跑得完，不評好壞。這一步只用兩個斷言檢查格式：每張圖都有一個結果（`smoke` 的長度是 3），而且每張圖的 `boxes` 形狀都是 `[N,4]`，N 等於 `scores` 的個數。
+
+這裡的 model 還沒訓練。它的 head 把 obj 的 bias 設成 −2（見[三步訓練](07-training.md)），實際算出的 obj logit 約為 −2，sigmoid(−2)≈0.12；兩個類別的機率都約 0.5。每格的 score 約 0.12×0.5≈0.06，低於門檻 0.25，每張圖的 16 個候選全被濾掉，所以印出 `[0, 0, 0]`（三張圖的 N 都是 0）。這是預期內的結果，不是 decoder 壞了，也不代表模型的好壞。
 
 `eval()` 和 `inference_mode()` 用途不同。`eval()` 切換模型模式，只影響 Dropout、BatchNorm 這類在訓練和推論時行為不同的層。本模型沒有這些層，所以 `eval()` 在這裡不改變數字；仍要養成推論前呼叫的習慣，換成有這些層的模型才不會出錯。`inference_mode()` 和第 0 章學過的 `no_grad()` 一樣不記錄計算圖，但更嚴格：在裡面產生的 tensor，之後不能再拿去參與要算梯度的計算，換來一點速度。
 
@@ -94,9 +100,9 @@ decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的�
 
 ??? note "完整程式裡建立人工 fixture 的幾行"
 
-    `anns` 是三張圖的標註；`raw` 是上面未訓練模型的輸出，這裡只借用它的形狀。
+    `anns` 和 `raw` 都來自上面那段程式；`raw` 是未訓練模型的輸出，這裡只借用它的形狀。
 
-    ```python
+    ``` { .python data-excerpt="lesson_cases/07-inference.py" }
     target = build_targets(anns,4,64,2)  # 4×4 格、64×64 圖、2 類
     fixture = torch.zeros_like(raw)      # 形狀和模型輸出一樣：[3,4,4,7]
     fixture[...,4] = -20                 # 先把每一格的 obj 都填 -20（背景）
@@ -111,9 +117,9 @@ decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的�
 在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-inference.ipynb) 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。完整程式依序檢查四件事，可對照頁尾的實際輸出：
 
 1. 未訓練模型：印出 `untrained model candidate counts (no quality claim) [0, 0, 0]`（no quality claim：不代表模型品質）。原因見上面的說明；這只證明輸出格式接得上。
-2. 人工 fixture：印出 `artificial known-logit fixture counts [2, 1, 0]`，每個框和標註的誤差都在 0.02 pixel 以內。下一行 `fixture red box` 是第 1 張的紅框，約 `[8.0016,12,24.0016,28]`。
-3. batch=1：只送一張圖，`decode_grid` 仍回傳長度 1 的 list。`squeeze()` 會刪掉所有長度為 1 的軸；若 decoder 用了它，batch=1 時 `[1,4,4,7]` 會變成 `[4,4,7]`，就分不出哪一軸是圖片。`decode_grid` 不這樣做，所以取單張圖的結果時寫 `result[0]`。這一項在完整程式裡只用斷言（assert）檢查，不印出東西。
-4. 同類去重：在第 1 張紅框左邊的鄰格 (gx=0,gy=1) 再放一個紅框。它的 sigmoid(tx)=0.999，框約 `[7.98,12,23.98,28]`，和原框的 IoU≈0.998；它的 obj logit 是 9，比原框的 10 低一點，所以分數稍低。NMS 只刪 IoU「大於」門檻的框，而 IoU 最大是 1，所以門檻設成 1 等於不刪，兩框都留下；門檻改成 0.5 時，0.998 大於 0.5，分數較低的那個被刪掉，剩 1 框。輸出的 `same-class overlapping fixture NMS counts 2 -> 1` 就是這件事，表示同類去重真的發生了。
+2. 人工 fixture：印出 `artificial known-logit fixture counts [2, 1, 0]`，每個框和標註的誤差都在 0.02 pixel 以內。比對框時，程式按類別分開比：第 0 張的紅框和藍框 score 完全相同，誰排在前面不是要檢查的答案。下一行 `fixture red box` 是第 1 張的紅框，約 `[8.0016,12,24.0016,28]`。
+3. batch=1：只送一張圖，`decode_grid` 仍回傳長度 1 的 list。`squeeze()` 會刪掉所有長度為 1 的軸；若 decoder 用了它，batch=1 時 `[1,4,4,7]` 會變成 `[4,4,7]`，就分不出哪一軸是圖片。`decode_grid` 不這樣做，所以取單張圖的結果時寫 `result[0]`。這一項在完整程式裡只用斷言檢查，不印出東西。
+4. 同類去重：在第 1 張紅框左邊的鄰格 (gx=0,gy=1) 再放一個紅框。它的 sigmoid(tx)=0.999，框約 `[7.98,12,23.98,28]`，和原框的 IoU≈0.998；它的 obj logit 是 9，比原框的 10 低一點，所以分數稍低。NMS 只刪 IoU「大於」門檻的框，而 IoU 最大是 1，所以門檻設成 1 等於不刪，兩框都留下；門檻改成 0.5 時，0.998 大於 0.5，分數較低的那個被刪掉，剩 1 框。程式用斷言確認門檻 1 時留下 2 框、門檻 0.5 時剩 1 框，也就是同類去重真的發生了；之後印出的 `same-class overlapping fixture NMS counts 2 -> 1` 裡，2 和 1 是直接寫在 print 裡的數字，斷言不成立時程式會先停下，不會印出這行。
 
 這些人工對照只檢查程式算得對不對，不代表模型學會。
 
@@ -123,7 +129,7 @@ decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的�
 
 畫圖時有兩個常見的換算錯誤。一是把 normalized wh（0～1 的寬高比例，也就是 sigmoid(tw)、sigmoid(th)）當成 pixel。二是把 xyxy 當成 `(x,y,w,h)`：`(x,y,w,h)` 指左上角座標加寬高，有些畫圖函式要的是這種格式；從 xyxy 換算要算 w=x2−x1、h=y2−y1。`(x,y,w,h)` 也不是中心加寬高的 cxcywh。
 
-人工紅／藍場景可對照[資料頁的靜態圖](07-data.md)。想看模型輸出真的疊回圖片的樣子，可以看[三步訓練](07-training.md)那一節 160 步實驗的驗證圖：圖中橙色的模型框，就是訓練後的模型輸出經過同一個 `decode_grid` 得到的。
+人工紅／藍場景可對照[資料頁的靜態圖](07-data.md)。想看模型輸出真的疊回圖片的樣子，可以看[三步訓練](07-training.md)那一節 160 步實驗的驗證圖：圖中橙色的模型框，就是訓練後的模型輸出經過同一個 `decode_grid` 得到的；那裡的 score 門檻是評估用的 0.05，比本節的顯示門檻 0.25 低。
 
 收益是：訓練程式在 validation／test 資料（驗證集、測試集）上的評估、之後的評估和畫圖展示，都呼叫同一個 `decode_grid`（算 loss 時不經過 decode）；沒有框的圖、一次多張圖，輸出格式也都固定。代價是：固定 grid 每格只有一個框，兩個物件中心落在同一格時，可能漏掉其中一個；NMS 也不能補回模型根本沒預測出來的框。提高 score 門檻會讓畫面更乾淨，同時可能降低 recall（真實物件中被找到的比例）；必須用獨立評估判斷，不能憑畫出的框變少就說進步。
 

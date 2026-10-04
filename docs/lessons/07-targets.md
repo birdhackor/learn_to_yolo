@@ -77,9 +77,9 @@ objectness 目標表示這格是否被分配到物件。把第 0 張圖的 objec
 | positive | `[2,4,4]` bool | 正格 True，其餘 False | 本身不進 loss，只用來挑出正格 |
 | class_ids | `[2,4,4]` long | 正格存物件的類別 id | 只有正格（positive=True 時才讀取） |
 
-本版 objectness 剛好等於 positive 轉成 0／1，但兩者用途不同：objectness 是要學的答案，positive 是挑格子算框與類別 loss 的開關。其他設計兩者可以不同。例如 YOLOv1 原版裡對應 objectness 的是 confidence（信心分數）；負責物件的那個框，confidence 目標是預測框與真實框的 IoU，不是固定的 1。
+本節的 objectness 剛好等於 positive 轉成 0／1，但兩者用途不同：objectness 是要學的答案，positive 是挑格子算框與類別 loss 的開關。其他設計兩者可以不同。例如 YOLOv1 原版裡對應 objectness 的是 confidence（信心分數）；負責物件的那個框，confidence 目標是預測框與真實框的 IoU，不是固定的 1。
 
-第 0 張有 2 個正格、14 個負格；第 1 張空圖 16 格都是負格。整個 batch 正格 2、負格 30。這個版本沒有 ignore 狀態（第 5 章提過：暫時不算某項 loss 的格子），所有非正格都學背景。
+第 0 張有 2 個正格、14 個負格；第 1 張空圖 16 格都是負格。整個 batch 正格 2、負格 30。本節沒有 ignore 狀態（第 5 章提過：暫時不算某項 loss 的格子），所有非正格都學背景。
 
 本節 build_targets 的負格 box 填 0、class_ids 也填 0（第 5 章的示範填 −1），都只是建立張量時先填好的預設值，沒有意義。0 剛好也是紅色的類別 id，只看 class_ids 分不出紅色和背景；判斷正負格一律用 positive。負格不能放進框的 MSE（均方誤差）平均，也不能拿去算分類 loss；否則 30 個負格的無意義數值會混進平均，把結果汙染掉。
 
@@ -101,13 +101,13 @@ head 的輸出是 `[B,4,4,7]`：每格 7 個數，依序是 `tx,ty,tw,th,obj,cla
 
 公式在下一節手算。背景不是第三個 class，objectness 已承擔「有沒有物件」。
 
-下面的程式把本節的兩張圖轉成 target。輸入 `[scene, empty]` 是原始標註，格式就是上一節 `collate` 留下的 `targets` 清單：`scene` 含紅、藍兩框（類別 0、1），`empty` 沒有框。輸出 `target` 是轉換後要送進 loss 的訓練目標，也就是前面表格的 box、objectness、positive、class_ids 四個欄位，每張圖都固定是 4×4。上一節的 `targets`（標註清單）和這裡的 `target`（訓練目標）只差一個 s：前者每張圖的框數可以不同，後者形狀固定。
+下面是依完整程式改寫的簡化版，把本節的兩張圖轉成 target。輸入 `[scene, empty]` 是原始標註，格式就是上一節 `collate` 留下的 `targets` 清單：`scene` 含紅、藍兩框（類別 0、1），`empty` 沒有框。`grid_size`、`image_size`、`num_classes` 依序是每邊格數 S、圖片邊長（pixel）與類別數。輸出 `target` 是轉換後要送進 loss 的訓練目標，也就是前面表格的 box、objectness、positive、class_ids 四個欄位，每張圖都固定是 4×4。上一節的 `targets`（標註清單）和這裡的 `target`（訓練目標）只差一個 s：前者每張圖的框數可以不同，後者形狀固定。
 
-程式最後三行註解示範 mask 怎麼用。`pred` 代表 head 的輸出，本例 shape `[2,4,4,7]`；它到下一節才會出現，本節完整程式沒有模型，所以只寫成註解。
+簡化版只從完整程式取了建立 target 的那一行，其餘都是為了說明才加的。`pos`、`red` 這兩個名字完整程式沒有，它直接寫 `target["positive"]`、`target["box"][0, 1, 1]`（Python 的字串用單引號或雙引號都一樣）。最後三行註解示範 mask 怎麼用：`pred` 代表 head 的輸出，本例 shape `[2,4,4,7]`；它到下一節才會出現，本節完整程式沒有模型，所以只寫成註解。
 
 ```python
 # 完整程式（Colab）裡先 import 了 build_targets，並建立 scene 與 empty
-target = build_targets([scene, empty], grid_size=4, image_size=64)
+target = build_targets([scene, empty], grid_size=4, image_size=64, num_classes=2)
 pos = target['positive']
 red = target['box'][0, 1, 1]  # [0,.25,.25,.25]
 # pred[..., :4]      → [2,4,4,4]：... 保留前三軸（b、gy、gx），:4 取最後一軸的前 4 個數
@@ -119,9 +119,11 @@ objectness 不用 pos：`pred[..., 4]` 的 32 格全部和 `target['objectness']
 
 可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-targets.py`。
 
-完整程式在印出結果之前，會先做一個碰撞測試：另外建一組標註，放紅框和 `[10,14,26,30]` 兩個框（類別都是 0）。後者的中心是 (18,22)，18/16=1.125、22/16=1.375，取 floor 後也落在 (gx=1,gy=1)，和紅框同一格。build_targets 因此拋出 ValueError（Python 表示「輸入值不合理」的錯誤），不會悄悄覆蓋第一個框。程式用 try/except 接住這個錯誤，所以輸出的第一行是 `same-cell collision rejected`。
+完整程式建好 target 後，先用斷言（assert：條件不成立就報錯停下）核對本節手算的答案：box 的 shape 是 `[2,4,4,4]`；整批正格共 2 個；`box[0,1,1]` 是 `[0,.25,.25,.25]`、`box[0,2,3]` 是 `[0,.75,.25,.25]`；這兩格的 class_ids 依序是 0 和 1；第 1 張空圖沒有任何正格。斷言通過時不會印出任何東西。
 
-接著應列出正格 `[[0,1,1],[0,2,3]]`（每組是 b, gy, gx；程式用 `positive.nonzero()` 列出所有 True 的位置）、兩個 target 與 `positive/negative counts 2 30`。如果你自己把 `scene` 的第二個框改成 `[10,14,26,30]`，程式會停在 ValueError 的錯誤訊息；這是預期行為，因為同一格放不下兩個框。
+印出結果之前，程式還做一個碰撞測試：另外建一組標註，放紅框和 `[10,14,26,30]` 兩個框（類別都是 0）。後者的中心是 (18,22)，18/16=1.125、22/16=1.375，取 floor 後也落在 (gx=1,gy=1)，和紅框同一格。build_targets 因此拋出 ValueError（Python 表示「輸入值不合理」的錯誤），不會悄悄覆蓋第一個框。程式用 try/except 接住這個錯誤，印出 `same-cell collision rejected`，這就是輸出的第一行。要是 build_targets 沒有報錯，程式會自己丟出 AssertionError（斷言失敗時出現的那種錯誤）停下，訊息是 `Two objects silently overwrote one slot`（意思是兩個物件悄悄寫進同一格，後一個蓋掉前一個）。
+
+之後依序印出正格 `[[0,1,1],[0,2,3]]`（每組是 b, gy, gx；程式用 `target["positive"].nonzero()` 列出所有 True 的位置）、紅框與藍框的 target，以及 `positive/negative counts 2 30`。最後這行的 2 是直接寫在 print 裡的數字，前面的斷言已確認正格確實是 2 個；30 則是程式從 positive 數出來的負格數。如果你自己把 `scene` 的第二個框改成 `[10,14,26,30]`，程式會在呼叫 build_targets 建立 target 時停下，錯誤訊息是 `ValueError: same-cell collision: image 0, cell (1,1)`（第 0 張圖，括號裡依序是 gy、gx）；這是預期行為，因為同一格放不下兩個框。
 
 ## 得到的能力與留下的限制
 

@@ -16,7 +16,7 @@ YOLOv10 的做法：訓練時有一對多、一對一兩個 head，共用同一�
 
 兩個真值框（GT）：A 在 `[0,0,10,10]`，B 在 `[20,0,30,10]`（xyxy：左、上、右、下）。候選 p0 恰好等於 A，p1 為 `[1,0,11,10]`（A 右移 1），p2 等於 B，p3 為沒有物件的背景 `[40,0,50,10]`。所有框都在同一列（y 從 0 到 10），只差在 x 的範圍：A 與 p0 在 0～10，p1 在 1～11，B 與 p2 在 20～30，p3 在 40～50。四個候選框的 shape 是 `[P,4]=[4,4]`（P 是候選數），四個 logits 的 shape 是 `[4]`。本例只有一類，分數為 `sigmoid(logit)`。
 
-p0、p1 在 x 方向重疊 1～10，寬 9、高 10，相交面積 90；兩框各自面積 100，IoU 為 `90/(100+100−90)=90/110≈.8182`。這個值大於 NMS 的 IoU 門檻 0.5（比的是兩個預測框之間的重疊），所以 NMS 只會留下 p0、p1 中分數較高的那一個；兩者同分時，留下哪個沒有保證。p0 和 p2 不重疊，分屬 A 與 B，NMS 不會讓它們互刪。理想的輸出是 A、B 各留一框；背景 p3 則應該因為分數低，被 score 門檻刪掉。
+p0、p1 在 x 方向重疊 1～10，寬 9、高 10，相交面積 90；兩框各自面積 100，IoU 為 `90/(100+100−90)=90/110≈.8182`。這個值大於 NMS 的 IoU 門檻 0.5（比的是兩個預測框之間的重疊），所以 NMS 只會留下 p0、p1 中分數較高的那一個；兩者同分時，本節的 NMS 依輸入順序，留下排在前面的 p0。p0 和 p2 不重疊，分屬 A 與 B，NMS 不會讓它們互刪。理想的輸出是 A、B 各留一框；背景 p3 則應該因為分數低，被 score 門檻刪掉。
 
 本節直接指定由 p0 負責 A（p0 與 A 完全重合）；這是本節的人工設定，不代表官方規則一定選 p0。
 
@@ -35,7 +35,7 @@ p0、p1 在 x 方向重疊 1～10，寬 9、高 10，相交面積 90；兩框各
 
 完整程式裡的 `fit_scores` 就做這件事（變數名照原檔，只加了中文註解）：
 
-```python
+``` { .python data-excerpt="lesson_cases/13-nms-free.py" }
 def fit_scores(target):
     logits = nn.Parameter(torch.zeros(4))  # 四個 logit 本身就是要學的參數，起點都是 0
     optimizer = torch.optim.SGD([logits], lr=1.)  # 學習率 lr=1
@@ -59,9 +59,9 @@ def fit_scores(target):
 - **NMS 的 IoU 門檻**：比兩個預測框之間的重疊。NMS 依分數排序，每輪保留剩下候選中排第一的框，再刪掉和這個已保留框 IoU 大於 0.5 的候選；已經被刪的框不會再刪別人。本例只有 p0、p1 互相重疊，所以兩框只留依分數排序排在前面的那個。完整程式裡是 `nms` 函式的 `threshold=.5`。
 - **配對 IoU 門檻**（matching IoU）：比預測框與 GT 的重疊，決定 TP／FP。只在後面的手算評估用到。
 
-完整程式（Colab 裡「本節可修改的完整實驗」下方那格，或本機的 `lesson_cases/13-nms-free.py`）的 `main` 用下面幾行跑三條推論路徑，再用斷言（assert）核對答案：
+完整程式（Colab 裡「本節可修改的完整實驗」下方那格，或本機的 `lesson_cases/13-nms-free.py`）的 `main` 用下面幾行跑三條推論路徑，再用斷言（assert）核對答案（中文註解是本頁加的）：
 
-```python
+``` { .python data-excerpt="lesson_cases/13-nms-free.py" }
 boxes = torch.tensor([[0., 0., 10., 10.], [1., 0., 11., 10.], [20., 0., 30., 10.], [40., 0., 50., 10.]])  # p0～p3
 many = fit_scores(torch.tensor([1., 1., 1., 0.]))  # 一對多分數
 one = fit_scores(torch.tensor([1., 0., 1., 0.]))  # 一對一分數
@@ -79,16 +79,16 @@ assert 2 in many_after_nms and any(i in many_after_nms for i in (0, 1))  # 覆�
 | 推論路徑 | 留下的候選 | 框數 | A、B 各一框？ |
 | --- | --- | --- | --- |
 | 一對多不做 NMS | p0、p1、p2 | 3 | 否：A 有 p0、p1 兩框，重複 |
-| 一對多加 NMS | p0 或 p1，加上 p2 | 2 | 是 |
+| 一對多加 NMS | p0、p2 | 2 | 是 |
 | 一對一不做 NMS | p0、p2 | 2 | 是 |
 
-為什麼一對多加 NMS 寫「p0 或 p1」？一對多的 p0、p1、p2 起點、target、梯度都相同，100 步後分數完全一樣（約 0.959）。分數平手（tie）時，排序後誰在前沒有保證：`nms` 用 `argsort` 由高到低排序，而 `argsort` 預設不保證同分元素的先後，所以 NMS 可能留 p0，也可能留 p1。這次執行留下的是 p0（輸出 `many/NMS: [0, 2]`），但這不是保證的結果。
+一對多加 NMS 為什麼留下 p0、刪掉 p1？一對多的 p0、p1、p2 起點、target、梯度都相同，100 步後分數完全一樣（約 0.959），也就是分數平手（tie）。`nms` 一開始用 `scores.argsort(descending=True, stable=True)` 把候選依分數由高到低排序（`argsort` 回傳的不是分數，而是依分數由高到低排好的位置）。`argsort` 預設不保證同分的元素排序後誰在前，所以這裡指定 `stable=True`，也就是穩定排序（stable sort）：分數相同的元素，排序後維持原本的先後。送進 `nms` 的順序是 p0、p1、p2，排序後仍是這個順序：第一輪保留 p0，p1 和 p0 的 IoU 是 0.8182，大於 0.5，被刪掉；第二輪保留 p2。所以輸出是 `many/NMS: [0, 2]`。第 6 章的 `class_nms` 和第 7 章 `decode_grid` 用的 NMS，也都這樣排序。
 
-因此對一對多加 NMS 這條路徑，程式不檢查 A 留下的是 p0 還是 p1，只檢查兩件事：框數是 2，以及「物件覆蓋」，也就是每個 GT 至少還留著一個框（B 有 p2，A 有 p0 或 p1）。上面最後一行就是檢查物件覆蓋的「覆蓋斷言」。只數框數不夠：像下面 top-2 的例子，框數也是 2，兩框卻都屬於 A。
+留下 p0 而不是 p1，只是平手時的排序規則決定的。NMS 不看 GT，並不知道 p0 和 A 完全重合；如果送進 `nms` 時 p1 排在 p0 前面，留下的就會是 p1。NMS 的任務是讓每個物件留下一個框，不是留下某個指定的框，所以對一對多加 NMS 這條路徑，斷言不指定 A 要留 p0，只檢查兩件事：框數是 2，以及「物件覆蓋」，也就是每個 GT 至少還留著一個框（B 有 p2，A 留 p0 或 p1 都可以）。上面最後一行就是檢查物件覆蓋的「覆蓋斷言」。只數框數不夠：像下面 top-2 的例子，框數也是 2，兩框卻都屬於 A。
 
 NMS-free 仍然可以用 score 門檻篩選，也可以用 top-k。NMS 特有的步驟，是按兩框的幾何重疊（IoU）刪除候選；top-k 只依分數保留固定數量，不看框在哪裡。開頭說過，YOLOv10 推論時先取一對一 head 分數最高的前 k 個，再用 score 門檻刪掉低分的。k 是輸出上限，也就是每張圖最多輸出幾個框，不是物件數；推論時本來就不知道圖裡有幾個物件。所以能不能去掉重複，全靠分數本身。
 
-下面用一組人工分數 `[.92,.90,.80,.05]` 示範。這組分數假設的是「一對一沒學好、重複框 p1 也拿到高分」的情況，不是前面訓練出的分數。取 top-2 得到 p0、p1，兩個都屬於 A，反而漏掉 B；注意這裡的 k=2 剛好等於物件數，還是漏了。這個反例說明 top-k 本身不具「每個物件只留一個」的能力；要讓 top-k 的結果不重複，需要適合的監督，以及足夠好的一對一 head。順帶一提，若對前面訓練出的一對多分數取 top-2，p0、p1、p2 三個分數完全平手，選到哪兩個沒有保證。
+下面用一組人工分數 `[.92,.90,.80,.05]` 示範。這組分數假設的是「一對一沒學好、重複框 p1 也拿到高分」的情況，不是前面訓練出的分數。取 top-2 得到 p0、p1，兩個都屬於 A，反而漏掉 B；注意這裡的 k=2 剛好等於物件數，還是漏了。這個反例說明 top-k 本身不具「每個物件只留一個」的能力；要讓 top-k 的結果不重複，需要適合的監督，以及足夠好的一對一 head。順帶一提，若對前面訓練出的一對多分數取 top-2，p0、p1、p2 三個分數完全平手；`topk` 沒有 `argsort` 那種 `stable` 選項，選到哪兩個沒有保證。
 
 ??? note "手算評估：重複框讓 AP 從 1 降到 5/6"
 
@@ -112,7 +112,8 @@ NMS-free 仍然可以用 score 門檻篩選，也可以用 top-k。NMS 特有的
 
 執行 `PYTHONPATH=. python lesson_cases/13-nms-free.py`（或在 Colab 執行完整程式），核對輸出：
 
-- `many/no NMS:`（一對多不做 NMS）為 3 框，`many/NMS:`（一對多加 NMS）為 2 框，`one/no NMS:`（一對一不做 NMS）為 `[0, 2]`。
+- 前兩行 `many-head scores:`、`one-head scores:` 分別是一對多分數與一對一分數，每行四個數依序對應 p0～p3，四捨五入到小數第 3 位，和上圖右半的數字相同。
+- `many/no NMS:`（一對多不做 NMS）為 `[0, 1, 2]`，`many/NMS:`（一對多加 NMS）為 `[0, 2]`，`one/no NMS:`（一對一不做 NMS）為 `[0, 2]`。
 - `duplicate IoU=0.8182`，也就是 p0、p1 的 IoU。
 - `top-2 on duplicate-heavy scores: [0, 1]`，也就是 top-2 漏掉 p2（B）。
 
@@ -161,7 +162,7 @@ NMS-free 的目標是同一物件不重複，不是所有互相重疊的物件�
     - `assert one_ids == [0, 2]` 改成 `assert one_ids == []`。
     - 覆蓋斷言 `assert 2 in many_after_nms and any(i in many_after_nms for i in (0, 1))` 改成 `assert many_after_nms == []`。score 篩選後已經沒有框，不能再要求保留 p2 或 p0／p1。
 
-來源查核：2026-10-02。[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[官方 v10Detect 推論](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)（`v10Detect` 是官方程式中 YOLOv10 偵測 head 的類別名稱；`max_det = 300` 寫在這裡）、[postprocess 的 top-k（`v10postprocess`）](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/ops.py)（postprocess 指模型輸出後挑框的後處理）、[預測時只取一對一 head 的輸出，top-k 後再用 score 門檻篩選](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/models/yolov10/predict.py)。
+參考來源：[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[官方 v10Detect 推論](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)（`v10Detect` 是官方程式中 YOLOv10 偵測 head 的類別名稱；`max_det = 300` 寫在這裡）、[postprocess 的 top-k（`v10postprocess`）](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/ops.py)（postprocess 指模型輸出後挑框的後處理）、[預測時只取一對一 head 的輸出，top-k 後再用 score 門檻篩選](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/models/yolov10/predict.py)。
 
 <!-- curriculum-evidence:start -->
 

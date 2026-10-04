@@ -52,7 +52,7 @@ PyTorch 某些 shape 可以 broadcast（廣播）：相加時，若某一軸有�
 
 以下摘自完整程式 `lesson_cases/03-identity.py`，中文註解是本頁加的：
 
-```python
+``` { .python data-excerpt="lesson_cases/03-identity.py" }
 class IdentityBlock(nn.Module):
     def __init__(self, channels):  # 建立 block 時執行一次
         super().__init__()  # nn.Module 的固定寫法
@@ -88,7 +88,7 @@ class IdentityBlock(nn.Module):
 
 人工零分支的實驗把 y 的所有值加起來當 loss。這個 loss 不是訓練誤差，也沒有目標值；它只是把 y 收成一個數，好呼叫 `backward()` 算梯度。本例的 loss 是 \(-2+(-1)+0+1=-2\)，可以是負的。選「全部相加」，是因為 loss 對每個 y 值的變化率都是 1，x 的梯度就直接反映 y 隨 x 的變化率。固定其他元素，只把 x 的某一個元素增加 0.001，y 的對應元素也增加 0.001，loss 也增加 0.001，因此每個輸入元素的梯度都是 1。完整程式第一部分的主要幾行如下（省略最後兩行 print）：
 
-```python
+``` { .python data-excerpt="lesson_cases/03-identity.py" }
 block = IdentityBlock(1)  # 1 個 channel
 with torch.no_grad():  # 手動改權重時不記錄梯度
     for p in block.parameters():
@@ -100,7 +100,9 @@ y.sum().backward()  # loss = y 的總和
 assert torch.equal(x.grad, torch.ones_like(x))  # 斷言二：x 的梯度全是 1
 ```
 
-完整程式印出 `input_gradient=[1.0, 1.0, 1.0, 1.0]`，兩個斷言都通過。
+兩個斷言都通過，第一部分接著印出兩行：`x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]` 與 `input_gradient=[1.0, 1.0, 1.0, 1.0]; negatives_preserved=True`。
+
+第二行最後的 `negatives_preserved`（負數是否原樣保留）是程式當場比對出來的，算式是 `torch.equal(y[x < 0], x[x < 0])`。`x < 0` 逐格檢查 x 是否小於 0，得到 shape 相同、每格是 True 或 False 的 tensor；把它放進方括號當索引，`y[x < 0]` 與 `x[x < 0]` 就只取出 True 那些位置的值，也就是 x 為 −2、−1 的那兩個位置。`torch.equal` 只在兩邊 shape 相同、每個值也都相同時才回傳 True，兩個斷言用的也是它。所以 `negatives_preserved` 只比對這兩個位置；整個 y 是否等於 x，由斷言一核對。
 
 把主分支所有權重都設成 0，只是為了**檢查機制**。這樣的主分支無法靠梯度下降開始學：兩層卷積的權重梯度都是 0，用梯度下降更新時會一直停在 0。所以正式網路不能把主分支全部設成 0；第二部分另建隨機初始化的 block，就是為了避免把這個人工測試當成訓練建議。
 
@@ -150,7 +152,7 @@ identity shortcut 的收益有兩點：
 
     原因：F(x)=0 時，shortcut 仍把 x 原樣送到加號；但相加後的 ReLU 把負數改成 0，整個 block 不再是 identity，x≤0 處的梯度也變成 0。
 
-    第二部分用的是同一個類別，也多了這個 ReLU，所以印出的 loss 會和本頁執行紀錄不同，這是正常的；更新相關的斷言仍會通過。另外，第二行印出的英文 `F=0 preserves negative values too` 是寫死在 print 裡的字串，不會跟著改。
+    兩個斷言都改好後，程式能跑完。第一部分印出 `x=[-2.0, -1.0, 0.0, 1.0], y=[0.0, 0.0, 0.0, 1.0]` 與 `input_gradient=[0.0, 0.0, 0.0, 1.0]; negatives_preserved=False`：x 為負的兩個位置在 y 裡都變成 0，不再原樣保留，所以 `negatives_preserved` 是 False。第二部分用的是同一個類別，也多了這個 ReLU，所以印出的 loss 會和本頁執行紀錄不同，這是正常的；更新相關的斷言仍會通過。
 
 **練習 2：把主分支的 stride 改成 2。**只改第一個卷積：把 `__init__` 裡第一個 `nn.Conv2d(channels, channels, 3, padding=1, bias=False)` 改成 `nn.Conv2d(channels, channels, 3, stride=2, padding=1, bias=False)`。先預測第一部分（2×2 小圖）和第二部分（8×8）各會發生什麼事，再執行。
 

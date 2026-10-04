@@ -94,7 +94,15 @@ ignore 不參與 objectness loss，所以 objectness BCE 是對 31 個槽（1 po
     - negative 槽：(0.5 − 0)/31 ≈ +0.0161
     - ignore 槽：0，因為它不在平均裡
 
-    第 7 章單張圖的分母是 16 格，所以是 ±0.03125。這些數字是手算的，完整程式沒有印出；三種 obj 梯度中，完整程式只用斷言（assert）確認了 ignore 槽的 0。
+    第 7 章單張圖的分母是 16 格，所以是 ±0.03125。
+
+    上面三種槽的梯度都是手算的，完整程式不會印出；它的斷言（assert）只核對其中 ignore 槽的 0。想親眼看到 ±0.0161，可以在完整程式 `loss.backward()` 的下一行加上這一行，縮排和 `loss.backward()` 對齊：
+
+    ```python
+    print(raw.grad[0,1,1,:,4].tolist(), raw.grad[0,0,0,:,4].tolist())
+    ```
+
+    `raw.grad` 是 backward 存在 raw 上的梯度，形狀和 raw 一樣是 [1,4,4,2,7]。`[0,1,1,:,4]` 依序取第 0 張圖、格列 y=1、格欄 x=1、兩個槽全取（`:`），最後的 4 是 7 個數裡的編號（從 0 起編：0 到 3 是 tx、ty、tw、th，4 是 obj）。所以它是格 (1,1) 兩個槽的 obj 梯度，約為 [−0.0161, 0]：槽 0 是 positive，槽 1 是 ignore。`[0,0,0,:,4]` 是格 (0,0) 兩個 negative 槽的 obj 梯度，約為 [0.0161, 0.0161]。加上的這一行會最先印出，排在完整程式本身的四行輸出之前。
 
 下面是依完整程式改寫的簡化版，只列選 anchor、寬高 loss 與 objectness loss；中心 loss 和類別 loss 沒有列出。有幾個變數名稱和完整程式不同，對應關係寫在註解裡。
 
@@ -120,7 +128,11 @@ obj_loss = F.binary_cross_entropy_with_logits(raw[...,4][valid], obj_target[vali
 
 本節程式沒有 CNN，也沒有輸入圖片。它直接建立一個形狀 [1,4,4,2,7]、全為 0 的 tensor raw，假裝它是模型輸出，並用 `torch.nn.Parameter` 包起來，讓 optimizer 直接更新這 224 個數字。anchor `[16,16]`、`[8,8]` 是固定常數，不會被訓練。
 
-應看到尺寸 IoU `[1,.25]`、best=0、log wh `[0,0]`、計數 `1/1/30`。印出這些結果之前，完整程式會先用斷言（assert：條件不成立就報錯停下，用來自動核對答案）核對數值，全部通過才會印出。其中四項是：
+應看到四行輸出，裡面的數都在上面算過：第 1 行是尺寸 IoU `[1.0, 0.25]`、best anchor `0` 與 log wh `[0.0, 0.0]`；第 2 行是格內比例 `[0.0, 0.25]` 與 encode 出的兩個 logits（約 −9.21024、−1.09861）；第 3 行是 positive／ignore／negative 的槽數 `1 1 30`；第 4 行是 decode 回來的框，約 [8.0016, 12, 24.0016, 28]。
+
+第 4 行最後的 `one slot update completed` 是直接寫在 print 裡的字樣，不是計算結果；印到這裡時，raw 已做完一次 SGD 更新。這次更新改變的不只一個槽：positive 槽的 tx、ty、obj 與兩個類別 logits，以及 30 個 negative 槽的 obj 都會變。ignore 槽不參與任何 loss，所以不變；positive 槽的 tw、th 一開始就等於 target 0，梯度是 0，這一步也不變。
+
+印出這些結果之前，完整程式會先用斷言（assert：條件不成立就報錯停下，用來自動核對答案）核對七項，全部通過才會印出。其中三項核對手算的數：尺寸 IoU 是 [1, 0.25]；兩個 logits 約是 −9.21024 與 −1.09861；這兩個 logits 經 sigmoid 後是 0.0001 與 0.25，也就是 clamp 後的格內比例。另外四項是：
 
 1. encode 再 decode 回到 [8,12,24,28]，誤差在 0.02 pixel 以內。
 2. ignore 槽的 7 個輸出梯度全為 0，因為它不參與任何 loss。

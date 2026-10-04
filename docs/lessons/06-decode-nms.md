@@ -47,27 +47,27 @@ c_y=(1+0.75)\times16=28.
 
 格尺寸和整圖尺寸不能用反。若 w、h 誤乘格尺寸 16 而不是整圖 64，寬會從 16 變成 4，只剩 1/4（一般是 1/S）；若 xy 改乘整圖尺寸 64，中心會跑到錯的位置，例如 c_x 變成 (2+0.25)×64=144，已經超出 64×64 的畫布。
 
-```python
-# grid 是每軸格數 4，image_size 是 64，所以「/ grid * image_size」就是 ×16
-# logits[..., :2]：「...」表示前面的軸（4×4 格）全取，「:2」取最後一軸前兩個值 (tx,ty)
-center = (cell_xy + logits[..., :2].sigmoid()) / grid * image_size
-# [..., 2:4] 是 (tw,th)，乘整圖尺寸
-size = logits[..., 2:4].sigmoid() * image_size
-# center - size/2 是 (x1,y1)，center + size/2 是 (x2,y2)
-# torch.cat 沿最後一軸（dim=-1）把兩者接成 [x1,y1,x2,y2]
-boxes = torch.cat((center - size/2, center + size/2), dim=-1)
+完整程式的 `decode` 函式就照這組公式算框。以下摘自完整程式，中文註解是本頁加的；最後的 `...` 省略了算 score、篩選候選並回傳結果的幾行，後面再說明：
+
+``` { .python data-excerpt="lesson_cases/06-decode-nms.py" }
+def decode(logits, score_threshold=0.25, image_size=64):
+    # logits 的 shape 是 [4,4,7]；shape[0] 是第一軸的長度，也就是每軸格數 4
+    grid = logits.shape[0]
+    # row、col 是兩張 4×4 的表，分別記下每一格的列號與欄號（見下方說明）
+    row, col = torch.meshgrid(torch.arange(grid), torch.arange(grid), indexing="ij")
+    # torch.stack((col, row), -1) 是每一格的 (x 方向格號, y 方向格號)
+    # logits[..., :2]：「...」表示前面的軸（4×4 格）全取，「:2」取最後一軸前兩個值 (tx,ty)
+    # image_size 用預設值 64，所以「/ grid * image_size」就是 ÷4×64，也就是 ×16
+    center = (torch.stack((col, row), -1) + logits[..., :2].sigmoid()) / grid * image_size
+    # [..., 2:4] 是 (tw,th)，乘整圖尺寸
+    size = logits[..., 2:4].sigmoid() * image_size
+    # center - size / 2 是 (x1,y1)，center + size / 2 是 (x2,y2)
+    # torch.cat 沿最後一軸（-1）把兩者接成 [x1,y1,x2,y2]
+    boxes = torch.cat((center - size / 2, center + size / 2), -1)
+    ...
 ```
 
-這三行一次就把 16 格的框全部算完。`cell_xy` 是每一格的格號表：用 tensor 索引 `[row,col]` 取值，取出來的卻是 (col,row)，也就是 (x 方向格號, y 方向格號)。例如 `cell_xy[1,2]` 是 (2,1)，所以上面手算時 c_x 用 2、c_y 用 1。
-
-網頁為了簡短，把這張表取名 `cell_xy`；完整程式（Colab 裡的那份）沒有這個變數名。完整程式在 `decode` 裡先用 `meshgrid` 算出 `row`、`col`，再把 `torch.stack((col, row), -1)` 直接寫進 `center` 那一行；拆成兩行就是：
-
-```python
-row, col = torch.meshgrid(torch.arange(grid), torch.arange(grid), indexing="ij")
-cell_xy = torch.stack((col, row), -1)  # 完整程式把這個 stack 直接寫在 center 那一行裡
-```
-
-`meshgrid` 產生兩張 4×4 的表：`row` 表的每一列都是同一個數（列號 0 那一列全是 0、列號 1 那一列全是 1……），`col` 表的每一欄都是同一個數（每一列都是 [0,1,2,3]）。`torch.stack((col, row), -1)` 把兩張表沿新的最後一軸疊起來，每格得到一對 (col,row)，也就是先 x 後 y。
+這幾行一次就把 16 格的框全部算完。`meshgrid` 產生兩張 4×4 的表：`row` 表的每一列都是同一個數（列號 0 那一列全是 0、列號 1 那一列全是 1……），`col` 表的每一欄都是同一個數（每一列都是 [0,1,2,3]）。`torch.stack((col, row), -1)` 把兩張表沿新的最後一軸疊起來，得到 shape [4,4,2] 的格號表：用 tensor 索引 `[row,col]` 取值，取出來的卻是 (col,row)，也就是 (x 方向格號, y 方向格號)。例如位置 `[1,2]` 取出 (2,1)，所以上面手算時 c_x 用 2、c_y 用 1。格號表再加上同樣是 [4,4,2] 的 `logits[..., :2].sigmoid()`，每一格得到 \((\text{col}+\sigma(t_x),\ \text{row}+\sigma(t_y))\)，就是公式裡以格為單位的中心；再乘 64/4=16，就換成 pixels。
 
 ??? note "2×2 的小例子：meshgrid 產生了什麼"
 
@@ -77,12 +77,13 @@ cell_xy = torch.stack((col, row), -1)  # 完整程式把這個 stack 直接寫�
     row, col = torch.meshgrid(torch.arange(2), torch.arange(2), indexing="ij")
     # row = [[0, 0],    col = [[0, 1],
     #        [1, 1]]           [0, 1]]
-    cell_xy = torch.stack((col, row), -1)
-    # cell_xy = [[[0, 0], [1, 0]],
-    #            [[0, 1], [1, 1]]]
+    torch.stack((col, row), -1)
+    # 結果：
+    # [[[0, 0], [1, 0]],
+    #  [[0, 1], [1, 1]]]
     ```
 
-    `indexing="ij"` 表示第一張表沿第一個軸（列）變化：`row[i,j]=i`、`col[i,j]=j`。疊起來之後，`cell_xy[1,0]` 是 [0,1]：列號 1、欄號 0 的格子，x 方向格號 0、y 方向格號 1。若改成 `indexing="xy"` 卻仍寫 `row, col =`，兩張表會對調，格號就錯了。
+    `indexing="ij"` 表示第一張表沿第一個軸（列）變化：`row[i,j]=i`、`col[i,j]=j`。疊起來之後，位置 `[1,0]` 的值是 [0,1]：列號 1、欄號 0 的格子，x 方向格號 0、y 方向格號 1。若改成 `indexing="xy"` 卻仍寫 `row, col =`，兩張表會對調，格號就錯了。
 
 ## Score：模型自評的排序分數，不是 precision
 
@@ -209,6 +210,7 @@ NMS 本身不讀取真值、不修正框，也不知道紅框是錯的。它還�
 
 執行完整程式後，可以核對這幾件事：
 
+- 三個候選框（輸出第一行的 `candidate_boxes`）依序是 [23.2,24,39.2,32]、[28,24,44,32]、[4,52,12,60]，和上方 NMS 段清單的手算值相同。
 - score 列表是 [0.64,0.72,0.855]（索引對照見上方 NMS 段的清單）。
 - 重複框（藍、黃）的 IoU 是 0.5385。
 - NMS 保留索引 [2,1]。`class_nms` 回傳的是被保留候選在上面列表裡的索引，並照 score 由高到低排。
@@ -227,13 +229,16 @@ NMS 本身不讀取真值、不修正框，也不知道紅框是錯的。它還�
 
 ??? note "參考答案"
 
-    以下摘自完整程式的 `main()`，中文註解是本頁加的；完整程式還有印出結果的 `print`，以及緊接在 `decode` 那一行後面、檢查只剩 2 個框且預測類別都是 0 的 `assert len(boxes70) == 2 and labels70.tolist() == [0, 0]`，這裡省略：
+    以下摘自完整程式的 `main()`（省略 `print`，`...` 表示省略的行；中文註解是本頁加的）：
 
-    ```python
-    keep06 = class_nms(boxes, scores, labels, threshold=.6)  # 06 代表 NMS 門檻 0.6
-    assert keep06.tolist() == [2, 1, 0]
-
+    ``` { .python data-excerpt="lesson_cases/06-decode-nms.py" }
+    # 練習 1：只把 NMS 的 IoU 門檻改成 0.6
+    keep_iou06 = class_nms(boxes, scores, labels, threshold=.6)
+    assert keep_iou06.tolist() == [2, 1, 0]
+    ...
+    # 練習 2：從同一組 logits 重新 decode，只把 score 門檻改成 0.70
     boxes70, scores70, labels70 = decode(logits, score_threshold=.70)
+    assert len(boxes70) == 2 and labels70.tolist() == [0, 0]  # 只剩 2 個框，預測類別都是 0
     # allclose：逐項要求 |a−b| ≤ atol + rtol×|b|（a 是 `scores70`，b 是參考值 `[.72, .855]`），全部成立就算相等（浮點數有微小誤差）
     # atol 是固定的絕對容許差；rtol 是相對容許差（要乘上 |b|），沒寫時預設 1e-5，所以這裡實際容許約 8.2e-6～9.6e-6，不只 1e-6
     assert torch.allclose(scores70, torch.tensor([.72, .855]), atol=1e-6)

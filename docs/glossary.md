@@ -5,7 +5,7 @@
 怎麼用這頁：
 
 - 表格大致照課程順序分成七組。術語欄同時寫英文和課文用的中文，用瀏覽器的頁內搜尋（Ctrl+F；Mac 是 ⌘+F）找中文或英文都可以。
-- 「詳見」欄的數字是節次，和[閱讀路線](learning-path.md)上的編號相同；點下去會回到第一次教這個詞的那一節。有多個連結時，第一個以外的是補充的節：教得更詳細、教它另一種用法，或教同一列的另一個詞。
+- 「詳見」欄的數字是節次，和[完整閱讀路線](learning-path.md)上的編號相同；點下去會回到第一次教這個詞的那一節。有多個連結時，第一個以外的是補充的節：教得更詳細、教它另一種用法，或教同一列的另一個詞。
 - 術語後面標 ※ 的，在書裡還有別的意思，見頁末〈同名不同義〉。
 
 ??? note "常用符號"
@@ -15,7 +15,7 @@
     - B：一個 batch 的資料筆數，通常是圖片張數。
     - C：channel 數，或類別數；看該節的說明。11.4 節的 C 不是個數，而是同時框住預測框 P 與真值框 G 的最小包圍框；同一節的小寫 c 是 C 的對角線長。
     - H、W：高、寬。
-    - N：一張圖的框（物件）數；第 15 章是 token 數。NCHW 的 N 則是 batch 張數，就是 B。
+    - N：一張圖的框（物件）數；12.4 節 `[N,K]` 裡的 N 是要監督的邊（距離）數；第 15 章是 token 數。NCHW 的 N 則是 batch 張數，就是 B。
     - S：grid 每邊的格數，例如 4×4 格時 S＝4。15.2 節摺疊區〈如果改成固定每區的 token 數呢？〉裡的 S 則是每區固定的 token 數。
     - A：第 9 章是每格的 anchor 數（也就是 slot 數）；15.2 節是 area（區域）數。
     - K：第 0 章是線性層的輸出數；12.4、16.1 節是 DFL 每條邊的 bin 數。attention 的 Q、K、V 裡，K 是 key。
@@ -34,7 +34,7 @@
 
 | 術語 | 先用一句話記住 | 留意的地方 | 詳見 |
 | --- | --- | --- | --- |
-| tensor（張量）、shape（形狀） | tensor：裝數字的容器，可以有 0 個或多個軸；scalar（純量）沒有軸，shape 是 `[]`。shape：每個軸的長度 | 程式裡的 dim 就是軸。調換軸的順序要用 permute，例如把一般圖片的 HWC（高、寬、顏色）換成 CHW 是 `permute(2,0,1)`；reshape 只改形狀，會把顏色和位置混在一起 | [0](lessons/00-warmup.md) |
+| tensor（張量）、shape（形狀） | tensor：裝數字的容器，可以有 0 個或多個軸；scalar（純量）沒有軸，shape 是 `[]`。shape：每個軸的長度 | 程式裡的 dim 就是軸。調換軸的順序要用 permute，例如把一般圖片的 HWC（高、寬、顏色）換成 CHW 是 `permute(2,0,1)`；reshape 只改形狀，會把顏色和位置混在一起 | [0](lessons/00-warmup.md)、[1](lessons/01-small-cnn.md) |
 | batch（一批） | 同一次 forward（前向計算：把輸入算成輸出）一起處理的一組資料，例如一批圖片 | 同一批裡，每張圖的物件數仍可不同 | [0](lessons/00-warmup.md) |
 | channel（通道） | 特徵圖的一層：每個位置在這層有一個值；channel 數就是同一位置有幾個特徵值（特徵維度） | RGB 輸入有 3 個 channel；中間層的 channel 不一定對應顏色 | [1](lessons/01-small-cnn.md) |
 | gradient（梯度） | 某個數（參數或輸入）稍微改變時，loss 的變化率 | backward（反向傳播：從 loss 往回算）算出梯度，`optimizer.step()` 才更新參數 | [0](lessons/00-warmup.md) |
@@ -42,7 +42,7 @@
 | step（一步）、epoch（一輪） | step：參數更新一次，也就是呼叫一次 `optimizer.step()`，通常用一批資料。epoch：整份訓練資料都用過一次 | 資料只有一批時，一輪就是一步；例如 16.3 節只有 4 筆資料，30 輪就是 30 次更新 | [0](lessons/00-warmup.md)、[11.3](lessons/11-augmentation.md) |
 | seed（亂數種子） | 決定亂數從哪裡開始；固定 seed，每次重跑的隨機初始權重（以及程式生成的資料）都一樣，結果才能重現 | 只跑一個 seed，分不出差異來自設定還是運氣；建模型的順序不同時，同一個 seed 也可能得到不同的權重（3.3 節） | [1](lessons/01-small-cnn.md) |
 | checkpoint（存檔） | 訓練時存下的檔案：模型的權重，常一併存設定與 optimizer 狀態 | 可以載回來推論或接著訓練；模型的 shape 改了（例如類別數不同），舊的 checkpoint 就載不進去 | [7.4](lessons/07-training.md)、[8.1](lessons/08-own-images.md) |
-| overfit（過擬合）、泛化 | overfit：把訓練資料學到幾乎背起來，換新資料卻可能變差。泛化：對沒參與參數更新的資料也做得好 | 第 2 章會刻意先讓模型對少量資料 overfit，確認程式和模型學得動；7.4 節把它列為三步檢查之後的下一關，8.2 節在偵測模型上實際做到（train AP50＝1.0）。這項檢查通過，仍不保證泛化 | [2](lessons/02-diagnostics.md)、[8.2](lessons/08-own-data.md) |
+| overfit（過擬合）、泛化 | overfit：把訓練資料學到幾乎背起來，換新資料卻可能變差。泛化：對沒參與參數更新的資料也做得好 | 第 2 章會刻意先讓模型對少量資料 overfit，確認程式和模型學得動；7.4 節把它列為三步檢查之後的下一關，8.2 節在偵測模型上實際做到（train mAP50＝1.0）。這項檢查通過，仍不保證泛化 | [2](lessons/02-diagnostics.md)、[8.2](lessons/08-own-data.md) |
 | train／validation／test（訓練集／驗證集／測試集） | train 用來更新參數；validation 用來監測、挑設定；test 留到設定都定案後，最後評一次 | 反覆拿 test 挑設定，test 就間接參與了選擇，不再是獨立的 test，分數也會偏樂觀 | [2](lessons/02-diagnostics.md) |
 | held-out（獨立資料） | 刻意保留、不參與參數更新的資料；validation 和 test 都屬於這類 | 同一個來源（例如同一段影片）的相似圖片要整組放在同一邊，否則評估分數會虛高 | [2](lessons/02-diagnostics.md)、[7.6](lessons/07-heldout.md) |
 | 超參數（hyperparameter） | 學習率、步數、模型寬度這類由人事先決定、不靠梯度學出的設定 | 「調參」調的是超參數，不是模型權重；挑超參數用 validation，不用 test | [2](lessons/02-diagnostics.md) |
@@ -56,8 +56,8 @@
 | backbone（主幹） | 從圖片提取特徵的主幹 | 只輸出特徵圖；框要用 xyxy 還是 ltrb 這類寫法，由 head 與 decode 決定 | [1](lessons/01-small-cnn.md) |
 | neck | 夾在 backbone 與 head 之間，整理或融合特徵 | 小模型可省略獨立的 neck | [5](lessons/05-assignment.md)、[11.2](lessons/11-fusion.md) |
 | head ※ | 把特徵轉成任務輸出（例如類別分數、框）的末端 | 最後每個 channel 代表什麼，必須和 target 對得上 | [1](lessons/01-small-cnn.md) |
-| residual block（殘差區塊）、shortcut（捷徑） | 在主分支旁接一條 shortcut，把輸入加回主分支的輸出：\(y=x+F(x)\) | 相加前兩條路的 shape 必須完全相同；shape 不同時，先用 projection（可學的 1×1 卷積）對齊 | [3.1](lessons/03-identity.md) |
-| concat（串接）與 add（相加） | concat 沿 channel 把兩個 tensor 接起來（4＋4 變 8 個 channel）；add 逐個位置、逐個 channel 相加，channel 數不變 | 沿 channel concat 時，其他軸（B、H、W）要一樣長，否則 `torch.cat` 會報錯；add 要整個 shape 相同，但對不上的軸若都有一邊長度是 1，PyTorch 會 broadcast（廣播：把長度 1 的軸自動延伸成另一邊的長度），不報錯，所以要用 assert 核對兩邊的完整 shape（3.1 節練習 2）。shortcut 用的是 add | [3.1](lessons/03-identity.md) |
+| residual block（殘差區塊）、shortcut（捷徑） | 在主分支旁接一條 shortcut，把輸入加回主分支的輸出：\(y=x+F(x)\) | 相加前兩條路的 shape 必須完全相同；shape 不同時，先用 projection（可學的 1×1 卷積）對齊 | [3.1](lessons/03-identity.md)、[3.2](lessons/03-projection.md) |
+| concat（串接）與 add（相加） | concat 沿 channel 把兩個 tensor 接起來（4＋4 變 8 個 channel）；add 逐個位置、逐個 channel 相加，channel 數不變 | 沿 channel concat 時，其他軸（B、H、W）要一樣長，否則 `torch.cat` 會報錯；add 要整個 shape 相同，但對不上的軸若都有一邊長度是 1，PyTorch 會 broadcast（廣播：把長度 1 的軸自動延伸成另一邊的長度），不報錯，所以要用 assert 核對兩邊的完整 shape（3.1 節練習 2）。shortcut 用的是 add | [3.1](lessons/03-identity.md)、[11.2](lessons/11-fusion.md) |
 
 ## 框與座標
 
@@ -77,7 +77,7 @@
 | sigmoid（σ） | \(\sigma(z)=1/(1+e^{-z})\)，把任意實數壓到 0 與 1 之間（碰不到兩端），例如 \(\sigma(0)=0.5\) | 用在類別或 objectness 時，每個輸出各自是一個「是／否」機率，彼此不必加總為 1，可以同時接近 1；要在多類中只選一類，用 softmax。用在框時，壓出來的是座標比例，不是機率 | [4.1](lessons/04-localization.md) |
 | softmax | 把一組分數換成加總為 1 的機率：第 k 類是 \(e^{z_k}/\sum_j e^{z_j}\) | 要沿正確的軸做：類別軸、DFL 的 bin 軸、attention 的 key 軸 | [1](lessons/01-small-cnn.md) |
 | loss（損失） | 用一個可微分的數值，表示目前的預測離目標多遠；越小越好 | 不是 accuracy（正確率：答對的比例），也不直接等於 AP | [0](lessons/00-warmup.md) |
-| CE（cross entropy，交叉熵） | 多類分類的 loss：\(-\ln p\)，p 是 softmax 後正確類別的機率；p＝0.5 時約 0.693 | PyTorch 的 `cross_entropy` 內部先做 softmax，所以要傳 logits；先自己 softmax 再傳，等於做兩次 | [1](lessons/01-small-cnn.md) |
+| CE（cross entropy，交叉熵） | 多類分類的 loss：\(-\ln p\)，p 是 softmax 後正確類別的機率；p＝0.5 時約 0.693 | PyTorch 的 `cross_entropy` 內部先做 softmax，所以要傳 logits。7.3 節推出：CE 對類別 logits 的梯度是 softmax 機率減 one-hot（正確類別記 1、其他類別記 0 的向量）；先自己 softmax 再傳，等於做兩次，loss 可能看不出錯，這個梯度卻不對 | [1](lessons/01-small-cnn.md)、[7.3](lessons/07-loss.md) |
 | BCE（binary cross entropy，二元交叉熵） | 是非題的 loss：\(-[t\ln p+(1-t)\ln(1-p)]\)，其中 \(p=\sigma(z)\)，目標 t 通常是 0 或 1 | `BCEWithLogitsLoss`（函式版是 `binary_cross_entropy_with_logits`）內部先做 sigmoid，所以也要傳 logits。t 也可以是 0～1 之間的小數，例如 12.2、12.3 節提到，YOLOv8 正樣本的類別 target 是依品質給的分數；這時式子照用，對 z 的梯度也照樣是 7.3 節推出的 \(p-t\) | [5](lessons/05-assignment.md)、[7.3](lessons/07-loss.md) |
 | GT（ground truth，真值）、target（訓練目標）、監督 | GT：人工標的正確框與類別。target：把 GT 整理成和模型輸出一一對得上、loss 能直接比對的答案。這種告訴模型每個輸出位置正確答案的資料，叫監督（supervision） | target 由 GT 轉換而來，格式不一定相同 | [4.1](lessons/04-localization.md)、[5](lessons/05-assignment.md)、[7.2](lessons/07-targets.md) |
 | grid（格子、網格）、cell（格）、正格／負格 | 把輸入切成 S×S 格；物件中心落入的格是正格，其餘是負格，要學背景 | 中心剛好落在格線上時，floor（無條件捨去）會交給右邊或下面那格 | [5](lessons/05-assignment.md) |
@@ -110,11 +110,11 @@
 | --- | --- | --- | --- |
 | anchor（錨框、先驗）※ | 事先給定、訓練中不更新的參考寬高；模型只學相對它要放大或縮小多少 | slot 和類別是獨立的軸：anchor 只管尺寸，不綁某一類 | [9.1](lessons/09-anchors.md) |
 | anchor-free（不用 anchor） | 不使用 anchor 這種預設寬高模板；第 12 章讓每個候選點直接預測到框四邊的距離（ltrb） | 仍需要候選點，也仍需要 assignment 決定哪個候選負責哪個物件 | [12.1](lessons/12-anchor-free.md) |
-| ltrb | 候選點到框左（left）、上（top）、右（right）、下（bottom）四邊的距離；本書以特徵格為單位，也就是畫素距離除以 stride | 和 xyxy 一樣是四個數，意思卻不同。例：點 (24,24)、stride 8 時，xyxy `[12,16,40,36]` 寫成 ltrb 是 `[1.5,1,2,1.5]` | [12.1](lessons/12-anchor-free.md) |
+| ltrb | 候選點到框左（left）、上（top）、右（right）、下（bottom）四邊的距離；本書以特徵格為單位，也就是畫素距離除以 stride | 和 xyxy 一樣是四個數，意思卻不同。例：點 (28,28)、stride 8 時，xyxy `[12,16,40,36]` 寫成 ltrb 是 `[2,1.5,1.5,1]` | [12.1](lessons/12-anchor-free.md) |
 | top-k | 依分數（或品質）由大到小排，只留前 k 名 | 不看框的位置與重疊，本身不保證每個物件只留一個框，不能叫 NMS | [12.3](lessons/12-assignment.md)、[13.2](lessons/13-nms-free.md) |
-| DFL（Distribution Focal Loss）、bin | 把一條邊的距離拆給相鄰兩個整數刻度（bin）當目標：1.25 格→bin1 權重 0.75、bin2 權重 0.25，loss＝\(-0.75\ln p_1-0.25\ln p_2\)；解碼時取期望值 \(\sum_k k\,p_k\) | bin 是距離刻度，不是物件類別。K 個 bin 只能表示 0 到 K−1 格；Ultralytics 程式的 reg_max 就是 K，YOLO26 設 reg_max＝1，等於不用 DFL | [12.4](lessons/12-dfl.md) |
+| DFL（Distribution Focal Loss）、bin | 把一條邊的距離拆給相鄰兩個整數刻度（bin）當目標：1.25 格→bin1 權重 0.75、bin2 權重 0.25，loss＝\(-0.75\ln p_1-0.25\ln p_2\)；解碼時取期望值 \(\sum_k k\,p_k\) | bin 是距離刻度，不是物件類別。K 個 bin 只能表示 0 到 K−1 格；Ultralytics 程式的 reg_max 就是 K，YOLO26 設 reg_max＝1，等於不用 DFL | [12.4](lessons/12-dfl.md)、[16.1](lessons/16-dfl-free.md) |
 | one-to-many（一對多）、one-to-one（一對一） | 一對多：一個 GT 教好幾個候選，訓練訊號多，但推論時同一物件容易有多個高分框。一對一：每個 GT 只教一個候選，一個候選也最多負責一個 GT | YOLOv10 的 dual assignment（雙重分配）訓練時兩種 head 都接，推論只留一對一 head、不跑 NMS，這叫 NMS-free | [13.1](lessons/13-dual-assignment.md) |
-| attention（注意力）、token、Q／K／V | 每個位置是一個 token（該位置各 channel 的值排成的向量）。拿 query（要找什麼）和每個 key（被比對的標籤）做內積、除以 \(\sqrt{d}\)，沿 key 軸 softmax 成權重，再把所有位置（含自己）的 value（被讀走的內容）加權相加 | 例：15.1 節左上位置的權重是 [0.3349,0.1651,0.3349,0.1651]，第一項就是讀自己。full attention 每張圖、每個 attention head 有 N² 個權重；Area Attention 分成 A 區後降為 N²/A | [15.1](lessons/15-attention-bridge.md) |
+| attention（注意力）、token、Q／K／V | 每個位置是一個 token（該位置各 channel 的值排成的向量）。拿 query（要找什麼）和每個 key（被比對的標籤）做內積、除以 \(\sqrt{d}\)，沿 key 軸 softmax 成權重，再把所有位置（含自己）的 value（被讀走的內容）加權相加 | 例：15.1 節左上位置的權重是 [0.3349,0.1651,0.3349,0.1651]，第一項就是讀自己。full attention 每張圖、每個 attention head 有 N² 個權重；Area Attention 分成 A 區後降為 N²/A | [15.1](lessons/15-attention-bridge.md)、[15.2](lessons/15-area-attention.md) |
 
 ## 影片、追蹤與部署
 

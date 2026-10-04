@@ -2,7 +2,7 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-loss.ipynb){ .md-button }
 
-上一節把標註框換成每一格的訓練目標（target）；本節把 target 和模型每格的輸出接起來，算出 loss。讀完你能用紙筆算出三項 loss 與 objectness（這格有沒有物件）的梯度，也知道沒有物件的圖要怎麼處理。
+上一節把標註框換成每一格的訓練目標（target）；本節把 target 和模型每格的輸出接起來，算出 loss。讀完你能用紙筆算出三項 loss，以及 objectness（這格有沒有物件）與正格類別 logits 的梯度，也知道沒有物件的圖要怎麼處理。
 
 前置：[上一節的 targets](07-targets.md)（每格的 box、objectness、class_ids 與 positive 怎麼來）。本節在訓練前用人工設定的 logits 驗證三件事：數值是否吻合、哪些位置收到梯度、空圖的 loss 是否保持有限（box 與 class 為 0）。只看到 total loss 是有限數字（不是無限大，也不是 NaN；NaN 是 0÷0 這類算不出的值），不足以證明 mask 正確。
 
@@ -161,11 +161,36 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
 
     也就是 sigmoid(z) 減 target。objectness loss 是 B×S×S 格的平均；每個 objectness logit 只出現在自己那一格的 BCE 裡，box 與 class 也不含它，所以 total 對它的梯度是 \((p-t)/(B\cdot S\cdot S)\)。本例 p=0.5：正格 (0.5−1)/16=−0.03125，背景 (0.5−0)/16=+0.03125。
 
-梯度的正負號指出方向。假如把這個 logit 本身當成變數，走一步梯度下降 \(z_{\text{new}}=z-\eta g\)（η 是學習率，g 是梯度）：正格的梯度是負的，z 會變大；背景的梯度是正的，z 會變小。本節只從梯度的正負看方向，沒有真的做這一步更新。
+類別 logits 的梯度也能手算。CE 對正格類別 logits 的梯度是 `(softmax - one-hot) / Npositive`。one-hot 是「正確類別記 1、其他類別都記 0」的向量；本例正確類別是 0，one-hot 就是 [1, 0]。代入本例：softmax 是 [0.5, 0.5]、Npositive=1，梯度是 [0.5−1, 0.5−0]/1=[−0.5, 0.5]。classification 在 total 裡的係數也是 1，不必乘 5；分母是正格數 1，不是 objectness 的 16。完整程式用斷言（assert）核對這個值，並印在輸出的 `positive-cell class gradients [-0.5, 0.5]` 那一行。
+
+class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母把兩個類別 logits 綁在一起，class1 的 logit 變大，class0 的機率就變小，CE 跟著變大。數值驗算和上面一樣：把 class0 的 logit 從 0 改成 0.001，CE 由 0.693147 變成 0.692647，斜率約 −0.5；只把 class1 改成 0.001，CE 變成 0.693647，斜率約 +0.5。類別 loss 只平均 1 個正格，所以這也就是 total 的斜率。
+
+??? note "推導：為什麼類別梯度是 softmax 減 one-hot"
+
+    只看一個正格，正確類別是 c，類別 logits 是 \(z_0,\dots,z_{C-1}\)。softmax 是 \(p_k=e^{z_k}/\sum_j e^{z_j}\)，所以這一格的 CE 可以拆成兩項：
+
+    \[
+    \ell=-\ln p_c=-\ln e^{z_c}+\ln\sum_j e^{z_j}=-z_c+\ln\sum_j e^{z_j}
+    \]
+
+    對其中一個 \(z_k\) 偏微分（只讓 \(z_k\) 變，其他 logits 不動）：
+
+    - 第一項 \(-z_c\)：k=c 時導數是 −1，其他類別是 0。記 \(y_k\) 為 one-hot 的第 k 個數（k=c 時是 1，否則是 0），這一項的導數就是 \(-y_k\)。
+    - 第二項：令 \(u=\sum_j e^{z_j}\)，它對 \(z_k\) 的導數是 \(e^{z_k}\)。用上一個推導的規則（\(\ln u\) 的導數是 \(u'/u\)），得到 \(e^{z_k}/u=p_k\)。
+
+    合起來：
+
+    \[
+    \frac{\partial\ell}{\partial z_k}=p_k-y_k
+    \]
+
+    class loss 是 \(N_{\text{pos}}\) 個正格 CE 的平均；每個正格的類別 logits 只出現在自己那一格的 CE 裡，box 與 objectness 也不含它們，所以 total 對它們的梯度是 \((p_k-y_k)/N_{\text{pos}}\)。本例 \(p=[0.5,0.5]\)、\(y=[1,0]\)、\(N_{\text{pos}}=1\)：class0 是 −0.5，class1 是 +0.5。
+
+梯度的正負號指出方向。假如把某個 logit 本身當成變數，走一步梯度下降 \(z_{\text{new}}=z-\eta g\)（η 是學習率，g 是梯度）：梯度是負的，z 會變大；梯度是正的，z 會變小。所以正格的 objectness logit 會變大、背景的會變小；正格的兩個類別 logits 裡，正確類別 class0 會變大，class1 會變小。本節只從梯度的正負看方向，沒有真的做這一步更新。
 
 真正訓練時，optimizer 改的是 CNN 權重，logit 跟著權重間接改變。權重收到的梯度，是把每個 logit 的梯度各乘上「這個 logit 對權重的變化率」，再全部加起來。所以「每個 logit 的梯度」和「權重收到的總梯度」是兩回事，〈自主練習〉的練習 1 會用數字比較。
 
-負格的四個框梯度與兩個類別梯度都必須是 0。若負格的框梯度不為 0，表示背景正在學某個無意義的框。
+負格的四個框梯度與兩個類別梯度都必須是 0，完整程式也用斷言檢查。若負格的框梯度不為 0，表示背景正在學某個無意義的框；若類別梯度不為 0，表示背景正被教成某一類。
 
 ## 空圖：沒有正格時
 
@@ -179,30 +204,31 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
 
 ## 執行與核對
 
-在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-loss.ipynb) 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-loss.py`，然後核對：
+用頁首的按鈕在 Colab 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-loss.py`。輸出有四行，依序核對：
 
 - 四項 loss：`box .109375 / objectness .693147 / classification .693147 / total 1.933169`。
 - 正格與背景的 objectness 梯度：`-.03125/.03125`。
-- 空圖：通過 backward 的檢查，loss 有限，box 與 class 剛好是 0。輸出最後一行 `empty image: finite backward, box/class=0`，表示這部分的斷言（assert）都通過了。
+- 正格的類別梯度（class0、class1）：`[-0.5, 0.5]`。
+- 空圖：通過 backward 的檢查，loss 有限，box 與 class 剛好是 0。輸出最後一行 `empty image: finite backward, box/class=0`，表示這部分的斷言都通過了。
 
 只看「backward 成功、梯度有限」，分辨不出有沒有空圖分支：沒有分支時，梯度其實仍是有限的，壞掉的是 loss 值。真正分得出來的是 box 與 class 等於 0、total 約 0.693147。
 
-這個實驗只用人工設定的數字檢查 loss 的計算，沒有訓練模型，所以沒有 AP（第 6 章的偵測評估分數）結果。
+這個實驗只用人工設定的數字檢查 loss 與梯度的計算，沒有訓練模型，所以沒有 AP（第 6 章的偵測評估分數）結果。
 
 ## 收益、代價與常見錯誤
 
 收益是每一項監督和梯度方向都能被驗證。代價有兩個。第一，MSE 只比四個數各差多少，沒有直接衡量預測框和真值框重疊得好不好。第二，物件很少的圖裡，背景格遠多於正格。本例 16 格只有 1 格有物件：背景的 objectness 梯度加起來是 15×0.03125=0.46875，正格只有 0.03125，模型可能先學會到處說沒有物件。不要在尚未確認資料與 mask 時先調權重。第 11 章才單獨研究定位 loss，看 IoU 類 loss（用兩框重疊程度算的 loss）改了什麼。
 
-常見錯誤分兩類。第一類不會報錯，會得到看似正常的有限 loss，只能靠手算與梯度檢查抓出來：
+常見錯誤分兩類。第一類不會報錯，得到的是看似正常的有限 loss，要拿手算的 loss 與梯度來核對才會發現。本節完整程式的斷言做的就是這種核對，下面三種錯，每一種都會讓其中一個斷言失敗：
 
-- 先 sigmoid 再傳給 `BCEWithLogitsLoss`。它是程式裡 `F.binary_cross_entropy_with_logits` 的 Python class 版本（放在 `torch.nn` 裡，先建立物件再呼叫），算的是同一件事，內部同樣會做 sigmoid，所以等於做了兩次。本例 objectness 會從 0.693147 變成 0.942827。
-- 先 softmax 再傳給 CE，等於做了兩次 softmax。本例兩個類別 logits 都是 0，第一次 softmax 後兩類仍相等（各 0.5），所以錯誤寫法算出的類別 loss 仍是 0.693147，和正確值一樣。因此在本例，只看 loss 抓不到這個錯；要看正格的類別梯度，錯誤寫法只有正確值的一半。
-- 把負格也送進 CE。本章負格的 class_ids 是預設值 0，正好是紅色的編號，所以不會報錯，卻會把背景格（本例 15 格）教成紅色。類別 loss 一定要先用 pos 挑出正格。
+- 先 sigmoid 再傳給 `binary_cross_entropy_with_logits`。它內部會再做一次 sigmoid，等於做了兩次。`torch.nn` 裡的 `BCEWithLogitsLoss` 是它的 Python class 版本（先建立物件再呼叫），算的是同一件事，先 sigmoid 再傳給它也是同樣的錯。本例 objectness 會從 0.693147 變成 0.942827，檢查 objectness 等於 ln 2 的斷言會失敗。
+- 先 softmax 再傳給 CE，等於做了兩次 softmax。本例兩個類別 logits 都是 0，第一次 softmax 後兩類仍相等（各 0.5），所以錯誤寫法算出的類別 loss 仍是 0.693147，和正確值一樣，只看 loss 抓不到這個錯。差別在梯度：本例只有 1 個正格，正確的類別梯度是 `[-0.5, 0.5]`，錯誤寫法只有一半的 `[-0.25, 0.25]`，所以檢查正格類別梯度的斷言會失敗。只剩一半，是因為第一次 softmax 縮小了差距：class0 的 logit 改成 0.001 時，兩個 logits 相差 0.001，第一次 softmax 後的兩個數卻只相差約 0.0005，CE 的變化也就只剩一半。
+- 把負格也送進 CE。本章負格的 class_ids 是預設值 0，正好是紅色的編號，所以不會報錯，卻會把背景格（本例 15 格）教成紅色。本例每格的類別 logits 都是 0，每格的 CE 都是 ln 2，所以類別 loss 仍是 0.693147；但負格收到了類別梯度，檢查負格類別梯度為 0 的斷言會失敗。類別 loss 一定要先用 pos 挑出正格。
 
 第二類會報錯，或得到 NaN：
 
 - 若像第 5 章那樣把負格的 class_ids 填 −1，再送進 CE，會報錯。
-- 沒有正格時照樣取平均，會得到 NaN（見上面〈空圖〉）。
+- 沒有正格時照樣取平均，會得到 NaN（見上面〈空圖〉），完整程式檢查空圖 box 與 class 都是 0 的斷言會失敗。
 
 ## 自主練習
 
@@ -214,7 +240,7 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
 
     loss：不變。兩張圖的每一項都和原來一樣，分子與分母一起變兩倍，平均還是原值；若使用 sum 才會翻倍。
 
-    每個 logit 的梯度：減半。objectness 的分母從 16 變 32，正格從 −0.03125 變成 −0.015625，背景從 +0.03125 變成 +0.015625。box 與 class 的分母也加倍，梯度同樣減半。
+    每個 logit 的梯度：減半。objectness 的分母從 16 變 32，正格從 −0.03125 變成 −0.015625，背景從 +0.03125 變成 +0.015625。box 與 class 的分母也加倍（正格從 1 個變 2 個），梯度同樣減半：每個正格的類別梯度從 [−0.5, 0.5] 變成 [−0.25, 0.25]。這和〈收益、代價與常見錯誤〉裡先 softmax 的錯誤值數字相同，只是碰巧：這裡是正確寫法、分母變成 2；那裡是只有 1 個正格時多做了一次 softmax。
 
     共享權重的總梯度：不變。權重會收到兩張圖各一份減半的梯度，加起來和只有一張圖時相同。所以不要從「每個 logit 的梯度減半」推論共享模型的總梯度也減半。
 
@@ -235,24 +261,24 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
     \frac{e^{a+10}}{e^{a+10}+e^{b+10}}=\frac{e^{10}e^{a}}{e^{10}\bigl(e^{a}+e^{b}\bigr)}=\frac{e^{a}}{e^{a}+e^{b}}
     \]
 
-    本例 a=b=0，加 10 之後兩類仍各是 0.5，CE 仍是 \(\ln 2\approx0.693147\)。
+    本例 a=b=0，加 10 之後兩類仍各是 0.5，CE 仍是 \(\ln 2\approx0.693147\)。機率沒變，所以類別梯度（softmax 減 one-hot）也仍是 [−0.5, 0.5]。
 
-**練習 3：** batch 改成〔紅框圖, 空圖〕（B=2），四項 loss 與 objectness 梯度各是多少？
+**練習 3：** batch 改成〔紅框圖, 空圖〕（B=2），四項 loss 與 objectness 梯度各是多少？正格的類別梯度會變嗎？
 
 ??? note "參考答案"
 
-    B×S×S=32。box 和 class 只平均正格，正格仍只有紅框那 1 格，所以數值不變：box 0.109375、classification 0.693147；正格的框梯度與類別梯度也不變。objectness 改對 32 格平均，但每格仍是 ln 2，平均還是 0.693147，所以 total 仍是 1.933169。
+    B×S×S=32。box 和 class 只平均正格，正格仍只有紅框那 1 格，所以數值不變：box 0.109375、classification 0.693147。正格的框梯度與類別梯度也不變；類別梯度仍是 [−0.5, 0.5]，因為分母是正格數，仍是 1。objectness 改對 32 格平均，但每格仍是 ln 2，平均還是 0.693147，所以 total 仍是 1.933169。
 
     改變的是 objectness 梯度：分母從 16 變成 32，正格是 −1/64=−0.015625，31 個負格（紅框圖 15 格加空圖 16 格）各是 +1/64=+0.015625。
 
-    完整程式第 27–28 行用兩個斷言，檢查原例 1 個正格、15 個負格的 objectness 梯度是 ±1/32：
+    完整程式用下面兩個斷言，檢查原例 1 個正格、15 個負格的 objectness 梯度是 ±1/32：
 
-    ```python
+    ``` { .python data-excerpt="lesson_cases/07-loss.py" }
     assert torch.allclose(prediction.grad[..., 4][pos], torch.full((1,), -1/32))
     assert torch.allclose(prediction.grad[..., 4][~pos], torch.full((15,), 1/32))
     ```
 
-    這一題要改成 `torch.full((1,), -1/64)` 與 `torch.full((31,), 1/64)`。想用程式核對時，不要改原本的 `main()`：在 notebook 最後一格下面新增一個程式碼儲存格，貼上下面的程式另外測試（在自己的電腦上，也可以存成 .py 檔，在 repo 根目錄用 `PYTHONPATH=. python` 執行）。
+    這一題要改成 `torch.full((1,), -1/64)` 與 `torch.full((31,), 1/64)`。想用程式核對時，不要改原本的 `main()`：在 notebook 最後一格下面新增一個程式碼儲存格，貼上下面的程式另外測試（在自己的電腦上，也可以存成 .py 檔，在 repo 根目錄用 `PYTHONPATH=. python` 執行）。最後一個斷言檢查紅框圖正格 (0,1,1) 的類別梯度。
 
     ```python
     import torch
@@ -269,9 +295,10 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
     print({k: round(v.item(), 6) for k, v in parts.items()})
     assert torch.allclose(prediction.grad[..., 4][pos], torch.full((1,), -1/64))
     assert torch.allclose(prediction.grad[..., 4][~pos], torch.full((31,), 1/64))
+    assert torch.allclose(prediction.grad[0, 1, 1, 5:], torch.tensor([-.5, .5]))
     ```
 
-    把程式裡的 `[scene, empty]` 改成 `[scene, scene]`，也能核對練習 1；這時兩個斷言要改成 `torch.full((2,), -1/64)` 與 `torch.full((30,), 1/64)`。
+    把程式裡的 `[scene, empty]` 改成 `[scene, scene]`，也能核對練習 1；這時前兩個斷言要改成 `torch.full((2,), -1/64)` 與 `torch.full((30,), 1/64)`，類別梯度的斷言要改成 `torch.tensor([-.25, .25])`。
 
 <!-- curriculum-evidence:start -->
 

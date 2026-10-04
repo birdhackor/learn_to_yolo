@@ -34,7 +34,7 @@
 
 和原始 FPN 相比，有兩處不同要分清楚。一是用 concat 代替相加：兩路的 channel 各自保留，交給後面的 3×3 卷積學怎麼混（YOLOv3 也是用 concat 合併）。二是 lateral 那一支沒有 1×1，淺層特徵直接接進 concat；FPN 則在每次合併前，先用 1×1 處理 lateral 那一支。深層那一支的 1×1（本節的 reduce）FPN 也有：最深的一層在走 top-down 路徑之前，同樣先接一個 1×1。相加與 concat 哪個比較好，本節沒有比較。
 
-本節借用第 10 章 stride 8／16 兩種尺度的概念，但兩個輸入改用 8 與 16 channel 的隨機張量（見圖下說明），並沒有直接接上第 10 章 16／32 channel 的特徵。融合輸出的特徵供細 head 使用，沒有整套雙向路徑。若接回第 10 章，只有細 head 改吃融合特徵；粗 head（4×4）沿用第 10 章的接法，直接接深層特徵，本節不動它（圖中也沒有畫粗 head）。本節只確認融合接得通、梯度傳得到；要不要把它留在模型裡，等正式的品質與成本對照再決定。
+本節借用第 10 章 stride 8／16 兩種尺度的概念，但兩個輸入改用 8 與 16 channel 的隨機張量（見圖下說明），並沒有直接接上第 10 章 16／32 channel 的特徵。融合輸出的特徵供細 head 使用，沒有整套雙向路徑。若接回第 10 章，只有細 head 改吃融合特徵；粗 head（4×4）沿用第 10 章的接法，直接接深層特徵，本節不動它（圖中也沒有畫粗 head）。本節只確認融合接得通、梯度傳得到；這個融合模組值不值得留在模型裡，要靠品質與成本的對照實驗判斷（見後面「收益與代價」），本節沒有做這個對照。
 
 ![同一輸入的兩種 stride 與本節融合路徑](../assets/diagrams/11-fusion.svg)
 
@@ -76,18 +76,23 @@ concat 的必要條件是 H、W 相同，所以一定要先上取樣到 8×8；c
 - `self.reduce = nn.Conv2d(16,8,1)`：1×1 卷積，把 16 channel 減成 8。
 - `self.mix = nn.Conv2d(16,8,3,padding=1)`：3×3 卷積，把 16 channel 混成 8。`padding=1` 讓 8×8 仍是 8×8；沒有 padding 會變成 6×6。
 
-下面是它的 `forward()`：
+下面是它的 `forward()`，和完整程式相同，只加了中文註解：
 
-```python
-def forward(self,shallow,deep):
+``` { .python data-excerpt="lesson_cases/11-fusion.py" }
+def forward(self,shallow,deep,inspect=False):
     # shallow：[B,8,8,8]（8 channel、8×8 格）；deep：[B,16,4,4]（16 channel、4×4 格）
     reduced = self.reduce(deep)  # [B,8,4,4]：1×1 只改 channel，4×4 格不變
     # shallow.shape[-2:] 取最後兩軸 (H,W)，也就是 (8,8)
     up = F.interpolate(reduced,size=shallow.shape[-2:],mode='nearest')  # [B,8,8,8]
-    # torch.cat 沿 dim=1（channel 軸）接起來：[B,8+8=16,8,8]
-    # self.mix 是 3×3、padding=1，輸出仍是 8×8：[B,8,8,8]
-    return self.mix(torch.cat([shallow,up],dim=1))
+    # 沿 dim=1（channel 軸）接起來：[B,8+8=16,8,8]
+    concat = torch.cat([shallow,up],dim=1)
+    # mix 是 3×3、padding=1，輸出仍是 8×8：[B,8,8,8]
+    output = self.mix(concat)
+    # inspect=True 時連三個中間張量一起傳回，否則只傳回 output
+    return (output,reduced,up,concat) if inspect else output
 ```
+
+第一行除了兩個輸入，還有一個檢查用的參數 `inspect`，預設是 `False`。最後一行的意思是：`inspect` 是 `False` 時，只傳回融合輸出 `output`，所以平常寫 `model(shallow,deep)`，拿到的就是它；設成 `True` 時，會把 `output` 連同中間的 `reduced`、`up`、`concat` 一起傳回。完整程式寫的是 `output,reduced,up,concat = model(shallow,deep,inspect=True)`，等號左邊的四個變數依序接住傳回的四個張量。後面算 loss、做 backward 用的就是這次的 `output`；執行時印出的每一步 shape，量的也是這四個張量。所以印出的 shape，就是真正算出 loss 的那次 forward 裡的 shape（見後面「執行與核對」）。
 
 `size=shallow.shape[-2:]` 直接要求「放大成和淺層一樣的高、寬」，比假定放大 2 倍更明確。另一種寫法是 `scale_factor=2`：不指定輸出大小，而是長、寬各放大 2 倍。有些輸入尺寸會讓兩種寫法的結果不同。例如輸入改成 100×100，照第 10 章 TwoScale 的做法經過三次 3×3、stride 2、padding 1 的卷積，依序得到 50、25、13，淺層是 13×13；再一次得到深層 7×7。`scale_factor=2` 會放大成 14×14，和 13×13 concat 時會報錯；寫 `size=shallow.shape[-2:]` 則直接得到 13×13。
 
@@ -143,12 +148,16 @@ mix 輸出 16 channel，原本吃 16 channel 的 `fine_head` 才不必改。
 
 可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-fusion.py`。應核對四件事：
 
-1. 2×2 例子放大後的 4×4 矩陣和手算相同。
-2. 2×2 例子的來源梯度全為 4。
-3. 融合輸出是 `[1,8,8,8]`。這一項不會印出來，由完整程式裡的斷言 `assert output.shape == (1,8,8,8)` 核對：程式跑完、沒有出現 AssertionError，就表示通過。輸出第二行是程式固定印出的說明文字，不是從張量量出來的 shape。
-4. 參數共 1296。
+1. 輸出第一行的 `nearest example`：2×2 例子放大後的 4×4 矩陣和手算相同。
+2. 同一行的 `source gradient`：2×2 例子的來源梯度全為 4。
+3. 第二行的 `shapes`：先是兩個輸入 shallow `(1, 8, 8, 8)`、deep `(1, 16, 4, 4)`，接著依序是 reduce `(1, 8, 4, 4)`、nearest `(1, 8, 8, 8)`、concat `(1, 16, 8, 8)`、mix `(1, 8, 8, 8)`，和上面「整個融合分成四步」一致（這裡 B=1）。後四項量的是 `inspect=True` 那次 forward 傳回的 `reduced`、`up`、`concat`、`output`。最後的 mix `(1, 8, 8, 8)` 就是融合輸出 `[1,8,8,8]`（同一個 shape，只是印法不同），程式也用斷言 `assert output.shape == (1,8,8,8)` 核對。
+4. 第三行的 `parameters`：參數共 1296。
 
-此外，完整程式用「輸出平方的平均」當 loss，對融合輸出做一次 backward。這個 loss 沒有偵測上的意義，只是把輸出收成一個數，好呼叫 `backward()` 算梯度。`shallow`、`deep` 兩個輸入都收到非零梯度，表示兩條路都真的連到輸出。接著實際做一次 SGD 更新，並用斷言確認 mix 的權重確實改變了。
+此外，完整程式用「輸出平方的平均」當 loss，對融合輸出做一次 backward。這個 loss 沒有偵測上的意義，只是把輸出收成一個數，好呼叫 `backward()` 算梯度。斷言確認 `shallow`、`deep` 兩個輸入的梯度都是有限值（不是 inf 或 NaN）而且不全為 0，表示兩條路都真的連到輸出。接著實際做一次 SGD 更新，並用斷言確認 mix 的權重確實改變了。
+
+只看輸入的梯度還不夠。假如把 `forward()` 裡 `F.interpolate(reduced,…)` 的 `reduced` 換成 `deep[:,:8]`（深層的前 8 個 channel），融合輸出就不再經過 reduce；可是 shape 照樣對得上，兩個輸入也照樣收到梯度。所以程式也斷言 reduce 與 mix 的每個參數（權重與 bias）的梯度都不是 `None`、都是有限值，而且不全為 0。第 2 章〈[訓練診斷](02-diagnostics.md)〉說過，backward 後梯度仍是 `None` 的參數，表示它這次沒有接進反向傳播；上面那樣改，reduce 的參數就是這種情況，這個斷言會失敗。
+
+完整程式的斷言全都寫在三個 `print` 之前，所以三行都印出來，就表示斷言全部通過。第三行後半的 `both branches backward and one step` 是固定印出的字，摘要的就是上面這些梯度與更新的斷言。
 
 這個實驗只檢查特徵怎麼接，沒有訓練偵測器，所以沒有小物件 AP 或速度的結論。
 

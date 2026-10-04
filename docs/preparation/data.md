@@ -13,7 +13,7 @@
 
 比較不同版本時，要用同一份資料與同一組固定的困難案例；每換一版就換資料，就分不出差異來自改動還是資料。各節合成實驗的設定與執行結果，寫在各節頁面與〈[全套實驗與審查](../validation/curriculum.md)〉；教材沒有在真實照片上做各版本的完整比較。
 
-`python scripts/download_data.py list` 列出 `data/manifest.json`（資料清單：每份資料的來源、大小、校驗值與狀態）的每一項。狀態是 `download-ready` 的 Fashion-MNIST 與 Penn-Fudan 能用 `fetch` 下載；合成資料是 `generated`，由程式產生；VOC2007、COCO2017 與 Oxford-IIIT Pet 是 `candidate`，下載器不會下載。對後兩種執行 `fetch`，下載器會回「Candidate only」並指回本頁：合成資料不必下載，候選資料請從〈偵測資料：大小、格式與下載〉表格的官方連結取得。
+`python scripts/download_data.py list` 列出 `data/manifest.json`（資料清單：每份資料的來源、大小、校驗值與狀態）的每一項。狀態是 `download-ready` 的 Fashion-MNIST 與 Penn-Fudan 能用 `fetch` 下載；合成資料是 `generated`，由程式產生；VOC2007、COCO2017 與 Oxford-IIIT Pet 是 `candidate`，下載器不會下載。對後兩種執行 `fetch`，下載器會回「Candidate only」並指回本頁：合成資料不必下載，候選資料請從本頁下方〈[偵測資料：大小、格式與下載](#detection-downloads)〉表格的官方連結取得。
 
 ## Fashion-MNIST：選用的真實分類資料
 
@@ -42,13 +42,13 @@ python scripts/download_data.py fetch fashion-mnist --output /content/data
 - 官方 train 用 seed 7 打亂，前 6,000 張當 validation，其餘 54,000 張當 train；官方 test 原樣保留。
 - 灰階圖複製成三個相同的通道，好接上 RGB 輸入的 TinyCNN；這只為了共用介面，沒有增加顏色資訊。
 
-紀錄 [`fashion-mnist-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/fashion-mnist-learning.json) 是其中一次執行：取 64 張 train、128 張 validation 與官方 test 的前 128 張，在 CPU 上做 40 次 Adam 更新（batch 8、lr 0.001）。
+紀錄 [`fashion-mnist-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/fashion-mnist-learning.json) 是其中一次執行：取 64 張 train、128 張 validation 與官方 test 的前 128 張，在 CPU 上做 40 次 Adam 更新（batch 8、lr 0.001）。紀錄存著設定、每步的 loss、正確率、權重是否改變、四個資料檔的 SHA-256，以及執行的日期、電腦與程式（`run_fashion_cnn.py` 和它直接或間接 import 的每個 repo 模組，都以 SHA-256 記下）。
 
 這次執行證明管線接得起來：資料讀得進來，40 步的 loss 與梯度都是有限值，分類層的權重確實改變，validation 與 test 的評估也跑完。
 
-它沒有證明模型學會分類。40 步的 loss 一直在 2.11–2.39 之間，和 ln 10≈2.30 差不多；10 類都給 1/10 機率時，交叉熵（CE）正好是 −ln(1/10)＝ln 10。validation 正確率 0.1406（128 張答對 18 張），test 正確率 0.0938（答對 12 張），都和亂猜的 1/10 相當。所以這不是 Fashion-MNIST 的成績，也和偵測無關。這份紀錄存了設定、每步的 loss、正確率與權重是否改變，但沒有記錄執行日期、電腦與程式版本。
+它沒有證明模型學會分類。40 步的 loss 一直在 2.11–2.39 之間，和 ln 10≈2.30 差不多；10 類都給 1/10 機率時，交叉熵（CE）正好是 −ln(1/10)＝ln 10。validation 正確率 0.1406（128 張答對 18 張），test 正確率 0.0938（答對 12 張），都和亂猜的 1/10 相當。所以這不是 Fashion-MNIST 的成績，也和偵測無關。
 
-重跑：
+在自己的電腦跑同樣的設定：
 
 ```bash
 python scripts/run_fashion_cnn.py --train-steps 40 --subset 64 --eval-samples 128
@@ -62,7 +62,7 @@ Git LFS（Git Large File Storage）是讓 Git 另外存放大型檔案的擴充�
 
 這份封裝由 [Publish and verify LFS dataset](https://github.com/birdhackor/learn_to_yolo/actions/runs/36969537551) 工作流程（`.github/workflows/prepare-lfs.yml`）發布：從官方來源下載並校驗四個原始檔、打包、上傳到 LFS，再從空的 LFS 快取下載回來，核對封裝與其中四個原始檔的大小、SHA-256 以及 LICENSE 內容，全部相符才把指標檔推上 main。各步驟的結果記在 `data/hosted-lfs-run.json`。
 
-只取這份封裝：
+只取這份封裝（沒有安裝 `git-lfs` 的電腦要先安裝它）：
 
 ```bash
 GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/birdhackor/learn_to_yolo.git
@@ -71,7 +71,7 @@ git lfs install --local --skip-smudge
 git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""
 ```
 
-沒有安裝 `git-lfs` 的電腦要先安裝它。封裝裡的路徑和下載器的存放位置一致，照下面解開，loader 就能直接讀，不必指定 `--data-root`：
+封裝裡的路徑和下載器的存放位置一致，照下面解開，loader 就能直接讀，不必指定 `--data-root`：
 
 ```bash
 mkdir -p data/downloads
@@ -80,7 +80,7 @@ tar -xf data/curated/fashion-mnist-v1.tar -C data/downloads
 
 網站本身不發布資料集；官方來源的下載器可作備援。Penn-Fudan 的 README 寫明照片通常不得未經權利人許可重新張貼，所以只用下載器取到自己的電腦，不打包進 repo。
 
-## 偵測資料：大小、格式與下載
+## 偵測資料：大小、格式與下載 { #detection-downloads }
 
 下表的大小是封裝檔的 bytes，不是解壓後的空間。Penn-Fudan 的完整 ZIP 與 Pet 的 annotations 下載後校驗過；其他大型檔只發過 HEAD（只問檔案資訊、不下載內容的請求）或小段 GET，端點讀得到不代表整個檔案完整。
 
@@ -91,7 +91,7 @@ tar -xf data/curated/fashion-mnist-v1.tar -C data/downloads
 | COCO2017 | train 19.34 GB；val 815.59 MB；annotations 252.91 MB | JSON；畫素 xywh、非連續 category ID、iscrowd | [官方下載頁](https://cocodataset.org/#download) |
 | Oxford-IIIT Pet | 圖片 791.92 MB；annotations 19.17 MB | 頭部 XML、foreground／background／unknown trimap | [官方頁](https://www.robots.ox.ac.uk/~vgg/data/pets/) |
 
-VOC 的連結指向 Oxford 現用的主機 `thor.robots.ox.ac.uk`；舊主機的 `https://host.robots.ox.ac.uk/…` 查核時無法下載。
+VOC 的連結指向 Oxford 現用的主機 `thor.robots.ox.ac.uk`；舊主機的 `https://host.robots.ox.ac.uk/…` 查核時無法下載。COCO 官方下載頁列的檔案網址以 `http://images.cocodataset.org/` 開頭；要用 HTTPS（加密連線）下載，不能只把開頭改成 `https://`，2026-10-04 查核時這樣會連線失敗。請改用指向同一批檔案的 `https://s3.amazonaws.com/images.cocodataset.org/…`，原因見〈[偵測資料](../research/detection-data.md)〉的 COCO2017 一節。
 
 Penn-Fudan 完整 ZIP 的 SHA-256 為 `9095a9613c95586f1c7f2a327d454833d16e0f5e17e5f83d35027ffd315b48e2`（記在 `data/manifest.json`）。ZIP 內每個檔的 CRC 校驗碼都相符，圖片、mask 與標註 TXT 各 170 份。用下載器取得：
 
@@ -101,7 +101,7 @@ python scripts/download_data.py fetch penn-fudan
 
 這個指令從作者的網站取得原始資料，不代表有權把照片重新上傳到公開 repo。能用下載器取得的兩份完整資料（Fashion-MNIST 與 Penn-Fudan）合計 84.60 MB。本書沒有 Penn-Fudan 的格式轉換程式，也沒有用它訓練。
 
-Pet annotations 完整包的 SHA-256 是 `52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91`。官方 split 是 trainval 3,680 張、test 3,669 張；XML 只有 3,686 份，test 全部沒有 XML，trainval 也缺 9 份。要做整隻寵物的框，必須先按 trimap 訂好規則，不能直接拿頭框當全身框。
+Pet annotations 完整包的 SHA-256 是 `52425fb6de5c424942b7626b428656fcbd798db970a937df61750c0f1d358e91`。官方 split 是 trainval 3,680 張、test 3,669 張；XML 只有 3,686 份：3,671 份屬於 trainval（trainval 缺 9 份），15 份屬於不在官方 split 清單裡的圖，test 全部沒有 XML。要做整隻寵物的框，必須先按 trimap 訂好規則，不能直接拿頭框當全身框。
 
 CIFAR-10（32×32 RGB、封裝約 170.50 MB）也可作分類對照；它沒有 bbox，教材沒有用到，manifest 也沒有收錄。
 

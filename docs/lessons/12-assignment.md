@@ -63,9 +63,9 @@ top-2 是每個 GT 最多先選兩個；解衝突後不保證仍有兩個，也�
 
 k=2 看不出排名的作用，改成 k=1 就看得到。用品質排名時，A 選 p1（0.3111>0.225），B 選 p2（0.567>0.1469），沒有衝突，owner 變成 `[-1,0,1,-1]`；p0 雖在 A 內、品質也不是 0，仍成了背景。若資格照樣檢查、排名只看分類 score，A 選 p0（0.9），B 選 p1（0.8），owner 變成 `[0,1,-1,-1]`：和 B 的 IoU 高達 0.9 的 p2 反而成了背景，改由 IoU 只有 0.4286 的 p1 去學 B。
 
-下面摘自完整程式 `assign` 函式的核心（第 21–32 行），只加了中文註解：
+下面摘自完整程式 `assign` 函式的核心，從資格表 `inside` 到解衝突的迴圈，只加了中文註解：
 
-```python
+``` { .python data-excerpt="lesson_cases/12-assignment.py" }
 # points [P,2]、gt [G,4]；scores 與 overlaps（IoU 表）都是 [G,P]；k=2
 # 在這之前，owner 已建成 4 個 -1（每個候選先當背景）
 
@@ -73,7 +73,7 @@ k=2 看不出排名的作用，改成 k=1 就看得到。用品質排名時，A 
 inside = ((points[None] > gt[:, None, :2]) & (points[None] < gt[:, None, 2:])).all(-1)
 # 第 2 步，品質 [G,P]＝score×IoU²（α=1、β=2 這一組是方便手算的教學值，不是原始設定）
 # 原始設定：TOOD 論文用 α=1、β=6；YOLOv8 訓練時用 α=0.5、β=6
-metric = scores * overlaps.square()  # teaching alpha=1,beta=2; not original defaults
+metric = scores * overlaps.square()  # teaching pair alpha=1, beta=2; TOOD uses 1, 6 and YOLOv8 0.5, 6
 selected = torch.zeros_like(inside)  # [G,P]，全 False：GT g 有沒有選中候選 p
 for g in range(len(gt)):  # 第 3 步：每個 GT 各挑前 k 名
     eligible = torch.where(inside[g] & (metric[g] > 0))[0]  # 合格候選的編號，A 得 [0,1]
@@ -106,11 +106,11 @@ for p in range(len(points)):  # 第 4 步：逐個候選解衝突
 
 本例把正樣本的 target 簡化成 1，所以前景 target 是 `[1,1,1,0]`。YOLOv8 沒有 objectness：正樣本的 target 寫在所屬 GT 類別的那一欄，而且官方的值是依品質縮放的 0～1 小數，不是固定的 1。
 
-取平均的 BCE（二元交叉熵）對每個 logit 的梯度是 `(σ(z)−t)/4`。σ(z) 是 sigmoid(z)；四個 logits 都是 0，所以 σ(0)=0.5。t 是 target。4 是取平均的候選數，和第 7 章〈[Grid MiniYOLO loss](07-loss.md)〉的 (sigmoid−target)/格數是同一個式子。正樣本是 (0.5−1)/4=−0.125，背景是 (0.5−0)/4=+0.125，所以印出 `[-.125,-.125,-.125,+.125]`。完整程式裡學習率是 1，一次 SGD 更新後，logits＝0−1×梯度＝[0.125, 0.125, 0.125, −0.125]（程式沒有印出這組數字，可自行驗算）：正樣本的 logit 上升，背景下降。完整 detector 的正樣本還要取 owner 對應的 GT 框和類別；背景不計框回歸 loss。
+取平均的 BCE（二元交叉熵）對每個 logit 的梯度是 `(σ(z)−t)/4`。σ(z) 是 sigmoid(z)；四個 logits 都是 0，所以 σ(0)=0.5。t 是 target。4 是取平均的候選數，和第 7 章〈[Grid MiniYOLO loss](07-loss.md)〉的 (sigmoid−target)/格數是同一個式子。正樣本是 (0.5−1)/4=−0.125，背景是 (0.5−0)/4=+0.125，所以輸出的 `gradient` 那一行是 `[-0.125, -0.125, -0.125, 0.125]`。完整程式裡學習率是 1，一次 SGD 更新後，logits＝0−1×梯度＝[0.125, 0.125, 0.125, −0.125]（程式沒有印出這組數字，可自行驗算）：正樣本的 logit 上升，背景下降。完整 detector 的正樣本還要取 owner 對應的 GT 框和類別；背景不計框回歸 loss。
 
 空影像也要合法。程式給 `G=0`，回傳四個 −1；所有候選都能提供背景訊號。不要因為沒有 GT 就略過整張影像；沒有正樣本時，也不要直接對空的正樣本取 mean，那會得到 NaN（0÷0 這類算不出的值）。本節的前景小例子沒有評估 AP，只有責任規則的可核對答案。
 
-執行 `PYTHONPATH=. python lesson_cases/12-assignment.py`（不需下載資料），應得到上述品質表、owner、BCE 梯度與空圖結果。第一行印的是遮罩後的品質。程式先把品質四捨五入到小數 3 位再印，所以正文的 0.3111、0.1469（4 位）照理會印成 0.311、0.147。但 float32 存不下剛好的 0.311、0.147，只能存最接近的值，實際印出來是 0.3109999895…、0.1469999998…；0.225、0.567 也一樣。這是 float32 存不準這些小數，不是算錯。想改數字試試看，請做本節最後的自主練習：先預測 owner 會不會變，再跑程式核對。
+執行 `PYTHONPATH=. python lesson_cases/12-assignment.py`（不需下載資料），會依序印出六行：遮罩後的品質表、owner、前景 target、BCE 梯度、空影像的 owner，以及自主練習第 1 題的 owner。品質表四捨五入到小數第 3 位再印，所以正文的 0.3111、0.1469（4 位）印成 0.311、0.147。程式用四個斷言（assert）核對 owner、空影像的 owner、梯度和練習第 1 題的 owner；品質表只印出來，沒有斷言。想改數字試試看，請做本節最後的自主練習：先預測 owner 會不會變，再跑程式核對。
 
 ??? note "本例和官方實作差在哪"
 
@@ -122,7 +122,7 @@ for p in range(len(points)):  # 第 4 步：逐個候選解衝突
     - **正樣本的 target**：官方不是 1，而是依品質縮放、介於 0～1 的小數；本例簡化成 1。
     - **跨尺度**：官方把幾種 stride（通常是 8、16、32）特徵圖上的候選點放在一起排名、挑前 k 名；本例只有一個尺度的四個點。
     - **整批計算**：官方把一個 batch 的圖片一起算。每張圖的 GT 數不同，就補齊到相同長度，再用遮罩標出哪些是真的 GT。本例只有一張圖，用 Python 迴圈逐一處理。
-    - **小物件的候選**：現行原始碼選候選時，會把邊長小於 16 的 GT 框以中心暫時放大，讓小物件也有候選點（[16.3 節](16-training.md)的 STAL 會介紹，現在可以先跳過）；本節沒有套用。
+    - **小物件的候選**：官方選候選時，會把邊長小於 16 的 GT 框以中心暫時放大，讓小物件也有候選點（[16.3 節](16-training.md)的 STAL 會介紹，現在可以先跳過）；本節沒有套用。
 
 ## 收益、代價與常見錯誤
 
@@ -151,11 +151,11 @@ for p in range(len(points)):  # 第 4 步：逐個候選解衝突
 
     練習前後全批都是 3 個正樣本，只看總數會以為沒事，其實 A 少一個、B 多一個。物件彼此重疊很多的圖（擁擠場景）常出現這種搶候選的情況，所以要分別數每個 GT 有幾個正樣本。
 
-    **第 2 題**：A 遮罩後的品質變成 [0.225, 0.0444, 0, 0]（0.1×(2/3)²≈0.0444）。A 的合格候選仍只有 p0、p1，兩個都入選；B 仍選 p1、p2。衝突比的是 IoU（2/3>3/7），p1 仍歸 A，owner 不變，還是 `[0,0,1,-1]`。所有斷言都不必改，照樣通過。可見本例只改分數、而且改完仍大於 0 時，看不出變化：每個 GT 只有兩個合格候選，衝突又只看 IoU。若把某個合格候選的分數改成 0，它的品質也變成 0，就不再是那個 GT 的合格候選：例如把 A 對 p1 的 `.7` 改成 0，A 只剩 p0 合格，p1 改歸 B，owner 變成 `[0,1,1,-1]`，`main()` 的第一個斷言就不通過。
+    **第 2 題**：A 遮罩後的品質變成 [0.225, 0.0444, 0, 0]（0.1×(2/3)²≈0.0444；輸出第一行只印到小數第 3 位，是 0.044）。A 的合格候選仍只有 p0、p1，兩個都入選；B 仍選 p1、p2。衝突比的是 IoU（2/3>3/7），p1 仍歸 A，owner 不變，還是 `[0,0,1,-1]`。所有斷言都不必改，照樣通過。可見本例只改分數、而且改完仍大於 0 時，看不出變化：每個 GT 只有兩個合格候選，衝突又只看 IoU。若把某個合格候選的分數改成 0，它的品質也變成 0，就不再是那個 GT 的合格候選：例如把 A 對 p1 的 `.7` 改成 0，A 只剩 p0 合格，p1 改歸 B，owner 變成 `[0,1,1,-1]`，`main()` 的第一個斷言就不通過。
 
     延伸：分數維持 `.1`，再把 `assign` 裡解衝突的那一行改成比品質，也就是把 `owner[p] = candidates[overlaps[candidates, p].argmax()]` 的 `overlaps` 換成 `metric`。這時 A 對 p1 的品質 0.0444 小於 B 的 0.1469，p1 歸 B，owner 變成 `[0,1,1,-1]`。`main()` 裡的 `assert owner.tolist() == [0, 0, 1, -1]` 要改成 `[0, 1, 1, -1]`，其他斷言不變。兩種衝突規則在這裡給出不同答案。
 
-來源查核：2026-10-02。[TaskAlignedAssigner：品質、top-k、衝突與依品質縮放的 target](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[loss.py：訓練時把 detach 後的預測交給 assigner，並設定 α、β 與 top-k](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)。
+參考來源：[TaskAlignedAssigner：品質、top-k、衝突與依品質縮放的 target](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[loss.py：訓練時把 detach 後的預測交給 assigner，並設定 α、β 與 top-k](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)。
 
 <!-- curriculum-evidence:start -->
 

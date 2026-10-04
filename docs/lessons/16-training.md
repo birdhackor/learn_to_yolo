@@ -2,7 +2,7 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/16-training.ipynb){ .md-button }
 
-YOLO26 官方介紹了三個訓練技巧：Progressive Loss、STAL 和 MuSGD。本節逐一說明三者在做什麼，只對第一個做實驗。讀完本節，你能說出兩個分支的 loss 權重怎麼隨訓練移動，能手算一步加了 loss 權重的 SGD 更新，也能說明小物件為什麼要放寬候選資格。
+YOLO26 官方介紹了三個訓練技巧：Progressive Loss、STAL 和 MuSGD。本節逐一說明三者在做什麼，只對第一個做實驗。讀完本節，你能說出兩個分支的 loss 權重怎麼隨訓練移動，能手算一步加了 loss 權重的 SGD 更新，能用 loss 權重總量相同的對照組分辨差距從哪裡來，也能說明小物件為什麼要放寬候選資格。
 
 前置知識是 [13.1](13-dual-assignment.md) 的雙 head：訓練時有一對多（one-to-many，下面簡稱 many）和一對一（one-to-one，簡稱 one）兩個 head，本節也把它們叫做兩個分支。另外要知道 loss 權重（總 loss 裡每一項 loss 乘上的倍數）和 SGD。
 
@@ -17,7 +17,7 @@ NMS-free 推論（論文的預設；官方 API 要設 `nms=False`，見 [16.2](1
 ??? note "本節做了什麼、沒做什麼"
 
     - 文中的官方機制，以查核日（2026-10-02）固定版本的官方原始碼為準。
-    - 實驗的起點是兩個線性 head，主要改動只有 loss 權重的排程。
+    - 實驗是兩個線性 head 的小例子，三次訓練只差在 loss 權重。
     - 官方發布的 checkpoint（訓練好的模型檔）還用了預訓練、資料增強、超參數與內部設定；一段小實驗不能宣稱完整重現它。
     - 小實驗的 MSE 差距只展示 loss 權重的作用，不能當成 YOLO26 的 AP 增益。
     - 沒有執行 MuSGD，只做文字說明。
@@ -54,24 +54,64 @@ L=a\,L_{\text{many}}+b\,L_{\text{one}}.
 
 第 0 輪 b=0.2，第 29 輪 b=0.9。若兩個時刻的 \(\partial L_{\text{one}}/\partial\theta\) 一樣大，後者每步走 4.5 倍遠。但 one head 越接近答案，\(\partial L_{\text{one}}/\partial\theta\) 本身會變小，所以後期每一步實際走多遠，不一定比前期大。
 
-本例的兩個 head 都是 `Linear(1,1)`：每筆輸入 1 個數，預測 wx+bias。輸入 features 的 shape 是 `[4,1]`（4 筆、每筆 1 個數），數值為 −1、0、1、2；target 是 2x+1，也就是 −1、1、3、5。兩個 head 的輸出也是 `[4,1]`，各用 MSE（均方誤差：誤差平方的平均）算 loss。實驗跑兩次：一次固定 0.8/0.2 當對照，一次用上面的排程。兩次開始前都把亂數種子（seed）設成 7，所以初始參數相同；資料、SGD 更新次數（30 次）和學習率 0.05 也都相同。兩個線性 head 互不相連，學同一個 target；沒有不同的 assignment，也沒有共享的 backbone。
+本例的兩個 head 都是 `Linear(1,1)`：每筆輸入 1 個數，預測 wx+bias。輸入 features 的 shape 是 `[4,1]`（4 筆、每筆 1 個數），數值為 −1、0、1、2；target 是 2x+1，也就是 −1、1、3、5。兩個 head 的輸出也是 `[4,1]`，各用 MSE（均方誤差：誤差平方的平均）算 loss。實驗跑三次：每輪固定 0.8/0.2、上面的排程（下面稱 progressive），以及每輪固定 0.45/0.55 的等總量對照組。等總量對照組的 b 每輪都是 0.55，30 輪加起來是 16.5，和排程 30 輪的 b 總和相同（下面會算）。三次開始前都把亂數種子（seed）設成 7，所以初始參數相同；資料、SGD 更新次數（30 次）和學習率 0.05 也都相同。兩個線性 head 互不相連，學同一個 target；沒有不同的 assignment，也沒有共享的 backbone。
 
-本例的 SGD 是最基本的版本：每步只做「新參數＝舊參數−學習率×梯度」，沒有加其他機制（例如 MuSGD 段會說明的動量）。所以每一步，one head 的參數減去 \(0.05\times b\times\partial L_{\text{one}}/\partial\theta\)，效果等於 one head 用 0.05×b 當學習率。這個有效學習率從 0.01 增加到 0.045；固定組則一直是 0.01。
+本例的 SGD 是最基本的版本：每步只做「新參數＝舊參數−學習率×梯度」，沒有加其他機制（例如 MuSGD 段會說明的動量）。所以每一步，one head 的參數減去 \(0.05\times b\times\partial L_{\text{one}}/\partial\theta\)，效果等於 one head 用 0.05×b 當學習率。progressive 的這個有效學習率從 0.01 增加到 0.045；固定 0.8/0.2 一直是 0.05×0.2=0.01，等總量對照組一直是 0.05×0.55=0.0275。
 
-```python
-optimizer.zero_grad()  # 清除上一輪累積的梯度
-many_prediction, one_prediction = many(features), one(features)  # 兩個 nn.Linear(1,1)
-many_mse = F.mse_loss(many_prediction, target)
-one_mse = F.mse_loss(one_prediction, target)
-many_weight, one_weight = weights(epoch, epochs, final_many=.1)  # 回傳上式的 a(e)、b(e)；epochs 就是 E=30
-loss = many_weight * many_mse + one_weight * one_mse
-loss.backward()
-optimizer.step()
+完整程式的 `train` 函式每呼叫一次，就從頭訓練一次，回傳 30 次更新後 one 的 MSE、每輪的紀錄 `history` 和首步紀錄 `first_step`：
+
+``` { .python data-excerpt="lesson_cases/16-training.py" }
+def train(progressive, epochs=30, final_many=.1, fixed_weights=(.8, .2)):
+    torch.manual_seed(7)  # 每次呼叫都重設 seed，所以三次的初始參數相同
+    features = torch.tensor([[-1.], [0.], [1.], [2.]])
+    target = 2 * features + 1
+    many, one = nn.Linear(1, 1), nn.Linear(1, 1)
+    optimizer = torch.optim.SGD(list(many.parameters()) + list(one.parameters()), lr=.05)
+    history = []
+    first_step = {}
+    for epoch in range(epochs):  # epochs 就是 E=30
+        # progressive=True 用上式的 a(e)、b(e)；False 則每輪都用同一組 fixed_weights
+        a, b = weights(epoch, epochs, final_many) if progressive else fixed_weights
+        optimizer.zero_grad()  # 清除上一輪累積的梯度
+        lm = F.mse_loss(many(features), target)  # 上式的 L_many
+        one_prediction = one(features)
+        lo = F.mse_loss(one_prediction, target)  # 上式的 L_one
+        # 下面三處 ... 省略的，都是只在第 0 輪執行、把首步數值記進 first_step 的程式
+        ...
+        loss = a * lm + b * lo
+        loss.backward()
+        assert many.weight.grad is not None and one.weight.grad is not None
+        ...
+        optimizer.step()
+        ...
+        history.append((a, b, float(lo.detach())))  # 每輪記下 a、b 和這輪更新前 one 的 MSE
+    return F.mse_loss(one(features), target).item(), history, first_step
 ```
 
-這段是摘錄，變數名稱寫得比較長。完整程式（Colab 裡那份）的 `many_mse`、`one_mse` 叫 `lm`、`lo`，`many_weight`、`one_weight` 叫 `a`、`b`。完整程式用同一個 `train` 函式跑兩次：`progressive=True` 用上式的排程，`progressive=False` 固定 0.8/0.2 當對照。
+`main()` 用這個函式跑三次。`progressive=True` 用上式的排程；`progressive=False` 每輪都用參數 `fixed_weights` 給的固定權重，跑兩次：一次用預設的 0.8/0.2，一次用由排程算出的等總量對照組權重 `matched_weights`：
 
-seed 7 的第一步可以逐值核對：
+``` { .python data-excerpt="lesson_cases/16-training.py" }
+def total_one_weight(history):
+    """Sum of the one-head loss weight b over all epochs of one run."""
+    return sum(b for _, b, _ in history)  # history 每輪一筆 (a, b, one 的 MSE)，這裡只加 b
+
+
+def main():
+    ...
+    final_many = .1  # 自主練習只改這個值
+    fixed, fixed_history, _ = train(False)  # 固定 0.8/0.2（fixed_weights 的預設值）
+    progressive, history, first_step = train(True, final_many=final_many)  # 上式的排程
+    # 排程的首末端點：第 0 輪 a=0.8，最後一輪 a=final_many
+    assert abs(history[0][0] - .8) < 1e-7 and abs(history[-1][0] - final_many) < 1e-7
+    matched_one = total_one_weight(history) / len(history)  # 排程 30 輪 b 的平均
+    matched_weights = (1 - matched_one, matched_one)  # 本例是 (0.45, 0.55)
+    matched, matched_history, _ = train(False, fixed_weights=matched_weights)  # 等總量對照組
+    assert abs(total_one_weight(matched_history) - total_one_weight(history)) < 1e-9
+```
+
+排程的 b 從 0.2 起每輪增加 0.7/29，到 0.9 為止，是等差數列：30 輪的和是 30×(0.2+0.9)/2=16.5，平均 `matched_one` 是 16.5/30=0.55。所以等總量對照組每輪都用 many/one 為 0.45/0.55 的權重，30 輪的 b 總和同樣是 16.5；最後一行的斷言（assert）核對這兩個總和相等。progressive 和固定 0.8/0.2 有兩處不同：b 的總和（16.5 對 6），以及 b 每輪怎麼變（逐輪增加對每輪相同）。progressive 和等總量對照組只差在第二處。
+
+progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
 
 | one 分支計算 | 數值 |
 | --- | --- |
@@ -85,11 +125,43 @@ seed 7 的第一步可以逐值核對：
 
 表中的梯度怎麼來？MSE 來自平方，所以導數有 2；四筆取平均，所以除以 4；最後再乘 one 的 loss 權重 b=0.2。預測 wx+bias 對 w 的變化率是 x，所以 dw 要乘 x；對 bias 的變化率是 1，所以 dbias 不用乘：`dw=.2×(2/4)×sum((prediction−target)×x)=−1.146190`，`dbias=.2×(2/4)×sum(prediction−target)=−.610803`。更新時減去學習率乘梯度，例如 `w_new=.318423−.05×(−1.146190)=.375733`。
 
-完整程式會印出這份首步紀錄，並用斷言（assert）核對。最後報告的 MSE 則是 30 次更新都做完後重新 forward 算出來的，不是沿用最後一次更新前的 loss。
+完整程式用斷言核對這張表的參數、MSE 與梯度，並印出這份首步紀錄（`one-head first forward/backward/step` 那一行）；兩者都取自 progressive 那一次。固定 0.8/0.2 那一次的第一步，表中每個數都和它相同，因為 seed、資料和第 0 輪的 b=0.2 都一樣。等總量對照組第 0 輪的 b 是 0.55：初始 w／bias、forward 和 MSE 和表中相同，乘了 b 的 dw、dbias 卻是表中的 0.55/0.2=2.75 倍，更新後的 w／bias 也就不同。
 
-執行 `PYTHONPATH=. python lesson_cases/16-training.py`，程式會核對第 0 輪與第 29 輪的 many/one loss 權重（0.8/0.2 與 0.1/0.9），以及首步表中的參數、MSE 與梯度，並印出 one head 的 MSE。30 次更新後，固定 0.8/0.2 的 one MSE 是 0.663，progressive 是 0.016。這個固定小例中 progressive 較低，程式用 assert 檢查這個觀察；換資料、步數或學習率，不保證 progressive 仍然勝出。
+首步紀錄裡的 `one_gain` 是第 0 輪的 b，印成 0.19999999999999996 而不是 0.2：排程的 b 是用 1−a 算的，而 0.8 在電腦裡存不成剛好的 0.8（第 4 章〈[座標轉換與還原](04-coordinates.md)〉講過這類極小的捨入誤差）。最後報告的 MSE，則是 30 次更新都做完後重新 forward 算出來的（`train` 最後的 `return` 那一行），不是沿用最後一次更新前的 loss。
 
-差距從哪裡來？本例兩個 head 互不相連，a 完全不影響 one head。差距只因為 one 的有效學習率較大：30 輪的 b 加起來，progressive 是 16.5，固定組只有 6。若一開始就固定 0.1/0.9，one MSE 還會更低。所以本例看不到「前期多給 many」的好處。官方 YOLO26 的 one 分支讀的是 detach 後的特徵（梯度傳不回 backbone），backbone 只由 many 分支訓練；這種結構下排程有什麼作用，本例沒有測。本例支持的結論是：改變某分支的 loss 權重，會改變該分支學得多快。它不支持「所有場景都該使用這個排程」。
+執行 `PYTHONPATH=. python lesson_cases/16-training.py`。`main()` 在印出結果之前，先用斷言核對三件事：排程第 0 輪與第 29 輪 many 的 loss 權重是 0.8 與 0.1（one 是 1 減去它，也就是 0.2 與 0.9）；等總量對照組和排程的 b 總和相等；首步表中的參數、MSE 與梯度。印出的前兩行是排程第 0 輪與第 29 輪的 many/one loss 權重。第三到五行是三次訓練，依序以 `fixed many/one (0.8, 0.2)`、`progressive`、`matched fixed many/one (0.45, 0.55)` 開頭，接著是 `sum of b`（30 輪 b 的總和）和 30 次更新後 one 的 MSE（`one-head MSE`）。
+
+標籤裡的權重和 `sum of b` 只是 a、b 的算術，每台電腦都一樣：固定 0.8/0.2 是 0.2×30=6.000，progressive 和等總量對照組都是 16.500。one MSE 是訓練結果：固定 0.8/0.2 是 0.663，progressive 是 0.016；等總量對照組和 progressive 很接近，只略高一點（三個數字都在頁尾的執行紀錄裡）。這些數字只對本例成立。
+
+差距從哪裡來？本例兩個 head 互不相連，a 完全不影響 one head 的更新；三次訓練的 seed、資料和學習率又都相同，所以 one 的結果只會因每輪的 b 而不同。
+
+- **progressive 和固定 0.8/0.2 的差距，幾乎全來自 b 的總和**：30 輪分給 one 的 loss 權重，progressive 加起來是 16.5，固定 0.8/0.2 只有 6。等總量對照組的總和和 progressive 一樣，one MSE 就和 progressive 很接近，同樣遠低於 0.663。
+- **progressive 和等總量對照組的那一點差距，來自 b 每輪大小不同**：progressive 的 b 從 0.2 到 0.9 有大有小，對照組每輪都是 0.55。這不是「前期多給 many」的好處：a 根本不進入 one 的更新；而且照下方摺疊區的推導，30 輪的 b 不管怎麼排順序，one 的結果都一樣。
+
+所以本例看不到「前期多給 many」的好處。官方 YOLO26 的 one 分支讀的是 detach 後的特徵（梯度傳不回 backbone），backbone 只由 many 分支訓練；這種結構下排程有什麼作用，本例沒有測。本例支持的結論是：改變某分支的 loss 權重，會改變該分支學得多快。它不支持「所有場景都該使用這個排程」。
+
+??? note "為什麼 b 每輪大小不同，one MSE 會略低一點"
+
+    記 \(d=(w-2,\ \text{bias}-1)\)，也就是 one head 的參數離正確答案 w=2、bias=1 還差多少。這時 prediction−target 等於 \((w-2)x+(\text{bias}-1)\)，照上面算 dw、dbias 的方法（四筆 x 的和是 2、平方和是 6），還沒乘 b 的梯度是 \(Hd\)，其中
+
+    \[
+    H=\begin{bmatrix}3&1\\1&2\end{bmatrix}.
+    \]
+
+    所以每一輪的更新是 \(d\leftarrow d-0.05\,b\,Hd\)。
+
+    H 有兩個特別的方向：\(u_1=(1,\ 0.618)\) 乘上 H，只會變成 3.618 倍；\(u_2=(1,\ -1.618)\) 乘上 H，只會變成 1.382 倍（都是近似值；線性代數把這種方向叫特徵向量，倍數 λ 叫特徵值）。把 d 寫成 \(c_1u_1+c_2u_2\)，每一輪的更新就只是把 \(c_1\) 乘上 \(1-0.05\,b\times3.618\)、把 \(c_2\) 乘上 \(1-0.05\,b\times1.382\)。三次訓練中最大的 \(0.05\,b\,\lambda\) 是 \(0.05\times0.9\times3.618\approx0.16\)，所以這些倍數都介於 0 和 1 之間。30 輪後，每個分量都乘上
+
+    \[
+    (1-0.05\,b_0\lambda)(1-0.05\,b_1\lambda)\cdots(1-0.05\,b_{29}\lambda),
+    \]
+
+    其中 \(b_e\) 是第 e 輪的 b，λ 是 3.618 或 1.382。由這個乘積可以看出兩件事：
+
+    1. 乘法可以交換順序，30 個 b 不管怎麼排，乘積都一樣，所以 b 先小後大本身沒有好處。本節程式沒有跑把 b 倒過來排的對照，這一點是由推導得出的。
+    2. b 的總和固定是 16.5 時，這 30 個倍數的總和也固定，是 \(30-0.05\lambda\times16.5\)。算幾不等式（正數的算術平均不小於幾何平均）說：總和固定的正數，全部相等時乘積最大。等總量對照組每輪的 b 都是 0.55，兩個分量都縮得最少；progressive 的 b 有大有小，縮得多一點。
+
+    one 的 MSE 等於 \(c_1^2\)、\(c_2^2\) 各乘一個正數再相加，所以 progressive 的 one MSE 略低於等總量對照組。
 
 ## STAL（Small-Target-Aware Label Assignment）：擴張候選資格，不放大真值框
 
@@ -145,6 +217,7 @@ seed 7 的第一步可以逐值核對：
 
 - **以為真實模型改 a、b，只等於調一個學習率**：本例兩個 head 互相獨立，才剛好等於調 one 的學習率。查核版本中，one 分支讀 detach 後的特徵，所以 a 縮放的是 backbone 與 many head 的梯度，b 只縮放 one head 的梯度；再加上動量、MuSGD 和權重衰減，效果不等於只調一個學習率。
 - **三項同時改，卻只報總 loss**：分不出是誰造成差異。
+- **只和一組固定權重比，就把差距算在排程頭上**：固定 0.8/0.2 和 progressive 不只 b 每輪怎麼變不同，b 的總和也不同（6 對 16.5）。要看「b 每輪怎麼變」本身有沒有作用，得和 b 總和相同的對照組比；本例 progressive 和等總量對照組只差一點，那一點來自 b 每輪大小不同。
 - **把 STAL 的資格框當成標註框**：16×16 的資格框只用來選候選，回歸真值仍是原框。
 - **沒用 MuSGD 做配對實驗，就宣稱它比較好**：本節沒有執行 MuSGD，兩個線性 head 的 MSE 說明不了優化器的好壞。
 
@@ -152,17 +225,17 @@ seed 7 的第一步可以逐值核對：
 
 1. 第 29 輪的 many/one loss 權重是多少？
 2. 第 0 輪的首步數值（上面那張表）會變嗎？為什麼？
-3. progressive 的 one MSE 會變大還是變小？`assert progressive < fixed` 還會通過嗎？
+3. 程式印出的 progressive `sum of b` 會變成多少？等總量對照組的 many/one 權重會變成多少？progressive 的 one MSE 會變大還是變小？
 4. STAL 讓四個格心進入候選池後，YOLO26 的 one-to-one 分支最後每個 GT 最多有幾個正樣本？
 
 ??? note "參考答案"
 
     1. 0.3/0.7。e=29 時 \(a=0\times(0.8-0.3)+0.3=0.3\)，b=1−0.3=0.7。
-    2. 不變。\(a(0)=1\times(0.8-0.3)+0.3=0.8\)，和終點無關，b 仍是 0.2；資料、seed 和初始參數也都沒變，所以首步數值和改之前（`final_many = .1`）完全相同。排程、核對終點的 assert 和印出的結果都用同一個 `final_many` 變數，不必改任何 assert。
-    3. 變大，但仍低於固定組。改程式後重跑，會印出 progressive 的 one MSE 約 0.04（原本是 0.016），仍低於固定 0.8/0.2 的 0.663，所以 assert 仍會通過。原因是 one 的有效學習率變小：第 1 輪起，每一輪的 b 都比原本小，30 輪的 b 加起來從 16.5 降到 13.5。多留給 many 的 loss 權重，在本例對 one 沒有幫助，因為兩個 head 互不相連。在真實模型（例如官方 YOLO26，backbone 只由 many 分支訓練）上值不值得這樣分配，要另做配對實驗才知道。
+    2. 不變。\(a(0)=1\times(0.8-0.3)+0.3=0.8\)，和終點無關，b 仍是 0.2；資料、seed 和初始參數也都沒變，所以首步數值和改之前（`final_many = .1`）完全相同。排程、核對終點的 assert 和印出的結果都用同一個 `final_many` 變數，不必改任何 assert。等總量對照組的權重 `matched_weights` 也由排程的 b 算出，會自動跟著變，程式照樣 assert 它和排程的 b 總和相等。
+    3. progressive 印出 `sum of b=13.500`（改之前是 16.500）：b 改成從 0.2 線性增加到 0.7，30 輪的和是 30×(0.2+0.7)/2=13.5，第 1 輪起每一輪都比改之前小。等總量對照組自動變成 `matched fixed many/one (0.55, 0.45)`，`sum of b` 也是 13.500；固定 0.8/0.2 那一行完全不變。progressive 的 one MSE 變大，因為 one 的有效學習率從第 1 輪起每輪都比改之前小。等總量對照組的 one MSE 仍和 progressive 很接近、略高一點：b 總和相同時，b 每輪大小不同的 progressive 會略低（推導見正文的摺疊區）。多留給 many 的 loss 權重，在本例對 one 沒有幫助，因為兩個 head 互不相連。在真實模型（例如官方 YOLO26，backbone 只由 many 分支訓練）上值不值得這樣分配，要另做配對實驗才知道。
     4. 最多 1 個。4 只是有資格進池的點數；查核版本的 one-to-one 分支，最後每個 GT 最多只留品質最高的 1 個（topk2=1）。本例沒有做品質排序，說不出會是哪一個。
 
-來源查核：2026-10-02。[E2ELoss 排程](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[小物件資格與 top-1 篩選（topk2）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[MuSGD 公開實作](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/optim/muon.py)、[官方訓練配方（recipe）與重現範圍](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/docs/en/guides/yolo26-training-recipe.md)。
+參考來源：[E2ELoss 排程](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[小物件資格與 top-1 篩選（topk2）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[MuSGD 公開實作](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/optim/muon.py)、[官方訓練配方（recipe）與重現範圍](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/docs/en/guides/yolo26-training-recipe.md)。
 
 <!-- curriculum-evidence:start -->
 

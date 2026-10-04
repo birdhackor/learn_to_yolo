@@ -136,7 +136,7 @@ def main() -> None:
                 cell("markdown", f"# {section['title']}\n\n"
                      f"[完整圖文教材](https://birdhackor.github.io/learn_to_yolo/lessons/{lesson_id}/)\n\n"
                      "先執行下一格的環境格，再閱讀、執行最後的完整實驗。各節互相獨立，不需要先跑其他節。\n\n"
-                     "最後一格存著這段程式在 CPU 上實際執行的輸出；執行環境與其他實驗紀錄見網站的〈驗證範圍與後續實驗〉。"
+                     "最後一格存著這段程式在 CPU 上實際執行的輸出；執行環境與其他實驗紀錄見網站的〈驗證範圍〉。"
                      "範例不用預訓練權重，也不需要下載資料。"),
                 cell("code", bootstrap(args.ref, lesson_id == "20-deployment")),
                 cell("markdown", "## 本節可修改的完整實驗\n\n先預測結果，再執行；確認輸出後，試做網頁的自主練習。"

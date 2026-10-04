@@ -63,7 +63,7 @@ f → 類別分支：3×3 卷積(8→8) → ReLU → 1×1 卷積(8→2) → logi
 
 完整程式裡的對應片段如下，前三行是 forward 和兩個 loss：
 
-```python
+``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 boxes, logits = model(x)  # forward：同一份特徵 f 交給兩條分支
 box_loss = F.smooth_l1_loss(F.softplus(boxes), distances)  # 只用到 boxes
 cls_loss = F.binary_cross_entropy_with_logits(logits, classes)  # 只用到 logits
@@ -92,7 +92,7 @@ class_backbone_grad = model.backbone.weight.grad.clone()
 
 總 loss 是 \(L=L_{\text{box}}+L_{\text{cls}}\)。和的導數等於導數的和，所以 \(\theta\) 的梯度是 \(g_{\text{box}}+g_{\text{cls}}\)；每一項再各自沿自己的分支，用連鎖律（chain rule）乘回 \(\theta\)。完整程式裡這樣核對：
 
-```python
+``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 model.zero_grad()
 (box_loss + cls_loss).backward()  # 最後一次反傳，不必 retain_graph
 assert torch.allclose(model.backbone.weight.grad, box_backbone_grad + class_backbone_grad, atol=1e-7)
@@ -110,7 +110,7 @@ assert torch.allclose(model.backbone.weight.grad, box_backbone_grad + class_back
 
 \(\varphi\) 是兩個向量的夾角；分子是內積，分母是兩個向量長度的乘積。這就是高中的向量夾角公式，只是分量從 2、3 個變成 216 個。完整程式寫成：
 
-```python
+``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 # flatten() 把 [8,3,3,3] 攤平成 216 個數；dim=0 表示沿攤平後的這一軸計算
 cosine = F.cosine_similarity(box_backbone_grad.flatten(), class_backbone_grad.flatten(), dim=0)
 ```
@@ -153,7 +153,7 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 3. backbone 的總梯度等於兩份梯度之和：`verified`。
 4. 參數數量：`1446`。
 
-另外會印出一次梯度 cosine（`shared-backbone gradient cosine` 那行）。它可作檢查訊號，但沒有通用的理想數字。
+第 2、3 項印的英文是固定的文字，不是程式算出來的值。程式先跑完所有斷言才開始印，所以印得出這兩行，就表示對應的 `is None` 與 `torch.allclose` 斷言已經通過。另外會印出一次梯度 cosine（輸出的第 3 行，`shared-backbone gradient cosine`）。它可作檢查訊號，但沒有通用的理想數字。
 
 ## 收益、代價與下一項判斷
 
@@ -169,7 +169,7 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 
 - **兩次 backward 之間忘了清梯度**：backward 預設把新梯度加在舊梯度上，第二次看到的就是兩次的累加。
 - **把 `.grad` 是 None 和全 0 tensor 混為一談**：若改用 `model.zero_grad(set_to_none=False)`，上一次有梯度、這次沒用到的分支會留下全 0 tensor，而不是 None，`is None` 的斷言就會失敗（兩者的差別見第 2 章〈[訓練診斷](02-diagnostics.md)〉）。
-- **在分支前誤用 `detach()`**：例如把 `forward` 裡的 `self.class_branch(f)` 寫成 `self.class_branch(f.detach())`，分類 loss 的梯度就到不了 backbone，backbone 只剩框 loss 在訓練。分類分支本身仍會更新，loss 也可能照樣下降，所以很難發現。本節兩個任務都需要訓練共用特徵，所以不在分支前做 detach。
+- **在分支前誤用 `detach()`**：例如把 `forward` 裡的 `self.class_branch(f)` 寫成 `self.class_branch(f.detach())`，分類 loss 的梯度就到不了 backbone，backbone 只剩框 loss 在訓練。一般的訓練迴圈很難發現這個錯：分類分支本身仍會更新，loss 也可能照樣下降。本節程式則會在第二次反傳後停下：分類 loss 沒有流進 backbone，`model.backbone.weight.grad` 仍是 None；None 沒有 `.clone()` 可呼叫，所以接著取 `class_backbone_grad` 的那行報 `AttributeError`。本節兩個任務都需要訓練共用特徵，所以不在分支前做 detach。
 
 自主練習：
 
@@ -191,7 +191,7 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 
     **第 2 題**：沒有標準答案。舉一個梯度路徑的差別：保留一層 3×3 的 coupled 版本（f → 3×3 → ReLU → 1×1 輸出 6 個 channel，共 638 個參數）只反傳框 loss 時，最後那層 1×1 的權重裡，負責類別的 2 列梯度是全 0，而不是 None。因為整個 1×1 權重是同一個參數，只要有一部分用到，`.grad` 就是完整的 tensor；這正好和本節分支的 None 對照。
 
-來源查核：2026-10-02。[Ultralytics Detect 中 cv2／cv3 的分支定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)。cv2、cv3 是 Ultralytics `Detect` 類別裡兩條分支的成員名：cv2 是框分支，cv3 是類別分支，和 OpenCV 的 `cv2` 套件無關。YOLOv8 的每條分支是兩層 3×3 卷積再接一層 1×1 卷積；本節的兩層小分支（一層 3×3 加一層 1×1）、全正樣本與 Smooth L1 是教學簡化。
+參考來源：[Ultralytics Detect 中 cv2／cv3 的分支定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)。cv2、cv3 是 Ultralytics `Detect` 類別裡兩條分支的成員名：cv2 是框分支，cv3 是類別分支，和 OpenCV 的 `cv2` 套件無關。YOLOv8 的每條分支是兩層 3×3 卷積再接一層 1×1 卷積；本節的兩層小分支（一層 3×3 加一層 1×1）、全正樣本與 Smooth L1 是教學簡化。
 
 <!-- curriculum-evidence:start -->
 

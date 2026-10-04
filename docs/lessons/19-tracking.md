@@ -14,8 +14,8 @@
 
 本節比較兩種配對方法，兩者吃同一組偵測框：
 
-- 上一框法：直接拿每條 track 最後一次配到的框，和這一幀的偵測框算 IoU。程式裡是 `motion=False`；圖上標 Last-box IoU，程式印出的結果標 last-box IoU。
-- 速度預測法：先用速度推算物件這一幀應該在哪裡，再拿推算出的框算 IoU。程式裡是 `motion=True`；圖上標 Velocity + IoU，程式印出的結果標 velocity IoU。
+- 上一框法：直接拿每條 track 最後一次配到的框，和這一幀的偵測框算 IoU。程式裡是 `motion=False`，印出的結果標 `last-box IoU`；圖上也寫「上一框法」。
+- 速度預測法：先用速度推算物件這一幀應該在哪裡，再拿推算出的框算 IoU。程式裡是 `motion=True`，印出的結果標 `velocity IoU`；圖上也寫「速度預測法」。
 
 本節只做追蹤最核心的配對規則，不是完整的實用追蹤器。主案例的框是人工給的，沒有跑偵測模型，連第 4 幀的一次漏檢也是刻意安排的；兩種方法吃完全相同的框，所以兩者結果的差別只來自配對規則，不會混進真實偵測器那種無法控制的錯誤。到頁末「接上真正的逐幀預測」那一小節，才接上第 18 章 MiniYOLO 偵測模型的真實輸出。
 
@@ -23,7 +23,7 @@ tracker 看不到真實身份 A、B；A、B 只在最後評估時，用來判斷
 
 ## 六幀，兩個物件與一次漏檢
 
-兩個框都是寬 12、高 12，y 範圍 20 到 32，單位是畫素。框寫成 xyxy，也就是 [x1, y1, x2, y2]：左上角與右下角的座標。第 f 幀 A 的 x1 為 `16+8f`，B 為 `40−8f`；每幀 A 向右移 8、B 向左移 8。到第 2 幀，A、B 的左右順序已經反過來。第 4 幀 B 其實還在，但人工偵測序列故意不給 B 的框，模擬偵測器漏檢；第 5 幀 B 的框再出現。每一幀的偵測框都照 A、B 的順序排（第 4 幀只有 A）。
+兩個框都是寬 12、高 12，y 範圍 20 到 32，單位是畫素。框寫成 xyxy，也就是 [x1, y1, x2, y2]：左上角與右下角的座標。第 f 幀 A 的 x1 為 `16+8f`，B 為 `40−8f`；每幀 A 向右移 8、B 向左移 8。到第 2 幀，A、B 的左右順序已經反過來。第 4 幀 B 其實還在，但人工偵測序列故意不給 B 的框，模擬偵測器漏檢；第 5 幀 B 的框再出現。程式裡，`truth_boxes(f)` 寫出第 f 幀兩個物件的真實框（六幀都有 A、B）；`frames()` 從這些真實框取出每一幀的偵測框，只在第 4 幀拿掉 B。每一幀的偵測框都照 A、B 的順序排（第 4 幀只有 A）。
 
 | 幀 f | 0 | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -108,9 +108,9 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
 ![同一組偵測框的實際 ID 分配：上列為上一框法，下列為速度預測法](../assets/diagrams/19-tracking.svg)
 
-圖分上下兩列：上列是上一框法（Last-box IoU），下列是速度預測法（Velocity + IoU）；每列 6 格，依序是第 0 到第 5 幀（frame 0～5）。每一格裡，A 畫在上半、B 畫在下半，只是讓字不重疊；「A: ID1」這類標籤，寫在各自方塊那一排的上方、靠格子左邊。兩框實際的 y 都是 20 到 32，配對時用的也是這個 y；水平位置則照真實的 x 等比例畫。
+圖分上下兩列：上列是上一框法，下列是速度預測法，列標題寫著各自的 ID 切換次數（也就是 ID switch 數）；每列 6 格，依序是第 0 到第 5 幀。每一格裡，A 畫在上半、B 畫在下半，只是讓字不重疊；「A：ID1」這類標籤，寫在各自方塊那一排的上方、靠格子左邊。兩框實際的 y 都是 20 到 32，配對時用的也是這個 y；水平位置則照真實的 x 等比例畫。
 
-框的顏色代表 track ID，不是類別：紅色是 ID1、藍色是 ID2、紫色是 ID3。上列第 2 幀 A、B 互換顏色（A、B 各換 1 次），第 5 幀 B 變成紫色（再換 1 次），就是那 3 次換號；第 4 幀的「B: missed」表示 B 漏檢。下列的顏色從頭到尾都沒變。圖底下兩行英文是圖例，講的是讀圖規則，不是換號經過：顏色代表 tracker 分配的 track ID；A、B 這兩個身份標籤只在評估時使用；兩種 tracker 吃同一組偵測框；水平位置照真實的 x 畫；每一格裡 A、B 分在上半、下半，只是為了把標籤分開，配對用的是同一個 y。
+方塊的顏色代表 track ID，不是類別：紅色是 ID1、藍色是 ID2、紫色是 ID3。上列第 2 幀 A、B 互換顏色（A、B 各換 1 次），第 5 幀 B 變成紫色（再換 1 次），就是那 3 次換號；第 4 幀的「B：漏檢」表示 B 沒被偵測到。下列的顏色從頭到尾都沒變。
 
 下面兩串數字是 update 實際回傳的 IDs。外層第 f 個（從 0 數起）是第 f 幀；內層依該幀偵測框的順序，列出各框拿到的 track ID。本例每幀的偵測框都照 A、B 排（第 4 幀只有 A），所以 `[2,1]` 表示 A 拿到 ID2、B 拿到 ID1。
 
@@ -119,9 +119,11 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
 依開頭的定義，逐個物件數 ID switch。上一框法：A 依序拿到 1、1、2、2、2、2，在第 2 幀換 1 次；B 依序是 2、2、1、1、（第 4 幀漏檢，跳過）、3，在第 2 幀和第 5 幀各換 1 次；合計 3 次。速度預測法：A 一直是 1、B 一直是 2，共 0 次。
 
-兩種 tracker 吃的是同一組人工偵測框：6 幀×2 個物件=12 個真實框，只少了第 4 幀的 B，所以偵測的 recall（真實物件被偵測到的比例）都是 11/12，也沒有誤報（FP=0）。ID switch 從 3 降到 0 全靠配對規則，不是偵測變好。這也不是完整的多物件追蹤（MOT，Multi-Object Tracking）評估：本節只數 ID switch，沒有計算 IDF1、HOTA 等正式指標（說明見「收益、代價與失敗範圍」的摺疊區）。
+兩種 tracker 吃的是同一組人工偵測框，偵測本身的好壞對兩者完全一樣。程式另用 `evaluate_detections()` 替這組偵測框評分，不經過 tracker：每一幀的偵測框和 `truth_boxes(f)` 的兩個真實框做評估配對（matching），判定標準和 6.2 相同：IoU 至少 0.5 才算配上（配對 IoU 門檻 0.5），而且一對一，每個真實框最多配一個偵測框，反過來也一樣；配上的偵測框是 TP（正確偵測），沒配上的是 FP（誤報）。
 
-執行 `PYTHONPATH=. python lesson_cases/19-tracking.py`（Colab 則執行「本節可修改的完整實驗」那一格），核對印出的兩份 IDs，以及 switch 數 3→0。輸出倒數第二行的意思是「完整列舉通過了貪心反例與空偵測框兩項檢查」；程式先跑完所有斷言（assert）才開始印，所以看得到這一行，就表示這兩項檢查都通過了。recall 那一行則是程式直接印出的固定文字，由人工序列的構造保證，不是另外算出來的。tracking 規則不是神經網路，本節不需要 backward；配對、預測與 ID switch 計數都真實執行。注意：在本機 repo 根目錄執行，會重畫上面那張網站用的圖 `docs/assets/diagrams/19-tracking.svg`；重畫的圖不要提交回去，想還原可用 `git checkout -- docs/assets/diagrams/19-tracking.svg`。
+本例 11 個偵測框都和自己的真實框完全重合（IoU=1），和另一個物件的真實框 IoU 最多 0.2，所以不論用 6.2 那種一次處理一個框的配法，還是本節的完整列舉，結果都是 TP=11、FP=0。這組人工框沒有 score；程式用的是本節的完整列舉 `exact_gated_matching`，門檻設成 0.5（tracker 配對時用的是 0.1）。6 幀×2 個物件=12 個真實框，其中 11 個配上，所以偵測的 recall（真實物件被偵測到的比例）是 11/12；沒配上的就是第 4 幀的 B。ID switch 從 3 降到 0，全靠 tracker 換了配對方法，不是偵測變好。這也不是完整的多物件追蹤（MOT，Multi-Object Tracking）評估：本節只數 ID switch，沒有計算 IDF1、HOTA 等正式指標（說明見「收益、代價與失敗範圍」的摺疊區）。
+
+執行 `PYTHONPATH=. python lesson_cases/19-tracking.py`（Colab 則執行「本節可修改的完整實驗」那一格），核對印出的兩份 IDs、switch 數 3→0，以及 `detector recall=11/12, false positives=0`。輸出倒數第二行的意思是「完整列舉通過了貪心反例與空偵測框兩項檢查」；程式先跑完所有斷言（assert）才開始印，所以看得到這一行，就表示這兩項檢查都通過了。recall 那一行也一樣：`evaluate_detections()` 依序回傳 TP、真實框數、FP，程式先用斷言確認它們是 `(11, 12, 0)`，才印出來。tracking 規則不是神經網路，本節不需要 backward；配對、預測、ID switch 計數，以及偵測的 recall 與 FP 都真實計算。輸出最後一行是程式畫出的 ID 圖的存檔路徑 `artifacts/lesson-19/ids.svg`；上面那張圖，就是頁尾執行紀錄那次執行畫出的這個檔案。
 
 ## 收益、代價與失敗範圍
 
@@ -146,16 +148,16 @@ pairs = exact_gated_matching(quality, threshold=.1)
 - 把 tracker 的預測框當成新的偵測框：物件明明沒被偵測到，track 也會靠自己的預測一直配下去，永遠不會過期。
 - 用真實身份（GT）參與配對：實際使用時沒有 GT，這樣量出的 ID switch 會好得不真實。
 
-自主練習：在 Colab 裡改「本節可修改的完整實驗」那一格程式；本機則改 `lesson_cases/19-tracking.py`，兩者是同一份程式。注意：在本機 repo 根目錄執行，會覆寫網站用的 `docs/assets/diagrams/19-tracking.svg`，建議在 Colab 或 repo 的副本裡改；若已經在本機執行過，可用 `git checkout -- docs/assets/diagrams/19-tracking.svg` 還原這張圖。把 `def main(max_age=2):` 改成 `def main(max_age=1):`，先預測再執行：
+自主練習：在 Colab 裡改「本節可修改的完整實驗」那一格程式；本機則改 `lesson_cases/19-tracking.py`，兩者是同一份程式。把 `def main(max_age=2):` 改成 `def main(max_age=1):`，先預測再執行：
 
 1. 速度預測法第 5 幀的 IDs 會是什麼？兩種方法的 switch 數各是多少？
 2. 用一兩句話說明：max_age 和速度預測各管什麼？
 
-完整程式的斷言已經寫好 max_age=1 和 2 兩種情況的答案，不用改；程式只接受這兩個值，改成其他值會在第一個斷言停下。執行後圖也會重畫，存在 `docs/assets/diagrams/19-tracking.svg`（程式最後一行會印出這個路徑），圖上兩列標題的 switch 數，會照這次實際算出的次數重寫。核對印出的結果和圖是否一致。
+完整程式的斷言已經寫好 max_age=1 和 2 兩種情況的答案，不用改；程式只接受這兩個值，改成其他值會在第一個斷言停下。執行後圖也會重畫，一樣存在 `artifacts/lesson-19/ids.svg`（輸出最後一行印出這個路徑），圖上兩列標題的 ID 切換次數，會照這次實際算出的次數重寫。在 Colab 可另開一個程式格，執行 `from IPython.display import SVG, display; display(SVG(filename='artifacts/lesson-19/ids.svg'))` 看圖。核對印出的結果和圖是否一致。
 
 ??? note "參考答案"
 
-    **第 1 題**：max_age=1 時，速度預測法的 B 最後在第 3 幀配到 ID2。第 5 幀的 update 一開始先檢查間隔：5−3=2，大於 1，所以 ID2 在配對前就被刪了。速度再準也沒有 track 可接，B 只能開新 ID。ID 只增不減，刪掉的編號不會重用，所以 B 拿到的是 3，不是 2。速度預測法第 5 幀的 IDs 是 `[1,3]`，switch 從 0 變成 1；上一框法仍是 3 次。
+    **第 1 題**：max_age=1 時，速度預測法的 B 最後在第 3 幀配到 ID2。第 5 幀的 update 一開始先檢查間隔：5−3=2，大於 1，所以 ID2 在配對前就被刪了。速度再準也沒有 track 可接，B 只能開新 ID。ID 只增不減，刪掉的編號不會重用，所以 B 拿到的是 3，不是 2。速度預測法第 5 幀的 IDs 是 `[1,3]`，switch 從 0 變成 1；上一框法仍是 3 次。recall 那一行不變：max_age 只是 tracker 的設定，偵測框沒有變。
 
     **第 2 題**：max_age 管沒配到的 track 能留多久（壽命）；速度管這一幀要去哪裡找它（運動估計）。兩者是不同的設定：track 一旦被刪，速度再準也接不回來。
 
@@ -183,7 +185,7 @@ for result in video['run_stream'](video['synthetic_frames'](), model):
 
 框已經還原成原圖的畫素座標（xyxy）。`ids` 的第 i 個數字對應篩選後 `boxes` 的第 i 個框；若拿去和沒篩選的 `pred['boxes']` 逐一對應（例如用 `zip`），只要有其他類別的框排在類別 0 的框前面，順序就會錯開。`pred['boxes']` 不分類別、照 score 由高到低排；別類的框若剛好都排在後面，`zip` 在 `ids` 用完時就停下，這一幀會碰巧對上，但換一幀就可能錯開，所以一律用篩選後的 `boxes`。
 
-[影片檔案實測](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)已把同一組真實預測接上這個 tracker：第 0、1 幀回傳 `[1]`，第 2–5 幀是 `[]`（沒有框，也就沒有 ID），第 6、7 幀回傳 `[2]`，其餘是 `[]`。物件連續漏檢的幀數超過 max_age 容許的範圍，重新出現時只能建立新 ID；速度預測沒有修好偵測器的漏檢。這條接線沒有用真實身份（GT）配對計分，所以不能報成新的 ID switch、IDF1 或 HOTA 成績。想重跑這個實際檔案與接線的驗證，需先安裝 `requirements-video.txt`，再執行 `PYTHONPATH=. python scripts/verify_video_file.py`。注意：這支程式會把結果寫進 repo 裡的 `artifacts/checks/curriculum/video-file.json`，也就是本段開頭連結的影片檔案實測紀錄。在本機 repo 根目錄執行，會覆寫這份紀錄，建議在 Colab 或 repo 的副本裡跑；若已覆寫，可用 `git checkout -- artifacts/checks/curriculum/video-file.json` 還原。換一台電腦重跑，個別幀偵測到的框數可能略有不同，回傳的 ID 也會跟著變；本段寫的是連結的那一次紀錄。
+[影片檔案實測](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)已把同一組真實預測接上這個 tracker：第 0、1 幀回傳 `[1]`，第 2–5 幀是 `[]`（沒有框，也就沒有 ID），第 6、7 幀回傳 `[2]`，其餘是 `[]`。物件連續漏檢的幀數超過 max_age 容許的範圍，重新出現時只能建立新 ID；速度預測沒有修好偵測器的漏檢。這條接線沒有用真實身份（GT）配對計分，所以不能報成新的 ID switch、IDF1 或 HOTA 成績。想重跑這個實際檔案與接線的驗證，需先安裝 `requirements-video.txt`，再執行 `PYTHONPATH=. python scripts/verify_video_file.py`。結果寫在 `artifacts/runs/video-file/result.json`；本段開頭連結的紀錄，是同一支程式加上 `--record artifacts/checks/curriculum/video-file.json` 寫出的同一份報告，自己重跑不必加。換一台電腦重跑，個別幀偵測到的框數可能略有不同，回傳的 ID 也會跟著變；本段寫的是連結的那一次紀錄。
 
 本機命令需先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的依賴套件，並在 repository 根目錄執行；Colab 則先跑本節的環境格。
 

@@ -39,6 +39,8 @@
 
 兩次訓練前都重設 seed 7，所以兩個模型的初始權重完全相同；每一步取哪 8 張訓練圖，也照固定順序、不洗牌。因此兩次訓練唯一的差別，就是 box 權重。
 
+在這兩次訓練之前，程式還用 baseline 的設定先訓練 10 步當作暖機（warmup，3.3 節〈[Plain／residual 對照](03-comparison.md)〉說明過：正式計時前先不計時地跑幾次），訓練出的模型直接丟掉。暖機只是為了讓訓練時間量得公平（見〈本次 CPU 實跑的結果〉）；負責訓練的函式 `fit()` 每次開始都重設 seed 7，所以暖機不會改變後面兩次訓練的結果：baseline 與改動版的模型，和不暖機時訓練出來的完全相同。
+
 loss 是 `wbox×box_MSE+objectness_BCE+class_CE`，和[第 7 章的 loss](07-loss.md) 相同，只是把固定的 5 換成可調的 wbox（程式裡的 `box_weight`）。box 項只對正格（負責某個物件的格子）的四個座標取平均，objectness 項（這格有沒有物件）對全部格子取平均，class 項只對正格取平均。
 
 wbox 到底改了什麼？總 loss 是三項的加權和，而三項都由同一個網路算出；所以總 loss 對網路參數 θ 的梯度，就是三項梯度的加權和：
@@ -88,7 +90,7 @@ validation 共有 17 個 GT。先做 GT 覆蓋診斷（coverage）：對每個 G
 3. 達到 0.5，而且和同類 GT 的 IoU 也達到 0.5 → 重複 FP（`duplicate`）：那個 GT 已經被更高分的框配走。
 4. 其餘（IoU 達到 0.5 的只有別類 GT）→ 錯類 FP（`wrong_class`）：位置對、類別錯。
 
-例如 baseline 在 validation #14（圖片編號從 0 起算）有一個 class 0 的 FP，它和所有 GT 的最佳 IoU 是 0.23，符合第 2 條，所以是定位 FP。各種 FP 的個數記在 `false_positive_counts`。這是能逐筆回查的小診斷規則，不是完整的錯誤分析工具。
+例如 baseline 在 validation #14（圖片編號從 0 起算）有一個 class 0 的 FP，它和所有 GT 的最佳 IoU 是 0.23，符合第 2 條，所以是定位 FP。各種 FP 的個數記在 `false_positive_counts`；程式也用斷言（assert）確認 TP 數加上 FP 數等於候選總數。這是能逐筆回查的小診斷規則，不是完整的錯誤分析工具。
 
 baseline 的 5 個 FP 裡，4 個是定位 FP，1 個是背景 FP；錯類覆蓋和錯類 FP 都是 0。不過，附近完全沒有候選的 GT 不會算進這兩項，所以不能因此說「分類都正確」。
 
@@ -104,24 +106,33 @@ baseline 的 5 個 FP 裡，4 個是定位 FP，1 個是背景 FP；錯類覆蓋
 
 test 要等選擇完成後，只評估選定的模型（程式變數 `chosen`）一次；不能拿 test 的結果反覆調整權重。
 
-完整程式裡對應的幾行如下（網頁摘錄）：
+完整程式裡對應的幾行如下（摘錄；中文註解是本頁加的，`...` 表示中間省略的程式）。開頭幾行是 `fit()` 裡每一步訓練做的事。在這幾行之前，程式已選好這一步的 8 張訓練圖：`ids` 是它們的編號，`target` 是它們每一格的訓練目標（第 7 章的 [grid targets](07-targets.md)）。
 
-```python
-# 每一步訓練（兩次訓練各跑 160 步）；完整程式在這之前先呼叫 optimizer.zero_grad() 清掉舊梯度
+``` { .python data-excerpt="lesson_cases/17-capstone.py" }
+# fit() 裡的每一步訓練
+optimizer.zero_grad()
 # losses 是 grid_loss 回傳的 dict；這裡只取未乘權重的三項，不用 losses['total']（它固定把 box 乘 5）
+losses = grid_loss(model(images[ids]), target)
 loss = box_weight * losses['box'] + losses['objectness'] + losses['classification']
+assert torch.isfinite(loss)  # 每一步都檢查 loss 是有限值（不是無限大或 NaN）
 loss.backward()
 optimizer.step()
-
-# 兩次 160 步訓練都完成、各自評估 validation 後，才做一次決定
-# changed_val、baseline_val：兩個模型在 validation 的評估結果（完整程式裡叫 change_metrics、base_metrics）
-keep = changed_val['map'] >= baseline_val['map'] + .01
+...
+# main() 裡：兩次 160 步訓練，各自在 validation 上評估
+baseline, base_seconds = fit(train_x, train_y, baseline_weight)
+base_metrics, base_preds = evaluate(baseline, val_x, val_y)
+changed, change_seconds = fit(train_x, train_y, changed_weight)
+change_metrics, change_preds = evaluate(changed, val_x, val_y)
+...
+# 兩次都評估完，才照事先的規則做一次決定
+keep = change_metrics['map'] >= base_metrics['map'] + .01
 chosen = changed if keep else baseline  # keep 為 True 就選改動版，否則選 baseline
+test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模型這一次
 ```
 
 ## 本次 CPU 實跑的結果
 
-以下是一次實際執行的結果：PyTorch 2.9.1、CPU、用 2 個 CPU 執行緒（threads）、模型 seed 7。時間會受同一台電腦上其他程式的負載、暖機（warmup，第 3 章提過：正式計時前先跑幾次、不計時）與硬體影響，重新執行可能不同。品質數字也以當次的 report 為準：不同 CPU 或 PyTorch 版本的浮點數加總順序可能不同，數字可能有小差異；剛好在門檻附近的框（例如 IoU 0.49）可能因此改變計數。
+以下是一次實際執行的結果：PyTorch 2.9.1、CPU、用 2 個 CPU 執行緒（threads）、模型 seed 7。時間會受硬體與同一台電腦上其他程式的負載影響，重新執行可能不同。品質數字也以當次的 report 為準：不同 CPU 或 PyTorch 版本的浮點數加總順序可能不同，數字可能有小差異；剛好在門檻附近的框（例如 IoU 0.49）可能因此改變計數。
 
 | validation 指標 | baseline：box 權重 5 | 唯一改動：box 權重 10 |
 | --- | --- | --- |
@@ -139,26 +150,15 @@ chosen = changed if keep else baseline  # keep 為 True 就選改動版，否則
 
 表中的個數可以驗算 precision 與 recall。兩次訓練的錯類 FP 和重複 FP 都是 0，所以 FP 只有定位與背景兩種：改動版的 precision=12/(12+2+1)=0.8，recall=12/17≈0.7059。兩次的錯類覆蓋也都是 0。改動版的覆蓋數 12 也等於 TP 數，理由同前：本課的 GT 互不重疊。
 
-這張表只能比較同一組資料上的兩次訓練。對照[第 7 章 held-out 那一節](07-heldout.md)最後補充的 160 步實驗：它的訓練設定和本節 baseline 相同，只是資料 seed 不同（7／700／7000），validation mAP50 是 0.80；換成本節的 1100／2200／3300，baseline 只有 0.44。這示範了小資料切分的波動有多大，所以本節只比較同一組資料上的 baseline 與改動版，不拿別頁的數字比高低。
+這張表只能比較同一組資料上的兩次訓練。對照[第 7 章 held-out 那一節](07-heldout.md)末段的 160 步實驗：它的訓練設定和本節 baseline 相同，只是資料 seed 不同（7／700／7000），validation mAP50 是 0.80；換成本節的 1100／2200／3300，baseline 只有 0.44。這示範了小資料切分的波動有多大，所以本節只比較同一組資料上的 baseline 與改動版，不拿別頁的數字比高低。
 
-![相同 validation 圖片的真實兩次訓練結果：上 baseline，中 weight 10，下方另檢查 baseline 背景 FP](../assets/diagrams/17-capstone.svg)
+![相同 validation 圖片的真實兩次訓練結果：上 baseline，中改動版（box 權重 10），下方另外檢查 baseline 的一個背景 FP](../assets/diagrams/17-capstone.svg)
 
-圖的讀法：上面兩列是同樣四張 validation 圖片，第一列是 baseline，第二列是改動版。綠框是 GT（真值），橘框是預測，框上的標籤是「class:score」。兩列都只畫 score≥0.25 的框（圖中這個說明只寫在第二列標題，但兩列都適用）；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
+圖的讀法：上面兩列是同樣四張 validation 圖片，第一列是 baseline（圖上寫「基準」），第二列是改動版。綠框是 GT（真值），橘框是預測；每個橘框左上角的深色小標籤寫「class:score」。兩列都只畫 score≥0.25 的框；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
 
 這四張不是挑最好看的，而是依 baseline「沒被 IoU≥0.5 覆蓋的 GT 數」由多到少挑出（編號從 0 起算；同數時取編號較大者）。例如 #14 的紅色物件：baseline 的定位 FP 和它的 IoU 是 0.23；改動版的框看起來已經很接近，IoU 也升到 0.49，但仍沒過 0.5，所以還是 FP。
 
-最下方是前面提過的 #10，改用候選截斷門檻 0.05 來畫，橘框是 score≥0.05 的全部候選。紅框只是標出那個背景 FP 的記號，和 class 0 的紅色物件無關；那裡只有背景雜訊，沒有物件。框內的白字 1:0.07 表示 class 1、score 0.068（四捨五入成 0.07）。
-
-??? note "圖中英文標籤對照"
-
-    - `Baseline: box weight 5 | green GT, orange prediction`：第一列是 baseline，box 權重 5；綠框是 GT，橘框是預測。
-    - `One change: box weight 10 | display score ≥ .25`：第二列是唯一的改動，box 權重 10；圖上只顯示 score≥0.25 的框（兩列都一樣）。
-    - `validation #14`：validation 裡編號 14 的圖（編號從 0 起算）。
-    - `Inspect an actual baseline FP at evaluation score .05`：下方用評估時的候選截斷門檻 0.05，檢查 baseline 的一個實際 FP。
-    - `validation #10: red = background FP`：validation #10，紅框標出的是背景 FP。
-    - `best IoU with any GT: 0.000`：和所有 GT 的最佳 IoU 是 0。
-    - `Orange shows all candidates with score ≥ .05.`：這張圖的橘框畫出所有 score≥0.05 的候選。
-    - `Actual CPU run; tiny synthetic split. AP is reported separately at score .05.`：真實的 CPU 執行結果，資料是很小的合成資料切分；AP 另外用 score≥0.05 的全部候選計算，不是只看圖上畫出的框。
+最下方是前面提過的 #10，改用候選截斷門檻 0.05 來畫，橘框是 score≥0.05 的全部候選。紫色虛線框標出那個背景 FP（圖上寫「背景誤報」；誤報就是 FP），那裡只有背景雜訊，沒有物件。它的標籤 1:0.07 表示 class 1、score 0.068（四捨五入成 0.07）。
 
 **回頭對照假設。** 事先的預測是：近失敗和定位 FP 會變少。表中近失敗從 4 個降到 2 個，定位 FP 也從 4 個降到 2 個，和預測一致。但「低於 0.1」那組也從 4 個降到 3 個，表示改動也影響了原本幾乎沒被同類框碰到的 GT，不只是把近失敗的框推準。原因是三項 loss 共用同一個網路，box 權重一改，整個網路的訓練過程都跟著變：objectness 與類別分數會變，預測的排序也會變，而 AP 取決於排序。所以 mAP50 的提升不能全部算在定位改善上。改動版也仍有未解決的失敗：17 個 GT 裡還有 5 個沒被覆蓋，#14 的框也還差一點才過 0.5。
 
@@ -166,15 +166,19 @@ chosen = changed if keep else baseline  # keep 為 True 就選改動版，否則
 
 選定模型接著在獨立的 test 上評估一次：mAP50 0.4452、precision 0.6364、recall 0.5385，都比它在 validation 上低。0.4452 是另外 16 張圖的分數，不能拿來和 baseline 在 validation 的 0.4444 比。test 只用來回報選定模型的成績一次，所以刻意不測 baseline，免得看了 test 又想回頭改選擇。test 也只有 13 個物件：recall 0.5385=7/13，多找到或漏掉一個物件，recall 就差 1/13≈0.077。這麼小的切分波動很大，不能把 0.7014 宣稱為穩定的效果，也不能由這一次斷定改動版在新圖片上一定比較好。
 
-兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.51 秒（baseline）與 0.45 秒（改動版）；差異可能包含第一次執行的額外準備成本（也就是暖機想排除的部分），不能說加大 loss 權重讓訓練變快。
+兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.51 秒（baseline）與 0.45 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
 
-選定模型的端到端時間（從輸入到畫好框的整段）中位數約 1.05 毫秒。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 解碼與 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，程式用的 `torch.median` 取中間兩個值裡較小的那個，也就是排序後第 6 小的一次，不是兩者的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。還要注意，計時用的是 validation #0（編號從 0 起算），它是一張沒有物件的圖：沒有 GT，選定模型在上面也沒有任何 score≥0.05 的候選。所以這段時間裡，NMS 沒有框可處理，畫框也沒有畫出任何框，只做了轉回 0～255 的圖並放大；這是整套流程最輕的情況，換成有物件的圖，時間可能較長。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
+選定模型的端到端時間（從輸入到畫好框的整段）中位數約 1.05 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
+
+計時路徑留下的候選數記在 `timed_image_candidates`，程式用斷言要求它大於 0。它不一定等於挑圖時數到的候選數：挑圖用的是前面 16 張 validation 圖一起評估的結果，像素值是 0～1 之間的小數；計時的路徑則一次只算一張，而且圖先轉成 0～255 的整數再轉回來，像素值會有極小的差異。score 剛好在 0.05 附近的候選，可能因此在一條路徑上留下、在另一條路徑上被刪掉。
 
 ## 交付、停止條件與下一個檢查
 
-在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/17-capstone.py`，會得到 `artifacts/lesson-17/report.json`，並重新產生上方的 validation 圖（寫到 `docs/assets/diagrams/17-capstone.svg`）。這張圖是網站用的檔案，git 會追蹤它的變動；在本機 repo 根目錄執行就會覆寫它。重畫的圖不要提交回去，想還原可用 `git checkout -- docs/assets/diagrams/17-capstone.svg`；不想動到它，就在 Colab 或 repo 的副本裡執行。本機命令要先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件；Colab 則先執行本節的環境格（notebook 的第一個程式格）。
+在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/17-capstone.py`，會得到 `artifacts/lesson-17/report.json` 與 validation 圖 `artifacts/lesson-17/validation.svg`（輸出的最後一行也會印出這張圖的路徑）；上方的圖就是執行紀錄那一次產生的同一張圖。本機命令要先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件；Colab 則先執行本節的環境格（notebook 的第一個程式格）。
 
-完整程式用斷言（assert）檢查：每一步的 loss 都是有限值，而且最後一步的 loss 比第一步低；baseline 的 validation mAP50 要大於 0.05。這個 0.05 是「至少學到一點東西」的下限，和候選截斷門檻 0.05 無關。若沒有通過，先查資料、target 與訓練更新，不要繼續宣稱完成。這條快速路徑共訓練 320 步（兩次各 160 步），通過後即可停止；正式的比較應該增加資料、換不同的模型 seed，並加入和需求相關的真實場景。
+完整程式用斷言（assert）檢查訓練與計時：每次訓練（10 步的暖機與兩次 160 步）的每一步 loss 都是有限值，而且最後一步的 loss 比第一步低；計時的那張圖至少留下一個候選；baseline 的 validation mAP50 要大於 0.05。這個 0.05 是「至少學到一點東西」的下限，和候選截斷門檻 0.05 無關。暖機的步數也受這條「比第一步低」的檢查限制：只跑 1 步時，最後一步就是第一步，檢查一定失敗；只跑 2 步時，拿來比的是更新 1 次後的另一批圖，訓練正常也可能不成立。暖機跑 10 步，比的是更新 9 次之後的 loss，這種誤判少很多，但不能完全排除：最後一步用的仍是和第一步不同的 8 張圖，只更新 9 次時，loss 降低的幅度不一定大過這兩批圖本身難易不同造成的差距。
+
+若這些斷言沒有通過，先查資料、target 與訓練更新，不要繼續宣稱完成。但若 Python 印出的錯誤訊息（它會列出出錯時執行到的程式行）裡有暖機那一行 `fit(train_x, train_y, baseline_weight, steps=10)`，先排除上一段說的誤判：在這一行的開頭加上 `#`，讓它變成不執行的註解，再跑一次。`fit()` 每次開始都重設 seed 7，所以拿掉暖機不會改變兩次 160 步訓練的結果，只是 baseline 先跑，它的訓練時間會多算第一次訓練的準備時間。若這樣所有斷言都通過，就是暖機那次的誤判，訓練本身沒有問題。這條快速路徑共訓練 330 步（10 步不計時的暖機，加上兩次各 160 步），通過後即可停止；正式的比較應該增加資料、換不同的模型 seed，並加入和需求相關的真實場景。
 
 收益：改動有明確的理由，兩個版本只差一項，test 也不參與選擇。代價：每個候選方案都要重新訓練、重新看失敗，而且只跑一次的小資料切分可能誤導。若本次沒有改善，照樣可以交付「不保留」和診斷結果，不必為了完成作業去改評估門檻或捏造提升。
 
@@ -189,8 +193,8 @@ chosen = changed if keep else baseline  # keep 為 True 就選改動版，否則
 
 把改動版的 box 權重從 10 改成 2（baseline 仍是 5，其他設定都不變），重跑一次，交付你的結論。
 
-1. 在 notebook〈本節可修改的完整實驗〉標題下方的程式格裡，找到 `def main(baseline_weight=5, changed_weight=10):`，把 10 改成 2 再執行；其他程式（包括斷言）都不用改。注意：在本機 repo 根目錄執行，會覆寫網站用的 `docs/assets/diagrams/17-capstone.svg`，建議在 Colab 或 repo 的副本裡做；若已經在本機執行過，做完這題後可用 `git checkout -- docs/assets/diagrams/17-capstone.svg` 還原這張圖。
-2. 先確認改動有生效：report 的 `box_weights` 是 `[5, 2]`，圖第二列的標題寫 box weight 2。第 1 步的程式格只會印出 report 和圖的檔案路徑，不會直接顯示圖；要看圖，就在 notebook 裡新增一個程式格，執行 `from IPython.display import SVG; SVG(filename='docs/assets/diagrams/17-capstone.svg')`（環境格已把目前目錄切到 repo 根目錄，所以這個相對路徑找得到檔案）。之後只看這次的 report，不要沿用本節 box 權重 10 的結果表。
+1. 在 notebook〈本節可修改的完整實驗〉標題下方的程式格裡，找到 `def main(baseline_weight=5, changed_weight=10):`，把 10 改成 2 再執行；其他程式（包括斷言）都不用改。
+2. 先確認改動有生效：report 的 `box_weights` 是 `[5, 2]`，圖第二列的標題寫「只改一項：box weight 2」。第 1 步的程式格只會印出 report 和圖的檔案路徑，不會直接顯示圖；要看圖，就在 notebook 裡新增一個程式格，執行 `from IPython.display import SVG; SVG(filename='artifacts/lesson-17/validation.svg')`（環境格已把目前目錄切到 repo 根目錄，所以這個相對路徑找得到檔案）。之後只看這次的 report，不要沿用本節 box 權重 10 的結果表。
 3. 照當次 report 的 `keep_change`（是否保留改動），交付「保留」或「不保留」。若 validation mAP50 沒有比 baseline 高至少 0.01，答案就是保留 baseline。
 4. 交付兩次訓練的診斷（清單見下方）。
 5. 從 FP 明細（`false_positive_cases`）挑一例，用它的圖片編號、score 與 IoU，寫出下一個假設。先不要把第二個改動混進同一個實驗。

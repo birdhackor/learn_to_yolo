@@ -15,13 +15,13 @@
 
 本節先用程式自己畫的假影片：深色底上的紅方塊，每幀往右移 4 畫素。用它測一條真的推論管線（從讀入畫面到畫好框的整串步驟）。之後再提供可替換的影片／相機 adapter（轉接函式：把影片檔或相機的畫面轉成本節的 `Frame` 格式，一幀一幀交出來）。本節預設不開相機，也不使用相機權限。
 
-本次從零訓練 GridDetector：32 張合成矩形圖（資料 seed 4100；模型初始化 seed 7）、訓練 160 步、每批 8 張、Adam、學習率 0.01；不讀取任何既有的 checkpoint。影片來源有 12 幀，每秒 20 幀，也就是每 50 毫秒一幀。「來源每秒產生幾幀」叫來源幀率，單位寫成 FPS（frames per second，每秒幀數），所以本例的來源幀率是 20 FPS。每幀是寬 96、高 64 的 RGB 畫面（array shape `[64,96,3]`，依序是高、寬、通道）。紅方塊是 14×14 畫素，第 i 幀的左上角在 x=4+4i、y=20。這不是攝影機錄的影片：時間戳是用「第 i 幀 ÷ 20」算出來的，不是時鐘量到的。模型的預測則是真的 forward 結果，沒有用真值框冒充偵測。
+完整程式從零訓練 GridDetector：32 張合成矩形圖（資料 seed 4100；模型初始化 seed 7）、訓練 160 步、每批 8 張、Adam、學習率 0.01；不讀取任何既有的 checkpoint。影片來源有 12 幀，每秒 20 幀，也就是每 50 毫秒一幀。「來源每秒產生幾幀」叫來源幀率，單位寫成 FPS（frames per second，每秒幀數），所以本例的來源幀率是 20 FPS。每幀是寬 96、高 64 的 RGB 畫面（array shape `[64,96,3]`，依序是高、寬、通道）。紅方塊是 14×14 畫素，第 i 幀的左上角在 x=4+4i、y=20。這不是攝影機錄的影片：時間戳是用「第 i 幀 ÷ 20」算出來的，不是時鐘量到的。模型的預測則是真的 forward 結果，沒有用真值框冒充偵測。
 
 ## 先固定每一幀的格式
 
-每一幀都包成一個 `Frame`，裡面只有三個欄位。下面是完整程式裡的定義，註解是另外加的：
+每一幀都包成一個 `Frame`，裡面只有三個欄位。下面是完整程式裡的定義，程式相同，註解換成中文：
 
-```python
+``` { .python data-excerpt="lesson_cases/18-video.py" }
 @dataclass
 class Frame:
     index: int          # 第幾幀：從 0 開始遞增的整數
@@ -52,7 +52,7 @@ for x in count_up(): print('拿到', x)  # 每要一筆，函式才往下跑到�
 
 含 `yield` 的函式叫 generator（產生器）。呼叫它時，函式本體還不會執行，所以單寫 `count_up()` 什麼都不會印。使用結果的 for 迴圈每要一筆，它才往下跑到下一個 `yield`，交出一個值後暫停。所以上面的程式依序印出：準備 0、拿到 0、準備 1、拿到 1、準備 2、拿到 2。
 
-`run_stream` 也是這樣：只呼叫 `run_stream(frames, model)` 不會開始逐幀工作；for 迴圈來要結果時，它才讀下一幀，處理完再用 `yield` 交出。下面是它的核心片段，省略了完整程式裡的斷言（assert）、畫框與計時。`model` 傳進來前已設成 eval。`@torch.no_grad()` 寫在 `def` 的上一行，效果和第 0 章的 `with torch.no_grad():` 相同，只是套用在整個函式上：函式裡的計算都不記錄計算圖。
+`run_stream` 也是這樣：只呼叫 `run_stream(frames, model)` 不會開始逐幀工作；for 迴圈來要結果時，它才讀下一幀，處理完再用 `yield` 交出。下面是簡化過的核心片段，和完整程式不同的地方是：省略了函式開頭的說明文字、斷言（assert）、計時與畫框；letterbox 前的 tensor 另取名 `tensor_rgb`（完整程式裡 letterbox 前後的 tensor 都叫 `image`）；交出的 dict 只留三個欄位，完整程式還會交出疊好框的畫面 `image` 與各段計時 `ms`。`model` 傳進來前已設成 eval。`@torch.no_grad()` 寫在 `def` 的上一行，效果和第 0 章的 `with torch.no_grad():` 相同，只是套用在整個函式上：函式裡的計算都不記錄計算圖。
 
 ```python
 @torch.no_grad()
@@ -64,8 +64,8 @@ def run_stream(frames, model):
         # 推論時沒有 GT 框，所以傳 shape [0,4] 的空框；回傳的 image 是 [3,64,64]
         image, _, metadata = letterbox(tensor_rgb, torch.empty(0, 4), size=64)
         raw = model(image[None])  # image[None] 在最前面加上 batch 軸：[1,3,64,64]
-        # score 門檻 0.1；NMS 的 IoU 門檻用預設的 0.5；[0] 取這唯一一張圖的結果
-        prediction = decode_grid(raw, score_threshold=.1)[0]
+        # score 門檻 0.1、NMS 的 IoU 門檻 0.5；[0] 取這唯一一張圖的結果
+        prediction = decode_grid(raw, score_threshold=.1, nms_iou=.5)[0]
         # 用這一幀自己的 metadata，把框還原到寬 96、高 64 的來源座標
         prediction['boxes'] = undo_letterbox(prediction['boxes'], metadata)
         yield {'index': frame.index,  # 交出這一幀的結果，然後暫停
@@ -83,7 +83,23 @@ def run_stream(frames, model):
 
 完整程式把每一幀的處理分成四段計時：前處理、模型、後處理（decode／NMS／還原座標），以及畫框。做法是在每一段前後各呼叫一次 `time.perf_counter()`（高精度計時器，單位秒），兩次相減再乘 1000，就是這一段花了幾毫秒。在 CPU 上，PyTorch 的運算回傳時就已經算完（同步執行），所以這樣量得準；GPU 則會先把工作排隊、稍後才算（非同步），計時前要先等它算完。
 
-本次用 PyTorch 2.9.1、CPU、2 個執行緒（threads：程式裡可以同時進行的工作流程）。下表是各段時間的中位數（median）；數字是這次小模型的實測，不是速度保證。
+正式的 12 幀開始之前，完整程式先暖機（warmup）。暖機在 3.3 節〈[Plain／residual 對照](03-comparison.md)〉說明過：同一個程式裡，第一次執行某段計算，常會多花一些只需要做一次的準備時間，所以正式計時前先跑幾次，把這些一次性的準備做掉，這幾次的時間丟掉不算。不暖機的話，這些準備時間會算在最先處理的第 0 幀頭上。本節在 `main()` 裡用 1 幀暖機：
+
+``` { .python data-excerpt="lesson_cases/18-video.py" }
+# main() 內，model 是剛訓練好的偵測器
+warmup = list(run_stream([next(synthetic_frames(count=count, fps=fps))], model))  # 暖機：只處理 1 幀
+assert len(warmup) == 1 and len(warmup[0]['prediction']['boxes']) > 0, 'warm-up must reach NMS and drawing'
+results = list(run_stream(synthetic_frames(count=count, fps=fps), model))  # 正式的 12 幀
+...
+# ms 的每一項（preprocess、model、postprocess、drawing、total）各取 12 幀的中位數
+timing = {key: float(np.median([r['ms'][key] for r in results])) for key in results[0]['ms']}
+```
+
+暖機那一行由內往外讀：`next(...)` 是手動向 generator 要下一筆（for 迴圈每一圈做的也是這件事），這裡只向新建的 `synthetic_frames` 要第一筆，得到另外產生的一份第 0 幀；`[ ]` 把它裝進只有 1 幀的 list，當成 `run_stream` 的來源；最外層的 `list()` 把結果要完，`run_stream` 才真的處理這一幀。這一幀走完整條管線：前處理、模型、後處理、畫框。它不在 12 幀裡：正式的 `results` 另外新建一個 `synthetic_frames`，從第 0 幀重新開始。暖機的時間不進任何統計；它的結果只用在下一行的斷言，以及 report 的 `warmup_frames`（暖機幀數，值是 1）。
+
+暖機用的畫面要有物件，而且模型要真的在上面留下框：這樣後處理才會呼叫 NMS，畫框這一段也才會畫出框、寫上分數，這些步驟第一次執行時的準備才會一起在暖機時做掉。斷言就檢查兩件事：暖機剛好 1 幀，而且這一幀有框。
+
+本次用 PyTorch 2.9.1、CPU、2 個執行緒（threads：程式裡可以同時進行的工作流程）。下表就是上面的 `timing`，也就是 report 裡的 `median_ms`：12 幀各段時間的中位數（median）。一次性的準備已經在暖機時做掉，所以第 0 幀也算在內。12 是偶數，`np.median` 取排序後第 6、7 小兩個值的平均。數字是這次小模型的實測，不是速度保證。
 
 | 階段 | 中位數（毫秒） | 包含 |
 | --- | --- | --- |
@@ -93,9 +109,7 @@ def run_stream(frames, model):
 | 畫框 | 0.045 | PIL 影像與文字框 |
 | 全流程 | 0.887 | 上述各項的逐幀總時間 |
 
-中位數不計第 0 幀，但第 0 幀照常處理。完整程式的註解寫明了理由：模型與執行環境的初始化可能扭曲計時。本頁下方的圖中，第 0 幀的 pipeline（全流程時間）是 3.94 毫秒，第 5、11 幀都是 0.73 毫秒。正式量測應該先暖機，見第 3 章〈[Plain／residual 對照](03-comparison.md)〉。
-
-四項中位數相加是 0.199+0.215+0.337+0.045=0.796，比全流程的 0.887 少。這不是漏算：每一幀內，四段相加正好等於這一幀的總時間。差異來自「先各取中位數再相加」，因為各項的中位數可能落在不同幀。例如三幀的前處理是 1、2、5 毫秒，模型是 5、1、2 毫秒：兩項的中位數都是 2，相加得 4；但三幀的總時間是 6、3、7，中位數是 6。
+四項中位數相加是 0.199+0.215+0.337+0.045=0.796，比全流程的 0.887 少。這不是漏算：每一幀內，四段相加正好等於這一幀的總時間。差異來自「先各取中位數再相加」，因為各項的中位數可能來自不同的幀。例如三幀的前處理是 1、2、5 毫秒，模型是 5、1、2 毫秒：兩項的中位數都是 2，相加得 4；但三幀的總時間是 6、3、7，中位數是 6。
 
 這些數字也沒有包含影片解碼（把壓縮的影片檔還原成一張張畫素陣列；和第 6～7 章把模型輸出轉成框的 decode 不同）、網路、磁碟、螢幕更新，或相機那端的佇列。
 
@@ -137,11 +151,15 @@ def run_stream(frames, model):
 
 ![實際連續幀輸出，黃色是模型預測](../assets/diagrams/18-video.svg)
 
-圖中三格依序是第 0、5、11 幀，也就是第一幀、中間幀與最後一幀。紅方塊是畫面裡的物件本身，不是畫上去的真值（GT）框；黃框是模型預測，框上的白字是它的 score。每格下方的英文：`frame` 是幀號，`source` 是來源時間戳；`pipeline` 是這一幀全流程的處理時間（單次量測，不是中位數），`boxes` 是框數。
+圖中三格依序是第 0、5、11 幀，也就是第一幀、中間幀與最後一幀。紅方塊是畫面裡的物件本身，不是畫上去的真值（GT）框；黃框是模型預測，框上的白字是它的 score。每格下方第一行是幀號與來源時間戳；第二行的「處理 … ms」是這一幀全流程的處理時間（單次量測，不是中位數），「框 … 個」是這一幀的框數。
+
+單幀的處理時間也看這一幀要做多少事。第 0 幀有框：後處理要跑 NMS，畫框這一段也要真的畫出框、寫上分數；第 5、11 幀沒有框，這兩件事都不用做。所以比較單幀時間之前，先看各幀有沒有框。這是每幀工作量的差別，和暖機要先做掉的一次性準備是兩回事。
 
 本次每幀框數為 `[1,1,0,0,0,0,1,1,0,0,0,0]`。12 幀全都完成處理，卻有 8 幀沒有 score 高於 0.1 的框。這是模型漏檢，不是串流掉幀（掉幀：來源的某些幀沒被處理就被跳過）。
 
-有框也不等於框得準。用[檔案實測紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)保存的框計算，第 0、1、6、7 幀的預測框和紅方塊的 IoU（交集面積÷聯集面積）約 0.50、0.47、0.30、0.46；這份紀錄怎麼來，見下方摺疊區〈進階：用無損影片檔驗證 adapter〉。本節的 score 門檻是 0.1：每個候選框拿自己的 score 去比，低於 0.1 就丟掉。它比第 7 章畫圖用的顯示門檻 0.25 低。本節沒有為了好看而填入 GT 框，也不把低門檻下的框數當成準確率。
+有框也不等於框得準。用[檔案實測紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)保存的框計算，第 0、1、6、7 幀的預測框和紅方塊的 IoU（交集面積÷聯集面積）約 0.50、0.47、0.30、0.46；這份紀錄怎麼來，見下方摺疊區〈進階：用無損影片檔驗證 adapter〉。
+
+本節的 score 門檻是 0.1：每個候選框拿自己的 score 去比，低於 0.1 就丟掉。它比第 7 章畫圖用的顯示門檻 0.25（也是 `decode_grid` 的預設值）低。`run_stream` 裡的註解寫明了理由：在這些 letterbox 過的畫面上，這個只訓練 160 步的偵測器，多數幀的最高 score 都不到 0.25；門檻用 0.1，較弱的偵測也會留下來。本節沒有為了好看而填入 GT 框；同一段註解也寫明，門檻 0.1 下的框數不是準確率。
 
 為什麼漏檢？以下只是可能原因；本節沒有做對照實驗，不能當成已證實的因果。
 
@@ -149,7 +167,7 @@ def run_stream(frames, model):
 - 物件在模型輸入中約寬 9.3、高 9.4 畫素（14×2/3、14×43/64），仍在訓練框的大小範圍內。所以物件大小和訓練時相近，不是差異所在。
 - 物件在輸入中的 y 約 23.4～32.8（20×43/64+10、34×43/64+10），每一幀都略微跨過 y=32 的格線。x 方向（輸入中的 x 是來源 x 乘 2/3），第 2～4、8～10 幀還橫跨 x=16 或 x=32 的格線，這 6 幀都沒有框；沒跨線的第 0、1、6、7 幀都有框；但第 5、11 幀在 x 方向沒有跨線，也沒有框。所以「跨格」最多只是部分原因。
 
-在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/18-video.py`，完整程式會用斷言檢查 12 個 index、最後時間戳 0.55 秒，以及每張輸出圖都是寬 96、高 64；並產生 `artifacts/lesson-18/stream.gif`、`report.json` 與頁面靜態圖 `docs/assets/diagrams/18-video.svg`。這條路不需要相機或 GPU，快速驗證只要訓練 160 步，再推論 12 次。`18-video.svg` 是網站用的圖，git 會追蹤它的變動；在本機 repo 根目錄執行會覆寫它，跑完後 git 顯示它有變動是預期中的。重畫的圖不要提交回去，想還原可用 `git checkout -- docs/assets/diagrams/18-video.svg`；不想動到它，就在 Colab 或 repo 的副本裡執行。
+在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/18-video.py`，`main()` 會用斷言檢查：暖機剛好 1 幀而且得到了框；正式結果有 12 筆，每張輸出圖都是寬 96、高 64；12 個 index 依序是 0～11；最後時間戳是 0.55 秒。它會產生 `artifacts/lesson-18/stream.gif`、`report.json` 與靜態圖 `panel.svg`；本頁的圖，就是頁尾執行紀錄那次執行產生的 `panel.svg`。這條路不需要相機或 GPU，快速驗證只要訓練 160 步、暖機推論 1 次，再推論 12 次。
 
 ## 接真影片的同一個入口
 
@@ -161,11 +179,11 @@ adapter 裡有三個重點：
 - OpenCV 讀出的顏色順序是 B、G、R（藍、綠、紅），所以每幀先轉成 RGB。不轉的話紅色會變成藍色，類別就錯了（本書紅是類別 0、藍是類別 1）。
 - `capture.release()` 寫在 `try…finally` 的 `finally` 區塊裡。讀到檔尾、generator 被中途關閉，或 adapter 自己出錯（例如檔案打不開）時，`finally` 都會執行，檔案或相機因此會被釋放。這就是開頭說的「資源釋放」。外面的迴圈提前 `break` 或推論出錯時，generator 會停在 `yield`，要等 Python 回收它（確認已沒有任何東西用到它，把它清掉）時才會自動關閉。它若還存在變數裡，或 Colab 還留著那次錯誤的資訊（traceback），就不會被回收，檔案或相機會繼續被占著。所以後面〈換成自己的影片〉用 `closing`，離開 `with` 時一定把它關閉，不必等回收。
 
-換來源時，其他程式不用改：`run_stream(opencv_frames('clip.mp4'), model)` 就能處理影片檔。相機來源可以傳 0（代表第一支相機），但本次沒有開啟或驗證相機。
+換來源時，其他程式不用改：`run_stream(opencv_frames('clip.mp4'), model)` 就能處理影片檔。相機來源可以傳 0（代表第一支相機），但本節沒有開啟或驗證相機。
 
 ??? note "完整程式裡的 `opencv_frames`（加了中文註解）"
 
-    ```python
+    ``` { .python data-excerpt="lesson_cases/18-video.py" }
     def opencv_frames(source):
         """Optional real file/camera adapter. Never called by this lesson's main()."""
         import cv2  # optional: pip install opencv-python-headless
@@ -239,7 +257,7 @@ with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時�
     PYTHONPATH=. python scripts/verify_video_file.py
     ```
 
-    注意：`verify_video_file.py` 會把結果寫進 repo 裡的 `artifacts/checks/curriculum/video-file.json`，也就是上面連結的檔案實測紀錄。在本機 repo 根目錄執行，會覆寫這份官方紀錄，建議在 Colab 或 repo 的副本裡跑；若已覆寫，可用 `git checkout -- artifacts/checks/curriculum/video-file.json` 還原。
+    結果寫在 `artifacts/runs/video-file/result.json`。上面連結的檔案實測紀錄，是同一支程式加上 `--record artifacts/checks/curriculum/video-file.json` 產生的。
 
     `verify_video_file.py` 還會產生 `artifacts/runs/video-file/lossless-fixture.avi` 及疊圖，也把真實預測接給第 19 章的 tracker（追蹤器）。這段影片處理的計時包括開啟影片、讀取與解碼、前後處理、模型、畫框及收集結果；不含先前的訓練、影片編碼、寫入磁碟、顯示或網路佇列。不要把這 12 幀的小測試當成影片的正式效能。
 
@@ -259,9 +277,9 @@ with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時�
 
 ## 自主練習
 
-練習 1、2 要改的是完整程式的最後一行 `main()`（在 `if __name__ == '__main__':` 底下，前面的縮排要保留）：在 Colab 是最後一個程式格的最後一行，在本機是 `lesson_cases/18-video.py` 的最後一行。注意：在本機 repo 根目錄執行，會覆寫網站用的 `docs/assets/diagrams/18-video.svg`，建議在 Colab 或 repo 的副本裡改；若已經在本機執行過，可用 `git checkout -- docs/assets/diagrams/18-video.svg` 還原這張圖。完整程式的斷言不需要修改：和幀數、時間戳有關的斷言，以及 summary 與 GIF 每幀時長，都用 `count`、`fps` 計算，會自動跟著改。
+練習 1、2 要改的是完整程式的最後一行 `main()`（在 `if __name__ == '__main__':` 底下，前面的縮排要保留）：在 Colab 是最後一個程式格的最後一行，在本機是 `lesson_cases/18-video.py` 的最後一行。完整程式的斷言不需要修改：和幀數、時間戳有關的斷言，以及 summary 與 GIF 每幀時長，都用 `count`、`fps` 計算，會自動跟著改。
 
-練習 1：把最後一行改成 `main(count=24)`（fps 保持 20）。先自己算：最後一幀的時間戳與總播放時間各是幾秒？紅方塊從第幾幀開始被右邊界裁切？哪一幀完全看不到？最後一幀若沒有預測框，算不算模型漏檢？頁面靜態圖選第 0 幀、中間幀與最後一幀，中間幀由程式的 `(len(results)-1)//2` 決定（`//` 是整數除法，捨去小數），這次是哪三幀？
+練習 1：把最後一行改成 `main(count=24)`（fps 保持 20）。先自己算：最後一幀的時間戳與總播放時間各是幾秒？紅方塊從第幾幀開始被右邊界裁切？哪一幀完全看不到？最後一幀若沒有預測框，算不算模型漏檢？靜態圖 `artifacts/lesson-18/panel.svg` 選第 0 幀、中間幀與最後一幀，中間幀由 `save_panel` 裡的 `(len(results)-1)//2` 決定（`//` 是整數除法，捨去小數），這次是哪三幀？
 
 ??? note "參考答案"
 

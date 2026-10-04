@@ -33,9 +33,13 @@ m=s\cdot p^{\alpha}\cdot\text{IoU}^{\beta}
 
 結果寫成 owner `[0,0,1]`。owner 的第 0、1、2 格依序寫 p0、p1、p2 歸哪個 GT：0＝A、1＝B、−1＝背景。所以這裡 p0、p1 歸 A，p2 歸 B。一個 GT 有多個正候選，一個候選最後仍只擁有一個 GT。GT A 的兩個候選都被鼓勵報出 A，這就是推論時重複框的來源之一。
 
+一對多裡沒被任何 GT 選中的候選是背景，owner 填 −1；本表每個候選都至少被一個 GT 選中，所以沒有背景。完整程式用 `one_to_many_owner` 函式算一對多 owner，並用斷言（assert）核對：本表是 `[0,0,1]`；另一張小表 `[[.9,.8,.1],[.7,.6,.2]]`（第一列是 A、第二列是 B）的兩個 GT 都選 p0、p1，這兩個候選都歸品質較高的 A，沒人選的 p2 是背景，所以是 `[0,0,-1]`。
+
 本例的一對一要求每個 GT 恰好配一個候選，兩個 GT 不能共用同一個候選，而且整張表的總品質要最大，這叫全域最優；它和讓每個 GT 各挑自己最好的不一樣。這種「配對」是訓練時決定哪個候選負責哪個 GT（assignment），不是 [6.2](06-evaluation.md) 評估時判定 TP 的 matching。最好的配法是 A→p1、B→p0，總品質 0.85+0.88=1.73，owner `[1,0,-1]`：p0 歸 B、p1 歸 A，沒被選中的 p2 學背景。
 
 為什麼不把 A 最好的 p0 留給 A？先看貪心（greedy）的做法：每一步先拿眼前最大的數，拿了就不再改。全表最大的是 0.90（A→p0），先定下來；B 只剩 p1（0.10）和 p2（0.20），最多 0.20，總和 1.10。全域最優反而把 p0 讓給 B：A 從 p0 改用 p1 只少 0.05，B 從 p0 改用 p2 卻少 0.68，所以 A→p1、B→p0 的 1.73 比較大。這是可驗證的反例：每一步拿當下最大的值，不保證整體最好。
+
+完整程式的 `greedy_one_to_one` 函式照這個規則求貪心的配法：每一步只在還沒配到候選的 GT、還沒被拿走的候選之間找最大的一格，定下就不再改，直到每個 GT 都配到候選。斷言確認本表的貪心是 A→p0、B→p2、總和 1.10，也確認全域最優嚴格大於貪心。注意貪心比的是全表剩下的最大數，不是讓 A 先挑：另一個斷言用一張把 B 的 p0 改成 0.95 的小表檢查，這時最大的 0.95 屬於 B，所以 B 先拿 p0，A 再從剩下的 p1、p2 拿較大的 p1。
 
 完整程式的 `exact_one_to_one` 函式用列舉求全域最優，核心是這兩行（寫法略有簡化）：
 
@@ -92,7 +96,7 @@ best = max(permutations(range(P), G),
 
 p0 那一列，一對多是 `[1,0]`、一對一是 `[0,1]`，就是上一小節說的「相反的 target」。
 
-下面依完整程式整理，變數名相同，另加中文註解：
+下面是依完整程式改寫的簡化版：完整程式把 `many_logits`、`one_logits` 寫在同一行，這裡拆成兩行；`targets()` 的定義省略，最後多寫一個 `loss` 變數。其餘變數名都和完整程式相同，另加中文註解：
 
 ```python
 features = backbone(inputs)                 # [3,4] → [3,4]
@@ -110,12 +114,12 @@ loss = many_loss + one_loss  # 完整程式沒有這個變數，直接寫 (many_
 
 完整程式分兩次反傳，確認梯度真的這樣走：
 
-1. 先只反傳一對一 loss，再用斷言（assert）確認 backbone 的 `.grad is None`，而一對一 head 的梯度不是零。
+1. 先只反傳一對一 loss，再用斷言確認 backbone 的 `.grad is None`，而一對一 head 的梯度不是零。
 2. 第二次反傳前，先用 `optimizer.zero_grad()` 清掉第一次的梯度，所以一對一 head 的梯度不會重複累加。接著反傳總 loss：backbone 這次有梯度，而且只來自一對多 head。最後做一次 `optimizer.step()`，斷言兩個 head 的權重都改變了。
 
 detach 不能放在 head 輸出後：梯度會在 head 的輸出就被剪斷，連 head 自己都學不到。
 
-執行 `PYTHONPATH=. python lesson_cases/13-dual-assignment.py`。前三行應印出一對多 owner `[0, 0, 1]`、全域一對一 owner `[1, 0, -1]`，以及全域最優與貪心的總品質 1.73 對 1.10；第四行英文的意思是「detach 過的一對一 head 只訓練自己，backbone 只由一對多 head 的 loss 訓練」，也就是上面的梯度路徑確認。這是可在 CPU 獨立執行的小實驗，只檢查 target 與梯度怎麼接；它沒有量測拿掉 NMS 後的 AP 或推論速度。
+執行 `PYTHONPATH=. python lesson_cases/13-dual-assignment.py`。前三行應印出一對多 owner `[0, 0, 1]`、全域一對一 owner `[1, 0, -1]`，以及全域最優與貪心的總品質 1.73 對 1.10；第四行英文的意思是「detach 過的一對一 head 只訓練自己，backbone 只由一對多 head 的 loss 訓練」，也就是上面的梯度路徑確認；最後一行是 `optimizer.step()` 更新權重之前算出的兩個 BCE loss（`many_loss`、`one_loss`）。這是可在 CPU 獨立執行的小實驗，只檢查 target 與梯度怎麼接；它沒有量測拿掉 NMS 後的 AP 或推論速度。
 
 ## 收益、代價與留下的問題
 
@@ -137,26 +141,27 @@ detach 不能放在 head 輸出後：梯度會在 head 的輸出就被剪斷，�
 1. 把 `main()` 裡 `quality` 的第二列 `[.88, .10, .20]` 改成 `[.88, .10, .95]`，也就是 B 對 p2 的品質改為 0.95。先手算：一對一的全域最優配法和總品質是多少？貪心呢？一對一、一對多的 owner 各變成什麼？完整程式的斷言寫死了原表的答案，直接執行會在斷言停下；想想哪幾個斷言要改、改成什麼。
 2. 再把 GT 改成 4 個（`quality` 改成 4 列，每列 3 個數），候選仍是 3 個。執行時會發生什麼事？應該怎麼處理？
 
-自己設計別的表時要留意：完整程式算一對多 owner 的 `many_owner = quality.masked_fill(~selected, -1).argmax(0)`，假設每個候選至少被一個 GT 選中。沒被任何 GT 選中的候選，那一欄全是 −1，`argmax` 會取第一列，把它算成 A（0），而不是背景（−1）；練習 1 的表三個候選都被選中，不受影響。
-
 ??? note "參考答案"
 
     **第 1 題**：六種配法的總品質依序是 1.00、1.85、1.73、1.80、0.98、0.20，最大的是 (0,2)：A→p0、B→p2，總和 0.90+0.95=1.85。`best=(0,2)` 翻成「每個候選歸誰」，一對一 owner 是 `[0,-1,1]`，不是 `[0,2,-1]`。一對多 owner 仍是 `[0,0,1]`：A 仍選 p0、p1，B 改選 p2、p0，p0 仍因 0.90 高於 0.88 歸 A。
 
-    新表最大的數是 0.95，所以貪心先給 B→p2，再給 A→p0，總和同樣是 1.85。原本不是最好的貪心，在這張表變成最好；一個成功的例子，不能證明貪心總是對的。
+    新表最大的數是 0.95，所以貪心先給 B→p2，再給 A→p0，總和同樣是 1.85。在原表不是最好的貪心，在這張表變成最好；一個成功的例子，不能證明貪心總是對的。
 
-    完整程式裡要改兩個斷言，`many_owner` 那一行不用改：
+    完整程式裡要改三個斷言，依出現的順序是：
 
     - `assert one_owner.tolist() == [1, 0, -1]` 改成 `assert one_owner.tolist() == [0, -1, 1]`。
+    - `assert greedy_cols == (0, 2) and abs(greedy_value - 1.10) < 1e-6` 改成 `assert greedy_cols == (0, 2) and abs(greedy_value - 1.85) < 1e-6`。`greedy_cols` 和 `best` 一樣寫「每個 GT 拿哪個候選」；新表的貪心仍是 A→p0、B→p2，只有總和變成 0.90+0.95。
     - `assert optimum > greedy_value + 1e-7` 檢查「全域最優嚴格大於貪心」。新表兩者相等，這行會失敗；改成 `assert abs(optimum - greedy_value) < 1e-6`，意思是兩者相等。
 
-    改好後執行，第三行印出 `global quality=1.85; greedy quality=1.85`；一對一的 target 變了，最後一行的 one loss 也會跟著變。程式裡的 0.90、0.95 以 float32 儲存，存進去時有極小的捨入，所以實際算出 1.8499999642…，印出時才四捨五入成 1.85。這裡 `optimum` 和 `greedy_value` 是同樣兩個數相加，結果完全相同；用 `abs` 比較只是保險，極小的捨入誤差不能算成「全域比貪心好」。
+    其他斷言不用改。一對多 owner 仍是 `[0,0,1]`，所以 `assert many_owner.tolist() == [0, 0, 1]` 照樣成立；另外兩個把小表直接寫在括號裡的斷言（`one_to_many_owner(torch.tensor(...))` 與 `greedy_one_to_one(torch.tensor(...))` 那兩行）不讀 `quality`，也不受影響。
 
-    另外，`greedy_value = float(quality[0, 0]) + float(quality[1, 2])` 是照原表的貪心結果（A→p0、B→p2）寫死的，程式並沒有真的跑貪心。這題的貪心剛好仍是 A→p0、B→p2，所以不用改；改其他格子時，要自己重算。
+    三個都改好後執行，第三行印出 `global quality=1.85; greedy quality=1.85`；一對一的 target 變了，最後一行的 one loss 也會跟著變。程式裡的 0.90、0.95 以 float32 儲存，存進去時有極小的捨入，所以實際算出 1.8499999642…，印出時才四捨五入成 1.85。這裡 `optimum` 和 `greedy_value` 是同樣兩個數相加，結果完全相同；用 `abs` 比較只是保險，極小的捨入誤差不能算成「全域比貪心好」。
 
-    **第 2 題**：3 個候選排不出 4 個不同的位置，`permutations(range(3), 4)` 什麼都不產生，`max()` 會報 `ValueError`（Python 3.12 的訊息是 `max() iterable argument is empty`）。程式在第一次呼叫 `exact_one_to_one` 時就停下，後面的一對多與訓練都不會執行。這個報錯是對的：一對一不可能讓 4 個物件各拿一個候選，至少有一個 GT 沒有一對一正樣本，也就是沒配到候選的 GT（unmatched GT）。不要為了讓錯誤消失，改成只配其中 3 個 GT 卻不記錄丟了誰，那會讓一個物件被默默忽略。建議先明確允許 GT 沒配到，並把它們列出來；或增加候選數。這是本節建議的做法，不是 YOLOv10 的規則。
+    **第 2 題**：3 個候選排不出 4 個不同的位置，`permutations(range(3), 4)` 什麼都不產生，`max()` 會報 `ValueError`（Python 3.12 的訊息是 `max() iterable argument is empty`）。程式一呼叫 `exact_one_to_one` 就停下，後面的一對多、貪心與訓練都不會執行。這個報錯是對的：一對一不可能讓 4 個物件各拿一個候選，至少有一個 GT 沒有一對一正樣本，也就是沒配到候選的 GT（unmatched GT）。不要為了讓錯誤消失，改成只配其中 3 個 GT 卻不記錄丟了誰，那會讓一個物件被默默忽略。建議先明確允許 GT 沒配到，並把它們列出來；或增加候選數。這是本節建議的做法，不是 YOLOv10 的規則。
 
-來源查核：2026-10-02。[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[作者官方 repository，固定 commit](https://github.com/THU-MIG/yolov10/tree/453c6e38a51e9d1d5a2aa5fb7f1014a711913397)、[雙分支與 detach 實作](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)。
+    要在程式裡允許 GT 沒配到，不能只改 `exact_one_to_one`。`greedy_one_to_one` 和它一樣假設每個 GT 都拿得到不同的候選：4 個 GT、3 個候選時，它配完 3 個 GT 就沒有可選的格子，`max()` 會報同一個 `ValueError`。`targets()` 則直接把 GT 編號當類別欄號，這只在本例 A、B 剛好是類別 0、1 時成立：編號 2、3 的 GT 只要分到候選，就會超出只有 2 欄的 target，程式報 `IndexError`；要改成先由 owner 找到 GT，再取那個 GT 的類別。寫死原表答案的斷言，也要照新表的答案改。
+
+參考來源：[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[作者官方 repository，固定 commit](https://github.com/THU-MIG/yolov10/tree/453c6e38a51e9d1d5a2aa5fb7f1014a711913397)、[雙分支與 detach 實作](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)。
 
 <!-- curriculum-evidence:start -->
 

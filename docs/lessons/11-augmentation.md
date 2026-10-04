@@ -45,15 +45,18 @@
 - **畫素**：畫素 i 占據格線 i 到 i+1 之間的一格。左右鏡射把位置 u 送到 W−u：格線 i 變成 W−i，格線 i+1 變成 W−1−i。所以這一格翻轉後從 W−1−i 到 W−i，也就是畫素 W−1−i（畫素的編號是它左邊那條格線）。代入：畫素 23 → 40、畫素 8 → 55。
 - **框**：x1、x2 本身就是格線，直接套 W−u。鏡射會讓左右對調，所以新的左邊來自舊的右邊：新 x1 = 64 − 舊 x2 = 64 − 24 = 40，新 x2 = 64 − 舊 x1 = 64 − 8 = 56。紅畫素 40…55 正好占 [40,56)。
 
-```python
-W = image.shape[-1]
-flipped_image = image.flip(-1)  # CHW 的最後一軸是寬
-new_boxes = boxes.clone()       # 讀舊 boxes，寫獨立副本；否則算 x2 時會讀到已改成 40 的 x1
-new_boxes[:,0] = W - boxes[:,2]
-new_boxes[:,2] = W - boxes[:,0]
+完整程式的 `horizontal_flip` 就照這個公式寫。以下摘自完整程式，中文註解是本頁加的：
+
+``` { .python data-excerpt="lesson_cases/11-augmentation.py" }
+def horizontal_flip(image,boxes):
+    width = image.shape[-1]         # 圖寬，也就是本頁的 W；CHW 的最後一軸是寬
+    result = boxes.clone()          # 讀舊 boxes，寫獨立副本；否則算 x2 時會讀到已改成 40 的 x1
+    result[:,0] = width-boxes[:,2]  # 新 x1 = W − 舊 x2
+    result[:,2] = width-boxes[:,0]  # 新 x2 = W − 舊 x1；y1、y2 不動
+    return image.flip(-1),result    # 圖沿最後一軸（寬）左右鏡射，和新框一起回傳
 ```
 
-labels 不變，紅矩形仍是 class 0。
+labels 不變，紅矩形仍是 class 0，所以 `horizontal_flip` 只需要圖和框。
 
 連做兩次 flip，應逐值恢復原圖和原框。這是必要條件，不是充分條件：寫對的 flip 一定會還原，但會還原不代表寫對。用 W−1（得 `[39,12,55,28]`）、忘了交換 x1 和 x2（得 `[56,12,40,28]`）或翻錯軸，翻兩次一樣會還原。真正抓得到這些錯的，是翻一次後對照手算答案 `[40,12,56,28]`，並核對紅色畫素正好落在新框內。完整程式兩種都有斷言（assert）：翻轉後的框必須等於 `[[40,12,56,28]]`；翻轉後的圖必須等於「只在畫素 x=40…55、y=12…27 塗紅」的預期圖。
 
@@ -70,24 +73,33 @@ labels 不變，紅矩形仍是 class 0。
 
 框減掉的正是裁切區左上角 (16, 8)，圖片也是從這個角開始切，所以畫素和框仍然對得上。剩下寬 8、高 16，可見面積 = 8×16 = 128；原面積 16×16 = 256，可見比例 = 128/256 = 0.5。
 
+要確認畫素和框真的對得上，只看框內的畫素還不夠。假設切圖時從 x=12 開始切（比 left=16 偏左 4 個畫素），框卻照 (16, 8) 平移：紅色在新圖占 x=0…11，框內 128 個畫素照樣全是紅色，框外 x=8…11、y=4…19 卻多出一塊寬 4、高 16 的紅色，畫素和框就對不上了。所以和翻轉時一樣，完整程式對裁切也有這兩種斷言：裁切後的框必須等於 `[[0,4,8,20]]`；裁切後的整張圖必須等於 shape `[3,32,32]`、「只在畫素 x=0…7、y=4…19 塗紅」的預期圖。比對用的是 `torch.equal`：兩個 tensor 的 shape 相同、每個值也都相同，才算相等，所以裁切後的圖 shape 不對也會被抓到。
+
 本例規定「可見面積大於 0，且可見比例 ≥ 0.5 才保留」；這個 0.5 是可見比例的門檻（threshold）。本例比例剛好 0.5，程式用 `>=`，所以保留；寫成 `>` 就會刪掉，邊界要寫清楚。若門檻改成 0.6，就移除這個框。判斷結果存成 keep（每個框一個 True/False 的布林遮罩）；labels 要用同一個 keep 篩，不能只有 boxes 變少。
 
-為什麼還要另寫「可見面積大於 0」？只要門檻大於 0，比例條件就已保證可見面積大於 0。另寫 `visible_area > 0`，是為了門檻設成 0 時也不會留下零面積框。零面積框不是合法標註。第 7 章的 build_targets（把框轉成每格訓練目標的函式）遇到這種框，會拋出 ValueError。
+為什麼還要另寫「可見面積大於 0」？只要門檻大於 0，比例條件就已保證可見面積大於 0。另寫這個條件（下面程式裡的 `visible > 0`，`visible` 是可見面積），是為了門檻設成 0 時也不會留下零面積框。零面積框不是合法標註。第 7 章的 build_targets（把框轉成每格訓練目標的函式）遇到這種框，會拋出 ValueError。
 
-```python
-left, top, width, height = 16, 8, 32, 32
-# 裁圖：CHW 先切 y 再切 x，即 image[:, 8:40, 16:48]，得到 [3,32,32]
-cropped = image[:, top:top+height, left:left+width]
-shifted = boxes - torch.tensor([left,top,left,top])  # 原點移到裁切區左上角 (16, 8)
-clipped = shifted.clone()
-# [:, [0, 2]] 一次取 x1、x2 兩欄；clamp 把小於 0 的改成 0、大於 32 的改成 32
-clipped[:, [0, 2]] = clipped[:, [0, 2]].clamp(0, width)
-clipped[:, [1, 3]] = clipped[:, [1, 3]].clamp(0, height)  # y1、y2 同理
-# [x2, y2] - [x1, y1] = [寬, 高]；prod(-1) 沿最後一軸相乘，得到寬×高
-visible_area = (clipped[:, 2:] - clipped[:, :2]).prod(-1)
-original_area = (boxes[:, 2:] - boxes[:, :2]).prod(-1)
-keep = (visible_area > 0) & (visible_area / original_area >= .5)  # 每個框一個 True/False
-new_boxes, new_labels = clipped[keep], labels[keep]  # 只留 keep 為 True 的列；labels 用同一個 keep
+完整程式把裁圖、框的兩步換算和保留規則都寫在 `crop` 函式裡，`main()` 再呼叫它裁出本例。以下摘自完整程式，中文註解是本頁加的：
+
+``` { .python data-excerpt="lesson_cases/11-augmentation.py" }
+def crop(image,boxes,left,top,width,height,min_visibility=.5):  # min_visibility 是可見比例門檻
+    # 原點移到裁切區左上角：x 減 left、y 減 top
+    shifted = boxes-torch.tensor([left,top,left,top],dtype=boxes.dtype)
+    clipped = shifted.clone()
+    # [:,[0,2]] 一次取 x1、x2 兩欄；clamp 把小於 0 的改成 0、大於 width 的改成 width
+    clipped[:,[0,2]] = clipped[:,[0,2]].clamp(0,width)
+    clipped[:,[1,3]] = clipped[:,[1,3]].clamp(0,height)  # y1、y2 同理
+    # [x2,y2]−[x1,y1] 是 [寬,高]；prod(-1) 沿最後一軸相乘，得到寬×高
+    area = (boxes[:,2:]-boxes[:,:2]).prod(-1)  # 原面積
+    # 可見面積；clamp(min=0) 先把負的寬、高改成 0（框的 x2<x1 或 y2<y1 時才會是負的）
+    visible = (clipped[:,2:]-clipped[:,:2]).clamp(min=0).prod(-1)
+    keep = (visible > 0) & (visible/area >= min_visibility)  # 每個框一個 True/False
+    # 裁圖：CHW 先切 y 再切 x；回傳裁切後的圖、只留 keep 為 True 的框，以及 keep
+    return image[:,top:top+height,left:left+width],clipped[keep],keep
+...
+# main() 裡：本例切的是 image[:,8:40,16:48]，cropped 是 [3,32,32]；這裡的 clipped 是留下的框
+cropped, clipped, keep = crop(image,boxes,16,8,32,32,.5)
+cropped_labels = labels[keep]  # labels 用同一個 keep 篩
 ```
 
 本例只有一個框，看不出漏篩 labels 的後果。換成三個框：`labels=[0,1,0]`、`keep=[True,False,True]`，boxes 剩兩個，labels 也要用同一個 keep 變成 `[0,0]`。若 labels 沒篩，boxes 剩 2 個、labels 仍有 3 個，數量對不上，本書的 build_targets 會拋出 ValueError；不檢查長度的程式則會把類別配錯框。
@@ -116,7 +128,7 @@ no-object image: boxes [0,4], labels Long[0], pixels stay zero
 
 畫面上有紅矩形、標註卻是空的圖，不能拿來代替空圖：那是漏標，會教模型把紅色當成背景。
 
-印出這四行之前，完整程式已用斷言核對過畫素：翻轉後的整張圖必須逐值等於預期圖，所以紅色正好落在新框 `[40,12,56,28]` 內；裁切後只核對新框 `[0,4,8,20]` 內的 128 個畫素全是紅色，沒有核對框外還有沒有紅色。第 3 行的 labels 也是程式實際用 keep 篩出來的。
+印出這四行之前，完整程式已用斷言逐值核對過：翻轉、裁切後的框都等於手算答案，整張圖也都等於預期圖，所以紅色正好落在新框 `[40,12,56,28]`、`[0,4,8,20]` 內，框外沒有紅色。四行裡，第 1、2 行的框和第 3 行的 labels 是程式算出來的值，labels 是用 keep 篩出來的；`double flip is identity`、`visible area 128/256=.5` 和整個第 4 行則是直接寫在 print 裡的固定文字，不是當場算出來的。它們印得出來，表示前面的斷言都已通過：任何一個斷言不成立，程式就會停在那裡並報 AssertionError，這四行一行也不會印出。
 
 ## 收益與代價
 
@@ -131,7 +143,7 @@ epoch（一輪）指把整份訓練資料都用過一次。固定 seed（亂數�
 - **翻錯軸**：寫成 `image.flip(0)` 會翻到 channel 軸，R、B 對調，紅色變藍，類別意義也跟著錯（紅是類別 0、藍是類別 1）。寫成 `image.flip(1)` 會翻到 height 軸，圖變成上下顛倒，框的 y 卻沒改，紅色和框對不上。
 - **用 W−1 變換框邊界**：得 `[39,12,55,28]`，比紅色畫素（x=40…55）偏左 1 個畫素。雙 flip 抓不到這個錯。
 - **先修改 x1 再用它算 x2**：沒有 clone、直接改 boxes 時，x1 先變成 64−24=40，算 x2 時讀到的就是 40，得 64−40=24，框變成 `[40,12,24,28]`，x2 比 x1 還小。
-- **crop 後留下零面積框**：例如門檻設成 0、又少了 `visible_area > 0`；build_targets 遇到這種框會拋出 ValueError。
+- **crop 後留下零面積框**：例如門檻設成 0、又少了 `visible > 0`；build_targets 遇到這種框會拋出 ValueError。
 - **漏掉 labels 的 keep**：boxes 篩了、labels 沒篩，數量對不上，或類別配錯框（見上面三個框的例子）。
 
 自主練習（手算即可；先自己算，再展開答案）：

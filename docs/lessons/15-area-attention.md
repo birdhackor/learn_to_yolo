@@ -25,6 +25,8 @@ YOLOv12 的 Area Attention 把攤平後的 token 依序切成 A 段，每段是�
 
 本例的 feature map 是 4×4，N=16。照 row-major 順序（逐列由左到右）編號，每四個 token 是一列。tokens 的 shape 是 `[B,N,C]=[1,16,2]`：B 是圖片數，N 是 token 數，C 是每個 token 的 channel 數。`areas=4` 時，Q、K、V 各自 reshape 成 `[B×A,N/A,C]=[4,4,2]`。N/A 是 N 除以 A，也就是每區的 token 數（不是「不適用」的縮寫）。
 
+下面是依完整程式的 `attend` 函式改寫的簡化版：軸長照正文寫成大寫的 B、N、C，省略了開頭的 assert（檢查 A 大於 0、N 能被 A 整除），最後一行也只把結果存進 `output`（`attend` 是把輸出和權重表 `weights` 一起回傳）。
+
 ```python
 # B, N, C 是 tokens 三個軸的長度，本例 [1,16,2]（完整程式寫成 b, n, c = tokens.shape）
 # projection 是 nn.Linear(2, 6, bias=False)：把每個 token 從 2 維變成 6 維，再沿最後一軸切成三等份
@@ -41,7 +43,7 @@ output = (weights @ v).reshape(B, N, C)  # [4,4,4] @ [4,4,2] -> [4,4,2]，再依
 
 `@` 遇到三維張量時，第 0 軸的每一份各自配對，只對最後兩軸做矩陣乘法：`[4,4,2] @ [4,2,4]` 就是做 4 次「4×2 乘 2×4」，得到 4 張 4×4 的分數表。分數除以 √2、再做 softmax，就是 4 張 attention 權重表（上一節叫 affinity；它是每次 forward 算出的中間結果，不是可學參數）。token0 那張表只有 token0–3 這四個來源，沒有 token15；softmax 也只在這四個來源之間分配。權重表 `[4,4,4]` 的三個軸依序是：第幾區、區內第幾個接收位置、區內第幾個來源位置。`weights @ v` 同樣是 4 份各自相乘；最後的 reshape 只是把四段照原來的順序接回 `[1,16,2]`，位置不會亂。
 
-完整程式把這段計算寫成函式 `attend`，full 和 area 都用同一個 `projection` 呼叫它：`areas=1` 就是 full，`areas=4` 就是 area。QKV 權重沒有重新初始化，兩條路的差別只有誰能讀誰。共用同一份 QKV 權重來比較，比各跑一份隨機初始化的模型，更能把差異歸因於互動範圍。
+full 和 area 都用同一個 `projection` 呼叫 `attend`：`areas=1` 就是 full，`areas=4` 就是 area。QKV 權重沒有重新初始化，兩條路的差別只有誰能讀誰。共用同一份 QKV 權重來比較，比各跑一份隨機初始化的模型，更能把差異歸因於互動範圍。
 
 這四條帶不是四個 2×2 方塊。把圖切成小方塊、只在方塊內做 attention 的做法叫 window（和第 5 章的滑動視窗 sliding window 不同）。程式沒有先重排 token，所以切出來的是橫帶。若要 2×2 方塊，得先把 token 重新排好，讓同一方塊的 4 個 token 相鄰：[0,1,4,5]、[2,3,6,7]、[8,9,12,13]、[10,11,14,15]，再每 4 個切一段；算完還要照相反的順序排回原位。
 
@@ -90,11 +92,12 @@ attention 權重全部相等，token0 輸出就是可讀 token 的平均。token
 
 選 token0（q0=[0,0]）只是為了方便手算。area 的結論不靠 q0 是零向量：換成別的 query 向量，token0 那張表裡仍然沒有 token15。
 
-這個結論是程式實際比對出來的。完整程式用斷言（assert）逐值比對干預前後的 token0 輸出：`full_affected`、`area_affected` 記錄 full 和 area 的 token0 輸出有沒有改變（用 `torch.allclose` 比較），`query_index=0` 是 token0，`changed_index=15` 是被改的 token。
+這個結論是程式實際比對出來的。完整程式用斷言（assert）逐值比對干預前後的 token0 輸出：`full_affected`、`area_affected` 記錄 full 和 area 的 token0 輸出有沒有改變（用 `torch.allclose` 比較），`query_index=0` 是 token0，`changed_index=15` 是被改的 token。下面摘自完整程式的 `main()`，中文註解是本頁加的；`...` 處略去的兩行，就是算出 `full_affected`、`area_affected` 的那兩行：
 
-```python
+``` { .python data-excerpt="lesson_cases/15-area-attention.py" }
 area_size = tokens.shape[1] // areas  # 每區的 token 數：16 // 4 = 4
 same_area = query_index // area_size == changed_index // area_size  # 0 // 4 = 0，15 // 4 = 3：不同區，False
+...
 assert full_affected and area_affected == same_area  # full 要受影響；area 受不受影響，要和「是否同區」一致
 ```
 
@@ -111,9 +114,9 @@ assert full_affected and area_affected == same_area  # full 要受影響；area 
 完整程式最後對 area 輸出與原 tokens 計算 MSE，做 backward 和一次 SGD，確認 QKV 權重有梯度。執行 `PYTHONPATH=. python lesson_cases/15-area-attention.py`，對照印出的這幾行：
 
 - `full affinity shape/count`、`area affinity shape/count`：權重表 256 個與 64 個。
-- `first-token output`：token0 輸出，full 約 0.4688、area 約 0.0938（印到小數第四位）。
-- `changing token 15 affects token 0`：干預影響 full、不影響 area（`full=True, area=False`）。
-- `after intervention`：干預後 full 約 0.7812，area 仍約 0.0938。full 的實際值是 0.78125，剛好在 0.7812 和 0.7813 的正中間；程式印到小數第四位（完整程式寫成 `:.4f`）時，遇到剛好正中間的值，和 [4.2](04-coordinates.md) 的 `round()` 一樣取偶數那一邊，所以印成 0.7812（第四位 2 是偶數），不是四捨五入的 0.7813。
+- `first-token output`：干預前的 token0 輸出，full 是 0.46875，area 是 0.09375，和前面手算的值相同。
+- `changing token 15 affects token 0`：依序印出 `full_affected`、`area_affected`、`same_area`。`full=True, area=False` 表示干預影響 full、不影響 area；`same area=False` 表示 token15 和 token0 不同區。
+- `after intervention`：干預後 full 變成 0.78125，area 仍是 0.09375，也和手算的值相同。
 - 最後一行 `area-attention backward/step verified`：backward 與 step 成功。
 
 本節只用 CPU，不需要 FlashAttention 或 GPU。
@@ -146,13 +149,13 @@ CNN 疊多層後，讀得到的範圍（感受野）會逐層擴大。兩者的�
 
 ??? note "參考答案"
 
-    **第 1 題**：兩區各 8 個 token，pair 數 `2×8²=128`（權重表 `(2, 8, 8)`）。token0 可讀 0 到 7，仍讀不到 15，所以干預 token15 不影響 area 的 token0。token0 輸出是 0 到 7 的平均除以 16：3.5/16=0.21875（程式印成 0.2188）。
+    **第 1 題**：兩區各 8 個 token，pair 數 `2×8²=128`（權重表 `(2, 8, 8)`）。token0 可讀 0 到 7，仍讀不到 15，所以干預 token15 不影響 area 的 token0。token0 輸出是 0 到 7 的平均除以 16：3.5/16=0.21875。
 
     **第 2 題**：areas=1 就是 full：pair 數 256，token0 輸出 0.46875。這時 token15 和 token0 同區，改 token15 會影響 area 的 token0（干預後也是 0.78125，和 full 相同）。`same_area` 算出 True，`full_affected`、`area_affected` 也都是 True，所以 `assert full_affected and area_affected == same_area` 不用改，照樣通過。
 
-    **第 3 題**：token3 和 token0 在同一條帶，所以改 token3 時，full 和 area 的 token0 輸出都會變。full 從 0.46875 變成 0.78125（多 5/16）；area 從 0.09375 變成 1.34375（多 5/4：每區 4 個 token，attention 權重各 1/4）。程式印成 0.7812 與 1.3438：兩個都剛好在正中間，照前面 `after intervention` 那一項說的取偶數規則，一個看起來像捨去、一個像進位，不是筆誤。
+    **第 3 題**：token3 和 token0 在同一條帶，所以改 token3 時，full 和 area 的 token0 輸出都會變。full 從 0.46875 變成 0.78125（多 5/16）；area 從 0.09375 變成 1.34375（多 5/4：每區 4 個 token，attention 權重各 1/4）。
 
-來源查核：2026-10-02。[YOLOv12 論文](https://arxiv.org/abs/2502.12524)、[作者 AAttn 的 area reshape、CPU attention 與位置卷積](https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py)（CPU attention 指 `AAttn` 不用 FlashAttention 時，例如在 CPU 上，改用一般矩陣乘法算 attention 的那段程式）。
+參考來源：[YOLOv12 論文](https://arxiv.org/abs/2502.12524)、[作者 AAttn 的 area reshape、CPU attention 與位置卷積](https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py)（CPU attention 指 `AAttn` 不用 FlashAttention 時，例如在 CPU 上，改用一般矩陣乘法算 attention 的那段程式）。
 
 <!-- curriculum-evidence:start -->
 

@@ -19,7 +19,7 @@ nav = [
     { "首頁" = "index.md" },
     { "完整閱讀路線" = "learning-path.md" },
     { "術語快速查" = "glossary.md" },
-    { "驗證範圍與後續實驗" = "status.md" },
+    { "驗證範圍" = "status.md" },
     { "GPU／checkpoint 實測" = "validation/gpu-smoke.md" },
     { "全套實驗與審查" = "validation/curriculum.md" },
   ] },

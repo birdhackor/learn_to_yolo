@@ -21,26 +21,29 @@
 
 ## 失敗一：反傳成功，前半模型卻沒有學（對應檢查步驟 2）
 
-案例把模型拆成兩段：body（前半段，`Linear(2,3)`，把每筆 2 個數變成 3 個，角色類似第 1 章的 backbone）與 head（後半段，`Linear(3,2)`，再變成 2 個類別分數）。錯誤程式如下（變數都在完整程式前面建立）：
+案例把模型拆成兩段：body（前半段，`Linear(2,3)`，把每筆 2 個數變成 3 個，角色類似第 1 章的 backbone）與 head（後半段，`Linear(3,2)`，再變成 2 個類別分數）。完整程式先故意寫錯一次，再用斷言確認錯誤真的發生。以下摘自完整程式，中文註解是本頁加的；`body`、`head`、`optimizer`、2 筆輸入 `x` 與標籤 `labels` 都在這段之前建立：
 
-```python
+``` { .python data-excerpt="lesson_cases/02-diagnostics.py" }
 optimizer.zero_grad(set_to_none=True)  # 先把梯度清成 None
-logits = head(body(x).detach())        # 錯在這裡：detach 讓梯度傳不回 body
-loss = torch.nn.functional.cross_entropy(logits, labels)
+# 錯在 .detach()：它讓梯度傳不回 body（nn 就是 torch.nn）
+loss = nn.functional.cross_entropy(head(body(x).detach()), labels)
 loss.backward()
+# 故意寫錯的結果：body 沒有梯度，head 有
+assert body.weight.grad is None and head.weight.grad is not None
+print("broken graph: body.weight.grad=None, head.weight.grad exists")
 ```
 
-`detach()` 保留數值，但把計算圖從這裡剪斷。計算圖是 forward 時 PyTorch 記下的紀錄：哪些數經過哪些運算得到 loss。反傳就沿著這份紀錄往回算梯度；紀錄被剪斷，梯度就傳不回 body，所以叫斷圖。head 仍然可以學，整體 loss 甚至可能下降，但 `body.weight.grad is None`。「loss 可能下降」是從 head 仍在學推得的，本例沒有實際訓練斷開的版本來量。
+`detach()` 保留數值，但把計算圖從這裡剪斷。計算圖是 forward 時 PyTorch 記下的紀錄：哪些數經過哪些運算得到 loss。反傳就沿著這份紀錄往回算梯度；紀錄被剪斷，梯度就傳不回 body，所以叫斷圖。上面的斷言確認的正是這個結果：head 收到了梯度，`body.weight.grad` 卻是 None。照這樣訓練下去，head 仍然可以學，整體 loss 甚至可能下降，body 卻一直不會更新。
 
 `None` 和「有梯度但數值很小」不同：`None` 通常表示該參數沒有接進本次反傳，或本次沒用到。這個判斷要配合每步開頭的 `zero_grad(set_to_none=True)`：梯度先清成 None，backward 後仍是 None 的參數，就是這次沒接上的。若改用 `set_to_none=False`，曾有梯度的參數會被清成全 0，這時要改查梯度是否全為 0。
 
 拿掉 detach 後，完整程式這樣確認 body 真的在學：檢查 body 的梯度不是 None 也不全為 0，並比較更新前後的副本。
 
-```python
+``` { .python data-excerpt="lesson_cases/02-diagnostics.py" }
 optimizer.zero_grad(set_to_none=True)
 # 存更新前的副本：detach 剪離計算圖、clone 複製數字；這裡用 detach 沒錯
 before = body.weight.detach().clone()
-# 這次沒有 detach（nn 就是 torch.nn）
+# 這次沒有 detach
 loss = nn.functional.cross_entropy(head(body(x)), labels)
 loss.backward()
 # body 的梯度不是 None，而且不全為 0
@@ -57,14 +60,15 @@ detach 本身沒有錯：存副本、記錄數值時就該用它，像上面的 
 
 ## 失敗二：標籤格式錯了，卻去調學習率（對應檢查步驟 1）
 
-兩類模型的 label 若是 `[0,2]`，2 就越界了，因為輸出只有索引 0 與 1。案例在算 loss 之前先檢查 \(0\le y<C\)（y 是每筆 label 的類別 id），直接印出錯誤原因。完整程式的檢查如下，這裡的 label 是故意放錯的：
+兩類模型的 label 若是 `[0,2]`，2 就越界了，因為輸出只有索引 0 與 1。案例示範在算 loss 之前先檢查 \(0\le y<C\)（y 是每筆 label 的類別 id），並直接印出錯誤原因。完整程式的檢查如下，這裡的 label 是故意放錯的：
 
-```python
+``` { .python data-excerpt="lesson_cases/02-diagnostics.py" }
 bad_labels = torch.tensor([0, 2])
 # 每個 label 都要 >= 0 且 < 2（類別數 C=2）；.all() 要求全部成立
 valid_labels = ((bad_labels >= 0) & (bad_labels < 2)).all()
 # 本例故意放錯，所以斷言「檢查沒過」；自己的程式裡應要求它成立
 assert not valid_labels
+print("label preflight: [0, 2] invalid for two classes; expected IDs 0 or 1")
 ```
 
 如果沒先檢查，直接把這種 label 交給 cross_entropy，CPU 上會直接報 `IndexError: Target 2 is out of bounds.`；GPU 上則常只看到 device-side assert 這類難懂的訊息。會報錯的還算好抓。更容易被誤當成學習率問題的，是不報錯的情況：例如合併兩份資料時，兩邊的類別對照表不一致（一份的 0 代表紅、另一份的 0 代表藍），程式照跑，loss 卻常停在偏高的地方。
@@ -108,7 +112,7 @@ assert not valid_labels
 
 代入 validation 就知道為什麼全錯。依學到的權重，類別 1 的分數約是 \(0.975\times(0.2a+b)\)，類別 0 的分數正好是它的相反數，所以 \(0.2a+b>0\) 時判成類別 1。validation 類別 0 的點 `[-0.2,+1]` 代入得 \(0.2\times(-0.2)+1\times1=0.96>0\)，被判成類別 1；類別 1 的點 `[+0.2,-1]` 得 \(-0.96\)，被判成類別 0。兩類全錯。
 
-每次 `step()` 之後，程式用同一組新權重重算 train 和 validation loss。若 train 用更新前 forward 時順便得到的值，validation 用更新後的值，兩個數字來自不同的權重，放在一起比會誤導。第 1 章的 40 步曲線是在更新前量的；兩種記法都可以，只要互相比較的數字來自同一時間點。step 從 0 計：step=0 已是第 1 次更新之後，step=19 就是第 20 次更新。
+每次 `step()` 之後，程式用同一組新權重重算 train 和 validation loss。若 train 用更新前 forward 時順便得到的值，validation 用更新後的值，兩個數字來自不同的權重，放在一起比會誤導。第 1 章的 40 步曲線是在更新前量的；兩種記法都可以，只要互相比較的數字來自同一時間點。step 從 0 計：step=0 已是第 1 次更新之後，step=19 是第 20 次更新之後。
 
 | 時間點 | train loss | validation loss |
 | --- | --- | --- |
@@ -157,13 +161,13 @@ train_x = torch.cat([train_x, extra_x])           # torch.cat：沿第 0 軸（�
 train_y = torch.cat([train_y, labels.repeat(4)])  # 標籤 0、1 交錯，對上 extra_x 的順序
 ```
 
-完整程式最後的 `assert train_acc == 1.0 and val_acc == 0.0` 寫死了原題的預期結果；做這個練習時要改成 `assert train_acc == 1.0 and val_acc == 1.0`，否則程式會在最後報錯。其他斷言（梯度是有限數字、body 參數真的更新）照舊保留。
+完整程式最後的 `assert train_acc == 1.0 and val_acc == 0.0` 寫死了原題的預期結果；做這個練習時要改成 `assert train_acc == 1.0 and val_acc == 1.0`，否則程式會在最後報錯。其他斷言（例如梯度是有限數字、body 參數真的更新）照舊保留。
 
 ??? note "參考答案"
 
-    會改成依賴 a，因為 b 不再穩定提供答案。用相同零初始化、SGD、學習率 0.2 與 20 步，本次 CPU 得到 train／validation accuracy 都是 1.0。
+    會改成依賴 a，因為 b 不再穩定提供答案。同樣從全 0 的權重開始、用 SGD 與學習率 0.2 訓練 20 步，程式印出 `train_accuracy=1.00; validation_accuracy=1.00`，改過的最後一個斷言也會通過。
 
-    但 a 的幅度較小，20 步後模型並不很有信心。以下數字是另外實跑得到的，不在頁尾執行紀錄裡：權重約 a 欄 ±0.47、b 欄只剩約 ±0.01，模型幾乎只靠 a；train／validation loss 約 0.58／0.62，離完全沒概念的 0.693 不遠；正確類別的機率只有約 0.55。全對不等於有信心。
+    但 a 的幅度較小，20 步後模型並不很有信心。`learned weights` 那一行的 a 欄約 ±0.47、b 欄只剩約 ±0.01，模型幾乎只靠 a；step=19 的 train／validation loss 約 0.58／0.62，離完全沒概念的 0.693 不遠；正確類別的機率只有約 0.55。全對不等於有信心。
 
     原 validation 只用於評估，不要把它原封不動加入訓練；否則即使 accuracy 改善，也只是看過同一筆資料，不能再稱 held-out。本練習仍只是二維人工資料的單一小例子，不代表真實圖片的泛化。
 

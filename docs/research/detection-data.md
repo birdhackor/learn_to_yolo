@@ -2,7 +2,7 @@
 
 > 本頁是偵測資料來源的查核紀錄：比較四個真實照片資料集的下載條件、標註格式、切分與授權，並記下查核時建議的用法。教材的偵測實驗都用合成圖或小型自製資料，沒有用這四個資料集訓練；實際下載與採用狀態見〈[資料規劃](../preparation/data.md)〉。
 
-查核日期：2026-10-02。文中的章節編號依〈[課程大綱](../planning/outline.md)〉。本查核只看來源、下載條件與小型標註樣本，沒有下載完整資料集。以下大小是壓縮／封裝檔的 HTTP `Content-Length`（伺服器在回應標頭回報的檔案大小），不是解壓後空間；MB 採十進位。HEAD 請求只取回應標頭、不下載內容，成功時回 200；range GET 只要求檔案的一段，伺服器支援時回 206。大型檔只讀 1 KiB 的 range 或檔案前段就關閉連線，不能據此宣稱全檔完整性已驗證。
+查核日期：2026-10-02。文中的章節編號依〈[課程大綱](../planning/outline.md)〉。本查核只看來源、下載條件與小型標註樣本，沒有下載完整資料集。以下大小是壓縮／封裝檔的 HTTP `Content-Length`（伺服器在回應標頭回報的檔案大小），不是解壓後空間；MB 採十進位。HEAD 請求只取回應標頭、不下載內容，成功時回 200；range GET 只要求檔案的一段，伺服器支援時回 206。COCO2017 下載網址的 HEAD／range 結果量測於 2026-10-04 16:43 UTC。大型檔只讀 1 KiB 的 range 或檔案前段就關閉連線，不能據此宣稱全檔完整性已驗證。
 
 ## 建議主線與備援
 
@@ -15,7 +15,7 @@
 | --- | --- | --- | --- |
 | Penn-Fudan | 單人→多人、長寬比、少量遮擋；沒有真正無人的圖片 | ZIP **53,723,336 bytes（53.72 MB）**；HEAD 200、range GET 206，已讀實際 README／一份 annotation | 沒有開放照片授權；README 明示通常不能未經權利人許可重新張貼。不能直接打包進公開 repo |
 | VOC2007 | 單物件子集、多類別、多物件、truncated／difficult、重複框 | trainval TAR **460,032,000 bytes（460.03 MB）**；test TAR **451,020,800 bytes（451.02 MB）**；官方新主機均 HEAD 200／range 206，抽讀一份 XML | 官方要求遵守 Flickr 條款；照片逐張權利及 annotation 再散布授權未明。不能把 devkit／GitHub 程式授權套到照片 |
-| COCO2017 | 多類別、小物件、多尺度、crowd、重疊、NMS／assignment | train ZIP **19,336,861,798 bytes（19.34 GB）**；val ZIP **815,585,330 bytes（815.59 MB）**；annotations ZIP **252,907,541 bytes（252.91 MB）**；均 HEAD 200／range 206 | annotation **CC BY 4.0**、可按條件再散布；照片權利不屬 COCO，依 Flickr／每張 license。不得把整包照片稱為 CC BY 4.0 |
+| COCO2017 | 多類別、小物件、多尺度、crowd、重疊、NMS／assignment | train ZIP **19,336,861,798 bytes（19.34 GB）**；val ZIP **815,585,330 bytes（815.59 MB）**；annotations ZIP **252,907,541 bytes（252.91 MB）**；官方 HTTP 網址與 S3 HTTPS 路徑均 HEAD 200／range 206；`images.cocodataset.org` 走 HTTPS 會因憑證不符而失敗（見下方 COCO2017 的核對） | annotation **CC BY 4.0**、可按條件再散布；照片權利不屬 COCO，依 Flickr／每張 license。不得把整包照片稱為 CC BY 4.0 |
 | Oxford-IIIT Pet | 單物件頭部定位、類別與框、非正方形圖 | images TAR.GZ **791,918,971 bytes（791.92 MB）**；annotations TAR.GZ **19,173,078 bytes（19.17 MB）**；HEAD／GET 200、gzip magic 正確。服務忽略 Range，已限制只讀前段並關閉 | 現行官網寫 **CC BY-SA 4.0**、可商業／研究使用，版權仍屬原作者；檔內 README 卻寫 research only／原網站條款。再散布前應釐清衝突，不聲稱照片無條件可再散布 |
 
 ## 逐一核對
@@ -23,7 +23,7 @@
 ### 1. Penn-Fudan：最省下載的真實資料
 
 - [作者／UPenn 官方資料頁](https://www.cis.upenn.edu/~jshi/ped_html/)；[實際 ZIP](https://www.cis.upenn.edu/~jshi/ped_html/PennFudanPed.zip)。官方描述 170 張圖片、345 名有標註行人、UPenn 96 張／Fudan 74 張，每張至少一名行人。發布版 README 另說新增非常小或高度遮擋行人；網站的站立中大型行人描述與舊論文用途不足以證明它是完整小物件基準。
-- 原生是 `PNGImages/*.png`、`PedMasks/*_mask.png`、`Annotation/*.txt`。TXT 為 **PASCAL Annotation Version 1.00 文字格式，非 VOC XML**；有 `Xmin,Ymin,Xmax,Ymax`，樣本明寫左上像素 `(1,1)`。mask 的 0 是背景、正數為 instance ID；用 mask 轉框時須明定座標契約，不能與 TXT 的 1-based 框混用。
+- 原生是 `PNGImages/*.png`、`PedMasks/*_mask.png`、`Annotation/*.txt`。TXT 為 **PASCAL Annotation Version 1.00 文字格式，非 VOC XML**；有 `Xmin,Ymin,Xmax,Ymax`，樣本明寫左上畫素 `(1,1)`。mask 的 0 是背景、正數為 instance ID；用 mask 轉框時須明定座標契約，不能與 TXT 的 1-based 框混用。
 - 小樣本 `FudanPed00001` 為 559×536、兩名行人；框 `(160,182)-(302,431)` 及 `(420,171)-(535,486)`，可用作非正方形與多物件的標註管線範例。只抽取 README／TXT，ZIP 目錄與小檔合計傳輸 46,575 bytes，未下載圖片包。
 - **授權證據**：檔內 README：「Copyright and all rights therein are retained by authors or by other copyright holders」及「In most cases, these works may not be reposted without the explicit permission of the copyright holder.」公開可下載不等於可再散布；PyTorch tutorial 的程式或文件 license 亦不授權照片。
 - **切分**：壓縮檔目錄未提供現成 train／val／test manifest；[PyTorch 官方教學](https://docs.pytorch.org/tutorials/intermediate/torchvision_tutorial.html) 的隨機留出只是示範。應固定 scene／近重複圖片分組，保存不可變 manifest；同一場景、augmentation 與衍生 crop 都隨原圖留在同一 split。若按校園整批留出，需說明是跨場景分布測試。沒有空圖，需另用可控資料或自攝並確認標註完整的負例，不把遮擋漏標當負例。
@@ -39,8 +39,9 @@
 ### 3. COCO2017：困難場景與後段演化實驗
 
 - [官方下載頁](https://cocodataset.org/#download)的實際本文：[download.htm](https://cocodataset.org/dataset/download.htm)；[標註格式本文](https://cocodataset.org/dataset/format-data.htm)；[授權本文](https://cocodataset.org/dataset/termsofuse.htm)。有 bbox、instance segmentation、crowd，適合單／多尺度與密集候選比較。
-- 可用下載：[train2017.zip](https://images.cocodataset.org/zips/train2017.zip)、[val2017.zip](https://images.cocodataset.org/zips/val2017.zip)、[annotations_trainval2017.zip](https://images.cocodataset.org/annotations/annotations_trainval2017.zip)。相同官方 bucket 的 `https://s3.amazonaws.com/images.cocodataset.org/...` 查核時也 HEAD／range 成功，可作下載故障備援；優先保留官方 canonical URL。
-- 偵測使用 `instances_train2017.json`／`instances_val2017.json`：`images`、`annotations`、`categories`、`licenses`；bbox 是 **0-based 像素 `[x,y,width,height]`**，包含 `area` 與 `iscrowd`。category ID 不應直接當連續 class index，必須存 mapping。每張 image 的 `license` 指向 license 表，另有 Flickr URL。
+- 可用下載：[train2017.zip](http://images.cocodataset.org/zips/train2017.zip)、[val2017.zip](http://images.cocodataset.org/zips/val2017.zip)、[annotations_trainval2017.zip](http://images.cocodataset.org/annotations/annotations_trainval2017.zip)，即官方下載頁列出的 HTTP 網址。
+- **HTTPS 要換網址**：`images.cocodataset.org` 在 DNS 上是 Amazon S3 bucket（存放檔案的儲存空間）的別名，連線時 S3 出示的是發給 `s3.amazonaws.com` 等 Amazon 網域的憑證，不含 `images.cocodataset.org`；所以把上面的網址改成 `https://` 會因憑證主機名不符而連線失敗，curl 與 Python 的 urllib 實測都如此。需要 HTTPS 時，整包下載與按張取得圖片都改用同一個 bucket 的路徑式網址 `https://s3.amazonaws.com/images.cocodataset.org/…`，例如 `https://s3.amazonaws.com/images.cocodataset.org/zips/val2017.zip`；不要為了連上而關掉憑證驗證。`data/manifest.json` 的 `coco2017` 記的就是這三個檔的 S3 HTTPS 網址。2026-10-04 16:43 UTC 量測時，三個檔的官方 HTTP 網址與 S3 HTTPS 路徑都是 HEAD 回 200、range GET 回 206，兩邊回報的 `Content-Length`、`ETag`、`Last-Modified` 相同。
+- 偵測使用 `instances_train2017.json`／`instances_val2017.json`：`images`、`annotations`、`categories`、`licenses`；bbox 是 **0-based 畫素 `[x,y,width,height]`**，包含 `area` 與 `iscrowd`。category ID 不應直接當連續 class index，必須存 mapping。每張 image 的 `license` 指向 license 表，另有 Flickr URL。
 - **授權**：官方 annotation／website 明示 **Creative Commons Attribution 4.0**。官方也明示 COCO 不擁有圖片版權，照片須遵守 Flickr 條款；再散布需按 image license 逐張核對 attribution、NC／SA／ND 等限制與用途。開源 API 的程式 license 與照片授權是不同來源。
 - **切分與小物件**：118K train／5K val。2014 與 2017 使用相同圖片重新切分，混用年份會造成洩漏。真實小物件選樣應保存原 annotation `area` 與輸入後大小；[官方 evaluator](https://raw.githubusercontent.com/cocodataset/cocoapi/master/PythonAPI/pycocotools/cocoeval.py) 的 small area range 為 0–32²，但原圖 `area` 不等同 resize 後 bbox 面積，不能混成同一指標。`iscrowd=1` 不可改成一般單物件，也不應簡單刪掉當背景；正確保留 ignore／crowd 評估規則。
 - 建子集先固定選樣條件與 image ID，再對每張入選圖保留所選任務全部相關實例，不能只留下觸發「小物件」選樣的那個框。重疊框的 IoU 不直接代表遮擋程度；還需看圖／mask。單獨拿 val2017 再分 train／val 只能稱自訂 COCO-val 子集，不能同時當官方 held-out 評估。
@@ -54,7 +55,7 @@
 
 ## 收集時固定保存的資料與再散布決定
 
-- 最少保存：資料集版本、來源 URL、原圖 ID、原始 split、來源／場景 group、類別 mapping、座標格式、annotation 來源、每張圖片的 license／attribution；下載後另算 SHA-256。**本查核只確認 HTTP 可用性，不拿 multipart ETag（分段上傳檔案的版本標記，不是整檔雜湊）當 SHA／MD5，也不宣稱已驗證完整封裝。** Penn-Fudan ZIP 與 Pet annotations 這兩個封裝另有完整下載，由完整檔算出的 SHA-256 記在 `data/manifest.json`，校驗結果分別見〈[資料規劃](../preparation/data.md)〉與〈[基礎資料](foundation-data.md)〉；本查核沒有下載這兩個完整封裝。
+- 最少保存：資料集版本、來源 URL、原圖 ID、原始 split、來源／場景 group、類別 mapping、座標格式、annotation 來源、每張圖片的 license／attribution；下載後另算 SHA-256。**本查核只確認下載網址可用，不拿 multipart ETag（分段上傳檔案的版本標記，不是整檔雜湊）當 SHA／MD5，也不宣稱已驗證完整封裝。** Penn-Fudan ZIP 與 Pet annotations 這兩個封裝另有完整下載，由完整檔算出的 SHA-256 記在 `data/manifest.json`，校驗結果分別見〈[資料規劃](../preparation/data.md)〉與〈[基礎資料](foundation-data.md)〉；本查核沒有下載這兩個完整封裝。
 - 固定困難集從訓練之外建立：一／多物件、同格同類兩物件、小物件、重疊、非正方形、極端長寬比。真實資料中的空標註通常只代表「沒有所選類別／沒有已標註實例」，不是已證明畫面完全無物件。人工幾何圖與自攝授權清楚負例可補缺口。
 - 查核的官方下載都公開可讀，不需要登入或 API key。
 - 若要把照片打包進公開 repo 或教材下載包，就要先決定再散布用途與商業需求，並對 Penn-Fudan 取得權利人許可、對 VOC／COCO 逐張核對，或改用自攝、權利清楚的素材；Oxford Pet 的網頁與 README 衝突也要先釐清。不打包照片時，可只散布下載連結與自己的子集 ID 清單。

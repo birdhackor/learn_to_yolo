@@ -1,0 +1,59 @@
+name: Verify published lessons
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published lesson tag, e.g. lessons-v0.4.0
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compare the public website with a strict build of the tag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: python scripts/verify_release.py site --tag "$TAG" --output site.json
+      - name: Preserve the result even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ github.run_id }}
+          path: site.json
+          if-no-files-found: warn
+          retention-days: 30
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run notebook environment cells and README commands from fresh clones of the tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: python scripts/verify_release.py bootstrap --tag "$TAG" --output bootstrap.json
+      - name: Preserve the result even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-${{ github.run_id }}
+          path: bootstrap.json
+          if-no-files-found: warn
+          retention-days: 30

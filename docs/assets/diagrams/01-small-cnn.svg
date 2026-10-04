@@ -1,9 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 290" role="img" aria-labelledby="title desc">
- <title id="title">三步訓練後的小CNN人工圖形推論圖板</title>
- <desc id="desc">前四張圖紅藍交錯。固定seed7三步SGD後全部預測藍類別1，因此第一與第三張紅類別0是錯誤。不是已訓練模型成果。</desc>
+ <title id="title">固定 seed 7、只更新 3 步的小 CNN：四張圖全猜類別 1</title>
+ <desc id="desc">按比例繪製：32×32 的人工圖每 1 畫素畫成 3 個單位，這是完整程式寫出的圖板 artifacts/01-small-cnn.png 前四張的重畫。編號 0～3 四張黑底圖上依序是紅、藍、紅、藍的 12×12 方塊；紅色是類別 0，藍色是類別 1。方塊左緣依序在第 4、8、12、4 欄；編號 0、1 的頂邊在第 6 列，編號 2、3 在第 11 列（列、欄都從 0 數起），所以紅、藍兩色都有位置較高和位置較低的方塊。固定 seed 7、用 SGD（lr 0.1）只更新 3 步後，模型四張都預測類別 1，所以編號 0、2（紅色）判錯，編號 1、3 判對。這是只更新 3 步的結果，不是訓練完成的模型。</desc>
  <rect width="850" height="290" fill="#f8fafc"/>
+ <!-- 按比例：第 k 張圖（k＝0～3）的畫素 (x,y) 畫在 (72+200k+3x, 95+3y)；1 畫素＝3 個單位，整張 32×32 圖是 96×96。 -->
+ <!-- 方塊位置取自 lesson_cases/01-small-cnn.py 的 make_batch()：left, top = 4 + i % 3 * 4, 6 + (i // 2) % 2 * 5，邊長 12。 -->
+ <!-- 預測取自執行紀錄 artifacts/checks/curriculum/01-small-cnn.json 的 stdout（predictions=、error_indices= 那一行）。 -->
  <g font-family="sans-serif" text-anchor="middle" font-size="22" fill="#0f172a">
-  <text x="425" y="35">人工資料；seed 7；僅3步更新；模型全猜類別1</text>
+  <text x="425" y="35">人工資料；seed 7；只更新 3 步；模型全猜類別 1</text>
   <text x="120" y="76" fill="#b91c1c">0：GT=0，pred=1</text>
   <text x="320" y="76">1：GT=1，pred=1</text>
   <text x="520" y="76" fill="#b91c1c">2：GT=0，pred=1</text>
@@ -13,13 +16,14 @@
   <rect x="72" y="95" width="96" height="96"/><rect x="272" y="95" width="96" height="96"/>
   <rect x="472" y="95" width="96" height="96"/><rect x="672" y="95" width="96" height="96"/>
  </g>
+ <!-- 編號 0：left 4、top 6；編號 1：left 8、top 6；編號 2：left 12、top 11；編號 3：left 4、top 11。 -->
  <rect x="84" y="113" width="36" height="36" fill="#f00"/>
- <rect x="296" y="128" width="36" height="36" fill="#00f"/>
- <rect x="508" y="113" width="36" height="36" fill="#f00"/>
+ <rect x="296" y="113" width="36" height="36" fill="#00f"/>
+ <rect x="508" y="128" width="36" height="36" fill="#f00"/>
  <rect x="684" y="128" width="36" height="36" fill="#00f"/>
  <g font-family="sans-serif" text-anchor="middle" font-size="21" fill="#0f172a">
   <text x="120" y="220" fill="#b91c1c">錯誤</text><text x="320" y="220">正確</text>
   <text x="520" y="220" fill="#b91c1c">錯誤</text><text x="720" y="220">正確</text>
-  <text x="425" y="263">類別0＝紅；類別1＝藍。GT真值與預測一起看。</text>
+  <text x="425" y="263">類別 0＝紅；類別 1＝藍。真值（GT）與預測一起看。</text>
  </g>
 </svg>

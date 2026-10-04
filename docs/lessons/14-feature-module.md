@@ -73,7 +73,7 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 
 感受野是一個特徵值可能受輸入多大範圍影響（見[第 1 章](01-small-cnn.md)）；這裡以模組輸入的特徵圖為準，不是原圖。a、b 只經過 1×1，每個值只看自己那一格。每經過一個 stride 1 的 3×3，邊長加 2：b1 經過兩個 3×3，是 5×5；b2 經過四個，是 9×9。和第 1 章一樣，這是理論範圍：本例輸入只有 8×8，比 9×9 還小，所以 b2 每一格的 9×9 視窗都有一部分落在 padding 補的 0 上；中央 2×2 格看得到整張 8×8，四個角落只看得到 5×5。
 
-四份依 a、b、b1、b2 的順序沿 channel 串接成 `[B=2, C=16, H=8, W=8]`：channel 是 4+4+4+4=16，H、W 不變，不是把 H 或 W 擴大。最後 1×1 卷積 `16→8`，輸出回到 `[B=2, C=8, H=8, W=8]`，和輸入相同。所以這個模組能直接替換原本輸入輸出都是 `[B,8,H,W]` 的那一段，前後的層都不用改。1×1 融合是學得的跨 channel 組合，並非直接平均四份特徵。
+四份依 a、b、b1、b2 的順序沿 channel 串接成 `[B=2, C=16, H=8, W=8]`：channel 是 4+4+4+4=16，H、W 不變，不是把 H 或 W 擴大。最後 1×1 卷積 `16→8`，輸出回到 `[B=2, C=8, H=8, W=8]`，和輸入相同。所以網路裡輸入輸出都是 `[B,8,H,W]` 的某一部分，可以直接換成這個模組，前後的層都不用改。1×1 融合是學得的跨 channel 組合，並非直接平均四份特徵。
 
 短路徑讓最後的 1×1 融合能直接讀到轉換較少的特徵，長路徑則提供較大的感受野。
 
@@ -81,22 +81,27 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 
     訓練結束後，完整程式另做一次檢查用的 forward：`module(x, inspect=True)`。`inspect` 是完整程式的 `forward` 才有的參數（網頁摘錄省略了），設成 `True` 時會多傳回 `paths`（a、b、b1、b2）和串接結果 `joined`。程式對這五個 tensor 呼叫 `retain_grad()`。PyTorch 預設會替參數保留 `.grad`，中間算出來的 tensor 則不保留；要先呼叫 `retain_grad()`，backward 後才看得到它的梯度（[第 5 章](05-assignment.md)用過）。
 
-    **槽**：串接後的 16 個 channel 中，第 0–3 個是 a、4–7 是 b、8–11 是 b1、12–15 是 b2，每一段叫一個槽。這和第 5 章「一個可以輸出框的位置」那種槽（slot）是兩回事；執行紀錄印的 concat-slot 就是這裡的槽。程式會核對每份特徵和自己那一槽的數值完全相同，確認串接順序是 a、b、b1、b2。
+    **段**（segment）：串接後的 16 個 channel 中，第 0–3 個是 a、4–7 是 b、8–11 是 b1、12–15 是 b2，每份特徵占一段。完整程式裡的變數 `segment`（一段的 channel 範圍）和印出的 concat-segment，指的都是這裡的段。程式會核對每份特徵和自己那一段的數值完全相同，確認串接順序是 a、b、b1、b2。
 
     **一個值用在兩處，梯度要相加**：例如 L=2u+3u，u 用在兩個地方，L 對 u 的梯度是 2+3=5，兩條路各貢獻一項。[第 11 章特徵融合那節](11-fusion.md)的 nearest 上取樣也是同一個道理：一個值被複製成 4 格，loss 是全部輸出的總和時，它的梯度是 1+1+1+1=4。
 
     **直接梯度與總梯度**：
 
-    - 直接梯度：loss 對 concat 裡某一槽的梯度，只算 concat → fuse 這一條路。
+    - 直接梯度：loss 對 concat 裡某一段的梯度，只算 concat → fuse 這一條路。
     - 總梯度：loss 對該特徵本身的梯度。
 
-    a、b2 只進 concat，所以它們各自的直接梯度和總梯度相等。b、b1 還要餵給下一個 bottleneck，所以總梯度＝直接梯度＋經下一個 bottleneck 傳回的部分。backward 後，程式逐槽檢查直接梯度不為 0，也檢查每份特徵的總梯度不為 0。
+    a、b2 只進 concat，所以它們各自的直接梯度和總梯度相等。b、b1 還要餵給下一個 bottleneck，所以總梯度＝直接梯度＋經下一個 bottleneck 傳回的部分。backward 後，程式逐段檢查直接梯度不為 0，也檢查每份特徵的總梯度不為 0。
 
     為什麼要實際檢查？沒串接、也沒被後面用到的輸出，和 loss 沒有連線，梯度一定是 0。但反過來不成立：有連線也不保證梯度不為 0，所以程式另用斷言（assert）檢查算出來的值。
 
-    為什麼不能只查總梯度？假設設計成不把 b1 交給 concat（例如只串 a、b、b2，fuse 改成 12→8），b1 仍會經 b2 收到梯度，第一個 bottleneck 也一樣。所以「b1 的總梯度不為 0」或「第一個 bottleneck 有梯度」，都證明不了 b1 直接接進了融合層；要確認這件事，得看 concat 裡 b1 那一槽（第 8–11 個 channel）的直接梯度。「b1 那一槽有直接梯度」和「b1 的總梯度不為 0」是兩個不同的檢查。
+    為什麼不能只查總梯度？假設設計成不把 b1 交給 concat（例如只串 a、b、b2，fuse 改成 12→8），b1 仍會經 b2 收到梯度，第一個 bottleneck 也一樣。所以「b1 的總梯度不為 0」或「第一個 bottleneck 有梯度」，都證明不了 b1 直接接進了融合層。要確認這件事，得看 concat 裡 b1 該在的那一段（第 8–11 個 channel），而且下面兩項都要成立：
 
-    執行紀錄最後一行的 gradient L1，是每一槽直接梯度的絕對值加總，用來確認不為 0；它不是新增的 L1 訓練 loss。
+    - 這一段的數值和 b1 完全相同，表示這裡放的確實是 b1。上面只串 a、b、b2 的設計，第 8–11 個 channel 放的是 b2，這一項就不成立。
+    - 這一段的直接梯度不為 0，表示 fuse 的輸出確實受這一段影響。若 b1 留在 concat 裡，fuse 卻用不到這 4 個 channel（例如先把它們乘上 0 再融合），第一項仍成立，b1 也仍經 b2 收到梯度，只有這一項不成立。
+
+    所以「b1 那一段有直接梯度」和「b1 的總梯度不為 0」是兩個不同的檢查。
+
+    執行紀錄最後一行的 gradient L1，是每一段直接梯度的絕對值加總，用來確認不為 0；它只是檢查用的數字，不是加進訓練的 L1 loss。
 
 ## 本次到底測什麼
 
@@ -107,16 +112,16 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 1. roll 的邊界是循環的，卷積的邊界卻是補 0（零 padding）。最左欄的答案在最右欄，但卷積在最左欄只看得到附近幾欄和補上的 0，看不到最右欄。
 2. 看得到鄰格的只有 b1、b2，而它們都是由 b 的 4 個 channel 經 3×3 算出來的；a、b 只經過 1×1，只看自己那一格。8 個 channel 的左鄰資訊，只能靠 b 這 4 個 channel 傳過來，傳不全。
 
-所以本例沒有要求 loss 為零。訓練部分只要求：對 `SplitAggregate` 重複 30 次「算 MSE（均方誤差）→ backward → SGD 更新」之後，loss 比初值小。參考值：同一組資料若全部輸出 0，MSE 就是 target 各值平方的平均，約 0.97（另外算的，程式沒有印出）。30 步後的 1.0049 還比它高，所以 loss 下降只表示模組接得上訓練流程，不表示學會了位移。本例沒有真實圖片、真值框（GT）或 AP，因此它不能證明 YOLO11 更準。
+所以本例沒有要求 loss 為零。訓練部分只要求：對 `SplitAggregate` 重複 30 次「算 MSE（均方誤差）→ backward → SGD 更新」之後，loss 比初值小。參考值：同一組資料若全部輸出 0，MSE 就是 target 各值平方的平均，約 0.97（想驗算的話，在 `main()` 裡 `target = x.roll(1, dims=-1)` 那行之後加一行 `print(target.square().mean())`）。30 步後的 1.0049 還比它高，所以 loss 下降只表示模組接得上訓練流程，不表示學會了位移。本例沒有真實圖片、真值框（GT）或 AP，因此它不能證明 YOLO11 更準。
 
 同時建立兩層 `8→8` 的 plain 3×3 模組（3×3 卷積 → ReLU → 3×3 卷積），但只統計它的參數，不拿未訓練的 plain 與訓練過的 split 比較 loss。split 指 `SplitAggregate`，程式輸出也用這個名字。本例的 `Conv2d` 都含 bias，參數數是 `out×in×kernel高×kernel寬+out`；例如 4→4、3×3 就是 144+4=148。
 
 - plain：兩個 `8→8` 的 3×3，各 8×8×9+8=584，共 1,168。
 - split：投影 8×8+8=72，四個 `4→4` 的 3×3 卷積共 4×148=592，融合 16×8+8=136，共 800。
 
-參數減少來自 3×3 只在 hidden=4 個 channel 上做：四個 `4→4` 的 3×3 共 592，比 plain 的 1,168 少 576；投影與融合用 1×1，只多 72+136=208，所以總數仍較少。若改看計算量（乘加次數，不含 bias）：每一筆輸入，split 要做 49,152 次乘加，plain 要 73,728 次（另外算的，程式沒有印出）。這些都是本例 hidden=4 的結果，不能推廣成所有 split 模組都更省。
+參數減少來自 3×3 只在 hidden=4 個 channel 上做：四個 `4→4` 的 3×3 共 592，比 plain 的 1,168 少 576；投影與融合用 1×1，只多 72+136=208，所以總數仍較少。若改看計算量：卷積每算一個位置，要做的乘加次數（一次乘法、再把乘積加進總和，算一次）等於它的權重數 `out×in×kernel高×kernel寬`，不含 bias。每一筆輸入有 8×8=64 個位置：split 每個位置做 64（投影）＋4×144（四個 3×3）＋128（融合）＝768 次，共 64×768=49,152 次；plain 每個位置做 2×576＝1,152 次，共 64×1,152=73,728 次。這些都是本例 hidden=4 的結果，不能推廣成所有 split 模組都更省。
 
-執行 `PYTHONPATH=. python lesson_cases/14-feature-module.py`，應看到輸入輸出同為 `(2,8,8,8)`、四份 4 channel 串接後 16→8、參數 1168／800、MSE 下降，以及每個 concat 槽直接梯度與各特徵總梯度的檢查通過（槽與兩種梯度見上方〈進階：確認四份特徵都接進融合層〉摺疊區）。這是 CPU 小張量實驗，所需記憶體很小；實際的偵測延遲（latency）需另外量測。
+執行 `PYTHONPATH=. python lesson_cases/14-feature-module.py`，應看到輸入輸出同為 `(2,8,8,8)`、四份 4 channel 串接後 16→8、參數 1168／800、MSE 下降，以及串接順序、concat 每一段的直接梯度與各特徵總梯度的檢查通過（「段」與兩種梯度的意思，見上方〈進階：確認四份特徵都接進融合層〉摺疊區）。這是 CPU 小張量實驗，所需記憶體很小；實際的偵測延遲（latency）需另外量測。
 
 ## 收益和代價要一起記錄
 
@@ -141,7 +146,7 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 - **讓 x 與 F(x) 的 shape 不同**：例如改了 bottleneck 裡卷積的 stride，或改了最後一層卷積輸出的 channel 數，`x+F(x)` 就不能直接相加。多半會報錯；但若對不上的軸都有一邊長度是 1，PyTorch 會 broadcast（自動把長度 1 的軸複製成另一邊的長度），不報錯，結果卻是錯的（見[第 3 章](03-identity.md)）。只改兩層卷積之間的 channel 數（像官方預設那樣把中間縮成一半，例如 4→2→4）時，F(x) 的 shape 不變，仍可相加。
 - **把不同的 bottleneck 實作當成同一種**：ResNet 論文、Ultralytics 程式與本頁都叫 bottleneck，但層數與中間的 channel 數不同，比較時要寫明是哪一種。官方 `C3k2` 還能用 `c3k` 參數換掉內部小塊（見上方〈名字小抄〉），本例沒有那個開關。
 
-**自主練習**：把完整程式 `main()` 裡的 `module = SplitAggregate()` 改成 `module = SplitAggregate(blocks=3)`，hidden 維持 4（Colab 直接改最後一格；本機請先複製一份 `lesson_cases/14-feature-module.py` 再改）。執行前先預測：
+**自主練習**：在 Colab 裡改「本節可修改的完整實驗」下面那一格；本機則改 `lesson_cases/14-feature-module.py`，兩者是同一份程式。把 `main()` 裡的 `module = SplitAggregate()` 改成 `module = SplitAggregate(blocks=3)`，hidden 維持 4。執行前先預測：
 
 1. concat 後有幾個 channel？fuse 是幾→幾？
 2. 總參數是多少？還比 plain 的 1,168 省嗎？
@@ -152,11 +157,11 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 
     多了一個 bottleneck，共五份 4 channel 的特徵：concat 後是 (2+3)×4=20 個 channel，fuse 是 20→8。印出的那行會是 `concatenated channels: 4 + 4 + 4 + 4 + 4 = 20; fuse 20 -> 8`。
 
-    參數：投影 72＋六個 3×3 卷積 6×148=888＋融合 20×8+8=168，合計 1,128，印出 `parameters plain / split: 1168 1128`。1,128 已接近 plain 的 1,168，而且要保留更多中間特徵。MSE 那行的數字也會和原本不同，因為模型變了；斷言照樣通過。
+    參數：投影 72＋六個 3×3 卷積 6×148=888＋融合 20×8+8=168，合計 1,128，印出 `parameters plain / split: 1168 1128`。1,128 已接近 plain 的 1,168，而且要保留更多中間特徵。MSE 那行的數字也會和 blocks=2 時不同，因為模型變了；斷言照樣通過。
 
     一般來說（channels=8、hidden=4），總參數＝投影 72＋bottleneck 296×blocks＋融合 (32×(2+blocks)+8)＝144+328×blocks：blocks=2 得 800，blocks=3 得 1,128，blocks=4 得 1,456，已經超過 plain。「拆路徑就更省」不是可用的普遍結論。
 
-來源查核：2026-10-02。[YOLO11 官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/11/yolo11.yaml)、[C3k2／C2f／Bottleneck 定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)。
+參考來源：[YOLO11 官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/11/yolo11.yaml)、[C3k2／C2f／Bottleneck 定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)。
 
 
 

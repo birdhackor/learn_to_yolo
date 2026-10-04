@@ -4,46 +4,48 @@
 
 採用 **Zensical** 的 modern 主題：Markdown 與小型圖片建成純靜態 GitHub Pages。`zensical.toml` 管理中文導覽、內建搜尋、深淺色模式與快速換頁；`requirements-docs.txt` 固定建置版本。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
 
-Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。
+Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag 再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
 
 ```text
 zensical.toml                 網站設定、主題與小節導覽
 requirements-docs.txt         網站建置的固定版本
 overrides/                    主題覆寫（404 頁）
-docs/                         網頁文字、圖與已保存的閱讀結果
+docs/                         網頁文字、圖與保存下來的實驗結果
 docs/lessons/                 42 節閱讀頁，頁尾附實際執行紀錄
 docs/assets/                  示意圖、實驗結果圖與公式用的 MathJax
 docs/validation/              全套實驗與審查、GPU／checkpoint 實測
 docs/preparation/             資料規劃、發布與帳號設定、網頁與 Colab 規格
 docs/planning/                課程大綱、公開課程研究、讀者與學習心得
-docs/research/                資料、平台與版本來源查核
+docs/research/                基礎資料、偵測資料、Git LFS、Pages 與 Colab、版本來源查證
 notebooks/                    每節一本可獨立開啟的 Colab notebook，另有一本環境檢查
 lesson_cases/                 各節完整實驗程式，與 notebook 最後一格逐字相同
 miniyolo/                     資料、模型、targets、loss、推論、評估與訓練套件
-tests/                        核心計算、checkpoint 續訓與 notebook 環境格的測試
+tests/                        核心計算、checkpoint 續訓、8.2 節結果圖的 TP／FP 判定與圖說，以及 notebook 環境格的測試
 requirements-model.txt        模型與實驗的固定版本
 requirements-video.txt        選用的影片檔讀寫套件（OpenCV），18、19 節讀寫真實影片時用
-scripts/                      資料下載、notebook 配對、補充實驗、執行紀錄、審查涵蓋與網站檢查
+scripts/                      資料下載與 LFS 封裝、notebook 配對、圖片推論、補充實驗、執行紀錄、審查涵蓋、網站檢查與發布後驗證
 section-map.json              小節 ID 與閱讀頁、notebook、固定版本的配對
 data/manifest.json            資料來源、校驗碼與 LFS 封裝資訊
+data/hosted-lfs-run.json      發布 LFS 封裝的工作流程各步驟的結果
+data/*-lfs-verification.json  LFS 在本地與 GitHub 上的驗證紀錄
 data/curated/                 授權清楚的精選資料，使用 LFS
 data/licenses/                精選資料的原授權文字
 data/downloads/               本地或 Colab 下載快取，不進 Git
 artifacts/checks/             執行紀錄、發布驗證與其他查核紀錄
-artifacts/checks/curriculum/  每節一份執行紀錄 <節>.json、彙總 index.json，另有多數補充實驗與第 20 章 GPU 紀錄
+artifacts/checks/curriculum/  每節一份執行紀錄 <節>.json、彙總 index.json，另有多數補充紀錄與第 20 章 GPU 紀錄
 artifacts/*.png               部分小節程式畫出的圖（例如 01-small-cnn.png），不進 Git
 artifacts/lesson-*/           部分小節程式寫出的檔案（例如 lesson-17/），不進 Git
 artifacts/runs/               補充實驗、訓練、推論與檢查工具的輸出，不進 Git
 artifacts/checkpoints/        .gitattributes 指定給 LFS 的模型權重路徑，目錄不存在
 artifacts/exports/            .gitattributes 指定給 LFS 的匯出模型路徑，目錄不存在
 reviews/                      網站每一頁的審查紀錄；coverage.json 記下每份審查涵蓋的內容
-.github/workflows/            手動啟動的 Pages 發布、GPU 紀錄與 LFS 資料工作流程
+.github/workflows/            手動啟動的 Pages 發布、發布後驗證、GPU 紀錄與 LFS 資料工作流程
 requirements-modal.txt        GPU 工作流程在 GitHub Actions 上安裝的 Modal 用戶端，不含 PyTorch
 requirements-gpu.in           GPU 紀錄的套件：沿用 requirements-model.txt，PyTorch 改用 CUDA 版
 requirements-gpu.lock         由 requirements-gpu.in 產生、附雜湊的完整清單，Modal 的 GPU 環境照它安裝（第 20 章另加 TensorRT）
 ```
 
-補充實驗紀錄與兩份 GPU 紀錄各在哪個路徑、綁定哪些程式，列在 `scripts/evidence_records.py`。
+補充紀錄（各節的補充實驗，以及〈[資料規劃](data.md)〉的 Fashion-MNIST 40 步核對）與兩份 GPU 紀錄各在哪個路徑、綁定哪些程式，列在 `scripts/evidence_records.py`；紀錄過期時怎麼重產，見〈[發布與帳號設定](publish.md)〉。
 
 ## 每個小節的出版約定
 
@@ -66,9 +68,9 @@ https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/not
 
 ## 純閱讀模式如何保留成果
 
-網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，都在固定實驗跑完後存成文字、表格與 SVG／PNG 圖，再建置進網頁；各節頁尾的「實際執行紀錄」由 `scripts/verify_curriculum.py` 從 `artifacts/checks/curriculum/<節>.json` 寫入。notebook 只在最後一格存執行紀錄的文字輸出，不存圖片的 base64，避免 Git 與 Colab 變慢。
+網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，都在固定實驗跑完後存成文字、表格與 SVG 圖，再建置進網頁；各節頁尾的「實際執行紀錄」由 `scripts/verify_curriculum.py` 從 `artifacts/checks/curriculum/<節>.json` 寫入。notebook 只在最後一格存執行紀錄的文字輸出，不存圖片的 base64，避免 Git 與 Colab 變慢。
 
-大權重、原始資料、影片與 notebook 都不放進 Pages artifact。LFS 檔在 Git 裡只是 pointer（只記雜湊與大小的小文字檔），不能當圖片或下載內容；需要閱讀的圖使用普通 Git 的小型資源。`validate_preparation.py` 確認 `docs/` 裡每個檔案都小於 5 MB，沒有權重檔（`.pt`、`.pth`、`.onnx`）、打包檔（`.zip`、`.tar`、`.gz`）或 LFS pointer；`validate_site.py` 在建置結果裡再擋一次這些類型與 `.ipynb`。發布流程只上傳 `site/`。
+大權重、原始資料、影片與 notebook 都不放進 Pages artifact。LFS 檔在 Git 裡只是 pointer（只記雜湊與大小的小文字檔），不能當圖片或下載內容；需要閱讀的圖使用普通 Git 的小型資源。`validate_preparation.py` 確認 `docs/` 裡每個檔案都小於 5 MiB，沒有權重檔（`.pt`、`.pth`、`.onnx`）、打包檔（`.zip`、`.tar`、`.gz`）或 LFS pointer；`validate_site.py` 在建置結果裡再擋一次這些類型與 `.ipynb`。發布流程只上傳 `site/`。
 
 ## Colab 取得資料與 LFS 的約定
 

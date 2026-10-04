@@ -32,13 +32,13 @@
 | LFS bandwidth | 下載計入 owner；上傳不計 bandwidth；Actions 下載及包含 LFS 的 archive 下載也計 bandwidth；fork／pull 仍影響 parent owner | 公開課程的讀者數，比單次資料大小更容易形成負擔 |
 | 超額／budget | `$0` budget 超額會阻止 LFS 使用；刪除 budget 意味沒有 spending limit；無有效付款方式在額度用完後阻止使用 | 不自動調整帳單或預算；上傳前由 owner 核對目前額度與 budget |
 
-上述分別見 [S1]–[S3]。單檔上限原文使用 **GB**，LFS 專用 billing 頁的免費額度使用 **GiB**，此處保留原文單位。一般「included product usage」表顯示 GB，本建議以 LFS 專用頁為額度來源。
+上述分別見 [S1]–[S3]。LFS 單檔上限原文使用 **GB**，LFS 專用 billing 頁的免費額度使用 **GiB**，此處保留原文單位。一般「included product usage」表顯示 GB，本建議以 LFS 專用頁為額度來源。
 
 GitHub 官方計算器目前列額外 storage **US$0.07／GiB**、額外 data transfer out **US$0.0875／GiB**；storage 的月份成本依 billing 文件按 GiB-hours 換算 GiB-months。[S3][S10] 計算器同頁仍有「In the future ... switch to metered billing」舊措辭；是否已採按量計費以目前 billing 文件的明確說明為準。實際付款與 budget 設定應以 owner 的帳單頁為準。
 
 例：如果一個子集為 **500 MiB**，10 GiB 免費下載額度只約等於 **20 次**完整下載；200 位讀者各下載一次約為 97.66 GiB。這還沒算其他 repo、CI 或重複下載。分章、只下載選定路徑，以及在讀者自己的 runtime／Drive 保留快取都有實際意義。
 
-刪掉目前工作樹檔案或增加 `.gitignore`，不會移除 Git 歷史內的 blob，也不會保證清除歷史 LFS storage。LFS 官方 FAQ 明確說只對既有檔案加入 tracking 並重新 stage，不會修改歷史；完整 migration 會重寫歷史。[S8] 本 repo 的一般 Git 歷史沒有需要遷移的大檔；不要為了改用 LFS 執行 `git lfs migrate --everything` 或 force push。
+刪掉目前工作樹檔案或增加 `.gitignore`，不會移除 Git 歷史內的 blob，也不會保證清除歷史 LFS storage。LFS 官方 FAQ 明確說只對既有檔案加入 tracking 並重新 stage，不會修改歷史；完整 migration 會重寫歷史。[S8] 本 repo 的一般 Git 歷史沒有需要遷移的大檔；不要為了改用 LFS 執行 `git lfs migrate import --everything` 或 force push。
 
 ## GitHub Pages 的界線
 
@@ -110,11 +110,11 @@ GitHub Docs 頁面本身沒有列 `effectiveDate`，此處用查核日期 **2026
 - **[S3]** GitHub Docs, [Git Large File Storage billing](https://docs.github.com/en/billing/concepts/product-billing/git-lfs)。原文：“pre-paid data packs ... removed and replaced with metered billing”；Free／Pro／Free org 10 GiB、Team／Enterprise 250 GiB；完整新版本 storage、owner bandwidth、budget、超額和 GiB-hours。
 - **[S4]** GitHub Docs, [Configuring Git Large File Storage](https://docs.github.com/en/repositories/working-with-files/managing-large-files/configuring-git-large-file-storage)。原文：“We strongly suggest that you commit your local .gitattributes file into your repository.”
 - **[S5]** GitHub Docs, [Installing Git Large File Storage](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage)。原文：“a new program that's separate from Git.”
-- **[S6]** Git LFS 官方, [git-lfs-install(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-install.adoc)。`--local`、`--manual`、`--skip-smudge`；原文：“Skips automatic downloading of objects on clone or pull.”
-- **[S7]** Git LFS 官方, [git-lfs-pull(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-pull.adoc) 與 [git-lfs-config(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-config.adoc)。`--include`／`--exclude`、空字串清除該次設定、`GIT_LFS_SKIP_SMUDGE`。
-- **[S8]** Git LFS 官方, [git-lfs-faq(7)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-faq.adoc)。不支援按檔案大小自動 tracking、pointer、clone smudge、既有檔案／history migration、pattern 大小寫。
+- **[S6]** Git LFS 官方，[git-lfs-install(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-install.adoc)。`--local`、`--manual`、`--skip-smudge`；原文：“Skips automatic downloading of objects on clone or pull.”
+- **[S7]** Git LFS 官方，[git-lfs-pull(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-pull.adoc) 與 [git-lfs-config(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-config.adoc)。`--include`／`--exclude`、空字串清除該次設定、`GIT_LFS_SKIP_SMUDGE`。
+- **[S8]** Git LFS 官方，[git-lfs-faq(7)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-faq.adoc)。不支援按檔案大小自動 tracking、pointer、clone smudge、既有檔案／history migration、pattern 大小寫。
 - **[S9]** GitHub Docs, [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)。1 GB site 上限、100 GB／月 soft bandwidth。
-- **[S10]** GitHub 官方, [Pricing calculator — Git LFS](https://github.com/pricing/calculator?feature=lfs)。額外 storage／data transfer out 單價。
+- **[S10]** GitHub 官方，[Pricing calculator — Git LFS](https://github.com/pricing/calculator?feature=lfs)。額外 storage／data transfer out 單價。
 - **[S11]** GitHub Docs, [Collaboration with Git Large File Storage](https://docs.github.com/en/repositories/working-with-files/managing-large-files/collaboration-with-git-large-file-storage)。原文：“If collaborators ... don't have Git LFS installed ... they will only fetch the pointer files.”
-- **[S12]** Git LFS 官方, [git-lfs-fsck(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-fsck.adoc)。HEAD／index objects 檢查範圍、`--dry-run`；有意只下載一章不宜對全 repo 要求 objects 全部存在。
-- **[S13]** Git LFS 官方, [git-lfs-fetch(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-fetch.adoc)。`--all` 的範圍；原文：“This is primarily for backup and migration purposes.”
+- **[S12]** Git LFS 官方，[git-lfs-fsck(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-fsck.adoc)。HEAD／index objects 檢查範圍、`--dry-run`；有意只下載一章不宜對全 repo 要求 objects 全部存在。
+- **[S13]** Git LFS 官方，[git-lfs-fetch(1)](https://github.com/git-lfs/git-lfs/blob/0043a645047926f4bd7f7091299095528253d575/docs/man/git-lfs-fetch.adoc)。`--all` 的範圍；原文：“This is primarily for backup and migration purposes.”

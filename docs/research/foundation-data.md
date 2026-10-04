@@ -90,4 +90,4 @@ Pet 的 `annotations.tar.gz` 沒有整包解開（沒有呼叫 `extractall`）�
 2. 若要一份容易取得、可明確再散布的真實分類資料，選 Fashion-MNIST，並保留 MIT notice。它是分類診斷支線，不是共用 RGB 圖與 bbox 的主線。
 3. 下載與訓練預算較多時，Pet 由 trimap 推導的 bbox 可以把分類＋定位延伸到真實 RGB 圖片，但要寫明任務、推導規則、split 與授權衝突。CIFAR-10 只在需要真實 RGB 分類對照時才加入，第一個 detector 不需要它。
 
-本查核沒有量測任何資料的完整影像讀取速度、訓練時間、準確率、AP 或記憶體；本頁的 byte 數、split、第 3 節的 checksum 與單一 trimap 結果是實測值。各節實驗實際跑出的結果，見各節頁尾的「實際執行紀錄」；Fashion-MNIST 的 40 步分類管線核對見〈[資料規劃](../preparation/data.md)〉。
+本查核沒有量測任何資料的完整影像讀取速度、訓練時間、準確率、AP 或記憶體；本頁的 byte 數、第 3 節的 checksum 與單一 trimap 結果是實測值。各節實驗實際跑出的結果，見各節頁尾的「實際執行紀錄」；Fashion-MNIST 的 40 步分類管線核對見〈[資料規劃](../preparation/data.md)〉。

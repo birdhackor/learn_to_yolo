@@ -1,4 +1,4 @@
-# 驗證範圍與後續實驗
+# 驗證範圍
 
 教材裡的「通過」和各種數字，能證明的事不一樣。本頁把「程式執行成功」、「模型學到合成圖形」、「真實照片上的效果」分開，讀完你會知道每種結果能支持哪個結論，以及哪些事沒有驗證。
 
@@ -24,9 +24,9 @@
 
 - 真實照片上的偵測 AP 與泛化。
 - 用真實偵測資料長時間訓練：例如 Penn-Fudan 的行人照片，教材沒有它的格式轉換程式，也沒有用它訓練（見[資料規劃頁](preparation/data.md)）。
-- 各機制在相同資料與訓練預算（例如訓練步數）下的效果差異。
+- 在真實資料上，用相同資料與訓練預算（例如訓練步數）比較各機制的效果。合成資料上只有少數小型對照，例如 3.3 節的 plain 與 residual。
 - 正式的 GPU 速度與效能測試。
-- 在 Google Colab 上逐節執行 notebook 的實驗：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出；環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試在本機模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。在 Colab 上實際開啟 notebook、執行環境格的結果，記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)（網站發布後檢查公開網站與 Colab 入口的 JSON 檔）。Colab 可能分配給你的 GPU 沒有測。
+- 在 Google Colab 上逐節執行 notebook 的實驗：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出。環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試在本機模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。網站發布後，另在 GitHub 提供的 Linux 電腦上，從公開的 `lessons-v0.4.0` 重新下載教材，在全新的 Python 環境裡照原樣執行 notebook 的環境格和實驗格：第 0 章試沒裝 PyTorch、裝了別的版本、已是 2.9.1、已經 import 過別的版本四種情況，另加環境格還要安裝 ONNX 套件的第 20 章；也依序執行 README 列出的指令（預覽網站用的 `zensical serve` 除外）。結果記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)。這台電腦不是 Colab，也沒有 GPU；Colab 可能分配給你的 GPU 沒有測。
 - 用 TensorRT 跑更大的模型，或改用其他數值精度（例如強制全部用 FP16、INT8）時的結果。
 - 接上實體攝影機當影片來源。
 - 真人學生的學習效果。
@@ -35,7 +35,7 @@
 
 ## 執行紀錄
 
-每節程式實際執行後，印出的文字會存成一份紀錄（JSON 檔，放在 `artifacts/checks/curriculum/<節的編號>.json`），再放進該節的 notebook 和頁面最下方。紀錄寫明執行日期、產生它的電腦（作業系統、CPU 型號、執行緒數、Python 與 PyTorch 版本等）和全部輸出，並用 SHA-256 綁定產生它的程式：該節程式，加上它直接或間接 import 的每個本專案檔案（`miniyolo/`、`scripts/` 裡的模組）。SHA-256 是由檔案內容算出的「指紋」，內容改一點就會不同。第 1、3、4、10 章的 40 步實驗、第 7 章的 160 步訓練、第 8 章的 160 步與 1600 步訓練，以及第 18、19 章的影片檔實驗，也各有一份紀錄，同樣記下電腦並綁定程式。
+每節程式實際執行後，印出的文字會存成一份紀錄（JSON 檔，放在 `artifacts/checks/curriculum/<節的編號>.json`），再放進該節的 notebook 和頁面最下方。紀錄寫明執行日期、產生它的電腦（作業系統、CPU 型號、執行緒數、Python 與 PyTorch 版本等）和全部輸出，並用 SHA-256 綁定產生它的程式：該節程式，加上它直接或間接 import 的每個本專案檔案（`miniyolo/`、`scripts/` 裡的模組）。SHA-256 是由檔案內容算出的「指紋」，內容改一點就會不同。第 1、3、4、10 章的 40 步實驗、第 7 章的 160 步訓練、第 8 章的 160 步與 1600 步訓練、第 18、19 章的影片檔實驗，以及[資料規劃頁](preparation/data.md#fashion-mnist)的 Fashion-MNIST 40 步分類管線核對，也各有一份紀錄，同樣記下電腦並綁定程式；Fashion-MNIST 的紀錄另外記下四個資料檔的 SHA-256。
 
 綁定的檔案都沒變，紀錄就一直有效；只要其中一個改了，那份紀錄就過期。發布新版時只重跑過期的紀錄（`scripts/record_evidence.py` 會列出並重新產生），其餘沿用，紀錄裡的日期與電腦也不變，所以各節紀錄的日期不一定相同。
 
@@ -44,11 +44,11 @@
 
 網站建置前，`scripts/validate_curriculum_evidence.py` 會確認以上每份 CPU 與 GPU 紀錄綁定的程式都沒有改過；42 節的紀錄另外要和該節 notebook 存的輸出一字不差，該節頁面也要寫著這份紀錄的日期、CPU 型號與 PyTorch 版本。任何一項不符，網站就無法發布。
 
-計時和訓練後得到的數字會因電腦而略有不同；程式的邏輯、tensor 的 shape 和 assert 檢查不會。你在 Colab 或自己的電腦上看到的計時與小數末幾位和紀錄不同，是正常的。
+計時和訓練後得到的數字會因電腦而不同，訓練得愈久，差異可能愈大（例如第 8 章 1600 步訓練後的評估分數，可能和紀錄明顯不同）；程式的邏輯、tensor 的 shape 和 assert 檢查不會因電腦而變。你在 Colab 或自己的電腦上看到的計時與訓練結果和紀錄不同，是正常的。
 
 ## 執行方式
 
-各節的 Colab 按鈕開啟固定在 `lessons-v0.4.0` 的 notebook，環境格也下載同一版的教材程式。執行紀錄用的是 Python 3.12、PyTorch 2.9.1（CPU 版）。Colab 預先裝好的 PyTorch 版本可能不同；環境格發現版本不是 2.9.1 時，會改裝成 2.9.1 的 CPU 版（預先裝好的若已是 2.9.1，不論 CPU 版或 CUDA 版都保留不動）；改裝後就用不到 GPU。各節實驗都只用 CPU，不必選 GPU 執行階段。若需要改裝，而這個工作階段已經 import 過 torch，環境格會停下並提示重新啟動工作階段；照做後從第一格重跑。每個實驗都可單獨執行。
+各節的 Colab 按鈕開啟固定在 `lessons-v0.4.0` 的 notebook，環境格也下載同一版的教材程式。執行紀錄用的是 Python 3.12、PyTorch 2.9.1（CPU 版）。Colab 預先裝好的 PyTorch 版本可能不同；環境格發現版本不是 2.9.1 時，會改裝成 2.9.1 的 CPU 版（預先裝好的若已是 2.9.1，不論 CPU 版或 CUDA 版都保留不動）；改裝後就用不到 GPU。各節實驗都只用 CPU，不必選 GPU 執行階段。若需要改裝，而這個工作階段已經 import 過 torch，環境格會在改裝後停下，提示重新啟動工作階段；照做後從第一格重跑。每個實驗都可單獨執行。
 
 想在自己的電腦上執行：完整步驟與套件版本見 [repository README](https://github.com/birdhackor/learn_to_yolo#readme)。照 README 設定好環境後，在 repository 根目錄（教材專案資料夾的最上層）執行：
 
@@ -58,7 +58,7 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 # 用 pytest（Python 的自動測試工具）跑核心與 checkpoint（訓練中途的存檔）測試；
 # 全部通過時，最後一行會顯示幾項 passed，沒有 failed 或 error
 .venv-model/bin/python -m pytest tests/test_core.py tests/test_checkpoint.py
-# 依序執行 42 節 notebook 的實驗格，每節印一行 PASS 或 FAIL，並註明輸出是否和紀錄一字不差；
+# 依序執行 42 節 notebook 的實驗格，每節印一行 PASS（並註明輸出是否和紀錄一字不差）或 FAIL；
 # 報告寫在 artifacts/runs/lesson-runtime.json，repo 裡 git 追蹤的檔案都不會改變
 .venv-model/bin/python scripts/check_lesson_runtime.py
 ```
@@ -67,20 +67,27 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 核心測試檢查容易出錯的地方，例如空圖、錯誤標註、兩個物件落在同一格、座標縮放取整後的還原，以及重複預測框的配對。
 
-`check_lesson_runtime.py` 在你自己的電腦上用 CPU 逐節執行，記錄每節印出的文字（stdout）、錯誤與是否通過，並和 `artifacts/checks/curriculum/` 裡的執行紀錄比對。報告寫在 `artifacts/runs/lesson-runtime.json`；各節程式畫的圖也存在 git 不追蹤的位置（例如第 17 章的 `artifacts/lesson-17/`），所以跑完後 repo 裡 git 追蹤的檔案都不會改變。換一台電腦，計時和部分數字的末幾位可能和紀錄不同，報告會標出這些節；輸出不同本身不算失敗，只要程式完整跑完、沒有報錯，該節仍算 PASS。加上 `--section 07-training` 就只檢查這一節。`check_lesson_runtime.py` 不經過 Colab，所以測不到 Colab 上的實際執行，包括 Colab 可能分配給你的 GPU。
+`check_lesson_runtime.py` 在你自己的電腦上用 CPU 逐節執行，記錄每節印出的文字（stdout）、錯誤訊息與是否通過，並和 `artifacts/checks/curriculum/` 裡的執行紀錄比對。報告寫在 `artifacts/runs/lesson-runtime.json`；各節程式畫的圖和寫出的其他檔案，也都存在 git 不追蹤的位置（例如第 17 章的 `artifacts/lesson-17/`），所以跑完後 repo 裡 git 追蹤的檔案都不會改變。網站上第 17、18、19 章的結果圖，只在產生執行紀錄時，由 `scripts/verify_curriculum.py` 從這些位置複製到 `docs/assets/diagrams/`。換一台電腦，計時和部分數字可能和紀錄不同，報告會標出輸出和紀錄不同的節；輸出不同本身不算失敗，只要程式在 120 秒內完整跑完、沒有報錯，該節仍算 PASS。加上 `--section 07-training` 就只檢查這一節。`check_lesson_runtime.py` 不經過 Colab，所以測不到 Colab 上的實際執行，包括 Colab 可能分配給你的 GPU。
 
 ## 已完成的檢查
 
 - **逐節執行紀錄：**42 節實驗全部執行通過（**42／42**；通過＝程式完整跑完、沒有報錯，任何 assert 檢查不成立都會報錯停下）。這只代表程式跑得動、算得對，不代表模型在真實照片上準。[42 節通過總表（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/index.json)列出每節是否通過與執行日期；各節印出的輸出，在每節頁面最下方的「實際執行紀錄」，完整紀錄在 `artifacts/checks/curriculum/<節的編號>.json`（例如 `00-warmup.json`）。你自己跑 `check_lesson_runtime.py` 的結果，則寫在 `artifacts/runs/lesson-runtime.json`。
 - **核心與 checkpoint 測試：**`tests/test_core.py` 與 `tests/test_checkpoint.py` 的測試全部通過；測試內容見上方〈執行方式〉。
-- **匯出與部署：**第 20 章把模型匯出成 ONNX（一種通用的模型檔格式），在 batch 大小 B=1、2、3 時，比對 ONNX Runtime（執行 ONNX 檔的程式）與 PyTorch 的輸出。另在 NVIDIA L4（資料中心 GPU，透過 Modal 雲端租用）上，把另一份練了 40 步的模型，用 TensorRT 的 Python 介面（Python API）建成 engine（為這張 GPU 最佳化後的模型檔，要由 TensorRT 載入才能執行），在 B=1～4 時和同一張 L4 上的 PyTorch 比對輸出（ONNX Runtime 也先和這份 PyTorch 輸出比對過）。兩處的差異都在容許範圍內，詳見[第 20 章〈ONNX／TensorRT〉](lessons/20-deployment.md)。
+- **匯出與部署：**第 20 章把模型匯出成 ONNX（一種通用的模型檔格式），在 batch 大小 B=1、2、3 時，比對 ONNX Runtime（執行 ONNX 檔的程式）與 PyTorch 的輸出。另在 NVIDIA L4（資料中心 GPU，透過 Modal 雲端租用）上，把另一份練了 40 步的模型，用 TensorRT 的 Python 介面（Python API）建成兩個 engine（為這張 GPU 最佳化後的模型檔，要由 TensorRT 載入才能執行）：一個用 FP32（32 位元浮點數），一個允許改用 FP16（16 位元浮點數）。兩個 engine 都在 B=1～4 時和同一張 L4 上的 PyTorch 比對輸出（ONNX Runtime 也先和這份 PyTorch 輸出比對過）。以上比對的差異都在容許範圍內，詳見[第 20 章〈ONNX／TensorRT〉](lessons/20-deployment.md)。
 - **雲端 GPU 存檔續訓：**也在 L4 上，用第 7 章的 GridDetector 和 8 張合成圖練兩次：一次連續練 40 步；另一次練 20 步後存檔，在另一個全新開啟的雲端 GPU 環境讀回存檔，再練 20 步（兩次合計 80 次更新）。最後兩者的模型與 optimizer 逐一相減，最大差異為 0；學習率排程（StepLR，每隔固定步數把學習率乘上固定比例）與亂數產生器（RNG）的狀態也相同。存檔時連這兩種狀態也一起存，續訓才能和不中斷時完全一樣。紀錄見 [GPU／checkpoint 實測](validation/gpu-smoke.md)。
-- **第 8 章自己的資料：**第 8 章「JSON 標註＋PNG 圖片」的[完整訓練流程](lessons/08-own-data.md)，用的是 48 張程式畫的三類矩形合成圖，不是真實照片。最初只訓練 160 步時，用全部 24 張訓練圖算的 loss 從 1.55017 降到 0.16921，但 train AP50（在訓練圖上算的偵測評分，最高 1.0）只有 0.00680，validation 是 0。每一步的 loss 紀錄顯示，第 154–158 步出現 loss 尖峰，160 步的評估正好落在這次不穩之後。這次失敗的紀錄也保存著；接著只把步數加到事先固定的 1600 步（在 CPU 上）。1600 步後，train AP50 達到 1.0（已背熟訓練圖）；沒參與訓練的 validation 是 0.388889（三類各自 AP50 的平均，等於 7/18），換新 seed 畫的 test 是 0.666667（同樣是三類平均，等於 2/3）。這兩組各只有 9 個物件，差距不代表穩定的泛化高低。存檔重新載入，以及在原尺寸圖片上推論，也都通過檢查。
+- **第 8 章自己的資料：**第 8 章「JSON 標註＋PNG 圖片」的[完整訓練流程](lessons/08-own-data.md)，用的是 48 張程式畫的三類矩形合成圖，不是真實照片。最初只訓練 160 步時，用全部 24 張訓練圖算的 loss 從 1.55017 降到 0.16921，但 train mAP50（在訓練圖上算的偵測評分：紅、藍、黃三類各自 AP50 的平均，最高 1.0）只有 0.00680，validation 是 0。每一步的 loss 紀錄顯示，第 154–158 步出現 loss 尖峰，160 步的評估正好落在這次不穩之後。這次失敗的紀錄也保存著；接著只把步數加到事先固定的 1600 步（在 CPU 上）。1600 步後，train mAP50 達到 1.0（已背熟訓練圖）；沒參與訓練的 validation 是 0.388889（等於 7/18），換新 seed 畫的 test 是 0.666667（等於 2/3）。這兩組各只有 9 個物件，換一台電腦重跑，分數也可能不同，所以兩者的差距不代表穩定的泛化高低。存檔重新載入，以及在原尺寸圖片上推論，也都通過檢查。
 - **第 18、19 章影片檔與追蹤：**把 12 幀畫面（影片中連續的 12 張圖）寫成無損 AVI 影片檔再讀回：讀回的 RGB 畫素和模型預測，都和直接用記憶體裡的畫面時相同；讀到檔尾、提前停止或開檔失敗時，程式都會關閉影片（`capture.release()`）。最後把模型的實際預測接上[第 19 章的追蹤器（tracker）](lessons/19-tracking.md)。沒有測實體攝影機。
 
 ## 誰檢查過內容
 
-教材的審查者都是 AI，分兩種：模擬初學讀者的 AI，檢查看不看得懂、圖文與數字是否一致；AI 技術審查者，對照原始論文、固定版本的官方程式碼和計算。審查報告存在 repository 的 `reviews/` 資料夾，記下每個發現的問題與處理方式。審查的範圍與報告清單，見[全套實驗與審查頁](validation/curriculum.md)。
+教材的審查者都是 AI，網站導覽裡的每一頁各有兩位：
+
+- **42 節課程頁：**一位模擬初學讀者（高中程度、數學好、程式新手），檢查看不看得懂、圖文與數字是否一致；一位做技術審查，對照原始論文、固定版本的官方程式碼和計算。
+- **其他 17 頁**（「開始閱讀」、「前置準備」、「教學規劃」、「資料與平台查核」四組裡的頁面，包括本頁）：一位以該頁讀者的身分閱讀，給初學者讀的頁面就模擬初學讀者，給維護網站的人讀的頁面就模擬維護者；一位查核事實，對照 repository 裡的程式、執行紀錄與頁面引用的來源。對照論文與官方程式碼的技術審查，只有課程頁才做。
+
+技術審查對照的都是固定版本。教材介紹到 YOLO26 為止，不包含之後的新版本或分支；只寫找得到原文或公開程式碼可以查證的設計，不為無法確認的版本編造架構。每個已介紹的 YOLO 版本，都以原論文或官方程式碼的某個固定版本為準（commit：程式碼某一次存檔的編號），而不是會隨時變動的最新版。
+
+審查報告每頁一份，存在 repository 的 `reviews/` 資料夾，記下每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查都用 SHA-256 記下它看過的內容：頁面文字、頁面上的 SVG 圖，課程頁還包括該節程式和它 import 的模組。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（`lessons-v0.4.0`）不算在內。
 
 這些都是編輯審查，沒有做過真人學生的學習實驗：沒有請真人學生實際用本教材學習，再測量學習效果。
 
@@ -93,5 +100,3 @@ L4 上只做過小規模的功能測試（8 張合成圖的短訓練、存檔續
 3. 跑真實資料的 baseline（之後每個改動都拿來比較的基準），儲存設定、seed、checkpoint、成功與失敗圖，以及端到端時間（從讀入圖片到輸出框的總時間）。
 4. 每次只改一項機制，在相同資料與訓練預算下比較；記錄候選數、參數量、記憶體與額外設定。不因某個 seed 的小差異就宣布勝負。
 5. 對有希望的設定，換幾個不同的 seed（亂數種子，決定初始權重等隨機結果）各跑一次，確認優勢不是運氣；再試影片與部署。TensorRT 只核對過本教材小模型在 L4 上的輸出；換成更大的模型、真實場景或其他數值精度（例如強制全部用 FP16、INT8），都要分別驗證。
-
-教材介紹到 YOLO26 為止，不包含之後的新版本或分支；只寫找得到原文或公開程式碼可以查證的設計，不為無法確認的版本編造架構。每個已介紹的 YOLO 版本，都以原論文或官方程式碼的某個固定版本為準（commit：程式碼某一次存檔的編號），而不是會隨時變動的最新版。

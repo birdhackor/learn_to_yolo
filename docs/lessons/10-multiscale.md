@@ -64,16 +64,26 @@
 
 驗算大物件的位置：44÷16=2.75，落在 coarse 格 `(2,2)`，格內 xy (0.75, 0.75)、wh (0.375, 0.375)。44÷8=5.5，落在 fine 格 `(5,5)`，但本節不把它分配給 fine。
 
-```python
-fine_feature = early(image)          # 三次 stride 2 卷積 → [1,16,8,8]
-coarse_feature = deep(fine_feature)  # 再一次 stride 2 → [1,32,4,4]
-# permute(0,2,3,1)：把通道軸移到最後，例如 [1,7,8,8] → [1,8,8,7]
-fine_logits = fine_head(fine_feature).permute(0,2,3,1)
-coarse_logits = coarse_head(coarse_feature).permute(0,2,3,1)
-# 兩個 grid_loss 的 total 相加：
-# fine_grid_loss＝grid_loss(fine_logits, fine_small)['total']，fine_small 是小物件的 8×8 target
-# coarse_grid_loss＝grid_loss(coarse_logits, coarse_large)['total']，coarse_large 是大物件的 4×4 target
-loss = fine_grid_loss + coarse_grid_loss
+前面那張 shape 表走過的每一步，在完整程式裡都寫在 TwoScale 的 `forward`；兩個 head 的 loss 則在 `main` 裡相加。下面摘出這幾行（`...` 表示省略的行）。同樣的名字用了兩次：`forward` 裡的 `fine`、`coarse` 是兩張特徵圖，`main` 裡的 `fine`、`coarse` 則是 `model(image)` 傳回的兩個 head 輸出。
+
+``` { .python data-excerpt="lesson_cases/10-multiscale.py" }
+class TwoScale(nn.Module):
+    ...
+    def forward(self,x):
+        fine = self.early(x)        # 三次 stride 2 卷積 → 細尺度特徵 [1,16,8,8]
+        coarse = self.deep(fine)    # 再一次 stride 2 → 粗尺度特徵 [1,32,4,4]
+        # permute(0,2,3,1)：把通道軸移到最後，例如 [1,7,8,8] → [1,8,8,7]
+        return (self.fine_head(fine).permute(0,2,3,1),
+                self.coarse_head(coarse).permute(0,2,3,1))
+
+
+def main():
+    ...
+    fine,coarse = model(image)      # 兩個 head 的輸出，不是 forward 裡的特徵圖
+    assert fine.shape == (1,8,8,7) and coarse.shape == (1,4,4,7)
+    ...
+    # fine_small 是小物件的 8×8 target，coarse_large 是大物件的 4×4 target
+    loss = grid_loss(fine,fine_small)['total'] + grid_loss(coarse,coarse_large)['total']
 ```
 
 反向傳播時，`early` 同時收到兩項 loss 的梯度；`deep`、`coarse_head` 只收到 coarse 那一項，`fine_head` 只收到 fine 那一項。
@@ -93,7 +103,7 @@ fine 只在格 `(gx=1,gy=1)` 標 obj=1、class 0；coarse 只在格 `(2,2)` 標 
 
 真實模型不會完美遵守「小的歸細格、大的歸粗格」，同一個物件可能兩個 head 都給出高分框。完整程式用人工 logits（不經模型、直接手填的輸出值），模擬兩個 head 都輸出同一個小框，這是最需要去重的情況。兩份人工 logits 的框值，分別由前面〈同一個小框的兩種 target〉表中 4×4、8×8 兩欄的 target 換算而來。先保留各尺度完整的 decode 結果，再沿第 0 軸（每一列是一個候選框）接起來：
 
-```python
+``` { .python data-excerpt="lesson_cases/10-multiscale.py" }
 # decoded_scales：兩個尺度（先 coarse、後 fine）各自用 decode_grid 解碼的結果，
 # 每個都含 boxes、scores、labels；本例每個尺度只有 1 個框
 boxes = torch.cat([p['boxes'] for p in decoded_scales],dim=0)  # [2,4]
@@ -107,6 +117,8 @@ for label in labels.unique():                # unique()：列出出現過的類�
     # nms 回傳的是在子集 boxes[indices] 裡的位置，用 indices[...] 換回原本的列號
     selected.append(indices[nms(boxes[indices],scores[indices],iou_threshold=.5)])
 selected = torch.cat(selected)               # 各類別留下的列號接成一串
+assert len(selected) == 1                    # 兩個重複框只留下一個
+assert torch.allclose(boxes[selected],small['boxes'],atol=1e-4)  # 留下的就是小框 [5,5,13,13]
 ```
 
 兩框同類、座標相同（都還原成 `[5,5,13,13]`），IoU 為 1，所以合併後的分類別 NMS 只留一個，數量 2→1。注意 `decode_grid` 內部本來就會在單一尺度內先做一次分類別 NMS（第 7 章〈[完整圖片推論](07-inference.md)〉）。但這個小例子每個尺度只有一個框，尺度內 NMS 沒有東西可刪；2→1 完全來自合併後那一次跨尺度 NMS，尺度內的 NMS 代替不了它。完整流程是：各尺度 decode（先用 score 門檻篩掉 score 太低的候選框，再做尺度內 NMS）→ 串接 → 再做一次分類別 NMS。
@@ -149,9 +161,9 @@ selected = torch.cat(selected)               # 各類別留下的列號接成一
 
 前面的完整程式只做一次更新，用來確認接線。這一段改用補充腳本 `scripts/run_multiscale_learning.py`：沿用同一個 TwoScale 模型和前面那張圖（紅色小方塊、藍色大方塊各一個），seed 7、Adam、學習率 0.01，把訓練延長到 40 步。每一步兩個 head 都收到有限、非零的梯度。把全部 8702 個參數「訓練後減訓練前」的差平方相加再開根號（也就是權重變化的 L2 長度），得到 6.504；它只證明權重真的變了，大小不代表學得好壞。loss（fine 與 coarse 兩項相加）在第 1 次更新前是 3.6594，到第 40 次更新前降到 0.0703。
 
-![40 步兩尺度模型的真實曲線與預測框](../assets/diagrams/10-multiscale-learning.svg)
+![兩尺度模型 40 次更新的訓練 loss 曲線與實際預測框](../assets/diagrams/10-multiscale-learning.svg)
 
-圖說：左圖是訓練 loss 曲線。橫軸 Training step 是第幾次更新；括號裡的 pre-update loss 表示每一點都在該次更新之前量測。縱軸 Training loss 是 fine 與 coarse 兩項 loss 相加。右圖是 40 次更新全部完成後，模型在同一張訓練圖上的預測；標題的意思是「訓練圖：綠框為 GT，橙框為預測」，座標單位是 pixel。下面的框與 AP 也都是在 40 次更新全部完成後評估的。
+圖說：左圖是訓練 loss 曲線，橫軸是第幾次更新，每一點都在該次更新之前量；縱軸是 fine 與 coarse 兩項 loss 相加。右圖是 40 次更新全部完成後，模型在同一張訓練圖上的預測，座標單位是 pixel：綠色虛線是 GT，橙色實線是預測框，框旁的「類別 c score s」寫出這個預測框的類別編號 c 與 score s。下面的框與 AP 也都是在 40 次更新全部完成後評估的。
 
 右圖的橙框，是模型輸出的 logits 經兩尺度 decode、合併、分類別 NMS 後得到的框，沒有人工塞入高分答案。這裡為了算 AP，decode 用的候選截斷門檻（比的是候選框自己的 score）是 0.05，比第 7 章〈完整圖片推論〉的顯示門檻 0.25 低，所以低分的框也會留下來。
 
@@ -160,13 +172,15 @@ selected = torch.cat(selected)               # 各類別留下的列號接成一
 - **class 0（紅色小物件）的 AP50 為 0。** 小物件的預測框約 [6.3,1.4,11.4,14.8]，寬約 5、高約 13.4 pixel，比 GT 窄而高。它和 GT [5,5,13,13] 的 IoU 約 0.44，未達配對 IoU 門檻 0.5（比的是預測框和 GT 的重疊），所以算 FP（誤報），小物件算漏檢。
 - **class 1（藍色大物件）的 AP50 為 1。** 大物件的預測框和 GT 的 IoU 約 0.86。
 - **mAP50 是這兩類 AP 的平均**，(0+1)÷2=0.5。本例每類只有一個物件，才能讀成「小物件 0、大物件 1」；一般說的小物件 AP 要按物件面積分組另算，和按類別平均不是同一件事。
-- **另有一個分數約 0.13 的類別 1 框**（圖右下，一半以上壓在藍色方塊的下半部，其餘落在黑底）。它和大物件 GT 的 IoU 約 0.30，未達配對 IoU 門檻 0.5，算 FP。它和保留下來的大框 IoU 約 0.28，低於 NMS 的 IoU 門檻 0.5（比的是兩個預測框），所以 NMS 沒刪它。它的分數排在正確的大框之後，所以沒有拉低 class 1 的 AP。
+- **另有一個分數約 0.13 的類別 1 框**（圖右下，一半以上壓在藍色方塊的下半部，其餘落在黑底；它的標籤寫在框的左側、圖的底部）。它和大物件 GT 的 IoU 約 0.30，未達配對 IoU 門檻 0.5，算 FP。它和保留下來的大框 IoU 約 0.28，低於 NMS 的 IoU 門檻 0.5（比的是兩個預測框），所以 NMS 沒刪它。它的分數排在正確的大框之後，所以沒有拉低 class 1 的 AP。
 
 loss 已經降到 0.07，小框的 IoU 為什麼還不到 0.5？用紀錄裡的框座標算，小框的中心只偏不到 1 pixel，差的主要是寬（窄了約 3 pixel）和高（高了約 5.4 pixel）。框 loss 裡的寬高是除以全圖 64 的比例，差幾個 pixel，平方後只有約 0.002 和 0.007，在 loss 裡很小；但對只有 8 pixel 的小框，同樣的偏差已足以讓 IoU 跌破 0.5。中心則不同：fine 的格內 xy 以格寬 8 pixel 為尺，中心偏 1 pixel 就差 0.125，平方後約 0.016，比寬高那兩項都大。所以 loss 下降不保證小框 IoU 達標。第 11 章的 IoU 類 loss 直接拿 IoU 當目標，就是針對這種落差。
 
 這只是固定訓練圖的檢查，**不是獨立資料的小物件 AP 提升證據**，也沒有與單尺度做品質對照。若要只比較多 head 的品質，應固定 TwoScale 的 backbone（主幹網路）、初始化和訓練預算（訓練步數、資料量等），另做只留 coarse head 的對照。
 
-想自己重跑：先執行本節 Colab 的環境格（最上面那個準備環境的程式格），再另開一個程式碼儲存格（code cell），執行 `!python scripts/run_multiscale_learning.py`。在 Colab 執行補充腳本後，可用 `from IPython.display import SVG, display; display(SVG(filename="docs/assets/diagrams/10-multiscale-learning.svg"))` 查看當次結果。本段的 loss、AP、預測框座標與分數都取自[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/10-multiscale-learning.json)；文中的 IoU 是用紀錄裡的框座標算出來的。
+想自己重跑：先執行本節 Colab 的環境格（最上面那個準備環境的程式格），再另開一個程式碼儲存格（code cell），執行 `!python scripts/run_multiscale_learning.py`。腳本會印出報告內容（逐步的 loss 除外），並把 `report.json` 與 `learning.svg` 寫在 `artifacts/runs/multiscale-learning/`；可用 `from IPython.display import SVG, display; display(SVG(filename="artifacts/runs/multiscale-learning/learning.svg"))` 查看這次跑出的圖。notebook 裡〈可選：兩尺度 40 步與實際預測〉那段，也附有這兩步的程式。換一台電腦，loss 與框座標的小數可能和紀錄不同，請以自己那次的報告為準。加上 `--record` 才會另外寫入網站用的紀錄與圖（`artifacts/checks/curriculum/10-multiscale-learning.json`、`docs/assets/diagrams/10-multiscale-learning.svg`），那是產生網站紀錄時才用的，自己重跑不必加。
+
+本節 40 步實驗的 loss、權重變化、AP、預測框座標與分數都取自[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/10-multiscale-learning.json)；文中的 IoU 是用紀錄裡的框座標算出來的。
 
 <!-- curriculum-evidence:start -->
 

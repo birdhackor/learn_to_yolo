@@ -106,7 +106,7 @@ distance = (logits.softmax(-1) * torch.arange(K)).sum(-1)
 
 四個 bin 的期望距離只能落在 `[0,3]` 格。本例的 DFL target 還要更嚴，必須嚴格小於 3，才能有較大的相鄰 bin。target 等於 3 時，較大的相鄰 bin 是 bin4，權重是 3−3＝0。權重是 0 也沒用：`F.cross_entropy` 照樣要讀 bin4 這個索引，而 bin 只有 0～3，於是報錯（IndexError）。所以完整程式在算 loss 之前，先用一行斷言檢查範圍，超出就報錯停下，讓你直接看到這個限制：
 
-```python
+``` { .python data-excerpt="lesson_cases/12-dfl.py" }
 assert ((target >= 0) & (target < logits.shape[-1] - 1)).all()  # 0 ≤ target < K−1，本例即 < 3
 ```
 
@@ -160,13 +160,15 @@ Ultralytics 的偵測 head 預設每條邊 K=16 個 bin，它的程式把每邊�
     assert abs(probs[0, 2] - .4) < .02 and abs(probs[0, 3] - .6) < .02  # 取代 probs[0, 1] > .73 那一行
     ```
 
-    跑完會看到學到的機率約 `[0.0025, 0.0025, 0.3975, 0.5975]`，期望值約 2.59，略小於 2.6：殘留的少量機率都在 bin0、bin1，把平均往下拉，但仍在 0.02 的容差內。程式最後示範「兩份分佈同期望值 1.25」的 a、b，是獨立的人工例子，和本題的 2.6 無關，保留原值即可，不要把它改成訓練 target。
+    改完執行，斷言全部通過。印出的初始梯度裡，後兩個值是 −0.15000009…、−0.34999990…，不是剛好 −0.15、−0.35。這不是算錯：`torch.tensor([2.6])` 預設存成 float32（32 位元浮點數），而 float32 存不下剛好的 2.6，只能存最接近的 2.5999999…（第 4 章〈[座標轉換與還原](04-coordinates.md)〉講過 float32 存不準大多數小數），bin2、bin3 的權重因此各差了不到一千萬分之一。梯度斷言用 `torch.allclose` 逐項比較，每一項的差距都在它預設的容差內就算相等，所以照樣通過。學到的機率那一行沒有這種尾巴，因為程式先用 `.double()` 換成位數更多的 float64（64 位元浮點數），再四捨五入到小數 4 位才印。
+
+    學到的機率接近 target 分佈 `[0, 0, 0.4, 0.6]`，bin0、bin1 只剩很少的機率。期望值略小於 2.6：殘留的少量機率都在 bin0、bin1，把平均往下拉，但仍在 0.02 的容差內。程式最後示範「兩份分佈同期望值 1.25」的 a、b，是獨立的人工例子，和本題的 2.6 無關，保留原值即可，不要把它改成訓練 target。
 
     **第 2 題**：3.2 格超過 bin3，完整程式的範圍斷言會直接報錯停下。不能讓程式讀不存在的 bin4，也不該靠 clamp 把它截成 2.99 格。應擴增 K，或重新設計尺度：3.2 格在 stride 8 是 25.6 畫素；改由 stride 16 的候選負責，就只有 1.6 格，K=4 也放得下。
 
     **第 3 題**：兩份不同的分佈可以有同樣的期望值，例如上面的 a、b 都是 1.25。期望值對了，分佈形狀仍可能錯，所以還要檢查各 bin 的機率。
 
-來源查核：2026-10-02。[Generalized Focal Loss 原論文](https://arxiv.org/abs/2006.04388)、[Ultralytics DFLoss 的相鄰 bin 加權](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[DFL 期望值模組](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)、[mmdetection GFL head 的 reg_max 定義](https://github.com/open-mmlab/mmdetection/blob/v3.3.0/mmdet/models/dense_heads/gfl_head.py)。
+參考來源：[Generalized Focal Loss 原論文](https://arxiv.org/abs/2006.04388)、[Ultralytics DFLoss 的相鄰 bin 加權](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[DFL 期望值模組](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)、[mmdetection GFL head 的 reg_max 定義](https://github.com/open-mmlab/mmdetection/blob/v3.3.0/mmdet/models/dense_heads/gfl_head.py)。
 
 <!-- curriculum-evidence:start -->
 

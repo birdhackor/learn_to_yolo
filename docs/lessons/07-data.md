@@ -32,11 +32,11 @@
 
 紅色的類別 id 是 0，藍色是 1。背景不算一個類別，所以沒有類別 2；背景改由下一節的 objectness=0 表示。
 
-用程式畫出這張圖，並寫下它的標註：
+完整程式這樣畫出這張圖，並寫下它的標註（中文註解是本頁加的）：
 
-```python
+``` { .python data-excerpt="lesson_cases/07-data.py" }
 import torch
-
+...  # 省略：匯入 miniyolo.data、def main(): 與兩行設定（隨機種子、執行緒數）
 image = torch.zeros(3, 64, 64)  # 背景全是 0
 image[0, 12:28, 8:24] = 1  # 紅，索引順序是 channel,y,x
 image[2, 36:52, 40:56] = 1  # 藍
@@ -86,14 +86,14 @@ target = {"boxes": torch.tensor([[8., 12., 24., 28.], [40., 36., 56., 52.]]),
 
 也不能用 `[0,0,0,0]` 這種假框占位（例如在空圖補假框，讓每張的框數一樣多）。它的寬高都是 0，下一節的 `build_targets` 會直接報 ValueError（標註框必須有正面積）。就算沒有這道檢查，假框也得配一個類別，會被當成中心在 (0,0) 的真物件：左上角那格變成正格，等於教模型「全黑的圖左上角有物件」。
 
-所以本書在 `miniyolo/data.py` 寫了一個小函式 `collate`。它的輸入是一串（影像, 標註）配對：影像用 `torch.stack` 疊成 `[B,3,64,64]`；標註不疊，原樣放進長度 B 的 list；兩者一起回傳。PyTorch 內建的 `DataLoader`（負責把資料一批批取出的工具）也能用參數 `collate_fn` 接這種函式，第 8 章〈[用自己的資料](08-own-data.md)〉的範例程式就這樣用；本章的程式則是直接呼叫 `collate`。
+所以本書在 `miniyolo/data.py` 寫了一個小函式 `collate`。它的輸入是一串（影像, 標註）配對：影像用 `torch.stack` 疊成 `[B,3,64,64]`；標註不疊，原樣放進長度 B 的 list；兩者一起回傳。PyTorch 內建的 `DataLoader`（負責把資料一批批取出的工具）也能用參數 `collate_fn` 接這種函式，第 8 章〈[用自己的資料](08-own-data.md)〉示範讀自己的資料時就這樣用。本章的程式則是直接呼叫 `collate`，完整程式裡是這幾行：
 
-```python
-from miniyolo.data import collate
-
-empty_image = torch.zeros(3, 64, 64)  # 全黑、沒有物件；完整程式直接寫 torch.zeros_like(image)
+``` { .python data-excerpt="lesson_cases/07-data.py" }
+from miniyolo.data import ShapeDataset, collate  # 在完整程式開頭；ShapeDataset 在本頁下文介紹
+...  # 省略中間的程式，包括前文的畫圖、寫標註，以及後文的第 1 項檢查
 empty = {"boxes": torch.empty(0, 4), "labels": torch.empty(0, dtype=torch.long)}
-images, targets = collate([(image, target), (empty_image, empty)])
+# torch.zeros_like(image)：和 image 同 shape、同 dtype 的全 0 tensor，也就是那張全黑的空圖
+images, targets = collate([(image, target), (torch.zeros_like(image), empty)])
 # images 是 [2,3,64,64] 的 tensor；targets 是 [target, empty]，長度 2 的 list
 ```
 
@@ -109,7 +109,7 @@ images, targets = collate([(image, target), (empty_image, empty)])
 
 ## 執行完整程式：三項檢查
 
-[在 Colab 執行完整程式](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-data.ipynb)（和頁首按鈕相同），或在專案根目錄執行 `PYTHONPATH=. python lesson_cases/07-data.py`。沒有下載、沒有 GPU，也沒有模型結果。預期輸出三行：
+可以用頁首的按鈕在 Colab 執行完整程式，或在專案根目錄執行 `PYTHONPATH=. python lesson_cases/07-data.py`。程式不下載任何檔案、不需要 GPU，也不建立模型。預期輸出三行：
 
 ```text
 batch (2, 3, 64, 64) counts [2, 0]
@@ -127,7 +127,7 @@ dataset contract checked: 8 images
 
 第 1 項在完整程式裡是這幾行：
 
-```python
+``` { .python data-excerpt="lesson_cases/07-data.py" }
 expected_pixels = torch.zeros_like(image)
 for box, label in zip(target["boxes"], target["labels"]):
     x1, y1, x2, y2 = box.to(torch.long).tolist()  # 框座標轉成整數，才能當切片用

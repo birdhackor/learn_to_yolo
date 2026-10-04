@@ -8,7 +8,7 @@ Residual 有直接路徑，是否就一定比 plain 更準？讀完你會知道�
 
 設計來源是 [ResNet 原始論文](https://arxiv.org/abs/1512.03385) 對 plain 與 residual 的研究。本節用 4 個 channel、3 個 block 與人工色塊，並省略三樣東西：BatchNorm、原版的深度，以及相加後的 activation。BatchNorm（批次正規化）在原版每個卷積後都有，訓練時它用同一批資料算出的平均與標準差，把每個 channel 的數值調到穩定的尺度；activation 是層與層之間的非線性函數，本節指 ReLU。本節是局部的機制對照，不是重現論文在 ImageNet（約 128 萬張訓練照片、1000 類）上的結果。論文的 plain 網路也有 BatchNorm；本節沒有它，所以結果只代表本設定，加回後會怎樣，本節沒有測。
 
-可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/03-comparison.py`。兩種方式跑的是同一份完整程式：Colab 裡「本節可修改的完整實驗」下方那格，內容就是 `lesson_cases/03-comparison.py`；網頁上只摘錄了其中幾行。CPU、16×16 輸入、訓練 8 張／validation 4 張，兩個模型各用 SGD 更新 3 步。3 步只確認梯度傳得到 stem、參數有更新、紀錄完整，不拿來替架構排名。
+可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/03-comparison.py`。兩種方式跑的是同一份完整程式：Colab 裡「本節可修改的完整實驗」下方那格，內容就是 `lesson_cases/03-comparison.py`；網頁上只摘錄了其中幾段。CPU、16×16 輸入、訓練 8 張／validation 4 張，兩個模型各用 SGD 更新 3 步。3 步只確認梯度傳得到 stem、參數有更新、紀錄完整，不拿來替架構排名；兩者學不學得會，要看後面〈訓練 40 步〉那段：同樣的模型與資料，更新 40 次。
 
 ## 唯一主要改動是什麼
 
@@ -18,7 +18,7 @@ Residual 有直接路徑，是否就一定比 plain 更準？讀完你會知道�
 
 第 k 個 block（k＝1、2、3）收到輸入 \(x\) 後，plain 輸出 \(F_k(x)\)，residual 輸出 \(x+F_k(x)\)。三個 \(F_k\) 結構相同、權重各自獨立，都是 Conv–ReLU–Conv：兩個 3×3 卷積都保持 `[B,4,16,16]`，block 輸出後不再接 ReLU。兩個模型所有可學參數完全相同，只有 residual 多了逐值加法：
 
-```python
+``` { .python data-excerpt="lesson_cases/03-comparison.py" }
 correction = self.branch(x)  # self.branch 就是 F：Conv–ReLU–Conv
 # self.residual 為 True 時回傳 x+F(x)；為 False 時只回傳 F(x)
 return x + correction if self.residual else correction
@@ -32,13 +32,17 @@ return x + correction if self.residual else correction
 
 公平比較就像理化實驗的控制變因。操縱變因只有「有沒有 shortcut」；控制變因是初始權重、資料、optimizer 與 learning rate、步數、ReLU 位置；應變變因是每步的 loss 與 stem 梯度，以及最後的 validation accuracy。另外也把參數數、乘加數（MAC）、加法次數與時間等成本一起記下來。
 
-資料是程式畫的色塊圖。每張 16×16 黑底圖上有一個 8×8 的純紅（類別 0）或純藍（類別 1）方塊。8 張訓練圖只有 4 種，各重複兩次；4 張 validation 是同樣 4 種方塊往下移 2 列，沒有參與更新。分類只要看顏色，所以這是很容易的人工資料，4 張也不能代表真實圖片。每一步都把同一批 8 張訓練圖一次全部送入（不抽樣、不打亂），兩個模型完全一樣；SGD、learning rate 0.1、交叉熵與 3 次更新也完全一致。不過 optimizer 是兩個模型各建一個，分別引用各自的參數，不能共用同一個 optimizer 輪流訓練。
+資料是程式畫的色塊圖。每張 16×16 黑底圖上有一個 8×8 的純紅（類別 0）或純藍（類別 1）方塊。8 張訓練圖各不相同：方塊的上緣都離圖的頂端 3 個畫素，左緣離左邊 2、3、4 或 5 個畫素，每個位置各有一張紅、一張藍。4 張 validation 是把其中左緣離左邊 4、5 個畫素的那 4 個方塊（兩紅兩藍）往下移 2 列，上緣離頂端 5 個畫素；它們沒有參與更新，完整程式也用斷言（assert）檢查它們都不和任何一張訓練圖相同。
+
+兩類用的位置刻意完全相同。如果紅方塊總在某些位置、藍方塊總在另一些位置，模型只看位置也能答對，答對了也說明不了它看的是顏色。完整程式的 `data()` 畫完圖後，從圖上讀回每個方塊的上緣與左緣，再用斷言檢查紅、藍兩類的位置清單排序後完全相同，也就是每個位置紅、藍出現的次數一樣；訓練與 validation 兩組都檢查。方塊又都是 8×8，所以只剩顏色能分出類別。這是很容易的人工資料，4 張 validation 也不能代表真實圖片。
+
+每一步都把同一批 8 張訓練圖一次全部送入（不抽樣、不打亂），兩個模型完全一樣；SGD、learning rate 0.1、交叉熵與 3 次更新也完全一致。不過 optimizer 是兩個模型各建一個，分別引用各自的參數，不能共用同一個 optimizer 輪流訓練。
 
 初始權重要相同，得先懂 seed。seed（亂數種子）固定後，每次執行產生的整串亂數都一樣；建模型時，各層依序從這串亂數取值當初始權重。完整程式只在開頭設一次 seed，接著連續建立兩個模型，residual 取到的是後面的亂數，權重和 plain 不同。就算在建每個模型前各重設同一個 seed，也要兩個模型建立各層的順序與大小完全相同才會對上；本例剛好相同，但只要其中一個多一層（例如 projection），後面每一層都會錯開。
 
-所以完整程式不靠 seed 讓權重相同：先建 plain，再用 `residual.load_state_dict(plain.state_dict())` 把權重整份複製給 residual，並用斷言（assert）逐一檢查每個參數數值相等。`state_dict` 是記錄每個參數名稱（例如 `stem.weight`）與數值的字典。
+所以完整程式不靠 seed 讓權重相同：先建 plain，再用 `residual.load_state_dict(plain.state_dict())` 把權重整份複製給 residual，並用斷言逐一檢查每個參數數值相等。`state_dict` 是記錄每個參數名稱（例如 `stem.weight`）與數值的字典。
 
-紀錄裡的 loss 是每次更新前量的，validation accuracy 是 3 次更新後量的，時間是 3 步合計。梯度記的是 stem 梯度的 L2 長度（L2 norm）：把各梯度值平方相加再開根號，用一個數字概括梯度有多大，就像向量 \((3,4)\) 的長度是 \(\sqrt{3^2+4^2}=5\)。完整程式只算 stem 卷積的權重，不含 bias。
+完整程式把一次更新寫成函式 `train_step`：清掉上一步的梯度、forward、算交叉熵、backward、記下 stem 梯度的 L2 長度並檢查，最後 `optimizer.step()`，傳回這次更新前的 loss 與梯度長度。3 步就是呼叫它 3 次，每次印出一行。所以紀錄裡的 loss 是每次更新前量的；validation accuracy 是 3 次更新後量的；時間是 3 步合計，不含計時前的暖機（見下文的計時說明）。梯度記的是 stem 梯度的 L2 長度（L2 norm）：把各梯度值平方相加再開根號，用一個數字概括梯度有多大，就像向量 \((3,4)\) 的長度是 \(\sqrt{3^2+4^2}=5\)。完整程式只算 stem 卷積的權重，不含 bias。
 
 為什麼量 stem？stem 在最前面、離 loss 最遠，梯度要往回穿過全部 3 個 block：plain 只能經過 6 個卷積，residual 每個 block 還多一條直接路徑（見 [identity shortcut 那節](03-identity.md)），所以比較 stem 的梯度，最能看出梯度傳不傳得到最前面。L2 長度大只表示這一步參數被推得比較用力，不代表方向比較好，也不代表模型比較準。
 
@@ -62,49 +66,76 @@ return x + correction if self.residual else correction
 
 第一項是 stem（27648），第二項是 3 個 block 共 6 個卷積（每個 36864），第三項是 head（8）；bias 的加法不計入。Residual 每張圖另多 \(3\times4\times16\times16=3072\) 次逐值加法。
 
-乘加數與加法次數是上面手算的結果，完整程式直接把它們寫成 print 裡的固定數字（也就是「寫死」）；參數數 986 才是完整程式實際數出、並用 assert 檢查的。完整程式裡對應的幾行如下，`name` 是模型名稱 `"plain"` 或 `"residual"`：
+這三個數（參數數、乘加數、加法次數）都由完整程式自己數出，再用斷言和上面的手算值核對，最後印出的也是數出的值。`main()` 裡對應的幾行如下，`name` 是模型名稱 `"plain"` 或 `"residual"`，`train_x` 是 8 張訓練圖：
 
-```python
+``` { .python data-excerpt="lesson_cases/03-comparison.py" }
 # p 是一個參數 tensor，p.numel() 是它裡面的數值個數；全部加起來就是參數數
 params = sum(p.numel() for p in model.parameters())
 assert params == 986
-# （中間省略：訓練 3 步、量 validation accuracy 等）
-print(f"{name}: params={params}, MACs/image=248840, shortcut_adds/image="
-      f"{3072 if name == 'residual' else 0}, validation_accuracy={acc:.2f}, "
-      f"3_step_seconds={elapsed:.4f}")
+macs, shortcut_adds = count_per_image(model, train_x)
+assert macs == 248840
+assert shortcut_adds == (3072 if name == "residual" else 0)
+...  # 中間省略：暖機、訓練 3 步、量 validation accuracy 等
+print(f"{name}: params={params}, MACs/image={macs}, shortcut_adds/image={shortcut_adds}, "
+      f"validation_accuracy={acc:.2f}, 3_step_seconds={elapsed:.4f}")
 ```
+
+乘加數與加法次數交給函式 `count_per_image`，它用的是 forward hook。hook 原意是鉤子：forward hook 是「鉤」在某一層上的小函式，掛上之後，這一層每算完一次 forward，PyTorch 就呼叫它一次，並把這一層本身、這一層的輸入與輸出交給它。所以不必把模型拆開、自己一層層執行，只要照常讓整個模型跑一次 forward，掛了 hook 的層一算完，hook 就拿得到它的輸出。`count_per_image` 把同一個 `hook` 掛到每個卷積、Linear 與 Block 上，在 `torch.no_grad()` 下把傳進來的圖（這裡是 8 張訓練圖）送進模型，數完就把 hook 拿掉：
+
+``` { .python data-excerpt="lesson_cases/03-comparison.py" }
+def count_per_image(model, images):
+    """Multiply-accumulates and shortcut additions per image, counted by forward hooks."""
+    macs, shortcut_adds = [], []  # 兩個空清單：hook 數到的每一筆都放進來，最後再加總
+
+    def hook(layer, inputs, output):  # PyTorch 傳入：剛算完的這一層、它的輸入、它的輸出
+        values = output[0].numel()  # 這一層替第 0 張圖輸出幾個值
+        if isinstance(layer, nn.Conv2d):  # 卷積：每個輸出值要 in_channels×3×3 次乘加
+            macs.append(values * layer.in_channels * layer.kernel_size[0] ** 2)
+        elif isinstance(layer, nn.Linear):  # Linear：每個輸出值要 in_features 次乘加
+            macs.append(values * layer.in_features)
+        elif isinstance(layer, Block) and layer.residual:  # x + F(x)：每個輸出值 1 次加法
+            shortcut_adds.append(values)
+
+    # 把同一個 hook 掛到每個卷積、Linear 與 Block 上，留下每個 handle
+    handles = [layer.register_forward_hook(hook) for layer in model.modules()
+               if isinstance(layer, (nn.Conv2d, nn.Linear, Block))]
+    with torch.no_grad():  # 只是數數，不需要梯度
+        model(images)  # 跑一次 forward；掛了 hook 的層每算完一次，hook 就被呼叫一次
+    for handle in handles:
+        handle.remove()  # 數完就把 hook 拿掉
+    return sum(macs), sum(shortcut_adds)
+```
+
+`model.modules()` 逐一給出模型裡的每個模組：模型本身、stem、head、每個 Block，以及 Block 裡的卷積與 ReLU 等；`isinstance(layer, nn.Conv2d)` 檢查 `layer` 是不是卷積。`register_forward_hook` 掛上 hook，並傳回一個 handle（把手），之後用 `handle.remove()` 把 hook 拿掉。一次 forward 雖然送進 8 張圖，hook 只看第 0 張（`output[0]`），所以數出的是一張圖的數字（每張圖大小相同，哪一張都一樣）；規則和上面的手算相同。Block 那一條看的是 `layer.residual`：這個旗標為 True 時，forward 算的是 `x + correction`，每個輸出值記 1 次加法。也就是說，加法次數是依旗標記下的，程式並沒有去偵測 forward 裡實際做了幾次加法。這次 forward 只用來數數，不會改動任何參數。
 
 乘加數不含 activation、空間平均與資料搬移，所以兩者「乘加數相同」不等於所有成本完全相同。Shortcut 要把輸入保留到相加為止，所以推論時的記憶體峰值（同一時刻最多占用多少記憶體）也要考慮：plain 的 block 輸入在第一個卷積算完後就能釋放，residual 卻要留到相加。訓練時則不同：第一個卷積在反向傳播時本來就要用這份輸入算梯度，有沒有 shortcut 都會保存，所以 identity shortcut 幾乎不增加訓練時的記憶體。
 
-單次 CPU 時間容易受首次執行、快取（電腦暫存剛用過資料的高速記憶體）與系統負載影響；完整程式只記錄本次數值。本例 plain 先跑，很可能承擔了首次執行的額外成本，所以輸出中 plain 若比較慢，不代表它的計算比較多。正式的速度比較應先暖機（正式計時前先空跑幾次，丟掉這幾次的時間）、多次量測，固定 batch 與裝置，並分清 forward 和完整訓練步的時間。
+時間也要量得公平。單次 CPU 時間容易受首次執行、快取（電腦暫存剛用過資料的高速記憶體）與系統負載影響。同一個程式裡，第一次執行某段計算常會多花一些只需要做一次的準備時間；若不處理，這筆時間會算到先計時的那個模型頭上。所以正式計時前要先暖機（warmup）：先不計時地跑幾次，把這些一次性的準備做掉，這幾次的時間丟掉不算。
 
-## 可核對輸出與應如何下結論
+完整程式在每個模型計時前各暖機一次。它先用 `copy.deepcopy(model)` 做出一個副本 `throwaway`：deepcopy（深層複製）把模型連同每一層、每個參數都另外複製一份，副本的權重和原模型相同，但之後改動其中一個，另一個不受影響（只寫 `throwaway = model` 不會複製，兩個名字指的是同一個模型）。程式替副本另建一個 SGD（optimizer 只會更新建立時交給它的參數），在副本上跑一次同樣的 `train_step`，不計時，之後就不再使用副本。若直接拿真正的模型暖機，它會多更新 1 次，起點就和另一個模型不同；用副本暖機，真正的模型仍從相同的初始權重開始，也仍只更新 3 次。斷言 `assert torch.equal(before, model.stem.weight)` 確認暖機之後，真正模型的 stem 權重沒有改變；`before` 是暖機前先存下的 stem 權重。
 
-兩個模型都應印出 `params=986`，這是完整程式數出並用 assert 檢查的；`MACs/image=248840` 與 shortcut 加法數（plain 為 0、residual 為 3072）則是固定印出的手算值。完整程式每一步都用 assert 檢查 loss 與 stem 梯度是有限值，也就是不是 inf（無限大）或 NaN（無法定義的數）；也檢查 stem 梯度的 L2 長度大於 0。3 步後再檢查 stem 參數確實改變。Validation accuracy 會印出來，但 assert 檢查不要求 residual 勝出，因為誰勝出不是算術上必然的結果。
+暖機之後，這仍是只量一次、只有 3 步的時間，還是會受快取與系統負載影響，所以兩個時間差距很小時，不能拿來說誰比較快。正式的速度比較應先暖機、多次量測（例如取中位數），固定 batch 與裝置，並分清 forward 和完整訓練步的時間。
+
+## 可核對的輸出：3 步看得出什麼
+
+完整程式用斷言檢查下面這些事，任何一項不成立，程式就停在那一行並出現 AssertionError：
+
+- 資料：紅、藍兩類的方塊位置相同；4 張 validation 圖都不和任何一張訓練圖相同。
+- 起點：residual 複製來的每個參數都和 plain 相等。
+- 成本：參數數是 986，每張圖的乘加數是 248840，shortcut 加法數 plain 為 0、residual 為 3072。
+- 暖機：暖機後，真正模型的 stem 權重沒有改變。
+- 每一步：loss 與 stem 梯度都是有限值，也就是不是 inf（無限大）或 NaN（無法定義的數）；stem 梯度的 L2 長度大於 0。
+- 3 步後：stem 權重確實改變。
+
+所以兩個模型都應印出 `params=986`、`MACs/image=248840`；`shortcut_adds/image` 則是 plain 0、residual 3072。Validation accuracy 會印出來，但沒有斷言要求 residual 勝出，因為誰勝出不是算術上必然的結果。
 
 讀 loss 時先記住一個基準。一張圖的交叉熵是 \(-\ln p\)，\(p\) 是模型給正確類別的機率；整批的 loss 再對所有圖平均。兩類分類時，若每張圖都給兩類各 50%，\(p=0.5\)，loss 就是 \(-\ln 0.5=\ln 2\approx0.693\)。所以 loss 停在 0.693 附近、accuracy 是 0.50，表示模型還在猜。
 
-可能看到 residual 初期的梯度或 loss 變化較明顯，也可能兩者 accuracy 一樣。合格的結論要寫出條件與實際數字，例如：「在 seed 7、8 張人工色塊、SGD learning rate 0.1、只訓練 3 步的條件下，residual 的 stem 梯度 L2 長度約 0.15，plain 約 0.001；residual 印出的 loss 從 0.6922 降到 0.6855，plain 幾乎不變；兩者 validation accuracy 都是 0.50（4 張）。」這些數字取自本節最下方的執行紀錄，換電腦重跑時小數末位可能略有不同。不能寫「ResNet 總是更準」，也不能把單次梯度 L2 長度較大解釋成泛化較好。
+對照頁尾的執行紀錄：residual 的 stem 梯度 L2 長度約 0.15，plain 只有約 0.001；residual 印出的 loss 一次比一次低，plain 幾乎停在 0.693；兩者的 validation accuracy 都是 0.50（4 張）。所以 3 步看得出 residual 的梯度傳得到 stem、plain 的小得多；但兩者都還在猜，看不出誰學得會。
 
-收益是學會控制變因，並把參數數、乘加數等成本一起記下來；代價是這個快速實驗的證據很有限。需要比較效果時，要給兩個模型相同且更多的訓練步數、使用更多獨立資料、跑多個 seed，並先定好評估規則，再決定是否保留 shortcut。
+## 訓練 40 步：plain 與 residual 學得動嗎
 
-## 常見錯誤、自主練習與答案
-
-常見錯誤是 plain 較窄、residual 較深，卻把差異全歸給 shortcut；或只讓其中一個模型多訓練幾次，直到它贏。另一種是用 validation 更新參數，失去獨立性。
-
-練習：把 block 數由 3 改成 1，其他設定不變。要改的是完整程式（Colab 裡「本節可修改的完整實驗」下方那格程式，或本機的 `lesson_cases/03-comparison.py`）第 23 行 `Classifier` 裡的 `for _ in range(3)`，改成 `range(1)`；第 57 行控制訓練步數的 `for step in range(3)` 不要動。接著先手算新的參數數、乘加數與加法次數，把 `assert params == 986` 的 986，以及 print 裡寫死的 `248840`、`3072`，改成你算出的值。執行前先預測兩個模型的 stem 梯度會怎樣變，再實跑核對。一樣不應把 3 步的勝負當成最終的架構選擇。
-
-??? note "參考答案"
-
-    參數數為 \(112+288+10=410\)，乘加數為 \(27648+73728+8=101384\)，residual 每張圖額外 1024 次加法。所以 `assert params == 986` 改成 `assert params == 410`，print 裡的 `248840` 改成 `101384`、`3072` 改成 `1024`。
-
-    梯度的預測：只剩 1 個 block 時，plain 從 stem 到 head 只隔 2 個卷積，stem 梯度應明顯變大；residual 本來就有直接路徑，變化不大，所以兩者差距縮小。另外實跑一次的結果（不在本節的執行紀錄裡，數字會因電腦略有不同）：plain 的 stem 梯度約 0.04，比 3 個 block 時（約 0.001）大很多；residual 約 0.15～0.16，和原本差不多；兩者差距從約 150 倍縮到約 4 倍，validation accuracy 仍都是 0.50。
-
-    還要注意：少建 2 個 block 後，head 取到的是亂數串裡不同位置的值，初始權重也跟著變（stem 與第 1 個 block 不變）。這正是前面講 seed 時說的情況：層的數量或順序一變，後面的層取到的亂數就錯開。所以 1 個 block 和 3 個 block 的結果之間，差的不只是 block 數。
-
-## 延長到 40 步：這次真正學到了什麼
-
-這是與上方 3 步檢查分開的補充實驗。本節 40 步沿用上方 3 步的全部設定（seed 7、CPU、同樣的初始權重、同樣 8 張訓練圖、SGD、learning rate 0.1），只把更新次數從 3 增加到 40；前 3 步的 loss 與本節最下方 3 步實驗的紀錄相同。
+要看兩者能不能學會，就沿用上面全部設定（seed 7、CPU、同樣的初始權重、同樣 8 張訓練圖與 4 張 validation、SGD、learning rate 0.1），只把更新次數增加到 40。這個實驗由 `scripts/run_learning_extensions.py` 執行：它從完整程式匯入同一個 `data` 與 `Classifier`，訓練迴圈則寫在腳本裡；前 3 次的 loss 和上面 3 步實驗印出的一致。它每一步都檢查 loss 與全部參數的梯度是有限值、梯度的 L2 長度大於 0，40 次更新後也檢查權重確實改變。
 
 |模型|loss（第 1 次更新前→第 40 次更新前）|40 次更新後的訓練 accuracy（8 張）|40 次更新後的 validation accuracy（4 張）|
 |---|---|---|---|
@@ -113,19 +144,51 @@ print(f"{name}: params={params}, MACs/image=248840, shortcut_adds/image="
 
 表中的 accuracy 是 40 次更新全部完成後，用 eval 模式量的。
 
-![本次固定資料 40 步的實際 loss](../assets/diagrams/03-comparison-learning.svg)
+![plain 與 residual 在同一批 8 張訓練圖上更新 40 次的訓練 loss](../assets/diagrams/03-comparison-learning.svg)
 
-圖說：藍線是 plain，幾乎水平停在 0.693（\(\approx\ln 2\)，等於亂猜）；橘線是 residual，前 15 步緩降，約第 20～30 步急降，第 40 次更新前約 0.031。橫軸是第幾次更新，每個點是該次更新「前」、在同一批 8 張訓練圖上量到的 loss：第 1 點還沒更新，第 40 點是第 40 次更新前的值。圖上的英文：Training step 是訓練步序，pre-update loss 是更新前的 loss，Fixed synthetic batch 是固定的一批人工資料。
+圖說：藍線是 plain，幾乎水平停在 0.693（\(\approx\ln 2\)，等於亂猜）；橘線是 residual，前 15 步緩降，約第 20～30 步急降，第 40 次更新前約 0.031。橫軸是第幾次更新，每個點是該次更新「前」、在同一批 8 張訓練圖上量到的 loss：第 1 點還沒更新，第 40 點是第 40 次更新前的值。
 
-想自己重跑：先執行本節 Colab 最上面的環境格（下載教材程式、安裝套件的那一格），再按「＋程式碼」（英文介面是「+ Code」）新增一格，貼上這行指令：`!python scripts/run_learning_extensions.py --section 03-comparison`。開頭的 `!` 表示把這行交給系統命令列執行，不是當成 Python 程式。原始完整紀錄：[40 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison-learning.json)。
+想自己重跑：先執行本節 Colab 最上面的環境格（下載教材程式、安裝套件的那一格），再按「＋程式碼」（英文介面是「+ Code」）新增一格，貼上下面三行執行：
+
+```python
+!python scripts/run_learning_extensions.py --section 03-comparison
+from IPython.display import SVG, display
+display(SVG(filename='artifacts/runs/learning/03-comparison/learning.svg'))
+```
+
+開頭的 `!` 表示把這行交給系統命令列執行，不是當成 Python 程式。第一行跑完 40 步後印出結果摘要，並把完整結果（`report.json`）與圖（`learning.svg`）寫進 `artifacts/runs/learning/03-comparison/`，不會覆寫網站上的紀錄與圖；後兩行把剛畫好的圖顯示出來。Colab 裡「本節可修改的完整實驗」那格說明也列著這三行。原始完整紀錄：[40 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison-learning.json)。
 
 ### 結果怎麼讀
 
-**觀察。** 兩個模型都是 986 個參數、同樣的起點、同樣用 SGD 與 learning rate 0.1。plain 40 步後 loss 幾乎沒動，一直貼著 \(\ln 2\approx0.693\)，8 張訓練圖全部猜成類別 1，訓練與 validation accuracy 都是 0.50。residual 的 loss 降到約 0.031，表示模型給正確類別的機率已接近 1；訓練 8 張與 validation 4 張全對。兩個模型每次更新的梯度都是有限值、L2 長度不為 0，權重也確實改變；所以 plain 並不是程式沒在更新，而是更新幾乎沒有效果。
+**觀察。** 兩個模型都是 986 個參數、同樣的起點、同樣用 SGD 與 learning rate 0.1。plain 40 步後 loss 幾乎沒動，一直貼著 \(\ln 2\approx0.693\)，8 張訓練圖全部猜成類別 1，訓練與 validation accuracy 都是 0.50。residual 的 loss 降到約 0.031，表示模型給正確類別的機率已接近 1；訓練 8 張與 validation 4 張全對。validation 的每個位置都有一紅一藍兩張圖，兩張只差在顏色，residual 兩張都答對，所以它確實是靠顏色分開兩類，方塊往下移 2 列也分得對。兩個模型每一步的梯度都是有限值、L2 長度不為 0，權重也確實改變；所以 plain 並不是程式沒在更新，而是更新幾乎沒有效果。
 
-**機制。** 3 步實驗的紀錄裡，三步的 plain stem 梯度都只有 residual 的約 1/150。訊號（各層輸出的數值）會一層層變小，源頭是 PyTorch 預設初始化給的權重偏小：block 裡每個 4→4 的 3×3 卷積，一個輸出值是 4×9＝36 個「權重×輸入」相加，權重取自 −1/6 到 1/6 的均勻分布（這個範圍內每個值出現的機會都一樣），平方的平均只有 \((1/6)^2\div3=1/108\)。權重有正有負、彼此獨立，36 項相加時交叉相乘的部分平均會互相抵消，所以每過一個卷積，數值平方的平均約縮成 36×1/108＝1/3，中間的 ReLU 把負值變成 0，又再少約一半。一個 block 合起來約縮成 1/18，數值大小約剩 1/4。plain 沒有 shortcut 把 \(x\) 加回，本設定又沒有 BatchNorm 把尺度拉回，所以訊號每過一個 block 都越來越接近 0。傳到 head 時特徵已經非常接近 0，head 算出的分數幾乎只剩它自己的 bias，8 張圖拿到幾乎一樣的分數；這組 bias 稍微偏向類別 1，於是 8 張全猜類別 1。反過來，梯度從 loss 傳回 stem 時也要穿過同樣 6 個卷積，每過一個 block 也明顯變小。residual 每個 block 都把 \(x\) 原樣加回（identity shortcut 那節的直接路徑），stem 算出的紅／藍特徵能一路送到 head，梯度也能沿 shortcut 傳回 stem。
+**機制。** 3 步實驗的紀錄裡，三步的 plain stem 梯度都只有 residual 的約 1/150。訊號（各層輸出的數值）會一層層變小，源頭是建立層時 PyTorch 自動給的隨機初始權重（預設初始化）偏小：block 裡每個 4→4 的 3×3 卷積，一個輸出值是 4×9＝36 個「權重×輸入」相加，權重取自 −1/6 到 1/6 的均勻分布（這個範圍內每個值出現的機會都一樣），平方的平均只有 \((1/6)^2\div3=1/108\)。權重有正有負、彼此獨立，36 項相加時交叉相乘的部分平均會互相抵消，所以每過一個卷積，數值平方的平均約縮成 36×1/108＝1/3，中間的 ReLU 把負值變成 0，又再少約一半。一個 block 合起來約縮成 1/18，數值大小約剩 1/4。plain 沒有 shortcut 把 \(x\) 加回，本設定又沒有 BatchNorm 把尺度拉回，所以訊號每過一個 block 都越來越接近 0。傳到 head 時特徵已經非常接近 0，head 算出的分數幾乎只剩它自己的 bias，8 張圖拿到幾乎一樣的分數；這組 bias 稍微偏向類別 1，於是 8 張全猜類別 1。反過來，梯度從 loss 傳回 stem 時也要穿過同樣 6 個卷積，每過一個 block 也明顯變小。residual 每個 block 都把 \(x\) 原樣加回（identity shortcut 那節的直接路徑），stem 算出的紅／藍特徵能一路送到 head，梯度也能沿 shortcut 傳回 stem。
 
-**限制。** 這只代表本設定：沒有 BatchNorm、PyTorch 預設初始化（建立層時自動給的隨機權重）、3 個 block、人工色塊。如開頭所說，加回 BatchNorm 會怎樣，本節沒有測；改用權重較大的初始化（例如 ResNet 論文用的 He 初始化）會怎樣，本節也沒有測。validation 全對只表示方塊往下移 2 列也答得對，離真實照片的泛化還很遠；曲線也只畫這批訓練圖的 loss。所以不能據此宣稱真實圖片或更深網路的泛化效果。
+**限制。** 這只代表本設定：沒有 BatchNorm、PyTorch 預設初始化、3 個 block、人工色塊，而且只有一個 seed。如開頭所說，加回 BatchNorm 會怎樣，本節沒有測；改用權重較大的初始化（例如 ResNet 論文用的 He 初始化）會怎樣，本節也沒有測。validation 全對只表示：方塊往下移 2 列、兩類位置又完全相同時，模型仍能只憑顏色答對這 4 張；離真實照片的泛化還很遠。曲線也只畫這批訓練圖的 loss。所以不能據此宣稱真實圖片或更深網路的泛化效果。
+
+## 應如何下結論
+
+合格的結論要寫出條件與實際數字，例如：「在 seed 7、8 張人工色塊、相同初始權重、SGD learning rate 0.1 的條件下，只訓練 3 步時，residual 的 stem 梯度 L2 長度約 0.15，plain 約 0.001；residual 印出的 loss 從 0.6922 降到 0.6855，plain 幾乎不變；兩者 validation accuracy 都是 0.50（4 張）。訓練 40 步後，plain 的 loss 仍停在 \(\ln 2\) 附近（0.693791 → 0.692943），訓練與 validation accuracy 都是 0.50；residual 的 loss 降到約 0.031，訓練 8 張與 validation 4 張全對。」3 步的數字取自頁尾的執行紀錄，40 步的取自上面的 40 步紀錄；換電腦重跑時小數末位可能略有不同。
+
+這段結論能支持的範圍是：在這個沒有 BatchNorm、只有 3 個 block、用 PyTorch 預設初始化的設定下，plain 40 步內學不動，residual 學得動，而且是靠顏色分類。不能寫「ResNet 總是更準」，也不能把單次梯度 L2 長度較大解釋成泛化較好。
+
+收益是學會控制變因，並把參數數、乘加數等成本一起記下來；代價是這個快速實驗的證據很有限。40 步做到的只是給兩個模型相同、而且比 3 步多的訓練步數；需要比較效果時，還要使用更多獨立資料、跑多個 seed，並先定好評估規則，再決定是否保留 shortcut。
+
+## 常見錯誤、自主練習與答案
+
+常見錯誤是 plain 較窄、residual 較深，卻把差異全歸給 shortcut；或只讓其中一個模型多訓練幾次，直到它贏。另一種是用 validation 更新參數，失去獨立性。還有一種是資料裡有跟著類別變的其他線索，例如紅方塊總在某些位置、藍方塊總在另一些位置，模型靠位置也能答對；本節讓兩類共用相同位置，就是為了排除這個可能。
+
+練習：把 block 數由 3 改成 1，其他設定不變。要改的是完整程式（Colab 裡「本節可修改的完整實驗」下方那格程式，或本機的 `lesson_cases/03-comparison.py`）`Classifier` 裡的 `self.blocks = nn.Sequential(*[Block(residual) for _ in range(3)])`：把其中的 `range(3)` 改成 `range(1)`。`main()` 裡控制訓練步數的 `for step in range(3)` 不要動。接著先手算新的參數數、乘加數與加法次數，把三行斷言 `assert params == 986`、`assert macs == 248840`、`assert shortcut_adds == (3072 if name == "residual" else 0)` 裡的 986、248840、3072 改成你算出的值。執行前也先預測兩個模型的 stem 梯度會怎樣變，再實跑核對。一樣不應把 3 步的勝負當成最終的架構選擇。
+
+執行時，只要有一個數字算錯或忘了改，程式就停在第一個不成立的斷言，出現 AssertionError。三行依參數數、乘加數、加法數的順序檢查；plain 的加法數本來就是 0，所以加法數那一行要等 plain 跑完 3 步、輪到 residual 時才會失敗。這三行斷言都在 print 之前，所以失敗的那個值不會印出來；想核對時，可以在失敗的那行斷言前面暫時加一行 print，例如 `print(macs)`，看程式數出多少，再回頭檢查手算。不要刪掉斷言來讓錯誤消失。
+
+??? note "參考答案"
+
+    參數數為 \(112+288+10=410\)，乘加數為 \(27648+2\times36864+8=101384\)，residual 每張圖額外 \(4\times16\times16=1024\) 次加法。所以三行斷言改成 `assert params == 410`、`assert macs == 101384` 與 `assert shortcut_adds == (1024 if name == "residual" else 0)`。改對後，程式跑完兩個模型的 3 步，兩者都印出 `params=410`、`MACs/image=101384`，`shortcut_adds/image` 則是 plain 0、residual 1024。
+
+    梯度的預測：只剩 1 個 block 時，plain 從 stem 到 head 只隔 2 個卷積，stem 梯度應明顯變大；residual 本來就有直接路徑，變化不大，所以兩者差距縮小。實際執行會看到：plain 的 stem 梯度比 3 個 block 時大了一個數量級以上，residual 的和 3 個 block 時差不多，兩者的差距因此大幅縮小；3 步後兩個模型的 validation accuracy 仍然一樣，3 步還不足以讓任何一個學會。小數會因電腦略有不同，這些趨勢不會。
+
+    還要注意：少建 2 個 block 後，head 取到的是亂數串裡不同位置的值，初始權重也跟著變（stem 與第 1 個 block 不變）。這正是前面講 seed 時說的情況：層的數量或順序一變，後面的層取到的亂數就錯開。所以 1 個 block 和 3 個 block 的結果之間，差的不只是 block 數。
 
 <!-- curriculum-evidence:start -->
 

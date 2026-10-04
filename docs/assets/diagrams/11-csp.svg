@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" role="img" aria-labelledby="title desc">
   <title id="title">CSP 讓前 4 個 channel 走旁路，最後串接再融合</title>
-  <desc id="desc">示意圖，方框大小不代表參數多寡。上下兩列是兩種 block，輸入、輸出 shape 相同，每一步的 H×W 都不變。上方 Full：輸入 C=8，經兩個 3×3 卷積，每個卷積後接 ReLU，都是 8→8；再經 1×1 融合，8→8。下方 CSP：輸入 C=8 沿 channel 切成 4+4。旁路是前 4 個 channel，不經過 3×3 卷積，直接送到 concat；卷積支路是後 4 個 channel，經兩個 3×3 卷積，每個卷積後接 ReLU，都是 4→4。concat 沿 channel 串接，4+4=8，再經 1×1 融合，8→8。兩列的對應方框上下對齊；Full 沒有 concat，所以那一欄只有箭頭。圖下說明：本節簡化，卷積帶 bias；參數從 Full 的 1240 降到 CSP 的 368；尚未比較真實辨識效果。concat 沿 channel 串接；add 則要求兩支形狀相同並逐值相加。</desc>
+  <desc id="desc">示意圖，方框大小不代表參數多寡。上下兩列是兩種 block，輸入、輸出 shape 相同，每一步的 H×W 都不變。上方 Full：輸入 C=8，經兩個 3×3 卷積，每個卷積後接 ReLU，都是 8→8；再經 1×1 融合，8→8。下方 CSP：輸入 C=8 沿 channel 切成 4+4。旁路是前 4 個 channel，不經過 3×3 卷積，直接送到 concat；卷積支路是後 4 個 channel，經兩個 3×3 卷積，每個卷積後接 ReLU，都是 4→4。concat 沿 channel 串接，4+4=8，再經 1×1 融合，8→8。兩列的對應方框上下對齊；Full 沒有 concat，所以那一欄只有箭頭。圖下說明：本節簡化，卷積帶 bias；參數從 Full 的 1240 降到 CSP 的 368；不比較準確度。concat 沿 channel 串接；add 則要求兩支形狀相同並逐值相加。</desc>
   <style>
     text{font-family:sans-serif;font-size:18px;fill:#0f172a}
     .head{font-size:21px;font-weight:700}
@@ -62,6 +62,6 @@
     <text x="651" y="220">1×1 融合</text><text x="651" y="243">8→8</text>
   </g>
 
-  <text x="16" y="324" class="note">本節簡化：卷積帶 bias。參數 1240 → 368；尚未比較真實辨識效果。</text>
+  <text x="16" y="324" class="note">本節簡化：卷積帶 bias。參數 1240 → 368；不比較準確度。</text>
   <text x="16" y="352" class="note">concat 沿 channel 串接；add 則要求兩支形狀相同並逐值相加。</text>
 </svg>

@@ -19,7 +19,7 @@
     - **投影的初值是單位矩陣**：Q、K、V 各由一份可學的投影矩陣產生。本節把三份投影的初值都設成 2×2 單位矩陣（identity：乘上去，輸出等於輸入），所以一開始 Q、K、V 都等於輸入。
     - **普通的 full attention**：每個位置都和全部位置（含自己）算權重。
     - **沒有多 head，也沒有位置卷積**：位置卷積是 YOLOv12 用來補位置資訊的卷積，在〈互動更遠，成本也更快成長〉那段說明。
-    - **不是完整的 YOLOv12**：實驗只驗證兩件事，一是輸出確實是各位置內容的加權和，二是梯度確實傳得回投影參數。限制每個位置能讀的範圍，是下一節的事。
+    - **不是完整的 YOLOv12**：實驗只驗證兩件事，一是輸出確實是各位置內容的加權和，二是梯度確實傳得回投影參數，而且 Q、K、V 三塊投影收到的梯度各不相同。限制每個位置能讀的範圍，是下一節的事。
 
 ![從空間特徵到加權輸出的 shape 路徑，以及左上從四個位置各讀多少](../assets/diagrams/15-attention-bridge.svg)
 
@@ -29,7 +29,7 @@
 
 輸入 `[B,C,H,W]=[1,2,2,2]`：1 張圖、2 個 channel、高和寬各 2。channel0 為 `[[1,0],[1,0]]`，channel1 為 `[[0,1],[1,0]]`。attention 要在位置之間讀取，所以先把每個位置的 channel 值排成一列：把 H、W 攤平成 N=4 個位置，再交換 C 和 N，得到 tokens `[1,4,2]`。一個 token 就是一個位置上各 channel 的值排成的向量，本例每個 token 有 2 個數。四個 token 依序是左上 `[1,0]`、右上 `[0,1]`、左下 `[1,1]`、右下 `[0,0]`。
 
-```python
+``` { .python data-excerpt="lesson_cases/15-attention-bridge.py" }
 tokens = feature.flatten(2).transpose(1, 2)  # [1,2,2,2] → [1,2,4] → [1,4,2]
 ```
 
@@ -56,7 +56,7 @@ tokens = feature.flatten(2).transpose(1, 2)  # [1,2,2,2] → [1,2,4] → [1,4,2]
 
 這四個數是左上的 attention 權重，也就是讀取比例：左上從四個位置各讀多少。它不是模型參數，每次輸入都重新算；會被訓練的是產生 Q、K、V 的投影參數 `qkv.weight`。
 
-下面的程式片段把除以 √d 後的分數存在變數 `similarity`（相似度）。變數名字叫相似度，本質卻是內積：a·b＝|a||b|cosθ，同時受方向和長度影響；它不是只看方向的 cosθ（[decoupled head 那一節](12-decoupled-head.md)比較梯度方向時用的 cosine 就是這個）。所以 [1,1] 雖然和 [1,0] 差了 45°，長度卻是 √2 倍，內積 1×√2×cos45°=1，和 [1,0] 跟自己的內積一樣。後面練習裡的 [2,0] 和 [1,0] 方向相同、長度兩倍，內積是 2，比 [1,0] 跟自己的內積還高。可學的 Q、K 投影，就是用來調整誰和誰的分數高。
+下面的程式片段把除以 √d 後的分數存在變數 `similarity`（相似度）。變數名字叫相似度，本質卻是內積：a·b＝|a||b|cosθ，同時受方向和長度影響；它不是只看方向的 cosθ（[decoupled head 那一節](12-decoupled-head.md)比較梯度方向時用的 cosine 就是這個）。所以 [1,1] 雖然和 [1,0] 差了 45°，長度卻是 √2 倍，內積 1×√2×cos45°=1，和 [1,0] 跟自己的內積一樣。後面練習 1 裡的 [2,0] 和 [1,0] 方向相同、長度兩倍，內積是 2，比 [1,0] 跟自己的內積還高。可學的 Q、K 投影，就是用來調整誰和誰的分數高。
 
 ```python
 q, k, v = qkv(tokens).chunk(3, dim=-1)               # 切成 Q、K、V，各 [1,4,2]
@@ -117,17 +117,45 @@ softmax 沿最後一軸，也就是 key（來源）軸做，所以每一列加�
 
 輸出 tokens 仍是 `[1,4,2]`。先轉回 `[1,2,4]`，再 reshape 成 `[1,2,2,2]`，就回到圖片的排法，用的也是同樣的 row-major 順序。還原後和輸入的 shape 相同，所以能接回卷積網路繼續用。YOLOv12 作者程式裡包住 attention 的區塊（`ABlock`），還會把 attention 的輸出加回原特徵（`x = x + self.attn(x)`），類似[第 3 章](03-identity.md)的 residual。
 
-為了有 loss 可以反傳，這裡拿原 feature 當目標（reconstruction target，重建目標：要求輸出還原成輸入），算 MSE、backward，再做一次 SGD。這只是為了確認梯度流得到 Q、K、V 的投影參數；這個目標本身沒有偵測意義。完整程式最後的兩個斷言（assert）分別檢查：投影參數 `qkv.weight` 切成 Q、K、V 三段後，每段都有非零梯度；更新一步後，`qkv.weight` 確實改變。這不表示 attention 學到了對偵測有用的東西，只證明加權讀取、還原和 loss 都在同一張計算圖上。另外，本例的輸入剛好對稱（把兩個 channel 對調，得到的仍是原來那四個 token，只是左上、右上互換位置），Q、K、V 三段又都從單位矩陣出發，所以 Q、K 兩段收到的梯度相同（程式用 float32 計算，兩者只差極小的捨入誤差；要自己核對，請用 `torch.allclose`，不要用 `==`），更新一步後只有 V 變得和 Q、K 不同。
+為了有 loss 可以反傳，完整程式最後一段先定一個目標，算 loss、backward，再用 SGD（w←w−lr×梯度，這裡 lr=0.1）更新一次，並用斷言（assert）核對梯度與更新結果。下面是這一段，中文註解是另外加的：
+
+``` { .python data-excerpt="lesson_cases/15-attention-bridge.py" }
+optimizer = torch.optim.SGD(qkv.parameters(), lr=.1)
+optimizer.zero_grad()
+# 目標：feature 的 channel0 乘 1、channel1 乘 0.5
+target = feature * torch.tensor([1., .5]).view(1, 2, 1, 1)
+loss = F.mse_loss(output, target)
+loss.backward()
+# 梯度和 qkv.weight 一樣是 6×2，沿第 0 軸切成三塊 2×2：Q、K、V 各一塊
+grad_q, grad_k, grad_v = qkv.weight.grad.chunk(3, dim=0)
+assert all(part.abs().sum() > 0 for part in (grad_q, grad_k, grad_v))  # 每塊都不全為 0
+assert not torch.allclose(grad_q, grad_k)  # 三塊兩兩不同
+assert not torch.allclose(grad_q, grad_v)
+assert not torch.allclose(grad_k, grad_v)
+old = qkv.weight.detach().clone()  # 更新前的副本
+optimizer.step()
+assert not torch.equal(old, qkv.weight)  # 更新一步後，權重確實改變
+```
+
+`target` 是把 feature 的 channel1 乘 0.5。`torch.tensor([1., .5]).view(1, 2, 1, 1)` 把兩個倍數排成 shape `[1,2,1,1]`；和 `[1,2,2,2]` 的 feature 相乘時，長度 1 的 H、W 兩軸會 broadcast（廣播：自動延伸成另一邊的長度，見[第 3 章](03-identity.md)），所以每個位置都是 channel0 乘 1、channel1 乘 0.5。四個目標 token 依序（左上、右上、左下、右下）是 [1,0]、[0,0.5]、[1,0.5]、[0,0]。若漏寫 `.view(1, 2, 1, 1)`，shape `[2]` 的倍數會對齊 feature 的最後一軸，也就是寬，變成兩個 channel 右邊那一欄都乘 0.5，而不是 channel1 乘 0.5。
+
+這個目標要求輸出還原成這張縮放過的輸入，所以叫 reconstruction target（重建目標），印出的 loss 也叫 reconstruction loss。`F.mse_loss` 算的是 MSE（mean squared error，均方誤差）：輸出與目標的 8 個值逐一相減、平方，再取平均；`F` 是完整程式開頭匯入的 `torch.nn.functional`。這個目標本身沒有偵測意義，只是用來確認梯度流得到 Q、K、V 的投影參數。
+
+`chunk(3, dim=0)` 沿第 0 軸把梯度的 6 列切成上、中、下三塊，順序和前面把 6 維輸出切成 Q、K、V 時相同，所以依序是 Q、K、V 的投影收到的梯度 `grad_q`、`grad_k`、`grad_v`。斷言檢查三件事：每塊梯度都不全為 0；三塊兩兩不同；更新一步後 `qkv.weight` 確實改變。「不全為 0」和「比較更新前後的副本」這兩種寫法，[第 2 章](02-diagnostics.md)確認 body 有在學時也用過。這些斷言不表示 attention 學到了對偵測有用的東西，只證明加權讀取、還原和 loss 都在同一張計算圖上。
+
+channel1 乘 0.5，是為了讓 Q、K 兩塊的梯度分開。本例的輸入有一種對稱：把每個 token 的兩個 channel 對調，[1,0]、[0,1]、[1,1]、[0,0] 變成 [0,1]、[1,0]、[1,1]、[0,0]，還是同樣四個 token，只是左上、右上互換位置。目標若直接用原 feature，也有同樣的對稱；三塊投影又都從單位矩陣出發，這時 Q、K 兩塊收到的梯度完全相同，更新一步後 Q、K 的投影也仍然相同。程式用的目標（channel1 乘 0.5）沒有這個對稱，算出來三塊梯度兩兩不同；三塊投影都從同一個單位矩陣出發，各自減去 0.1 倍自己的梯度，所以更新一步後 Q、K、V 的投影就各不相同，也就是前面說的「三份分開學」。不過，不是任何打破對稱的目標都行：漏寫 `.view` 時的目標 [1,0]、[0,0.5]、[1,1]、[0,0] 同樣不對稱，算出來 Q、K 的梯度卻仍然相同。所以程式不靠推理，直接用斷言核對三塊梯度兩兩不同。
+
+比較梯度用 `torch.allclose`（逐項比較，每一項的差距都在容許誤差內就算相等，[4.2 節](04-coordinates.md)用過），不用 `torch.equal`（兩邊每個值都完全相同才算相等）。數學上相同的兩塊梯度，用 float32（PyTorch 預設的浮點數格式，約 7 位有效數字）計算時，可能因為捨入誤差而在最後幾位不同；改用 `torch.equal` 的話，`assert not torch.equal(...)` 可能照樣通過，放過 Q、K 梯度其實相同的情況。最後一條斷言比的是更新前後的權重：沒有更新時，權重的每個值都原封不動，所以用 `torch.equal` 就夠了。
 
 執行 `PYTHONPATH=. python lesson_cases/15-attention-bridge.py`，對照印出的這幾行：
 
 - `tokens`：順序是左上、右上、左下、右下。
-- `first attention row`：約 [0.3349,0.1651,0.3349,0.1651]。
-- `first weighted value`：約 [0.6698,0.5]，也就是第一個位置的輸出。
+- `first attention row`：[0.3349,0.1651,0.3349,0.1651]，就是上面手算的那一列（印到小數第四位）。
+- `first weighted value`：[0.6698,0.5]，也就是第一個位置的輸出。
 - `shape feature -> tokens -> affinity -> feature`：第三個 shape 是 affinity，`(1, 4, 4)`。
-- 最後一行 `backward/step through Q,K,V verified`：反傳和一次更新都成功。
+- 最後一行 `backward/step through Q,K,V verified`：程式裡的斷言全部通過，才會印出這一行，表示反傳和一次更新都成功；後面的 `reconstruction loss` 是更新前算出的 MSE。
 
-以 `exercise` 開頭的兩行是自主練習的答案，做練習前先別看。程式在 CPU 上就能跑，不需要 FlashAttention。FlashAttention 是在 GPU 上算 attention 的一種做法：把計算切成小塊，邊算邊做 softmax 與加權，不把整張 N×N 權重表存進記憶體。算出的結果和普通算法相同，但省記憶體，通常也比較快。
+以 `exercise` 開頭的兩行是練習 1 的答案，做練習前先別看。程式在 CPU 上就能跑，不需要 FlashAttention。FlashAttention 是在 GPU 上算 attention 的一種做法：把計算切成小塊，邊算邊做 softmax 與加權，不把整張 N×N 權重表存進記憶體。算出的結果和普通算法相同，但省記憶體，通常也比較快。
 
 ## 互動更遠，成本也更快成長
 
@@ -149,7 +177,9 @@ N² 是把整張權重表實際存下來時的大小。上面提到的 FlashAtte
 - **用 argmax 取代加權和**：argmax 只挑分數最大的那一個來源，失去「同時從好幾個位置混合讀取」；而且挑選這一步沒有梯度，傳不回 Q、K。
 - **把 attention 權重當成因果重要性**：左上從左下讀 0.3349，只表示這一層、這一次讀了這個比例，不代表左下對最後預測的貢獻是 33%。輸出還受 V 的大小和後面每一層影響。
 
-自主練習：把第四個 token（右下）從 `[0,0]` 改成 `[2,0]`，投影仍是單位矩陣。第一個位置（左上）的權重和輸出會變成多少？
+## 自主練習與答案
+
+**練習 1：右下換成 [2,0]。**把第四個 token（右下）從 `[0,0]` 改成 `[2,0]`，投影仍是單位矩陣。第一個位置（左上）的權重和輸出會變成多少？
 
 1. 先手算：第一個 query [1,0] 和四個 key 的內積、除以 √2 後的四個分數、四個分子（exp）、共同分母、四個權重，以及第一個位置的輸出。
 2. 再執行程式，對照輸出裡以 `exercise` 開頭的兩行。
@@ -170,7 +200,15 @@ N² 是把整張權重表實際存下來時的大小。上面提到的 FlashAtte
 
     不能沿用舊權重 [0.3349,0.1651,0.3349,0.1651]、只把第四個 V 換成 [2,0]（那樣會算出 [1.0,0.5]）。第四個 token 同時也是第四個 key：它的分數從 0 變成 2/√2，分子從 1 變成約 4.1133，共同分母從 6.0562 變成約 9.1695，所以四個權重都要重算。
 
-來源查核：2026-10-02。[Attention Is All You Need](https://arxiv.org/abs/1706.03762)、[YOLOv12 作者 AAttn 實作](https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py)（AAttn 是作者程式裡 area attention 模組的類別名稱）。
+**練習 2：目標改用原 feature。**這題要改程式：在 Colab 裡改「本節可修改的完整實驗」下面那一格；本機則改 `lesson_cases/15-attention-bridge.py`，兩者是同一份程式。把 `target = feature * torch.tensor([1., .5]).view(1, 2, 1, 1)` 改成 `target = feature`，其他不動。先預測：程式會停在哪一條斷言？為什麼？原本的七行輸出，還會印出哪幾行？再執行核對。
+
+??? note "參考答案"
+
+    程式照常印出前六行（和原本相同），接著停在 `assert not torch.allclose(grad_q, grad_k)`，報 `AssertionError`，最後一行 `backward/step through Q,K,V verified` 不會印出。
+
+    目標改用原 feature 後，輸入和目標都有 channel 對調的對稱，三塊投影又都從單位矩陣出發，所以 Q、K 兩塊收到的梯度相同（用 float32 計算，最多只差捨入誤差）。`torch.allclose` 判定兩者相等，加上 `not` 就不成立。前一條斷言照樣通過：三塊梯度都不全為 0，只是 Q、K 兩塊彼此相同。這就是目標要把 channel1 乘 0.5 的原因。
+
+參考來源：[Attention Is All You Need](https://arxiv.org/abs/1706.03762)、[YOLOv12 作者 AAttn 實作](https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py)（AAttn 是作者程式裡 area attention 模組的類別名稱）。
 
 <!-- curriculum-evidence:start -->
 

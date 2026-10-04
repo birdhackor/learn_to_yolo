@@ -10,15 +10,17 @@
 
 ## 版本與原生設定
 
-文件依賴固定為 `zensical==0.0.67`，Python 下限由套件 metadata 宣告為 3.10；GitHub Actions 用 Python 3.12，本機建立 `.venv-docs` 時也用 3.12，與 CI 相同。這些版本只決定網站建置，不代表 CUDA 或訓練程式的相容性。
+文件依賴固定為 `zensical==0.0.67`，Python 下限由套件 metadata 宣告為 3.10；GitHub Actions 用 Python 3.12，本機也用 3.12，與 CI 相同。本頁〈建置與預覽〉一節的 `python3` 既建立 `.venv-docs`，也直接執行檢查腳本，所以先用 `python3 --version` 確認它是 3.12（不是的話，把這些指令裡的 `python3` 換成 3.12 的直譯器，例如 `python3.12`）：Zensical 在 3.10 就裝得起來，但 `validate_lessons.py` 與 `validate_site.py` 用到 Python 3.11 才加入的標準函式庫 `tomllib`，在更舊的 Python 會停在 `ModuleNotFoundError: No module named 'tomllib'`。這些版本只決定網站的建置與檢查，不代表 CUDA 或訓練程式的相容性。
 
 ```text
 zensical.toml                   網站設定與完整小節導覽
 requirements-docs.txt           固定文件建置版本
 .github/workflows/pages.yml     GitHub Pages artifact 發布流程
+.github/workflows/verify-release.yml
+                                發布後從公開 tag 驗證網站、notebook 與 README 指令
 overrides/                      主題覆寫（中文 404 頁）
 docs/lessons/                   42 節閱讀頁
-docs/assets/                    SVG、結果圖，以及 MathJax 與其字型
+docs/assets/                    SVG 圖（含結果圖）、mathjax.js，以及 MathJax 與其字型
 notebooks/                      各節獨立的 Colab notebook 與環境檢查 notebook
 section-map.json                閱讀頁與 notebook 的配對，以及各節固定的 tag（source_ref）
 site/                           產生的靜態網站，不進 Git
@@ -27,7 +29,7 @@ site/                           產生的靜態網站，不進 Git
 
 `zensical.toml` 使用 `[project]`、`[project.theme]` 與 `[project.markdown_extensions]`。本站採用 modern 主題、`zh-TW`、深淺色模式、內建搜尋與快速換頁；沒有安裝 MkDocs 或 Material 外掛。
 
-來源：[Zensical 安裝](https://zensical.org/docs/get-started/)、[原生設定](https://zensical.org/docs/setup/basics/)、[PyPI metadata](https://pypi.org/pypi/zensical/json)、[MkDocs 相容性](https://zensical.org/docs/compatibility/mkdocs/)。
+來源：[Zensical 安裝](https://zensical.org/docs/get-started/)、[原生設定](https://zensical.org/docs/setup/basics/)、[PyPI metadata](https://pypi.org/pypi/zensical/0.0.67/json)、[MkDocs 相容性](https://zensical.org/docs/compatibility/mkdocs/)。
 
 ## 搜尋與公式
 
@@ -37,7 +39,7 @@ Zensical 使用自己的搜尋引擎，搜尋語言由 `theme.language` 決定�
 
 公式使用 Arithmatex 標記與本地 MathJax 3.2.2 資產。快速換頁不會重新載入整個網站，所以 `mathjax.js` 訂閱 Zensical 在每次載入新頁時發出的 `document$`，對新頁內容重新排版。`validate_site.py` 只檢查正文裡的 `\(`、`\)`、`\[`、`\]` 都在 Arithmatex 標記內，不會在瀏覽器裡排版；瀏覽器檢查要包含直接開頁、點擊內部連結換頁與深淺色切換。
 
-來源：[Zensical 搜尋](https://zensical.org/docs/setup/search/)、[快速換頁](https://zensical.org/docs/setup/navigation/)。
+來源：[Zensical 搜尋](https://zensical.org/docs/setup/search/)、[快速換頁](https://zensical.org/docs/setup/navigation/)、[MathJax 與快速換頁的整合](https://zensical.org/docs/authoring/math/)。
 
 ## 建置與預覽
 
@@ -65,10 +67,10 @@ python3 scripts/validate_site.py
 build job 在 `ubuntu-latest` 上執行，逾時上限 10 分鐘。它先用 `actions/checkout@v4` 取出程式，設定 `lfs: false`，不下載 LFS 物件；再用 `actions/setup-python@v5` 安裝 Python 3.12（pip 快取以 `requirements-docs.txt` 為準），執行 `python -m pip install -r requirements-docs.txt`。接著依序執行下面五步；任何一步失敗，後面的步驟都不會執行，網站也不會部署。
 
 1. **Validate data manifests and notebook pairs**：`python scripts/validate_preparation.py`。`data/manifest.json` 的資料集 ID 不能重複，狀態為 `download-ready` 的資料集要有授權、檔名、大小、SHA-256 與 HTTPS 網址。`section-map.json` 列出 42 節課程，另有一筆 `kind` 為 `preparation` 的環境檢查 notebook（〈首頁〉連到的 `notebooks/00_environment_check.ipynb`）；每一筆的 ID 都不能重複、引用的資料集都要在 manifest 裡，就緒的還要有閱讀頁、notebook 與 `source_ref`。每本 notebook 都要是 nbformat 4 的 Python notebook，程式格都要能被 Python 解析。`docs/` 裡每個檔案都要小於 5 MiB，而且不能是權重（`.pt`、`.pth`、`.onnx`）、壓縮封裝（`.zip`、`.tar`、`.gz`）或 LFS pointer。
-2. **Validate lessons and reader reviews**：`python scripts/validate_lessons.py`。`section-map.json` 裡 `kind` 為 `lesson` 的項目要剛好 42 個，而且都已就緒。每個課程頁的 Colab 連結與 notebook metadata 都要指向該節的 `source_ref`；notebook 最後一格要與 `lesson_cases/<節>.py` 逐字相同；頁面引用的 SVG 都要存在；標了 `data-excerpt` 的程式摘錄，每一行都要出現在它標明的原檔裡；沒有標記、卻有三行以上全部照抄 `lesson_cases/`、`miniyolo/` 或 `scripts/` 的 Python 區塊會被擋下。導覽裡的每一頁都要有審查紀錄，而且紀錄涵蓋該頁目前的文字與頁面上的 SVG 圖，課程頁還包括該節程式與它 import 的模組；頁尾的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。`docs/assets/diagrams/` 的每張 SVG 都要有 `viewBox` 與 `<title>`。
-3. **Validate current lesson execution evidence**：`python scripts/validate_curriculum_evidence.py`。42 節的執行紀錄都要標示通過，而且用 SHA-256 綁定的程式（該節程式與它 import 的 repo 檔案）都沒有改過；紀錄要寫明產生它的電腦。notebook 最後一格不能有錯誤輸出，印出的文字要與紀錄的 stdout 一字不差；課程頁上執行紀錄區塊的開始標記與結束標記都要恰好一個，紀錄的日期、PyTorch 版本與 CPU 型號也要出現在頁面上（比對的是整頁文字，不限區塊內）。補充紀錄與 GPU 紀錄綁定的程式也都不能改過；GPU 紀錄還要標示通過，並記載 Modal 上的 app 已確認停止。這一步只比對一致性，不重跑實驗，也不需要 PyTorch。
+2. **Validate lessons and reader reviews**：`python scripts/validate_lessons.py`。`section-map.json` 裡 `kind` 為 `lesson` 的項目要剛好 42 個，而且都已就緒。每個課程頁的 Colab 連結與 notebook metadata 都要指向該節的 `source_ref`；notebook 最後一格要與 `lesson_cases/<節>.py` 逐字相同；頁面引用的 SVG 都要存在；標了 `data-excerpt` 的程式摘錄，標明的原檔要是 `lesson_cases/`、`miniyolo/` 或 `scripts/` 裡的 Python 檔，摘錄的每一行程式（不計註解、空行與 `...` 省略行，也不計縮排與空白多寡）都要出現在那個檔裡；沒有標記、卻有三行以上全部照抄這三個資料夾裡某個檔的 Python 區塊會被擋下。導覽裡的每一頁都要有審查紀錄，而且紀錄涵蓋該頁目前的文字與頁面上的 SVG 圖，課程頁還包括該節程式與它 import 的模組；頁尾的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。`docs/assets/diagrams/` 的每張 SVG 都要有 `viewBox` 與 `<title>`。
+3. **Validate current lesson execution evidence**：`python scripts/validate_curriculum_evidence.py`。42 節的執行紀錄都要標示通過，而且用 SHA-256 綁定的程式（該節程式與它 import 的 repo 檔案）都沒有改過；紀錄要寫明產生它的電腦。notebook 最後一格不能有錯誤輸出，印出的文字要與紀錄的 stdout 一字不差；課程頁上執行紀錄區塊的開始標記與結束標記都要恰好一個，紀錄的日期、PyTorch 版本與 CPU 型號也要出現在頁面上（比對的是整頁文字，不限區塊內）。補充紀錄（各節的補充實驗與〈資料規劃〉的 Fashion-MNIST 核對在 CPU 上的紀錄）與 GPU 紀錄的清單在 `scripts/evidence_records.py`，它們綁定的程式也都不能改過；補充紀錄同樣要寫明電腦，其中 8.2 的 1600 步訓練、影片檔與 Fashion-MNIST 三份還要通過各自的內容檢查（例如 loss 的筆數等於步數）；GPU 紀錄要標示通過，並記載 Modal 上的 app 已確認停止。所有紀錄裡的數字都不能是 NaN 或無限大。這一步只比對一致性，不重跑實驗，也不需要 PyTorch。
 4. **Build Zensical pages**：`zensical build --clean --strict`，產生 `site/`。
-5. **Validate generated pages and search index**：`python scripts/validate_site.py`。repository 裡不能有 `mkdocs.yml`；每頁都要由 `requirements-docs.txt` 固定的 Zensical 版本產生；本地連結、圖片與 script 都要指到 `site/` 裡存在的檔案，連到的錨點也要存在。搜尋索引的語言要是 `zh-TW`，42 節都要在索引裡；每節頁面都要有指向該節 `source_ref` 的 Colab 連結。Markdown 要照原意轉換：正文裡不能有被誤當成 HTML 標籤的文字，也不能留下沒轉換的表格、摺疊區塊（`???`），或 Arithmatex 標記外的數學式符號；網址都要成為連結；`docs/` 裡每個表格的各列欄數都要與表頭相同。最後，`site/` 裡不能有符號連結、LFS pointer，或 `.pt`、`.pth`、`.onnx`、`.ipynb`、`.zip`、`.tar`、`.gz` 檔。
+5. **Validate generated pages and search index**：`python scripts/validate_site.py`。repository 裡不能有 `mkdocs.yml`；每頁都要由 `requirements-docs.txt` 固定的 Zensical 版本產生；本地連結、圖片與 script 都要指到 `site/` 裡存在的檔案，連到的錨點也要存在。搜尋索引的語言要是 `zh-TW`，42 節都要在索引裡；每節頁面都要有指向該節 `source_ref` 的 Colab 連結。Markdown 要照原意轉換：正文裡不能有被誤當成 HTML 標籤的文字，也不能留下沒轉換的表格、摺疊區塊（`???`），或 Arithmatex 標記外的數學式符號；網址都要成為連結；`docs/` 裡每個表格的各列欄數都要與表頭相同；編號清單裡，項目底下空一行之後的段落要比編號多縮排 4 格，否則清單會在那裡斷開，下一項重新從 1 編號。最後，`site/` 裡不能有符號連結、LFS pointer，或 `.pt`、`.pth`、`.onnx`、`.ipynb`、`.zip`、`.tar`、`.gz` 檔。
 
 五步都通過後，`actions/upload-pages-artifact@v3` 把 `site/` 上傳成 Pages artifact。deploy job 要等 build 成功才開始（`needs: build`），逾時上限 5 分鐘；它在 `github-pages` environment 用 `actions/deploy-pages@v4` 部署，environment 顯示的網址取自這一步輸出的 `page_url`。
 
@@ -90,6 +92,6 @@ build job 的 `GITHUB_TOKEN` 只有 workflow 層級設定的 `contents: read`；
 
 環境格用 `git clone --depth 1 --branch <tag>` 取得固定版本的程式。clone 時設定 `GIT_LFS_SKIP_SMUDGE=1`，不下載 LFS 資料，之後再確認取得的正是這個 tag。PyTorch 不是 2.9.1 時改裝 2.9.1 的 CPU 版；已經是 2.9.1 就沿用，CPU 或 CUDA 版都可以。若這個工作階段在改裝前已經載入 torch，環境格改裝完就會停下，提示重新啟動工作階段，再從第一格執行。接著安裝固定版本的 numpy、Pillow 與 matplotlib；第 20 章另裝 onnx 與 onnxruntime。各節範例不用預訓練權重、不下載資料，也不依賴其他節的 runtime 或作者的 Google Drive。
 
-環境格的這些分支由 `tests/test_notebook_bootstrap.py` 測試：測試執行 `bootstrap()` 產生的環境格，把 pip、git 與套件版本查詢換成假的替代品（stub），不連網，也不在 Colab 上執行。各節的 CPU 執行紀錄是在 Colab 以外的電腦上直接執行 `lesson_cases/` 的程式產生的；notebook 沒有在 Google Colab 的託管 runtime 上逐節執行過。這些紀錄與測試都不涵蓋 Google 登入、Colab 分配的 GPU，或在 GPU 上的完整訓練。
+環境格的這些分支由 `tests/test_notebook_bootstrap.py` 測試：測試執行 `bootstrap()` 產生的環境格，把 pip、git 與套件版本查詢換成假的替代品（stub），不連網，也不在 Colab 上執行。網站發布後，手動啟動的 workflow **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 的 Linux runner 上，從公開 tag 的全新 clone 實際執行：每種情況各用一個新的虛擬環境，照原樣執行環境格與最後一格，第 0 章試沒有 PyTorch、裝著其他版本、已是 2.9.1、其他版本已經載入四種情況，另加第 20 章。它也核對公開網站每節的 Colab 連結都開這個 tag 的 notebook，而那本 notebook 的環境格固定在這個 tag、最後一格就是該節程式。兩項結果在發布後存進 main 的 `artifacts/checks/curriculum-release-bootstrap.json` 與 `artifacts/checks/curriculum-publication.json`。各節的 CPU 執行紀錄是在 Colab 以外的電腦上直接執行 `lesson_cases/` 的程式產生的；notebook 沒有在 Google Colab 的託管 runtime 上逐節執行過。這些紀錄、測試與發布後的驗證都不涵蓋 Google 登入、Colab 分配的 GPU，或在 GPU 上的完整訓練。
 
-來源：[Colab 官方 GitHub notebook 示範](https://github.com/googlecolab/colabtools/blob/main/notebooks/colab-github-demo.ipynb)、[Colab FAQ](https://research.google.com/colaboratory/faq.html)。操作步驟見〈[發布與帳號設定](../preparation/publish.md)〉；各種執行紀錄能支持哪些結論、哪些事沒有測，見〈[驗證範圍與後續實驗](../status.md)〉。
+來源：[Colab 官方 GitHub notebook 示範](https://github.com/googlecolab/colabtools/blob/main/notebooks/colab-github-demo.ipynb)、[Colab FAQ](https://research.google.com/colaboratory/faq.html)。操作步驟見〈[發布與帳號設定](../preparation/publish.md)〉；各種執行紀錄能支持哪些結論、哪些事沒有測，見〈[驗證範圍](../status.md)〉。
