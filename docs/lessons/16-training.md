@@ -1,6 +1,6 @@
 # 16.3 YOLO26 訓練補強：Progressive Loss、STAL 與 MuSGD
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/16-training.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/16-training.ipynb){ .md-button }
 
 YOLO26 官方介紹了三個訓練技巧：Progressive Loss、STAL 和 MuSGD。本節逐一說明三者在做什麼，只對第一個做實驗。讀完本節，你能說出兩個分支的 loss 權重怎麼隨訓練移動，能手算一步加了 loss 權重的 SGD 更新，能用 loss 權重總量相同的對照組分辨差距從哪裡來，也能說明小物件為什麼要放寬候選資格。
 
@@ -26,7 +26,7 @@ NMS-free 推論（論文的預設；官方 API 要設 `nms=False`，見 [16.2](1
 
 ## Progressive Loss：總 loss 往推論分支移動
 
-13.1 說過：one-to-many 讓每個真值物件可以有多個正候選；one-to-one 讓每個真值物件最多只選一個正候選。訓練早期，many 分支提供較密集的學習訊號；後期加重 NMS-free 推論模式所用的 one 分支。這就是這項排程的動機。代價是後期分給 many 的 loss 權重變少，而且要自己選轉移的速度與終點；不能假設同一種排程適合所有資料。
+13.1 說過：one-to-many 讓每個真值物件可以有多個正候選；one-to-one 的目標是減少重複，YOLOv10 用 top-1 初選。本章的 YOLO26 在衝突後還用 `topk2=1` 再篩一次，因此最終每個 GT 至多一個正候選，可能零個；這和 13.1 的最終分配規則不同。訓練早期，many 分支提供較密集的學習訊號；後期加重 NMS-free 推論模式所用的 one 分支。這就是這項排程的動機。代價是後期分給 many 的 loss 權重變少，而且要自己選轉移的速度與終點；不能假設同一種排程適合所有資料。
 
 官方的排程寫在 `E2ELoss` 裡。`E2ELoss` 是官方程式中同時計算 many、one 兩分支 loss 的 Python class；E2E 是 end-to-end（端到端），指 one-to-one 分支可以直接輸出最終的框，不需要 NMS。查核版本的 `E2ELoss` 一開始給 many 的 loss 權重 0.8、one 0.2；訓練中 many 線性遞減到 0.1，one 升到 0.9。
 

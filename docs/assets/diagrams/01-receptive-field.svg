@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title desc">
+<title id="title">感受野邊界：第0、3、7格對原圖的理論範圍</title><desc id="desc">兩個含兩層3乘3padding1卷積與2乘2stride2池化的block之後，末端第i格讀原圖索引4i減6到4i加9。i0範圍負6到9，只有0到9在原圖內；i3範圍6到21全在原圖；i7範圍22到37只有22到31在原圖，其餘是padding。</desc>
+<rect width="520" height="520" rx="12" fill="#f8fafc"/>
+<g font-family="sans-serif" fill="#0f172a">
+<text x="22" y="34" font-size="22" >感受野：末端一格，可能看到原圖哪裡？</text>
+<text x="22" y="72" font-size="22" >末端第 0 格</text>
+<rect x="15" y="88" width="440" height="35" fill="#e2e8f0"/>
+<rect x="75" y="88" width="320" height="35" fill="#94a3b8"/>
+<rect x="15" y="88" width="160" height="35" fill="#93c5fd" fill-opacity="0.65" stroke="#2563eb" stroke-width="3"/>
+<path d="M75,82 V133 M395,82 V133" stroke="#334155" stroke-width="2"/>
+<text x="22" y="157" font-size="22" >讀原圖索引 -6～9</text>
+<text x="22" y="187" font-size="22" >末端第 3 格</text>
+<rect x="15" y="203" width="440" height="35" fill="#e2e8f0"/>
+<rect x="75" y="203" width="320" height="35" fill="#94a3b8"/>
+<rect x="135" y="203" width="160" height="35" fill="#93c5fd" fill-opacity="0.65" stroke="#2563eb" stroke-width="3"/>
+<path d="M75,197 V248 M395,197 V248" stroke="#334155" stroke-width="2"/>
+<text x="22" y="272" font-size="22" >讀原圖索引 6～21</text>
+<text x="22" y="302" font-size="22" >末端第 7 格</text>
+<rect x="15" y="318" width="440" height="35" fill="#e2e8f0"/>
+<rect x="75" y="318" width="320" height="35" fill="#94a3b8"/>
+<rect x="295" y="318" width="160" height="35" fill="#93c5fd" fill-opacity="0.65" stroke="#2563eb" stroke-width="3"/>
+<path d="M75,312 V363 M395,312 V363" stroke="#334155" stroke-width="2"/>
+<text x="22" y="387" font-size="22" >讀原圖索引 22～37</text>
+<text x="22" y="445" font-size="22" >深色長條：原圖的 32 個位置（0～31）。</text>
+<text x="22" y="482" font-size="22" >藍框：理論範圍；超出原圖處是補邊。</text>
+
+</g></svg>

@@ -46,11 +46,12 @@ git status --short
 git diff --check
 git add -A
 git diff --cached --check
+git diff --cached
 git commit -m "Update Learn to YOLO site"
 git push origin HEAD:main
 ```
 
-`data/downloads/`、`data/processed/`、`artifacts/runs/`、`site/` 與建置快取都列在 `.gitignore`，不會被 commit。commit 前看一遍已暫存的檔案，不要夾帶無關的修改。遠端 main 有新的 commit 時，照一般 Git 流程同步、解決衝突，不要 force push。
+`data/downloads/`、`data/processed/`、`artifacts/runs/`、`site/` 與建置快取都列在 `.gitignore`，不會被 commit。`git diff --cached` 顯示即將 commit 的實際修改；commit 前看一遍已暫存的檔案，不要夾帶無關的修改。遠端 main 有新的 commit 時，照一般 Git 流程同步、解決衝突，不要 force push。
 
 ## 3. 啟用 GitHub Pages
 
@@ -121,7 +122,7 @@ Fashion-MNIST 封裝要重新上傳時，在 GitHub Actions 執行 **Publish and
 
 ### Colab 只取得指定 LFS asset
 
-需要在 Colab 取得某個 LFS 檔時，先跳過全部 LFS 下載，再只取那一個檔。以 Fashion-MNIST 封裝為例，在 Colab 開一個 code cell，貼上下面整段（第一行 `%%bash` 讓整格在同一個 shell 裡執行，`cd` 才會生效）：
+需要在 Colab 取得某個 LFS 檔時，先跳過全部 LFS 下載，再只取那一個檔。以下整段適用於尚未執行課程環境格的全新 Colab runtime。以 Fashion-MNIST 封裝為例，在 Colab 開一個 code cell，貼上下面整段（第一行 `%%bash` 讓整格在同一個 shell 裡執行，`cd` 才會生效）：
 
 ```bash
 %%bash
@@ -134,6 +135,8 @@ git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""
 sha256sum data/curated/fashion-mnist-v1.tar
 ```
 
+已跑過課程環境格時，它已下載固定版本的 repo，並把 notebook 的目前目錄切到那裡。目錄名包含教材 tag，不是固定的 `/content/learn_to_yolo`。這時省略上面整格的 clone 與 `cd learn_to_yolo` 兩行，在目前目錄直接做安裝、`git lfs install`、指定路徑的 `pull` 與校驗；可先加 `git rev-parse --show-toplevel`，確認印出的是課程 repo 根目錄。這一步只取資料，不切換教材版本。
+
 最後一行印出的 SHA-256，應等於 `data/manifest.json` 的 `lfs_assets` 記的值。教材的 notebook 要用時，改成 clone 固定的發布 tag（`git clone --branch <tag>`）。每次下載都計入 owner 的 LFS 頻寬。完整的來源 dataset 走下載器（`scripts/download_data.py`）或來源的官方下載，不走 Pages。
 
 GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方式，資料在 Colab 裡下載；網頁要顯示的結果圖用一般 Git 裡的小檔。
@@ -141,6 +144,18 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 ## 6. 發布新版教材
 
 42 節頁面的 Colab 按鈕與 notebook 固定在同一個發布 tag：按鈕開啟這個 tag 的 notebook，notebook 的環境格也 clone 這個 tag（`section-map.json` 各節的 `source_ref` 記著它）。已發布的 `lessons-v*` tag 一律不移動、不覆寫；教材的程式或實驗結果改了，就發布一個新 tag。
+
+先用這張圖決定本次需要走哪些分支；詳細指令在後面的編號步驟。所有 GPU 工作仍只能手動啟動。兩類紀錄都過期時，依詳細步驟先重產 GPU、再 CPU；圖中的每類重產步驟只在該類過期時執行。
+
+![發布流程先檢查紀錄是否過期，再依需求重產CPU或GPU紀錄，最後核對正文、審查、檢查與發布](../assets/diagrams/release-evidence-flow.svg)
+
+若紀錄從另一台電腦帶回，先分清三種檔案：
+
+|檔案|帶回後怎麼處理|
+|---|---|
+|`artifacts/checks/` 紀錄與重畫的 `docs/assets/diagrams/` 圖|一起帶回；`--render-only` 不會重畫或複製圖片|
+|頁尾執行紀錄、notebook 儲存的輸出|可在編輯機用 `verify_curriculum.py --render-only` 依紀錄重寫，保留這台的正文修改|
+|正文的數字、圖說與結論|人工對照新紀錄，數字有變就修改並重新審查；工具不會替你判斷教學結論|
 
 發布前，每份執行紀錄都要對得上目前的程式。逐節的紀錄是 `artifacts/checks/curriculum/<節>.json`，記著執行的日期（UTC）、產生它的電腦與 stdout，並用 SHA-256 綁定產生它的程式：該節程式，加上它直接或間接 import 的每個 repo 檔案。補充實驗的 CPU 紀錄與兩份 GPU 紀錄也以同樣方式綁定各自的程式，清單在 `scripts/evidence_records.py`。綁定的檔案都沒變，紀錄就一直有效，保留它的日期與電腦；任何一個改了，那份紀錄才過期。所以發布新版時只重跑過期的紀錄。
 
@@ -206,7 +221,9 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 
     紀錄與圖則一定要從記錄的那台電腦帶回：圖只在那台電腦上重畫，`--render-only` 不會重畫、也不會複製任何圖。少帶了圖，網站會在新的輸出旁邊顯示舊圖，而 Pages 建置前的檢查都不會發現：`validate_curriculum_evidence.py` 不檢查圖；圖檔沒變，`review_coverage.py` 也不會要求重新審查。
 
-7. **審查改過的頁面。** 網站導覽裡的每一頁，都要有一份對應目前內容的審查紀錄。課程頁由 AI 獨立查核：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，檢查程式摘錄與網頁轉換，並從初學讀者（高中程度、數學好、程式新手）的角度看用詞與說明順序；頁面引用原始論文、官方程式或函式庫文件的說法，另打開原始來源逐句核對：論文看原文，官方程式看固定的 commit 或 tag（頁面連到固定版本時就用那一版），函式庫看官方文件，並在審查紀錄列出查閱的來源與版本。其他頁對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。查到的問題修正後，由另一位 AI 檢查修正；審查紀錄要記下查核方法、每個發現和它的處理方式。〈[驗證範圍](../status.md)〉與〈[全套實驗與審查](../validation/curriculum.md)〉向讀者說明這些審查方式，`README.md` 也寫著這些審查方式，〈[課程大綱](../planning/outline.md)〉則寫著審查者都是 AI；改用別的方式審查時，這幾處的說明都要跟著改。
+7. **審查改過的頁面。** 使用 repo 的 `.agents/skills/clear-tutorial/SKILL.md`：先凍結正文與必要圖，逐段提供給首次閱讀者，記下當下理解與卡點後才開放下一段；修正後另由非作者讀程式、核對數字與原始來源；最後由另一位讀者看前後銜接與修改處。每輪保存自己的方法、實際範圍、問題、處理與未驗證項目，不用全文讀後復述替代首次閱讀，不讓作者自己宣稱獨立驗收。實驗按疑點執行；文字改寫不自動啟動 GPU 。必要的桌面／手機圖與公式，使用實際 Zensical 頁面檢查。
+
+    逐段原始紀錄放在 `reviews/clear-tutorial/`，既有每頁審查繼續保留；來源說法核對論文原文、官方程式固定 commit／tag 或函式庫官方文件，記下版本與支持的位置。操作頁的指令也對照實作，必要時實際試跑。若收到過早提示或缺少明訂前文，記為閱讀安排限制，不能把它算作乾淨盲讀。〈[驗證範圍](../status.md)〉、〈[全套實驗與審查](../validation/curriculum.md)〉及 README 只寫實際完成的審查範圍。所有審查者都是 AI，不能說成真人學生驗收。
 
     審查涵蓋頁面文字、頁面上的 SVG，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`：課程頁是 `reviews/<節>.md`；其他頁取 `docs/` 底下的路徑，把 `/` 換成 `-`，例如 `docs/preparation/publish.md` 的審查是 `reviews/preparation-publish.md`。寫好後記下它涵蓋的內容；頁面路徑從 repo 根目錄算起，可以一次給好幾頁：
 
@@ -216,7 +233,7 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 
     不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查已對不上目前內容的頁面，列出的路徑可以直接接在 `--write` 後面；有這種頁面時，`validate_lessons.py` 會失敗。
 
-    紀錄裡的數字不在審查涵蓋的範圍裡。課程頁引用自己那一節的紀錄不會漏掉：那份紀錄過期，表示那一節的程式或它 import 的模組改了，審查也跟著失效；重畫後內容變了的圖，也會讓顯示它的頁面被列出。其餘引用紀錄數字的正文就不一定會被列出：引用別份紀錄的課程頁（例如第 18、19 章引用影片檔的紀錄、第 20 章引用 L4 的紀錄），以及不是課程頁、也沒有顯示重畫的圖的頁面（例如〈驗證範圍〉、〈[資料規劃](data.md)〉與〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉），紀錄重產後都不會因此被列出；不在網站導覽裡的 `README.md` 則沒有審查紀錄。所以第 4、5 步重產了紀錄時，要在 `docs/` 與 `README.md` 找出引用這些紀錄的地方（可以搜尋紀錄的檔名與舊的數字），對照新紀錄逐一核對；數字變了就改正文，再重審改過的頁。
+    審查指紋涵蓋正文，包括正文裡的數字；它不會自動拿紀錄的新數值來重新核算正文。課程頁引用自己那一節的紀錄不會漏掉：那份紀錄過期，表示那一節的程式或它 import 的模組改了，審查也跟著失效；重畫後內容變了的圖，也會讓顯示它的頁面被列出。其餘引用紀錄數字的正文就不一定會被列出：引用別份紀錄的課程頁（例如第 18、19 章引用影片檔的紀錄、第 20 章引用 L4 的紀錄），以及不是課程頁、也沒有顯示重畫的圖的頁面（例如〈驗證範圍〉、〈[資料規劃](data.md)〉與〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉），紀錄重產後都不會因此被列出；不在網站導覽裡的 `README.md` 則沒有審查紀錄。所以第 4、5 步重產了紀錄時，要在 `docs/` 與 `README.md` 找出引用這些紀錄的地方（可以搜尋紀錄的檔名與舊的數字），對照新紀錄逐一核對；數字變了就改正文，再重審改過的頁。
 
     審查之後又改了內容時，看改的是什麼。改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），從第 1 步重來，因為 notebook 與紀錄都可能因此過期；改了 `lesson_cases/` 卻略過第 1 步時，`validate_lessons.py` 會因為 notebook 最後一格和程式不一致而失敗，但只顯示 `AssertionError`，不說明原因。只改了頁面文字或圖，就重新審查改過的頁面，再對它執行一次 `review_coverage.py --write`。
 

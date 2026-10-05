@@ -1,0 +1,44 @@
+[
+  {
+    "url": "http://127.0.0.1:8767/learn_to_yolo/lessons/07-heldout/",
+    "width": 1280,
+    "documentWidth": 1265,
+    "formulas": 0,
+    "containers": 0,
+    "nested": 0,
+    "mathErrors": 0,
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/learn_to_yolo/assets/diagrams/07-grid-predictions-readable.svg",
+        "width": 687.984375,
+        "loaded": true
+      }
+    ],
+    "http": 200,
+    "page_sha256": "24d6e1216e4845d996f54b568b7b84c03e0c2868f3da0d538bd30122584c741e",
+    "red_blue_caption_present": true,
+    "image_zero_red_caption_present": true,
+    "pageErrors": []
+  },
+  {
+    "url": "http://127.0.0.1:8767/learn_to_yolo/lessons/07-heldout/",
+    "width": 390,
+    "documentWidth": 375,
+    "formulas": 0,
+    "containers": 0,
+    "nested": 0,
+    "mathErrors": 0,
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/learn_to_yolo/assets/diagrams/07-grid-predictions-readable.svg",
+        "width": 342.984375,
+        "loaded": true
+      }
+    ],
+    "http": 200,
+    "page_sha256": "24d6e1216e4845d996f54b568b7b84c03e0c2868f3da0d538bd30122584c741e",
+    "red_blue_caption_present": true,
+    "image_zero_red_caption_present": true,
+    "pageErrors": []
+  }
+]

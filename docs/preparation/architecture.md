@@ -4,7 +4,7 @@
 
 採用 **Zensical** 的 modern 主題：Markdown 與小型圖片建成純靜態 GitHub Pages。`zensical.toml` 管理中文導覽、內建搜尋、深淺色模式與快速換頁；`requirements-docs.txt` 固定建置版本。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
 
-Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag 再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
+Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag（已發布的固定版本標籤）再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
 
 ```text
 zensical.toml                 網站設定、主題與小節導覽
@@ -51,7 +51,15 @@ requirements-gpu.lock         由 requirements-gpu.in 產生、附雜湊的完�
 
 1. 網頁先寫本節問題、前置知識與完成條件。
 2. 說明、公式的符號／shape、示意圖與關鍵程式片段放在網頁。從 `lesson_cases/`、`miniyolo/` 或 `scripts/` 逐字摘錄的程式區塊要標出來源檔：把區塊開頭的 `python` 換成 `{ .python data-excerpt="lesson_cases/07-loss.py" }`，引號裡寫從 repository 根目錄算起的路徑。`validate_lessons.py` 檢查區塊裡的每行程式（不計註解、空行與 `...` 省略行）都出自那個檔；開頭仍是 `python` 的區塊若有三行以上程式、每行都能在這三個目錄的同一個檔裡找到，檢查也會失敗，要求補上標記。
-3. 保存固定實驗的設定、實際輸出與觀察，說明結果能支持什麼；網頁能直接閱讀這些成果。對照實驗都從零訓練，並使用同一資料及預算。
+    這是 Markdown 的程式區塊標記，不是修改 Python 程式。最小例子如下；三個反引號包住程式，來源路徑寫在開頭那一行：
+
+    ````text
+    ``` { .python data-excerpt="lesson_cases/07-loss.py" }
+    prediction = torch.zeros(1, 4, 4, 7, requires_grad=True)
+    ```
+    ````
+
+3. 保存固定實驗的設定、實際輸出與觀察，說明結果能支持什麼；網頁能直接閱讀這些成果。比較優化效果的對照需使用相同資料與訓練預算；版本機制的小示範不是完整模型的效果比較。
 4. 頁首附「在 Colab 執行本節」按鈕；頁尾的「實際執行紀錄」寫明那次執行的日期、CPU 與執行緒數、PyTorch 版本，並附那次印出的輸出。各節範例的資料都由程式當場產生，不必下載。
 5. notebook 設計成可在全新 runtime 從第一格依序執行，不依賴上一節的隱藏狀態或自己的 Google Drive 路徑：環境格（每本 notebook 的第二格）先取得固定版本的程式與套件。
 6. 正式教材的說明與 notebook 實驗對應同一個固定的 release tag。網站主題與建置工具可以獨立更新，不覆寫教材 tag；修改實驗或教學結果時才配對新版本。下載的原始資料固定 checksum 與 split，程式產生的資料固定 seed；不讓讀者看到新版說明卻執行另一版程式。

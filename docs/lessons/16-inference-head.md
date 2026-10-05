@@ -1,6 +1,6 @@
 # 16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/16-inference-head.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/16-inference-head.ipynb){ .md-button }
 
 訓練時有兩個 head，不代表部署時也要執行兩個。部署是把訓練好的模型放到實際使用的環境（例如伺服器、手機），只做推論、不再訓練。本節用一個小模型示範：怎樣把 YOLO26 這類雙 head 模型訓練用的輔助 head，從部署模型真正拿掉，並確認留下的部分算出的數和原本一致。讀完本節，你能把雙 head 模型改寫成只含推論所需部分的部署模型，也能用參數名稱、逐值比對和手算例子，確認沒有拿錯權重、也沒有解錯框。
 
@@ -17,7 +17,7 @@
 
 前置：13.1 節的一對多／一對一雙 head、[16.1 節](16-dfl-free.md)的 DFL-free（每條邊直接輸出一個距離數），以及[第 0 章](00-warmup.md)的 train／eval 模式。
 
-先複習 13.1 節。一對多（one-to-many）讓每個真值物件分配到多個正候選，提供較密集的訓練訊號；一對一（one-to-one）讓每個物件只分配一個正候選，讓 one 學著減少重複。這兩個名稱描述的是監督關係，不是說整張圖只准輸出一框。在本節的 NMS-free 部署路徑上，many 只在訓練時幫忙；推論只用 one，再用 top-k（只留分數最高的前 k 個）選出輸出，省掉 NMS 那種「兩框 IoU 太高就刪掉一個」的步驟。前提是 one 已經學好適合的分數。
+先複習 13.1 節。一對多（one-to-many）讓每個真值物件分配到多個正候選，提供較密集的訓練訊號；一對一（one-to-one）的目標是讓 one 學著減少重複，13.1 的 YOLOv10 用 top-1 初選；其衝突後的數量並非嚴格保證。本章的 YOLO26 則在衝突後再篩一次（16.3 的 `topk2=1`），最終每個 GT **至多**一個正候選，也可能沒有。這兩個名稱描述的是監督關係，不是說整張圖只准輸出一框。在本節的 NMS-free 部署路徑上，many 只在訓練時幫忙；推論只用 one，再用 top-k（只留分數最高的前 k 個）選出輸出，省掉 NMS 那種「兩框 IoU 太高就刪掉一個」的步驟。前提是 one 已經學好適合的分數。
 
 本例的起點是一個雙 head 小 CNN，並把問題縮到最小：單一尺度、兩個類別、16 個候選，輸出用單標籤 top-3（每個候選只保留分數最高的一個類別，再從 16 個候選挑分數最高的 3 個）。這是教學用的小模型：softplus 距離、簡單卷積和人工平方 loss 都不是官方 YOLO26，loss 也沒有實作任何 assignment，所以模型沒有學到「一個物件只出一個框」；本節只驗證部署流程，不驗證偵測效果。
 

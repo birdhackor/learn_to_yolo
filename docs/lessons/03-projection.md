@@ -1,6 +1,6 @@
 # 3.2 ResNet projection shortcut：對齊形狀也在學轉換
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/03-projection.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/03-projection.ipynb){ .md-button }
 
 ResNet 把 block 分成幾個 stage（階段）。同一個 stage 裡，各 block 輸出的特徵圖（卷積層輸出的 `[C,H,W]` 數值）H、W 都相同；進入下一個 stage 時，通常由新 stage 的第一個 block 縮小 H、W 並增加 channel。例如本節主分支輸出 `[B,6,2,2]`，輸入卻是 `[B,3,4,4]`，兩者直接相加不合法。Projection shortcut（投影捷徑）先把輸入轉成和主分支相同的 shape，才加入主分支。通常只有這種 shape 改變的 block 用 projection，其餘 block 仍用上一節的 identity shortcut。
 
@@ -52,7 +52,7 @@ y=P(x)+F(x).
 1\cdot1+2\cdot10+3\cdot100=321.
 \]
 
-這就是權重向量 (1,2,3) 和該位置 channel 向量 (1,10,100) 的內積（[暖身那一節](00-warmup.md)講過）。選 1、10、100 的好處是：321 的百、十、個位剛好露出 3、2、1 三個權重。
+這種把對應位置相乘、再全部相加的運算，叫兩個向量的**內積（dot product）**：這裡是權重向量 (1,2,3) 與 channel 向量 (1,10,100)。選 1、10、100 的好處是：321 的百、十、個位剛好露出 3、2、1 三個權重。
 
 321 與任何單一輸入值（1、10、100）都不同。1×1 的「1」指空間只看一個位置，不是只讀一個 channel。每個輸出 channel 都有一套跨輸入 channel 的權重。本例無 bias，因此參數是 \(6\times3=18\) 個。
 
@@ -74,7 +74,7 @@ def forward(self, x):  # 每次輸入資料都會執行
     return main + shortcut  # 也就是 y = P(x) + F(x)
 ```
 
-projection 的權重 shape 是 `[6,3,1,1]`。卷積權重的四個軸依序是 [輸出 channel, 輸入 channel, kernel 高, kernel 寬]，不是 NCHW；和暖身那一節 Linear 權重 `[K,D]` 一樣，輸出在前。拿掉兩個長度 1 的軸，權重就是一個 6×3 矩陣 W。在 P 讀到的每個位置，把 3 個 channel 的值排成向量 v，算 Wv 就得到對應輸出格的 6 個 channel。
+projection 的權重 shape 是 `[6,3,1,1]`。卷積權重的四個軸依序是 [輸出 channel, 輸入 channel, kernel 高, kernel 寬]，不是圖片的 NCHW；這裡明確是輸出 channel 在前、輸入 channel 在後。拿掉兩個長度 1 的軸，權重就是一個 6×3 矩陣 W。在 P 讀到的每個位置，把 3 個 channel 的值排成向量 v，算 Wv 就得到對應輸出格的 6 個 channel。
 
 **第一部分：手設權重驗算。** F 的權重全設 0，所以 F(x) 全為 0，\(y=P(x)\)。P 的權重矩陣 W 只有第一列（第一個輸出 channel，程式裡的索引 0）設成 (1,2,3)，其餘 5 列（其餘 5 個輸出 channel）全是 0。這個 block 先後算兩個輸入，第一個是 `image`：shape `[1,3,4,4]`，16 個位置的三個 channel 都是 (1,10,100)。它的輸出 `output` 是 `[1,6,2,2]`，第一個輸出 channel 的 2×2 每格都是 321，其餘 5 個 channel 全是 0。完整程式裡對應的幾行如下：
 

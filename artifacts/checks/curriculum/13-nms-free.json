@@ -1,7 +1,7 @@
 {
   "id": "13-nms-free",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:19:00.357753+00:00",
+  "executed_at_utc": "2026-10-05T10:24:32.926208+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/13-nms-free.py": "7697044f6ea966ef1bbf1200a39a6d65d2d160ee186810a1f479e433a551c8be"
   },
-  "process_wall_seconds": 2.625,
+  "process_wall_seconds": 3.9063,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "many-head scores: [0.959, 0.959, 0.959, 0.041]\none-head scores: [0.959, 0.041, 0.959, 0.041]\nmany/no NMS: [0, 1, 2] many/NMS: [0, 2] one/no NMS: [0, 2]\ntop-2 on duplicate-heavy scores: [0, 1] (misses object at candidate 2)\nduplicate IoU=0.8182\n",
   "stderr": "",

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 705" role="img" aria-labelledby="title desc">
+<title id="title">width為4的小CNN資料流與每一步張量形狀</title><desc id="desc">輸入8張RGB32乘32圖片。第一block兩個卷積產生4通道，pooling縮小到16乘16。第二block產生8通道，pooling縮到8乘8。全域平均之後每圖8個特徵，線性層產生紅藍兩類分數。</desc>
+<rect width="520" height="705" rx="12" fill="#f8fafc"/>
+<g font-family="sans-serif" fill="#0f172a">
+<text x="22" y="34" font-size="22" >兩個 block，把圖片變成分類答案</text>
+<rect x="24" y="58" width="472" height="72" rx="8" fill="#fff" stroke="#94a3b8"/>
+<text x="42" y="86" font-size="22" >輸入：8 張 RGB 圖</text>
+<text x="42" y="114" font-size="22" >[8,3,32,32]</text>
+<text x="249" y="147" font-size="22" text-anchor="middle">↓</text>
+<rect x="24" y="148" width="472" height="72" rx="8" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="42" y="176" font-size="22" >兩次 3×3 卷積 + ReLU</text>
+<text x="42" y="204" font-size="22" >[8,4,32,32]</text>
+<text x="249" y="237" font-size="22" text-anchor="middle">↓</text>
+<rect x="24" y="238" width="472" height="72" rx="8" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="42" y="266" font-size="22" >2×2 max pooling</text>
+<text x="42" y="294" font-size="22" >[8,4,16,16]</text>
+<text x="249" y="327" font-size="22" text-anchor="middle">↓</text>
+<rect x="24" y="328" width="472" height="72" rx="8" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="42" y="356" font-size="22" >兩次 3×3 卷積 + ReLU</text>
+<text x="42" y="384" font-size="22" >[8,8,16,16]</text>
+<text x="249" y="417" font-size="22" text-anchor="middle">↓</text>
+<rect x="24" y="418" width="472" height="72" rx="8" fill="#dbeafe" stroke="#94a3b8"/>
+<text x="42" y="446" font-size="22" >2×2 max pooling</text>
+<text x="42" y="474" font-size="22" >[8,8,8,8]</text>
+<text x="249" y="507" font-size="22" text-anchor="middle">↓</text>
+<rect x="24" y="508" width="472" height="72" rx="8" fill="#fff" stroke="#94a3b8"/>
+<text x="42" y="536" font-size="22" >GAP：各 channel 取平均</text>
+<text x="42" y="564" font-size="22" >[8,8,1,1]</text>
+<text x="249" y="597" font-size="22" text-anchor="middle">↓</text>
+<rect x="24" y="598" width="472" height="72" rx="8" fill="#fff" stroke="#94a3b8"/>
+<text x="42" y="626" font-size="22" >展平 + Linear(8,2)</text>
+<text x="42" y="654" font-size="22" >[8,2]：紅、藍兩個分數</text>
+
+</g></svg>

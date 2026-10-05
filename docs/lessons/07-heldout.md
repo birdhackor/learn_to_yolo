@@ -1,6 +1,6 @@
 # 7.6 Grid MiniYOLO：獨立資料與評估證據
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-heldout.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-heldout.ipynb){ .md-button }
 
 本節要分清楚兩件事：「評估程式跑通」和「模型真的在沒看過的圖片上找到物件」。讀完後，你能用答案已知的例子核對評估器，也知道要宣稱模型有效時，還得固定並保存哪些東西。
 
@@ -75,7 +75,7 @@ with torch.inference_mode():  # 推論時不記錄計算圖
 result = evaluate_ap(predicted,heldout_anns,num_classes=2,iou_threshold=.5)
 ```
 
-在 Colab 執行[本節 notebook](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-heldout.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。輸出有兩行（頁尾有本次的執行紀錄）：
+在 Colab 執行[本節 notebook](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-heldout.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。輸出有兩行（頁尾有本次的執行紀錄）：
 
 - 第一行是人工 fixture，應核對 AP=0.5、precision=1/3、recall=0.5。
 - 第二行是三步模型的冒煙測試（smoke test）。開頭的英文 `3-step held-out PIPELINE SMOKE, not trained detector evidence`，意思是「三步模型的 held-out 管線冒煙測試，不是已訓練偵測器的證據」。
@@ -141,7 +141,7 @@ held-out 是統稱，validation 和 test 都屬於它（第 2 章〈[訓練診�
 
 ## 補充：從評估角度看同一次 160 步實驗
 
-這和[三步訓練與診斷](07-training.md)那一頁的 160 步補充實驗是同一次實驗。它用同一套模型與程式從頭訓練（沒有載入任何預先訓練好的權重），在 32 張 train 圖（seed 7）上更新 160 次參數；另用 seed 700、7000 各畫 16 張圖，當 validation 和 test。圖都是 64×64 的紅／藍矩形，每張有 0～2 個物件（含空圖）。訓練設定、執行命令和 [loss 曲線](../assets/diagrams/grid-learning-curve.svg)都在該頁；這裡不必重跑，只從評估的角度看實測結果。
+這和[三步訓練與診斷](07-training.md)那一頁的 160 步補充實驗是同一次實驗。它用同一套模型與程式從頭訓練（沒有載入任何預先訓練好的權重），在 32 張 train 圖（seed 7）上更新 160 次參數；另用 seed 700、7000 各畫 16 張圖，當 validation 和 test。圖都是 64×64 的紅／藍矩形，每張有 0～2 個物件（含空圖）。訓練設定、執行命令和 [loss 曲線](../assets/diagrams/07-grid-loss-readable.svg)都在該頁；這裡不必重跑，只從評估的角度看實測結果。
 
 | 固定評估協議下的結果 | 數值 |
 | --- | --- |
@@ -162,11 +162,11 @@ held-out 是統稱，validation 和 test 都屬於它（第 2 章〈[訓練診�
 
 這裡 mAP50 只平均有真值類別的 all-points 插值 AP，配對 IoU 門檻 0.5；decode 的候選截斷門檻是 score≥0.05，同類 NMS 的 IoU 門檻 0.5。它不是 COCO AP@[.50:.95]。160 步實驗用 `miniyolo.train` 的預設候選截斷門檻 0.05，前面三步案例用 0.01。兩個實驗各自事先固定門檻；同一實驗的訓練前後與 validation／test 都用同一組，跨實驗的 AP 不互相比較。
 
-![四張獨立 validation 圖的真值與實測預測框](../assets/diagrams/grid-learning-predictions.svg)
+![四張獨立 validation 圖的真值與實測預測框](../assets/diagrams/07-grid-predictions-readable.svg)
 
-圖的讀法：綠色虛線是真值（GT），橙色實線是預測框；矩形本身的紅、藍才是兩個類別（class 0=紅、class 1=藍）。每張圖上方寫著圖片編號，以及這張圖有幾個真值、幾個預測。每個預測框旁有一個兩行的標籤。第一行「#k class c score s」是第 k 個預測（依 score 由高到低，從 0 編號）、預測類別 c 和 score s（取三位小數，1.000 是四捨五入的結果）。第二行是評估判定：先寫 TP 或 FP，後面是它和同類、還沒被配對的真值算出的最大 IoU，達到 0.5 就是 TP；若這張圖已沒有可配對的同類真值，第二行就寫「FP 沒有可配對的同類真值」。沒被任何預測配對到的真值，旁邊標 FN。
+圖的讀法：綠色虛線是真值（GT），橙色實線是預測框；矩形本身的紅、藍才是兩個類別（class 0=紅、class 1=藍）。每張圖上方寫著圖片編號，以及這張圖有幾個真值、幾個預測。每個預測框旁的 #k 對應各圖下方的兩行資料。第一行「#k 紅／藍 score s」是第 k 個預測（依 score 由高到低，從 0 編號）、預測類別（紅=class 0、藍=class 1）和 score s（取三位小數，1.000 是四捨五入的結果）。第二行是評估判定：先寫 TP 或 FP，後面是它和同類、還沒被配對的真值算出的最大 IoU，達到 0.5 就是 TP；若這張圖已沒有可配對的同類真值，第二行就寫「FP 沒有可配對的同類真值」。沒被任何預測配對到的真值，在圖下另列 FN。
 
-圖片 0 值得細看。左上藍色矩形的預測框 #0 上緣偏高，但和真值的 IoU 約 0.62，仍達到 0.5，標成 TP。右下紅色矩形的預測框 #1，標籤寫 class 0 score 0.980：分數很高，和紅色真值的 IoU 卻只有約 0.47，未達 0.5，所以標成 FP；那個紅色真值因此沒被配對到，標成 FN（漏檢）。分數高不代表位置夠準。圖片 0 的 #1 也是 validation 唯一的 FP：validation 的 16 張圖經過候選門檻與 NMS 後，共留下 16 個預測框，其中 15 個配對成功、1 個是 FP，所以下方實測 JSON 裡 validation 的 precision 是 0.9375=15/16。這裡分母的 16 是預測框數，只是剛好和圖片數相同。
+圖片 0 值得細看。左上藍色矩形的預測框 #0 上緣偏高，但和真值的 IoU 約 0.62，仍達到 0.5，標成 TP。右下紅色矩形的預測框 #1，圖下資料寫「#1 紅 score 0.980」：分數很高，和紅色真值的 IoU 卻只有約 0.47，未達 0.5，所以標成 FP；那個紅色真值因此沒被配對到，標成 FN（漏檢）。分數高不代表位置夠準。圖片 0 的 #1 也是 validation 唯一的 FP：validation 的 16 張圖經過候選門檻與 NMS 後，共留下 16 個預測框，其中 15 個配對成功、1 個是 FP，所以下方實測 JSON 裡 validation 的 precision 是 0.9375=15/16。這裡分母的 16 是預測框數，只是剛好和圖片數相同。
 
 這四張圖只是圖板，mAP 使用全部 16 張。其餘框都接近真值、mAP 從接近零上升，支持「這條管線能在受控任務上學得動」；它仍不能回答模型是否認得照片裡的行人，也沒有證明某個現代機制比較好。
 

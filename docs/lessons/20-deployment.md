@@ -1,6 +1,6 @@
 # 20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/20-deployment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/20-deployment.ipynb){ .md-button }
 
 訓練好的模型，最後要放到實際使用的地方做預測，例如伺服器、手機或機器人，這叫部署。那些地方常常沒有裝 PyTorch，或需要跑得更快。常見的做法是先把模型匯出成通用的 ONNX 檔，再交給專門的執行程式：本節用 ONNX Runtime 在 CPU 上執行；有 NVIDIA GPU 時，可以改用 TensorRT。換了執行程式，就得證明同一張圖仍然得到同樣的框，這就是本節要做的事。
 

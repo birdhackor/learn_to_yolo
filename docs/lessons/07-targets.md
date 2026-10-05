@@ -1,6 +1,6 @@
 # 7.2 Grid MiniYOLO：把框變成訓練目標
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-targets.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-targets.ipynb){ .md-button }
 
 一張圖只有兩個框，模型卻固定輸出 4×4=16 個位置的預測：哪一格該學哪個框？其他 14 格又該學什麼？本節把標註框換算成這 16 個位置各自的正確答案，也就是訓練目標（target）。讀完你能手算任何一個框由哪一格負責、那一格的 target 是哪四個數，也知道每一格要算哪些 loss。
 
@@ -24,7 +24,7 @@
 
 ![64×64 圖片切成 4×4 格；紅框左上角 (8,12)、右下角 (24,28)，中心黑點 (16,20) 落在淺藍色虛線的負責格](../assets/diagrams/object-journey.svg){ width="400" }
 
-這張圖和首頁是同一張，只畫了紅框。淺藍色虛線格是紅框的負責格，不是本節的藍框。圖例寫的「第 2 列、第 2 欄」是從 1 數起；換成從 0 起算的索引，就是 gy=1、gx=1。
+這張示意圖沿用上一節的紅框；為了看清負責格，只畫紅色物件。淺藍色虛線格是紅框的負責格，不是本節的藍框。圖例寫的「第 2 列、第 2 欄」是從 1 數起；換成從 0 起算的索引，就是 gy=1、gx=1。
 
 每個框都照下面五步換算，紅框、藍框並排對照：
 
@@ -101,7 +101,7 @@ head 的輸出是 `[B,4,4,7]`：每格 7 個數，依序是 `tx,ty,tw,th,obj,cla
 
 公式在下一節手算。背景不是第三個 class，objectness 已承擔「有沒有物件」。
 
-下面是依完整程式改寫的簡化版，把本節的兩張圖轉成 target。輸入 `[scene, empty]` 是原始標註，格式就是上一節 `collate` 留下的 `targets` 清單：`scene` 含紅、藍兩框（類別 0、1），`empty` 沒有框。`grid_size`、`image_size`、`num_classes` 依序是每邊格數 S、圖片邊長（pixel）與類別數。輸出 `target` 是轉換後要送進 loss 的訓練目標，也就是前面表格的 box、objectness、positive、class_ids 四個欄位，每張圖都固定是 4×4。上一節的 `targets`（標註清單）和這裡的 `target`（訓練目標）只差一個 s：前者每張圖的框數可以不同，後者形狀固定。
+下面是依完整程式改寫的簡化版，把本節的兩張圖轉成 target。輸入 `[scene, empty]` 是原始標註，格式就是上一節 `collate` 保留下來的逐圖標註清單：`scene` 含紅、藍兩框（類別 0、1），`empty` 沒有框。`grid_size`、`image_size`、`num_classes` 依序是每邊格數 S、圖片邊長（pixel）與類別數。輸出 `target` 是轉換後要送進 loss 的訓練目標，也就是前面表格的 box、objectness、positive、class_ids 四個欄位，每張圖都固定是 4×4。這裡有一次格式轉換：**原始標註清單 → `build_targets` → 格子訓練目標 `target`**。原始標註逐張存框，每張圖的框數可不同；格子目標逐格存答案，形狀固定。下面程式裡的 `target` 一律指轉換後的格子目標。
 
 簡化版只從完整程式取了建立 target 的那一行，其餘都是為了說明才加的。`pos`、`red` 這兩個名字完整程式沒有，它直接寫 `target["positive"]`、`target["box"][0, 1, 1]`（Python 的字串用單引號或雙引號都一樣）。最後三行註解示範 mask 怎麼用：`pred` 代表 head 的輸出，本例 shape `[2,4,4,7]`；它到下一節才會出現，本節完整程式沒有模型，所以只寫成註解。
 

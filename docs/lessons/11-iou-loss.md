@@ -1,6 +1,6 @@
 # 11.4 IoU 類 loss：沒有重疊時還能往哪裡移
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-iou-loss.ipynb){ .md-button }
 
 第 7 章用座標 MSE 當框 loss：把預測框和真值框的四個數字逐一相減、平方再平均。評估時看的卻是兩框重疊多少：用 IoU（交集面積÷聯集面積）判斷框找得對不對，例如第 6 章的 AP50 要 IoU 至少 0.5 才算找對。這兩件事並不一致。第 4 章算過，同樣往右、往下各偏 2 pixel，12×12 的框 IoU 約 0.53，4×4 的框只剩約 0.14，兩者的正規化座標 MSE 卻一樣。
 
@@ -83,9 +83,9 @@ y 分量呢？\(c_y=20\) 時，P 與 G 的上下緣剛好對齊；P 不論往上
 
 SGD 的更新是「參數減去學習率×梯度」：x 梯度是正的，減掉之後 \(c_x\) 變小，P 往左移。完整程式真的用學習率 lr=50 做一步：50×0.02＝1，一步剛好左移 1 pixel，中心從 40 到 39，可以直接對照上面手算的 1.179487。lr=50 就是為了這個對照刻意挑的。
 
-### DIoU：把兩個中心拉近
+### DIoU：看中心距離相對於包圍框的尺度
 
-DIoU 改加中心距離項 \(\rho^2/c^2\)。ρ（rho）是兩個中心的距離；c 是包圍框 C 的對角線長。注意小寫 c 是 C 的對角線，和第 7 章的類別數 C 無關。本例：
+DIoU 改加中心距離項 \(\rho^2/c^2\)。ρ（rho）是兩個中心的距離；c 是包圍框 C 的對角線長。注意小寫 c 是 C 的對角線，和第 7 章的類別數 C 無關。它懲罰的是距離相對於包圍框尺度的比例；分母 c² 也會隨框的位置改變，所以 loss 下降不保證每一步都讓中心距離 ρ 縮短。本例：
 
 \[
 \rho^2=(40-16)^2+(20-20)^2=24^2=576,\qquad c^2=40^2+16^2=1856,
@@ -117,7 +117,15 @@ L_{\text{DIoU}}=1+\frac{(c_x-16)^2}{c_x^2+256},
 
 梯度是正的，往左走 loss 會下降，所以梯度下降有方向。完整程式用 DIoU 做一次真正的 SGD 更新，學習率 lr=100：一步左移 100×0.012485≈1.2485 pixel，中心從 40 到約 38.7515，\(L_{\text{DIoU}}\) 從 1.310345 降到約 1.294497。兩框的間隙從 8 變成約 6.75，走完一步仍未重疊。lr=100 只是為了讓位移看得見；這兩個學習率都只為這個只動中心的小實驗而挑，不能直接搬到偵測器的網路參數上。
 
-y 分量和 GIoU 一樣落在上下緣對齊的轉折點，PyTorch 給 0。不過 DIoU 在這裡和 GIoU 相反：P 往上或往下移，loss 都會下降（\(c_y=21\) 時 \(L_{\text{DIoU}}=1+577/1889\approx1.305453\)），因為 C 變高，c² 增加得比 ρ² 快。DIoU 縮小的是 ρ²/c²，不保證每個方向都縮小 ρ 本身。
+y 分量和 GIoU 一樣落在上下緣對齊的轉折點，PyTorch 給 0。不過 DIoU 在這裡和 GIoU 相反：P 往上或往下移，loss 都會下降。用同一對 16×16 框，直接比較三個位置：
+
+| P 的中心 | 中心項 \(\rho^2/c^2\) | \(L_{\text{DIoU}}\) |
+| --- | --- | --- |
+| 起點 `(40,20)` | \(576/1856\) | 1.310345 |
+| 左移 1 pixel：`(39,20)` | \(529/1777\) | 1.297693 |
+| 往下 1 pixel：`(40,21)` | \(577/1889\) | 1.305453 |
+
+往下那列的中心距離反而增加：ρ² 從 576 變成 577。可是 C 從 40×16 變成 40×17，c² 從 1856 增加到 1889；分母相對於原值的增幅較大，足以抵銷分子的增加，所以 577/1889 比 576/1856 小。三個位置仍未相交，\(1-\text{IoU}\) 都是 1，因此中心項變小，總 loss 也變小。這張表是在改位置後重新算 loss，不是三次 SGD 更新；上下緣剛好對齊時，完整程式實際取得的 y 梯度仍是 0。DIoU 縮小的是 ρ²/c²，不保證每個方向都縮小 ρ 本身。
 
 ??? note "GIoU 也有失靈的時候：一框整個在另一框裡"
 
@@ -162,7 +170,7 @@ CIoU 在 DIoU 上再加一項 \(\alpha v\)。v 衡量兩框的寬高比（寬÷�
 
 ## 兩次單步更新的核對
 
-在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb) 執行本節，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。完整程式對 GIoU（lr=50）和 DIoU（lr=100）各做一次單步更新，兩次互相獨立，都從中心 `(40,20)` 出發。對照下方執行紀錄，由上而下逐行核對：
+在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-iou-loss.ipynb) 執行本節，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。完整程式對 GIoU（lr=50）和 DIoU（lr=100）各做一次單步更新，兩次互相獨立，都從中心 `(40,20)` 出發。對照下方執行紀錄，由上而下逐行核對：
 
 - 第 1 行 `GIoU gradient …`：GIoU 的中心梯度 `[0.02,0]`。行尾的 1.179487 是 lr=50 走一步之後的 \(L_{\text{GIoU}}\)，不是移動量；完整程式也用斷言確認走完後中心是 `(39,20)`。
 - 第 2 行 `initial losses`：\(L_{\text{IoU}}=1\)、\(L_{\text{GIoU}}=1.2\)、\(L_{\text{DIoU}}=L_{\text{CIoU}}=1.310345\)。這裡的 `'iou'`、`'giou'` 等鍵存的都是 loss，例如 `'iou': 1.0` 是 \(L_{\text{IoU}}\)，不是 IoU。
@@ -204,7 +212,7 @@ CIoU 在 DIoU 上再加一項 \(\alpha v\)。v 衡量兩框的寬高比（寬÷�
 自主練習（紙筆題；先自己算，再展開答案）：
 
 1. 若 P＝G＝`[8,12,24,28]`：C 的面積、聯集、ρ、v 各是多少？四個 loss 各是多少？
-2. 若 P 只往左移 4 pixel，變成 `[28,12,44,28]`（中心 `(36,20)`，兩框仍隔 4 pixel）：\(L_{\text{IoU}}\) 與它的中心梯度是多少？\(L_{\text{GIoU}}\)、\(L_{\text{DIoU}}\) 呢？
+2. 若 P 只往左移 4 pixel，變成 `[28,12,44,28]`（中心 `(36,20)`，兩框仍隔 4 pixel）：\(L_{\text{IoU}}\) 與它的中心梯度是多少？再求 \(L_{\text{GIoU}}\)、\(L_{\text{DIoU}}\) 的值（這兩項只求 loss，不求中心梯度）。
 3. G 不變，P＝`[28,12,60,28]`（寬 32、高 16）：求 v、α 與 \(L_{\text{CIoU}}\)（v、α 的式子在上方〈CIoU 的細節〉；arctan 2 請用計算機，約 1.107149）。
 
 ??? note "參考答案"

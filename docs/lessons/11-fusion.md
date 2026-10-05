@@ -1,6 +1,6 @@
 # 11.2 特徵融合：把深層資訊送回細網格
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-fusion.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-fusion.ipynb){ .md-button }
 
 第 10 章加了 8×8 的細 head，讓細格子也能輸出框。但細 head 只拿到淺層特徵，而淺層特徵的「語義」可能不足。本節把深層特徵的資訊送回 8×8 的細網格，和淺層特徵合在一起，這就是特徵融合。讀完你能一步步追出融合時每一步的 shape，說出 concat（串接）需要什麼條件，並手算這個融合模組的參數與記憶體。
 
@@ -18,31 +18,17 @@
 
 - **top-down（由上而下）**：從塔頂（深、粗）往塔底（淺、細）送資訊，也就是本節的深→淺方向。
 - **bottom-up（由下而上）**：反過來，從淺層往深層送。
-- **lateral connection（橫向連接）**：把 backbone 裡同一網格大小的特徵橫著接過來，和 top-down 送來的特徵合併。本例就是 8×8 的淺層特徵，也就是下圖中「lateral 同尺度接入」那條線。
+- **lateral connection（橫向連接）**：把 backbone 裡同一網格大小的特徵橫著接過來，和 top-down 送來的特徵合併。本例就是 8×8 的淺層特徵，也就是下圖中綠色的 lateral 橫向線。
 
-歷史機制：
+本節只示範一次深→淺融合：1×1 reduce → nearest 上取樣 → concat → 3×3 mix。圖把深、粗的特徵放上方，淺、細的特徵放下方，所以 top-down 的箭頭也由上往下。橫向接入的 shallow，就是 lateral connection。
 
-- [FPN](https://arxiv.org/abs/1612.03144)：用 top-down 路徑與 lateral connection 建構特徵金字塔。它把深層特徵放大後，和 lateral 那一支逐值相加，所以兩支的 channel 數必須相同；每次合併前，新接進來的 lateral（淺層）那一支先經過 1×1 卷積調整 channel。
-- [PANet](https://arxiv.org/abs/1803.01534)（Path Aggregation Network，路徑聚合網路；本頁文字與圖中簡稱 PAN）：在 FPN 之外再增加一條 bottom-up 路徑。
-- [YOLOv4](https://arxiv.org/abs/2004.10934) 與固定版本 [YOLOv5 v6.0 模型配置](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/yolov5s.yaml)：都在 FPN 式的 top-down 路徑之後，再接一條 PAN 式的 bottom-up 路徑；YOLOv4 還把 PAN 原本的相加改成 concat。YOLOv5 v6.0 的配置檔裡（寫在 `head:` 底下），每次 top-down 合併都是 1×1 卷積 → nearest 放大 2 倍 → concat（直接接 backbone 的淺層特徵）→ C3 模組，和本節的四步同型。
+程式沒有圖片與 backbone，也沒有接 head：`shallow`、`deep` 是互不相關的隨機張量，shape 分別是 `[1,8,8,8]`、`[1,16,4,4]`。圖中實線只畫本節真的計算的四步；backbone、head 與 PAN 完整路徑另放下方的選讀比較。本節只確認 shape、梯度與參數，不測融合是否改善偵測。
 
-??? note "PAN 為什麼還要一條淺→深的路？"
+本例借用第 10 章 stride 8／16 的尺度概念，channel 則從第 10 章的 16／32 改成 8／16。它不是完整的 FPN、PANet 或 YOLOv4／v5 neck：這裡用 concat 和單一 3×3 mix，沒有 BatchNorm、SiLU、C3、第三個尺度或 bottom-up 路徑。若接回第 10 章，只有細 head 改吃融合特徵；粗 head 仍直接接 deep，本節不動它。
 
-    backbone 本身就是從淺層算到深層，但這條路很長。PANet 論文指出，在 FPN 的 backbone 裡，淺層的資訊要傳到最深層，可能得經過上百層。PANet 另加一條不到 10 層的 bottom-up 短路徑，讓淺層較準的位置資訊比較容易傳到深層。本節沒有實作這條路徑。
+![本節四步融合：深層在上、淺層在下，top-down 向下接到細網格](../assets/diagrams/11-fusion.svg)
 
-上面這幾個設計不是同一篇論文提出的一個模組。本節簡化成一條深→淺的路徑：先用 1×1 減少深層的 channel，再放大、concat，最後用 3×3 卷積混合，下一小節會逐步說明。也就是只做一次 FPN 式的深→淺融合，不是完整的 PANet，也不聲稱重現完整的 YOLOv4／v5 neck：相對 YOLOv5，本節的 mix 只是一個 3×3 卷積而不是 C3，卷積後沒有 BatchNorm 與 SiLU，也沒有第三個尺度與 bottom-up 路徑。
-
-和原始 FPN 相比，有幾處不同要分清楚。一是用 concat 代替相加：兩路的 channel 各自保留，交給後面的 3×3 卷積學怎麼混。二是 lateral 那一支沒有 1×1，淺層特徵直接接進 concat。這兩處都和 YOLOv3、YOLOv5 v6.0 的 top-down 合併相同：深層先接 1×1、再上取樣，然後直接和 backbone 的淺層特徵 concat。深層那一支的 1×1（本節的 reduce）FPN 也有：FPN 讓 backbone 每個尺度（stage）的輸出各接一個 1×1，最深那個尺度的 1×1 輸出就是 top-down 路徑的起點；之後每次合併，只有新接進來的 lateral 那一支接 1×1，從上面送下來的那一支不再接。另外，FPN 最深那個尺度的 1×1 輸出，也會再經過 3×3 卷積交給它自己的 head；本節的 reduce 只用在 top-down，粗 head 仍直接接 deep。相加與 concat 哪個比較好，本節沒有比較。
-
-本節借用第 10 章 stride 8／16 兩種尺度的概念，但兩個輸入改用 8 與 16 channel 的隨機張量（見圖下說明），並沒有直接接上第 10 章 16／32 channel 的特徵。融合輸出的特徵供細 head 使用，沒有整套雙向路徑。若接回第 10 章，只有細 head 改吃融合特徵；粗 head（4×4）沿用第 10 章的接法，直接接深層特徵，本節不動它（圖中也沒有畫粗 head）。本節只確認融合接得通、梯度傳得到；這個融合模組值不值得留在模型裡，要靠品質與成本的對照實驗判斷（見後面「收益與代價」），本節沒有做這個對照。
-
-![同一輸入的兩種 stride 與本節融合路徑](../assets/diagrams/11-fusion.svg)
-
-看圖說明（圖中 Shallow 是淺層特徵，Deep 是深層特徵）：
-
-- 圖的左半（輸入圖片 → Backbone → Shallow → Deep）畫的是真實網路裡這兩層特徵從哪裡來。本節程式沒有圖片，也沒有 backbone：`shallow`、`deep` 是用 `torch.randn` 直接造出的 `[1,8,8,8]` 與 `[1,16,4,4]` 隨機張量，兩者互不相關。所以本節只能檢查 shape、梯度與參數，看不出融合的效果。
-- 圖中淺層畫在上方、深層畫在下方，所以 top-down 路徑（Deep → 1×1 reduce → Nearest → Concat）在圖上是由下往上走，和名字的方向相反。
-- 從融合輸出往下的橘色虛線，代表 PAN 另加的 bottom-up 路徑（淺→深）；它在圖上由上往下走，同樣和名字的方向相反。本例沒有實作這條路徑。
+看圖時先沿藍線追 Deep → reduce → nearest → concat → mix，再看綠線：Shallow 保持 8×8，直接橫向接入 concat。兩路在同一個 8×8 網格合流；輸出是融合特徵，還不是 head 的框預測。
 
 ## 為什麼不能直接 concat
 
@@ -61,7 +47,7 @@
 
 沿 channel 軸 concat 的必要條件是 channel 以外的軸（B、H、W）都相同。本例兩者的 B 一樣，H、W 不同，所以一定要先上取樣到 8×8；channel 數則不必相同。不先減 channel 也能合法 concat：深層直接上取樣成 `[B,16,8,8]`，和淺層接成 `[B,24,8,8]`；只是 mix 要改成 24 channel 輸入，成本也跟著改變。完整程式裡的斷言（assert）也確認了這件事。
 
-那為什麼還要先減 channel？好處之一是參數比較少：不減的話，mix 要從 24 channel 混成 8，參數 8×24×9+8=1736；先減的話，reduce 加 mix 只要 136+1160=1296（後面「參數與記憶體可以手算」會逐項算）。減完之後兩路都是 8 個 channel，若要改用 FPN 那樣的相加，channel 數也已經對齊（見後面改用相加的說明）。
+那為什麼還要先減 channel？好處之一是參數比較少：不減的話，mix 要從 24 channel 混成 8，參數 8×24×9+8=1736；先減的話，reduce 加 mix 只要 136+1160=1296（後面「參數與記憶體可以手算」會逐項算）。減完之後兩路都是 8 個 channel，若要改用逐值相加，channel 數也已經對齊（見後面改用相加的說明）。
 
 ??? note "先 1×1 或先上取樣，有差嗎？"
 
@@ -123,7 +109,21 @@ def forward(self,shallow,deep,inspect=False):
 
 這裡的「複製」不是生成四份新細節：深層特徵仍只有原本四個值。細位置的資訊來自淺層特徵，3×3 的 mix 學習怎麼使用兩路。
 
-若改用 bilinear（雙線性插值：新格是相鄰來源值依距離的加權平均），放大結果會出現中間值，不再只是複製。PyTorch 預設 `align_corners=False`：第一列四個新格的中心換回來源座標是 −0.25、0.25、0.75、1.25，超出範圍的用邊上的值，所以第一列是 1、0.75×1+0.25×2＝1.25、0.25×1+0.75×2＝1.75、2；設成 `align_corners=True` 則是 1、4/3、5/3、2。在 loss 剛好是全部輸出總和這個特例下，bilinear 每個來源的梯度也仍是 4；換成別的 loss，nearest 與 bilinear 的梯度通常就不同。例如 loss 改成 16 個輸出平方的平均（完整程式對融合輸出用的就是這種 loss，但沒有拿這個 2×2 例子比較）：nearest 的每個來源值 s 被複製 4 次，梯度是 4×2s/16＝s/2，也就是 `[[0.5,1],[1.5,2]]`；預設設定的 bilinear 則是 `[[0.78125,1.09375],[1.40625,1.71875]]`。所以必須記錄用的是哪一種插值方法，以及 `align_corners` 這類設定，不能把兩者當成完全一樣。這裡的插值指放大特徵圖時，由已知格算出新格的方法，和第 6 章算 AP 時的插值是兩回事。
+本節程式只用 nearest。另一種 bilinear（雙線性插值）會依距離混合相鄰來源值，產生中間值；方法與設定會影響結果和梯度，不能當成完全一樣。這裡的插值指由已知格算出放大後的新格，和第 6 章算 AP 時的插值是兩回事。以下座標與梯度比較不影響本節四步主例，可先跳過。
+
+??? note "選讀：bilinear 的來源座標、align_corners 與梯度"
+
+    仍用 `[[1,2],[3,4]]` 這張 2×2 特徵圖，放大到 4×4。來源格子的中心座標是 0、1；新格子的中心要先換回來源座標，再依距離分配權重。`align_corners` 決定的是這個對應，不是有沒有保留原本的數字。
+
+    ![兩格放大成四格時，兩種 align_corners 設定對應的來源中心座標](../assets/diagrams/11-bilinear-coordinates.svg)
+
+    **`align_corners=False`（PyTorch 預設）**：第一列四個新格的中心換回來源座標是 −0.25、0.25、0.75、1.25。超出來源中心範圍時用邊上的值；介於 0 和 1 時依距離加權。因此第一列是 1、0.75×1+0.25×2＝1.25、0.25×1+0.75×2＝1.75、2。
+
+    **`align_corners=True`**：第一個與最後一個新格中心對齊來源的兩端中心，中間兩點位於 1/3、2/3，所以第一列是 1、4/3、5/3、2。圖只畫水平方向；垂直方向也照相同規則換算。
+
+    **loss 換了，梯度也會換。** 若 loss 剛好是全部輸出總和，bilinear 每個來源的梯度也仍是 4。這是這個例子的特例，不能推成兩種方法的梯度永遠相同。
+
+    若 loss 改成 16 個輸出平方的平均，nearest 的每個來源值 s 被複製 4 次，梯度是 4×2s/16＝s/2，也就是 `[[0.5,1],[1.5,2]]`。預設設定的 bilinear 則是 `[[0.78125,1.09375],[1.40625,1.71875]]`。完整程式對融合輸出用的就是平方平均，但沒有拿這個 2×2 例子比較 bilinear；這裡是補充算例。因此實驗紀錄要同時寫插值方法與 `align_corners` 等設定。
 
 ## 參數與記憶體可以手算
 
@@ -160,6 +160,22 @@ mix 輸出 16 channel，原本吃 16 channel 的 `fine_head` 才不必改。
 完整程式的斷言全都寫在三個 `print` 之前，所以三行都印出來，就表示斷言全部通過。第三行後半的 `both branches backward and one step` 是固定印出的字，摘要的就是上面這些梯度與更新的斷言。
 
 這個實驗只檢查特徵怎麼接，沒有訓練偵測器，所以沒有小物件 AP 或速度的結論。
+
+## 選讀：FPN、PAN 與 YOLO 的完整連線
+
+歷史機制：
+
+- [FPN](https://arxiv.org/abs/1612.03144)：用 top-down 路徑與 lateral connection 建構特徵金字塔。它把深層特徵放大後，和 lateral 那一支逐值相加，所以兩支的 channel 數必須相同；每次合併前，新接進來的 lateral（淺層）那一支先經過 1×1 卷積調整 channel。
+- [PANet](https://arxiv.org/abs/1803.01534)（Path Aggregation Network，路徑聚合網路；本頁文字與圖中簡稱 PAN）：在 FPN 之外再增加一條 bottom-up 路徑。
+- [YOLOv4](https://arxiv.org/abs/2004.10934) 與固定版本 [YOLOv5 v6.0 模型配置](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/yolov5s.yaml)：都在 FPN 式的 top-down 路徑之後，再接一條 PAN 式的 bottom-up 路徑；YOLOv4 還把 PAN 原本的相加改成 concat。YOLOv5 v6.0 的配置檔裡（寫在 `head:` 底下），每次 top-down 合併都是 1×1 卷積 → nearest 放大 2 倍 → concat（直接接 backbone 的淺層特徵）→ C3 模組，和本節的四步同型。
+
+??? note "PAN 為什麼還要一條淺→深的路？"
+
+    backbone 本身就是從淺層算到深層，但這條路很長。PANet 論文指出，在 FPN 的 backbone 裡，淺層的資訊要傳到最深層，可能得經過上百層。PANet 另加一條不到 10 層的 bottom-up 短路徑，讓淺層較準的位置資訊比較容易傳到深層。本節沒有實作這條路徑。
+
+上面這幾個設計不是同一篇論文提出的一個模組。本節簡化成一條深→淺的路徑：先用 1×1 減少深層的 channel，再放大、concat，最後用 3×3 卷積混合；上方四步主例已逐步示範。也就是只做一次 FPN 式的深→淺融合，不是完整的 PANet，也不聲稱重現完整的 YOLOv4／v5 neck：相對 YOLOv5，本節的 mix 只是一個 3×3 卷積而不是 C3，卷積後沒有 BatchNorm 與 SiLU，也沒有第三個尺度與 bottom-up 路徑。
+
+和原始 FPN 相比，有幾處不同要分清楚。一是用 concat 代替相加：兩路的 channel 各自保留，交給後面的 3×3 卷積學怎麼混。二是 lateral 那一支沒有 1×1，淺層特徵直接接進 concat。這兩處都和 YOLOv3、YOLOv5 v6.0 的 top-down 合併相同：深層先接 1×1、再上取樣，然後直接和 backbone 的淺層特徵 concat。深層那一支的 1×1（本節的 reduce）FPN 也有：FPN 讓 backbone 每個尺度（stage）的輸出各接一個 1×1，最深那個尺度的 1×1 輸出就是 top-down 路徑的起點；之後每次合併，只有新接進來的 lateral 那一支接 1×1，從上面送下來的那一支不再接。另外，FPN 最深那個尺度的 1×1 輸出，也會再經過 3×3 卷積交給它自己的 head；本節的 reduce 只用在 top-down，粗 head 仍直接接 deep。相加與 concat 哪個比較好，本節沒有比較。
 
 ## 收益與代價
 

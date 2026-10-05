@@ -1,7 +1,7 @@
 {
   "id": "03-comparison",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:17:57.201153+00:00",
+  "executed_at_utc": "2026-10-05T10:23:47.548656+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,9 +19,9 @@
   "dependencies_sha256": {
     "lesson_cases/03-comparison.py": "8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b"
   },
-  "process_wall_seconds": 2.7926,
+  "process_wall_seconds": 2.5824,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "plain step=0, loss=0.6938, stem_grad_norm=0.000984\nplain step=1, loss=0.6937, stem_grad_norm=0.001001\nplain step=2, loss=0.6936, stem_grad_norm=0.001011\nplain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0132\nresidual step=0, loss=0.6921, stem_grad_norm=0.146701\nresidual step=1, loss=0.6888, stem_grad_norm=0.147590\nresidual step=2, loss=0.6855, stem_grad_norm=0.146128\nresidual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0154\nSame initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.\n",
+  "stdout": "plain step=0, loss=0.6938, stem_grad_norm=0.000984\nplain step=1, loss=0.6937, stem_grad_norm=0.001001\nplain step=2, loss=0.6936, stem_grad_norm=0.001011\nplain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0111\nresidual step=0, loss=0.6921, stem_grad_norm=0.146701\nresidual step=1, loss=0.6888, stem_grad_norm=0.147590\nresidual step=2, loss=0.6855, stem_grad_norm=0.146128\nresidual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0104\nSame initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.\n",
   "stderr": "",
   "exit_code": 0
 }

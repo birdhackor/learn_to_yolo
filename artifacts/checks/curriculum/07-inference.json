@@ -1,7 +1,7 @@
 {
   "id": "07-inference",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:18:19.514202+00:00",
+  "executed_at_utc": "2026-10-05T10:24:00.547545+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -27,7 +27,7 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 1.5799,
+  "process_wall_seconds": 2.2884,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "untrained model candidate counts (no quality claim) [0, 0, 0]\nartificial known-logit fixture counts [2, 1, 0]\nfixture red box [8.00160026550293, 12.0, 24.00160026550293, 28.0]\nsame-class overlapping fixture NMS counts 2 -> 1\n",
   "stderr": "",

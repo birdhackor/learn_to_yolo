@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 920" role="img" aria-labelledby="title desc">
+<title id="title">有過期紀錄才重產；GPU需要時先於CPU</title><desc id="desc">配對新notebook並核對程式指紋後，沒有過期紀錄就沿用原紀錄；有過期紀錄才走重產分支。GPU過期才推分支手動跑，CPU過期才本機或別機重跑。兩者都過期時先GPU後CPU。別機帶回紀錄和重畫圖。兩路匯到正文數字核對、三輪審查、完整檢查與新tag發布驗證。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#475569"/></marker></defs>
+<rect width="520" height="920" rx="12" fill="#f8fafc"/>
+<g font-family="sans-serif" fill="#0f172a" font-size="23">
+<text x="22" y="34">發布：有過期紀錄才重產</text>
+<rect x="20" y="65" width="480" height="85" rx="10" fill="#dbeafe" stroke="#64748b"/>
+<text x="260.0" y="97" text-anchor="middle" font-size="23">配對新 notebook</text>
+<text x="260.0" y="128" text-anchor="middle" font-size="23">核對每份紀錄的程式指紋</text>
+<path d="M260,150 V182" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="260" y="210" text-anchor="middle">是否有過期紀錄？</text>
+<path d="M230,224 H130 V252" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M290,224 H382 V252" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="20" y="260" width="220" height="82" rx="10" fill="#dcfce7" stroke="#64748b"/>
+<text x="130.0" y="292" text-anchor="middle" font-size="22">沒有：沿用紀錄</text>
+<text x="130.0" y="323" text-anchor="middle" font-size="22">保留日期與電腦</text>
+<rect x="260" y="260" width="240" height="82" rx="10" fill="#e0e7ff" stroke="#64748b"/>
+<text x="380.0" y="292" text-anchor="middle" font-size="22">有：只重產所需</text>
+<text x="380.0" y="323" text-anchor="middle" font-size="22">不是所有實驗重跑</text>
+<path d="M380,342 V385" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="260" y="393" width="240" height="85" rx="10" fill="#ffedd5" stroke="#64748b"/>
+<text x="380.0" y="425" text-anchor="middle" font-size="22">GPU 過期才執行</text>
+<text x="380.0" y="456" text-anchor="middle" font-size="22">推分支、手動工作</text>
+<path d="M380,478 V518" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="260" y="526" width="240" height="85" rx="10" fill="#e0e7ff" stroke="#64748b"/>
+<text x="380.0" y="558" text-anchor="middle" font-size="22">CPU 過期才執行</text>
+<text x="380.0" y="589" text-anchor="middle" font-size="22">本機或別機重跑</text>
+<path d="M380,611 V651" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="260" y="659" width="240" height="85" rx="10" fill="#e0e7ff" stroke="#64748b"/>
+<text x="380.0" y="691" text-anchor="middle" font-size="22">別機帶回：紀錄</text>
+<text x="380.0" y="722" text-anchor="middle" font-size="22">和重畫的圖一起</text>
+<path d="M130,342 V769 H260 V803" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M380,744 V769 H260 V803" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="20" y="811" width="480" height="80" rx="10" fill="#dbeafe" stroke="#64748b"/>
+<text x="260.0" y="843" text-anchor="middle" font-size="23">核正文數字 → 三輪審查</text>
+<text x="260.0" y="874" text-anchor="middle" font-size="23">檢查 → 新 tag → 發布與驗證</text>
+<text x="22" y="923" font-size="20"></text>
+</g></svg>

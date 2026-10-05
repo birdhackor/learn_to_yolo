@@ -41,10 +41,20 @@
 - [官方下載頁](https://cocodataset.org/#download)的實際本文：[download.htm](https://cocodataset.org/dataset/download.htm)；[標註格式本文](https://cocodataset.org/dataset/format-data.htm)；[授權本文](https://cocodataset.org/dataset/termsofuse.htm)。有 bbox、instance segmentation、crowd，適合單／多尺度與密集候選比較。
 - 可用下載：[train2017.zip](http://images.cocodataset.org/zips/train2017.zip)、[val2017.zip](http://images.cocodataset.org/zips/val2017.zip)、[annotations_trainval2017.zip](http://images.cocodataset.org/annotations/annotations_trainval2017.zip)，即官方下載頁列出的 HTTP 網址。
 - **HTTPS 要換網址**：`images.cocodataset.org` 在 DNS 上是 Amazon S3 bucket（存放檔案的儲存空間）的別名，連線時 S3 出示的是發給 `s3.amazonaws.com` 等 Amazon 網域的憑證，不含 `images.cocodataset.org`；所以把上面的網址改成 `https://` 會因憑證主機名不符而連線失敗，curl 與 Python 的 urllib 實測都如此。需要 HTTPS 時，整包下載與按張取得圖片都改用同一個 bucket 的路徑式網址 `https://s3.amazonaws.com/images.cocodataset.org/…`，例如 `https://s3.amazonaws.com/images.cocodataset.org/zips/val2017.zip`；不要為了連上而關掉憑證驗證。`data/manifest.json` 的 `coco2017` 記的就是這三個檔的 S3 HTTPS 網址。2026-10-04 16:43 UTC 量測時，三個檔的官方 HTTP 網址與 S3 HTTPS 路徑都是 HEAD 回 200、range GET 回 206，兩邊回報的 `Content-Length`、`ETag`、`Last-Modified` 相同。
-- 偵測使用 `instances_train2017.json`／`instances_val2017.json`：`images`、`annotations`、`categories`、`licenses`；bbox 是 **0-based 畫素 `[x,y,width,height]`**，包含 `area` 與 `iscrowd`。category ID 不應直接當連續 class index，必須存 mapping。每張 image 的 `license` 指向 license 表，另有 Flickr URL。
+- 偵測使用 `instances_train2017.json`／`instances_val2017.json`：`images`、`annotations`、`categories`、`licenses`；bbox 是 **0-based 畫素 `[左上x,左上y,width,height]`**，包含 `area` 與 `iscrowd`。category ID 不應直接當連續 class index，必須存 mapping。每張 image 的 `license` 指向 license 表，另有 Flickr URL。
 - **授權**：官方 annotation／website 明示 **Creative Commons Attribution 4.0**。官方也明示 COCO 不擁有圖片版權，照片須遵守 Flickr 條款；再散布需按 image license 逐張核對 attribution、NC／SA／ND 等限制與用途。開源 API 的程式 license 與照片授權是不同來源。
-- **切分與小物件**：118K train／5K val。2014 與 2017 使用相同圖片重新切分，混用年份會造成洩漏。真實小物件選樣應保存原 annotation `area` 與輸入後大小；[官方 evaluator](https://raw.githubusercontent.com/cocodataset/cocoapi/master/PythonAPI/pycocotools/cocoeval.py) 的 small area range 為 0–32²，但原圖 `area` 不等同 resize 後 bbox 面積，不能混成同一指標。`iscrowd=1` 不可改成一般單物件，也不應簡單刪掉當背景；正確保留 ignore／crowd 評估規則。
+- **切分與小物件**：118K train／5K val。2014 與 2017 使用相同圖片重新切分，混用年份會造成洩漏。真實小物件選樣應保存原 annotation `area` 與輸入後大小；[官方 evaluator](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L502-L511) 的 small area range 為 0–32²，但原圖 `area` 不等同 resize 後 bbox 面積，不能混成同一指標。`iscrowd=1` 要保留群體區域的特殊規則，見下方說明。
 - 建子集先固定選樣條件與 image ID，再對每張入選圖保留所選任務全部相關實例，不能只留下觸發「小物件」選樣的那個框。重疊框的 IoU 不直接代表遮擋程度；還需看圖／mask。單獨拿 val2017 再分 train／val 只能稱自訂 COCO-val 子集，不能同時當官方 held-out 評估。
+
+### COCO 的 crowd 區域不是一個普通物件 { #coco-crowd }
+
+`iscrowd=1` 標記同類物件密集、難以逐一區分的群體區域。例如一群人擠在一起，標註的是群體區域，不是要模型輸出一個「大人物」。保存標記，也不要把區域刪掉當背景。
+
+COCO 官方評估器把 crowd GT 當作忽略區域：匹配到它的預測不計一般 TP／FP，而且同一個 crowd 區域允許接住多個預測。對 crowd 的重疊判準也不是普通 IoU，而是「預測與 crowd 的交集面積 ÷ 預測面積」；這讓落在群體內的小框能匹配該區域。一般非 crowd GT 仍使用普通 IoU 和一個 GT 配一個預測的規則。
+
+這裡說的是**官方評估規則**，不表示訓練時直接把 crowd 當成一個正樣本。本專案的合成資料 loader 與 AP50 評估器沒有 crowd 支援；接 COCO 時，需要另訂訓練時忽略區域的策略，評估則使用官方 API，不能直接沿用本書簡化計分報 COCO 成績。
+
+依據：[官方 `mask.py` 的 crowd 重疊公式](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/mask.py#L58-L67)、[官方 `cocoeval.py` 的忽略與配對](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L261-L299)，另見 [crowd GT 設為 ignore 的位置](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L106-L109)。以上固定 commit `8c9bcc3`。
 
 ### 4. Oxford-IIIT Pet：頭部定位備選，不是小型多人資料
 

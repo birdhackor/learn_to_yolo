@@ -1,6 +1,6 @@
 # 3.1 ResNet identity shortcut：先確定真的能原樣通過
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/03-identity.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/03-identity.ipynb){ .md-button }
 
 照理說，網路加深不該變差：多加的幾層只要學成「輸出＝輸入」，深網路就能算出和原本淺網路一樣的結果，訓練誤差不該更高。但 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)的圖 1 顯示，在 CIFAR-10 圖片分類資料上，56 層的普通（plain）網路連訓練誤差（訓練資料上的錯誤率）都比 20 層的高。論文把這種「更深反而連訓練誤差都較高」的現象稱為退化（degradation）。這不是 overfit（訓練資料學得好、新資料卻變差）：這裡連訓練資料都學得比較差，屬於[第 2 章](02-diagnostics.md)說的最佳化問題。
 
@@ -80,15 +80,17 @@ class IdentityBlock(nn.Module):
 
 暖身節算的是 loss 對參數 w 的梯度；這裡改看 loss 對輸入 x 的梯度，也就是 x 稍微改變時 loss 的變化率。x 本身不會被更新，為什麼要看它？在深層網路裡，這個 block 的 x 是前一層的輸出。依連鎖律，前面各層參數的梯度，都要經過「loss 對 x 的梯度」才傳得回去。所以完整程式讓 x 也記錄梯度（`requires_grad=True`）。
 
-把 x 增加很小一點 \(\Delta x\)，輸出變化是 \(\Delta x+[F(x+\Delta x)-F(x)]\)。第一項來自 shortcut，永遠存在；第二項來自主分支。把輸出變化除以 \(\Delta x\)，就是 y 對 x 的變化率：
+先用**一維簡化**建立直覺：這一段暫時把 x、y 都當成單一數，F 也只把一個數變成另一個數。把 x 增加很小一點 \(\Delta x\)，輸出變化是 \(\Delta x+[F(x+\Delta x)-F(x)]\)。第一項來自 shortcut；第二項來自主分支。把這個單一數的輸出變化除以 \(\Delta x\)，就是 y 對 x 的變化率：
 
 \[
 \frac{\Delta y}{\Delta x}=1+\frac{F(x+\Delta x)-F(x)}{\Delta x}.
 \]
 
-本節的 block 相加後沒有 ReLU，所以每個 block 往回傳的變化率都含一個不經過權重的 1，再加上主分支那一項（相加後若有 ReLU，這個 1 只在相加結果大於 0 的位置傳得回去，練習 1 會看到）。這是「梯度可沿 shortcut 直接傳遞」的直覺來源，但不表示全部梯度永遠等於 1：主分支的權重不是 0 時，還要加上主分支那一項。
+本節相加後沒有 ReLU，所以這個一維例子的變化率含一個不經過權重的 1，再加上主分支那一項。這是「梯度可沿 shortcut 直接傳遞」的直覺來源，不表示全部梯度永遠等於 1；兩項也可能互相抵消。相加後若有 ReLU，直接路徑只在相加結果大於 0 的位置傳得回去，練習 1 會看到。
 
-疊兩個 block 時，依連鎖律把兩個變化率相乘。把兩個主分支那一項（\(\Delta x\) 趨近 0 時的值）分別記為 a、b，兩個 residual block 串起來的變化率是 \((1+a)(1+b)=1+a+b+ab\)，裡面一直有一個不經過任何權重的 1；兩個普通 block 串起來只剩 \(ab\)，a、b 都小時會越乘越小。
+仍在一維例子裡，疊兩個 block 時，依連鎖律把兩個變化率相乘。把兩個主分支那一項（\(\Delta x\) 趨近 0 時的值）分別記為 a、b，兩個 residual block 串起來的變化率是 \((1+a)(1+b)=1+a+b+ab\)，裡面有一個不經過任何權重的 1；兩個普通 block 串起來只剩 \(ab\)，a、b 都小時會越乘越小。
+
+回到圖片張量，卷積會讓一個輸入元素影響多個輸出元素，因此不能把整張圖的 \(\Delta y\) 除以 \(\Delta x\)，也不能直接用兩個純量 a、b 代表完整 block。要把「每個輸入影響哪些輸出、各有多少變化」排成一張表，這張表叫**雅可比矩陣（Jacobian）**；反傳時把各條路傳回的梯度相加。Shortcut 仍提供同位置、係數為 1 的直接路徑，但總梯度還包含主分支的各條路。下面的人工零分支恰好把那些路全部關掉，才會看到輸入梯度全是 1。
 
 人工零分支的實驗把 y 的所有值加起來當 loss。這個 loss 不是訓練誤差，也沒有目標值；它只是把 y 收成一個數，好呼叫 `backward()` 算梯度。本例的 loss 是 \(-2+(-1)+0+1=-2\)，可以是負的。選「全部相加」，是因為 loss 對每個 y 值的變化率都是 1，x 的梯度就直接反映 y 隨 x 的變化率。固定其他元素，只把 x 的某一個元素增加 0.001，y 的對應元素也增加 0.001，loss 也增加 0.001，因此每個輸入元素的梯度都是 1。完整程式第一部分的主要幾行如下（省略最後兩行 print）：
 

@@ -1,7 +1,7 @@
 {
   "id": "07-loss",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:18:15.485644+00:00",
+  "executed_at_utc": "2026-10-05T10:29:25.750772+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -27,7 +27,7 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 1.6728,
+  "process_wall_seconds": 2.7525,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "{'total': 1.933169, 'box': 0.109375, 'objectness': 0.693147, 'classification': 0.693147}\npositive/background objectness gradients -0.03125 0.03125\npositive-cell class gradients [-0.5, 0.5]\nempty image: finite backward, box/class=0\n",
   "stderr": "",

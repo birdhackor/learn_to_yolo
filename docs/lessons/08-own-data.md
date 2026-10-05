@@ -1,6 +1,6 @@
 # 8.2 用自己的資料：類別、標註與來源切分
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/08-own-data.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/08-own-data.ipynb){ .md-button }
 
 前置：[自己的圖片推論](08-own-images.md)、[Grid MiniYOLO 資料](07-data.md)、[三步訓練與診斷](07-training.md)。你需要知道上一節的 letterbox 與 checkpoint 載入，以及第 7 章怎麼把標註打包成 batch、訓練 4×4 grid 的偵測器。
 
@@ -126,7 +126,7 @@ optimizer.step()
 
 這裡 `grid_size=4` 表示每邊 4 格；`image_size=64` 是前處理後輸入圖的邊長（pixel）；`num_classes` 取自 JSON 裡固定順序的 classes。target 用的是 letterbox 後的框，不是原圖框。
 
-執行 [Colab 版本](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/08-own-data.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-data.py`。應看到 `rejected source leakage`、每個 split 2 筆、head `(2,4,4,8)`，最後完成一步 loss 為有限值的更新。
+執行 [Colab 版本](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/08-own-data.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-data.py`。應看到 `rejected source leakage`、每個 split 2 筆、head `(2,4,4,8)`，最後完成一步 loss 為有限值的更新。
 
 完整程式（Colab 裡的那份）實際寫出六張 PNG（三個來源各一張黃矩形、一張空圖，背景深淺各不相同），確認跨 split 沒有畫素相同的圖，核對每個檔案的尺寸，讀入 train 的兩張，再做一次參數更新。它也故意送進幾種錯誤資料，確認都會被拒絕：框的列數或每列長度不對、class id 寫成 bool、空圖的寬高不是正數、座標不是有限數字，以及圖片實際尺寸和紀錄不符。
 
@@ -156,27 +156,13 @@ optimizer.step()
 
     只把 classes 裡某個舊名稱改成綠矩形是不行的：權重學到的仍是原本那一類。
 
-## 完整實驗：訓練、評估、存檔與重新載入
+## 完整實驗：loss 下降，偵測也一定變好嗎？
 
-上面的一步更新只確認程式接得起來，還不能說新類別已經學會。這一段跑完整流程，重點有三個：
+上面的一步更新只確認程式接得起來。現在用少量資料訓練完整模型，再看沒參與更新的圖：160 步時 loss 已下降，偵測卻幾乎失敗；從相同初始化重新訓練總共 1600 步，train 能背熟，validation／test 的表現仍有落差。最後再把同一流程換成自己的資料。
 
-1. 只訓練 160 步時，loss 降了很多，mAP50 卻幾乎是 0；只看一個 loss 數字，看不出訓練中途發生了什麼。
-2. 改成事先固定、跑滿的 1600 步後，train 全對，validation／test 卻低很多：背熟訓練資料不等於會泛化。
-3. 最後說明怎麼換成你自己的資料。
+實驗使用 `scripts/run_custom_data_learning.py`，沿用本節 Dataset、GridDetector、target、loss 與 checkpoint。程式生成 48 張非正方形 PNG 及 JSON：train 24、validation 12、test 12；每組有 3 張空圖，紅、藍、黃三類都有 GT。每 4 張圖是一個 source_id，共 12 個來源，整組切分而不跨 split。跨 split 也檢查過 PNG 檔與解碼 RGB，沒有完全相同的圖；這只能抓完全重複，不能代替真實連拍資料的來源盤點。這些來源和圖都是合成的。
 
-`scripts/run_custom_data_learning.py` 沿用同一個 Dataset、GridDetector、target、loss 與 checkpoint，另外多做三件事：用少量資料做 overfit 練習、對沒參與訓練的圖片推論，以及存檔後重新載入。先用不需下載、由程式生成的三類合成資料跑一次：
-
-```bash
-python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001
-```
-
-`--fixture` 表示改用程式生成的合成資料，`--fixture-test-seed` 是產生 test 圖用的 seed。沒有指定 `--output` 時，所有檔案預設存在 `artifacts/runs/custom-data-learning/`，結束後仍可查看。Colab notebook 的「可選」段落，附有執行這行指令、再顯示 `learning.svg` 的程式碼。
-
-它寫出 48 張非正方形 PNG 與 JSON：24 張 train、12 張 validation、12 張 test；每個 split 各有 3 張空圖，三類都有 GT。每 4 張圖算一個 source_id，共 12 個（train 6、validation 3、test 3）；三個 split 分別用 seed 7、700、7001 生成，彼此獨立。
-
-source_id 不跨 split；跨 split 也沒有完全相同的 PNG 檔或解碼後的 RGB。只比對 PNG 檔不夠：同一張圖存成兩個 PNG 檔時，檔案位元組可能不同，解碼後的畫素卻一樣，所以還要比對解碼後的 RGB。這只抓得到完全相同的圖，抓不到真實連拍那種「幾乎一樣」的近似重複。這些圖都是合成的，不是真實影片。
-
-所有圖與框先 letterbox 到 64×64，再用下表的設定從零訓練：
+所有圖與框先 letterbox 到 64×64，再從零訓練。設定在訓練前固定：
 
 | 項目 | 設定 |
 |---|---|
@@ -184,58 +170,42 @@ source_id 不跨 split；跨 split 也沒有完全相同的 PNG 檔或解碼後�
 | 訓練 | batch 8、Adam、learning rate 0.01、事先固定、跑滿的 1600 步、CPU 2 threads（執行緒） |
 | seed（亂數種子） | 模型初始化 7；資料 train 7、validation 700、test 7001 |
 
-資料 seed 決定畫出哪些合成圖，所以換 test seed 就是換一批新的 test 圖。這些設定都在訓練前固定，每次實驗的 test 都只在訓練結束後評估一次。
+本節 mAP50 是三類 AP50 的平均。三個 split 使用同一套評估規則：候選截斷 score≥0.1、同類 NMS IoU 門檻 0.5、配對 IoU 門檻 0.5，以及第 6 章的 all-points 插值。三類都有 GT；這是本書 AP50，不是 COCO 的 AP 0.50:0.95。
 
-### 先保留 160 步沒學好的結果
+### 160 步：末尾 loss 掩蓋了中途不穩
 
-最初只訓練 160 步。結束時，完整 train loss（24 張 train 一起算）從 1.55017 降到 0.16977，但 train mAP50 只有 0.00680，validation 為 0。本節的 mAP50 是紅、藍、黃三類各自 AP50 的平均（定義見 6.2 節與第 7 章）：腳本印出的 `train_map50`、`validation_map50`、`test_map50`，以及後面的表格與圖上寫的 mAP50 都是它，對應腳本寫出的 `report.json` 裡各 split 的 `map` 欄位，各類的值在 `ap50_per_class_name`。
+完整 train loss（24 張一起算）從 1.55017 降到 0.16977，train mAP50 卻只有 0.00680，validation 是 0。腳本已核對合成圖的塗色與 JSON 框一致、21 個 GT 對應 21 個正格、正格 target 寬高非零、負格 box 梯度為零，沒有發現標註、target 或 positive mask 接錯。
 
-腳本在訓練結束後，會拿全部 train 圖檢查框的資料與 target：每張 train PNG 實際塗色的範圍都等於 JSON 裡的框（這一項只對合成資料做；空圖沒有塗色，也沒有框）；21 個 GT 剛好對應 21 個正格；正格寬、高的 target 都不是 0；負格的 box 梯度為 0，符合 positive mask 的設計（box loss 只算正格）。任何一項不成立，腳本就報錯停下；這次全部通過，數據記在紀錄的 `training_box_diagnosis`。這幾項都通過，代表標註、target 與 mask 沒有接錯。結束時，框的位置仍偏；正格的預測框中，最矮的一個高度只剩約 0.05 畫素（以 64×64 的輸入計）。
+逐步 loss 顯示另一個問題：第 144–153 步大多約 0.01–0.04，第 158 步卻升到約 1.87，以分類 loss 為主；box loss 在第 157、159–160 步也升到約 0.02。160 步的評估落在這段不穩之後，正格預測框中甚至有一個高度只剩約 0.05 pixel。不能只由低 mAP 說「框還沒開始學」，也不能用最後一個總 loss 判斷整段訓練。
 
-但逐步紀錄（每批 8 張的 loss）顯示，訓練中途並不平穩。第 144–153 步，每批 loss 大多只有約 0.01–0.04（box 約 0.002）；第 154–158 步卻出現以分類 loss 為主的尖峰，第 158 步約 1.87；box loss 在第 157 步與第 159–160 步也升到約 0.02。160 步的評估，正好落在這次訓練不穩之後。下方 1600 步實驗的圖中，紅色虛線標出第 160 步，也就是 160 步實驗結束、做評估的位置；緊貼在虛線旁的尖峰，就是這裡的第 158 步。1600 步實驗的前 160 步和這次用同樣的模型 seed、train 資料與訓練設定（test 圖不同，但 test 不參與訓練），loss 逐值相同，圖例也寫明了這一點。
+### 1600 步：背熟 train，仍不等於會泛化
 
-所以這次的低 mAP50，不能單純解讀成「框還沒開始學」。這也說明：只看一個 total loss 數字，或只看最後一步，看不出訓練中途發生了什麼。
+第二次實驗**從相同 seed 與初始化獨立重新訓練，共 1600 步**，沒有載入 160 步的 checkpoint 接著跑。train／validation 圖片、模型、Adam、learning rate 與門檻相同，所以前 160 步的 loss 逐值相同。舊 test（seed 7000）已看過，第二次改用事先固定的新 test（seed 7001），訓練結束只評一次；沒有用 test 選 seed、設定或最佳 checkpoint，用的是最後一步模型。
 
-我們保留 [160 步失敗紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-160-step.json)，接著只把步數增加到預先固定的 1600 步；train／validation 的每張 PNG、模型、optimizer、learning rate 與門檻都不變。160 步那次已經看過 test，所以最後改用事前固定的新 test seed 7001。我們沒有用 test 挑 seed、設定或最佳 checkpoint（訓練途中分數最好的存檔），用的就是最後一步的模型。
-
-這些「不變」由腳本自己核對。1600 步那次帶 `--prior-diagnostic` 指向 160 步紀錄，腳本就先用 160 步那次的 seed（train 7、validation 700、test 7000）重新產生那批資料，確認重建出的標註檔與解碼後的畫素，算出的 SHA-256 都和紀錄裡的相同（SHA-256 是由內容算出的「指紋」，內容改一點就會不同）。接著確認這次的 train／validation 圖與標註和那批逐筆相同、新的 test 沒有任何一張和舊 test 的畫素相同，模型、optimizer 與門檻的設定也和紀錄一樣。有一項不符，腳本就不開始訓練。
-
-??? note "自己跑 160 步與接續的 1600 步"
-
-    在 repo 根目錄依序執行：
-
-    ```bash
-    python scripts/run_custom_data_learning.py --fixture --steps 160
-    python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001 --output artifacts/runs/custom-data-learning-1600 --prior-diagnostic artifacts/runs/custom-data-learning/report.json
-    ```
-
-    第一行用預設的 test seed 7000，結果存在 `artifacts/runs/custom-data-learning/`。第二行把第一行的 `report.json` 交給 `--prior-diagnostic`，先做上面的核對，再訓練 1600 步，結果存在 `artifacts/runs/custom-data-learning-1600/`；它的 `learning.svg` 才有第 160 步的紅色虛線。〈完整實驗：訓練、評估、存檔與重新載入〉開頭那行 `--fixture --steps 1600 --fixture-test-seed 7001`（Colab「可選」段落用的也是它）沒有 `--prior-diagnostic`，不做這些核對，圖上也沒有紅色虛線。第一行和它一樣寫到 `artifacts/runs/custom-data-learning/`，會覆蓋先前跑出的 `checkpoint.pt`、`report.json` 與 `learning.svg`。網站上的兩份紀錄也是這樣分兩步產生（`scripts/record_evidence.py`），只是用 `--report`、`--diagram` 把紀錄檔與圖寫到 `artifacts/checks/curriculum/` 與 `docs/assets/diagrams/`，第二步的 `--prior-diagnostic` 也就指向 160 步的紀錄檔。
-
-??? note "test 只看一次：真實資料怎麼做"
-
-    真實照片沒辦法像合成資料那樣換 seed 重生 test，所以要在第一次看 test 之前就把設定定好。若看過 test 之後又改了設定，就要另外收集一批來自新來源的 test，或在報告中明說 test 已被用來決定設定。
-
-### 1600 步後：背熟訓練資料不等於會泛化
-
-| 檢查 | 本次結果 | 代表什麼 |
+| 品質檢查 | 本次結果 | 代表什麼 |
 |---|---|---|
 | 同一套完整 train loss，更新前／全部更新後 | 1.55017 → 0.000117048 | 同樣 24 張 train 圖，loss 幾乎降到 0 |
 | Train mAP50／precision／recall | 均為 1.0 | 21 個 GT 全部配對成功，也沒有多餘的框：這個小資料集已經 overfit（背熟） |
 | Validation mAP50 | 0.296296 | 沒參與更新的圖，低很多 |
 | 新的 Test mAP50 | 0.777778 | 用新 seed 生成、只評估一次的 test |
-| 1600 步梯度 L2 | 每步有限且非零；0.024197–32.544746 | 所有梯度平方相加再開根號（第 1 章）；每步都有限且不是 0，表示每一步都有更新 |
-| 參數變化 L2 | 17.216838 | 訓練前後所有參數差值的 L2 長度；大於 0 表示權重確實改變 |
-| checkpoint 重新載入 | 模型輸出、解碼後的框、Adam 狀態、亂數狀態在重新載入後都逐值相同 | 存檔再載入，沒有改動這些狀態 |
+validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當成穩定的泛化排名。這裡的資料、類別數和 score 截斷也與第 7 章不同，AP 不能直接跨頁比高低。提高候選截斷會刪更多低分框，AP 只會不變或下降。
 
-三個 split 用同一套評估設定，都在訓練前固定：候選截斷門檻 score≥0.1、同類 NMS 的 IoU 門檻 0.5，以及配對 IoU 門檻 0.5 的本書 AP 定義。AP 採 all-points interpolation，三類都有 GT；不是 COCO 的 AP 0.50:0.95。候選截斷門檻越高，被刪掉的低分框越多，AP 只會不變或變低。本節的資料、類別數和候選截斷門檻都與第 7 章不同，AP 不能直接和第 7 章的數字比較。validation 和 test 各只有 9 個物件，兩者的差異也不能當成穩定的泛化排名。
+![1600 步實测 minibatch loss；紅虛線標出第160步](../assets/diagrams/08-custom-loss-readable.svg)
 
-![實測 loss 曲線與四張獨立 validation 圖；綠虛線為 GT、橘框為模型預測；紅色虛線標出 160 步診斷的位置，每張圖下方寫出 TP／FP、IoU 與漏檢](../assets/diagrams/08-custom-learning.svg)
+先看曲線：藍線是每次更新前那批 8 張 minibatch 的 loss，起點約 1.56；表格起點 1.55017 則是全部 24 張 train 的 loss。紅色虛線是第 160 步，旁邊尖峰約在第 158 步；它標出短實驗在哪裡結束，後面才逐漸降到接近 0。
 
-圖上方是 loss 曲線。藍線是每次更新前，那 8 張 minibatch（每步拿來更新的一小批圖）的 loss，所以會上下跳動，第 1 步約 1.56。表格的 1.55017 是全部 24 張 train 一起算的，所以起點不同。
+![固定四張 validation 圖的實際預測與配對；綠虛線是 GT，橘框是預測](../assets/diagrams/08-custom-predictions-readable.svg)
 
-圖下方四張依序是紅、藍、黃矩形及空背景，來自沒參與更新的 validation。綠虛線是 GT，橘框與數字是模型的實際預測與分數；合成資料的三類在圖上寫成紅、藍、黃，換成自己的資料時則寫 JSON 裡的類別名稱。
+再看這四張 validation 圖：綠虛線是 GT，橘框是模型預測，數字是 score。判定仍按分數排序、一個同類 GT 最多配一次，IoU≥0.5 才是 TP；未配成的預測是 FP，沒被預測配到的 GT 是 FN。
 
-每張圖下面逐行寫出評估的判定，規則和算 AP 時相同：預測框依分數由高到低，各自和還沒被配走的同類 GT 配對，IoU ≥ 0.5 才算 TP（正確偵測），每個 GT 只能配對一次；沒配對成功的預測是 FP（誤報），沒被任何預測配到的 GT 是 FN（漏檢）。每個預測框一行，寫成「類別 分數：TP，IoU x」，IoU 不到 0.5 時寫成「類別 分數：FP，IoU x < 0.5」，x 是它和同類 GT 的 IoU。每個沒被配到的 GT 另起一行「GT 類別：漏檢（FN）」；空圖上若也沒有框，就寫「沒有 GT，也沒有預測框」。
+- 紅圖：紅框 score 約 1.00、IoU 約 0.58，是 TP；額外黃框 score 約 0.16，圖中沒有黃色 GT，是 FP（和紅色 GT 的 IoU 約 0.24）。
+- 藍圖：score 約 0.46，IoU 約 0.41，只有一個 FP，藍 GT 同時是 FN。
+- 黃圖：score 約 0.99，IoU 約 0.42，也是一個 FP 加 FN。高分不表示位置正確。
+- 空圖：沒有 GT，也沒有預測框。
+
+圖與 AP 都使用 64×64 letterbox 座標。四張固定取各類第一張與第一張空圖，沒有按效果挑；其他 validation 圖也有誤報和漏檢，要回看整組 mAP50，不能只靠這四張判斷。各 split 的 TP、FP、FN 保存在紀錄的 `true_positives`、`false_positives`、`false_negatives`；[原始完整紀錄圖](../assets/diagrams/08-custom-learning.svg)保留原來的合併版，供對照。
+
+真實照片無法換 seed 就生成新 test。第一次看 test 前應定好設定；若看過後再調設定，要收集另一批新來源 test，或在報告中明說 test 已參與選擇。
 
 ??? note "圖下說明的其他寫法"
 
@@ -247,21 +217,47 @@ source_id 不跨 split；跨 split 也沒有完全相同的 PNG 檔或解碼後�
     - 「FP（沒有同類 GT，最大 IoU x）」：圖中沒有這一類的 GT，和其他 GT 的 IoU 也都不到 0.5；x 是其中最大的 IoU。
     - 一張圖超過 4 行時，第 4 行改寫成「……另有 N 項，見下方紀錄檔」，四張圖的下方再寫一行紀錄檔的路徑；完整清單在紀錄的 `validation_examples`。
 
-按配對 IoU 門檻 0.5 判定：紅矩形圖留下兩個框，紅框的分數約 1.00、IoU 約 0.58，算 TP；另一個黃色框的分數約 0.16，但圖中沒有黃色 GT，算 FP，和紅色 GT 的 IoU 約 0.24。藍矩形圖只留下一個藍框，分數約 0.46、IoU 約 0.41，未達門檻，算一個 FP，GT 也算 FN。黃矩形圖的黃框分數約 0.99，IoU 卻只有約 0.42，同樣是 FP 加 FN。分數高不等於位置對。
+### 選讀操作：重跑與保存檢查
 
-圖和 AP 都使用 64×64 letterbox 座標。另外，對原始 PNG 推論的入口 `scripts/detect_image.py`，會用 checkpoint 裡有順序的 class_names 重建三類 head，再把預測還原到 80×120 或 120×80 的原圖；兩套座標不能直接比數值。腳本用它對紅矩形那張 validation 原圖推論兩次：一次在程式裡直接呼叫，一次另開一個程序（獨立執行的另一個 Python），像下文那樣在 repo 根目錄執行指令（指令記在紀錄的 `image_cli_compatibility.standalone_cli.command`）。兩次都用評估的門檻（score≥0.1、NMS 的 IoU 門檻 0.5）；還原到原圖的框、類別與分數，要和 letterbox 座標的預測換算回去的結果一致；`detect_image.py` 每次推論都會另存一份記錄框、類別與分數的 JSON，這兩次的兩份 JSON 除了路徑的寫法也要逐值相同，否則腳本報錯停下。
+下列內容供重現實驗與查輸出使用。品質解讀以上面的結果和圖為主。
 
-四張圖固定取各類的第一張與第一張空圖，沒有依偵測效果挑選；可[開啟原尺寸圖](../assets/diagrams/08-custom-learning.svg)查看小字。圖中黃矩形那張就同時有誤報與漏檢；這四張以外的 validation 圖也有誤報與漏檢，不能只看這四張就忽略整體 mAP50。每個 split 的 TP、FP、FN 個數，記在紀錄裡各 split 的 `true_positives`、`false_positives`、`false_negatives`。
+??? note "自己跑 160 步，再獨立重新訓練總共 1600 步"
 
-在作者的 Linux CPU（2 threads）上訓練約 10.9 秒，你的電腦會不同。
+    只跑完整 1600 步實驗，在 repo 根目錄執行：
 
-??? note "計時包含哪些步驟"
+    ```bash
+    python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001
+    ```
 
-    本次 CPU 訓練約 10.877 秒（紀錄的 `training_seconds`），只算訓練迴圈：每一步的 batch 索引、target 建立、前向／反向、有限梯度檢查、optimizer 與 loss 記錄。完整流程約 14.002 秒（`end_to_end_seconds`），另含資料生成與檢查（接續實驗還要用 160 步那次的 seed 重建那批資料來核對）、評估與訓練框的檢查、存檔、重新載入、原圖推論（包括另開程序執行 `scripts/detect_image.py`，連同那個程序的啟動與 import），以及其他輸出檔與 SVG；不含套件安裝、腳本自己的程序啟動與 import，以及最後寫出紀錄 JSON。這是一次小實驗的耗時，不是正式的效能測試。
+    `--fixture` 生成合成資料，`--fixture-test-seed` 決定 test 圖。預設輸出在 `artifacts/runs/custom-data-learning/`，結束仍保留。Colab 的「可選」段落也使用這個命令，再顯示 `learning.svg`。這個簡短命令沒有與舊 160 步紀錄核對，圖上也沒有紅色虛線。
 
-checkpoint（存檔）除了權重，還存了 optimizer 狀態、已完成的步數與亂數狀態，目的是之後能接著訓練。本節只核對上表最後一列的項目在重新載入後逐值相同；接著訓練的結果是否和不中斷時一樣，本節沒有確認；〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉在雲端的 NVIDIA L4 GPU 上確認了這件事：第 7 章的 GridDetector 訓練到一半存檔，換一個新的 container 讀回後接著訓練，結果和不中斷的訓練逐值相同。
+    若要核對前 160 步，依序做兩次**從零開始的獨立訓練**：
 
-??? note "checkpoint 存了什麼"
+    ```bash
+    python scripts/run_custom_data_learning.py --fixture --steps 160
+    python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001 --output artifacts/runs/custom-data-learning-1600 --prior-diagnostic artifacts/runs/custom-data-learning/report.json
+    ```
+
+    第一行使用舊 test seed 7000，存到 `artifacts/runs/custom-data-learning/`。第二行的 `--prior-diagnostic` 只讀第一份報告來核對資料與設定，**不讀 checkpoint、不接續權重或 Adam 狀態**；它重設相同初始化再跑總共 1600 步，存到另一個 `custom-data-learning-1600/`。第二份圖才有第 160 步紅虛線。
+
+    先前若跑過簡短命令，第一行會覆蓋同目錄的 checkpoint、report 與 learning.svg；第二行另存目錄。網站兩份紀錄也以這兩次獨立訓練產生（`scripts/record_evidence.py`），用 `--report`、`--diagram` 將紀錄和圖另存到 `artifacts/checks/curriculum/`、`docs/assets/diagrams/`。
+
+    腳本核對比較條件：1600 步那次帶 `--prior-diagnostic` 指向 160 步紀錄，腳本就先用 160 步那次的 seed（train 7、validation 700、test 7000）重新產生那批資料，確認重建出的標註檔與解碼後的畫素，算出的 SHA-256 都和紀錄裡的相同（SHA-256 是由內容算出的「指紋」，內容改一點就會不同）。接著確認這次的 train／validation 圖與標註和那批逐筆相同、新的 test 沒有任何一張和舊 test 的畫素相同，模型、optimizer 與門檻的設定也和紀錄一樣。有一項不符，腳本就不開始訓練。
+
+    [160 步失敗紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-160-step.json)與[完整 1600 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-learning.json)保留過程。`train_map50` 等輸出與表、圖的 mAP50，對應 report 各 split 的 `map`；各類 AP 在 `ap50_per_class_name`。
+
+
+??? note "梯度、參數變化與 checkpoint 重新載入"
+
+    | 檢查 | 本次結果 | 代表什麼 |
+    |---|---|---|
+    | 1600 步梯度 L2 | 每步有限且非零；0.024197–32.544746 | 所有梯度平方相加再開根號（第 1 章）；每步都有有限且非零的梯度；是否改變參數，還要看 optimizer.step 與參數差值 |
+    | 參數變化 L2 | 17.216838 | 訓練前後所有參數差值的 L2 長度；大於 0 表示權重確實改變 |
+    | checkpoint 重新載入 | 模型輸出、解碼後的框、Adam 狀態、亂數狀態在重新載入後都逐值相同 | 存檔再載入，沒有改動這些狀態 |
+
+    每次迴圈會執行 optimizer.step；非零梯度描述反傳訊號，參數差值描述訓練前後改變。此處沒有逐步比較每個參數是否改變，不能只由非零梯度宣稱每一步都有實際參數變化。
+
+    checkpoint（存檔）除了權重，還存了 optimizer 狀態、已完成的步數與亂數狀態，目的是之後能接著訓練。本節只核對本表最後一列的項目在重新載入後逐值相同；接著訓練的結果是否和不中斷時一樣，本節沒有確認；〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉在雲端的 NVIDIA L4 GPU 上確認了這件事：第 7 章的 GridDetector 訓練到一半存檔，換一個新的 container 讀回後接著訓練，結果和不中斷的訓練逐值相同。
 
     - 格式：checkpoint 裡的 `format_version` 是 2（`load_checkpoint` 只接受這個格式來接著訓練），保存 model 權重、optimizer 狀態、步數、設定、類別名稱與亂數狀態。
     - Adam 狀態：Adam 替每個參數記住的過去梯度移動平均、梯度平方的移動平均，以及已更新的步數。不存它，接著訓練時 Adam 要從頭累積，更新幅度會和不中斷時不同。
@@ -270,6 +266,17 @@ checkpoint（存檔）除了權重，還存了 optimizer 狀態、已完成的�
     - 重新載入後一致，核對的是這個 CPU 模型與狀態，不代表換到別的裝置也逐位相同。
     - [完整 1600 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-learning.json)保留全部 loss、資料與檔案的 SHA-256 指紋、四張 validation 圖的預測與配對，以及推論檢查。
     - 權重和資料沒有放進 Git：它們在 `.gitignore` 忽略的 `artifacts/runs/` 裡，也不在 Git LFS（Git 存放大檔案的擴充功能）。
+
+
+??? note "原圖推論 CLI 的相容性核對"
+
+    對原始 PNG 推論的入口 `scripts/detect_image.py`，會用 checkpoint 裡有順序的 class_names 重建三類 head，再把預測還原到 80×120 或 120×80 的原圖；兩套座標不能直接比數值。腳本用它對紅矩形那張 validation 原圖推論兩次：一次在程式裡直接呼叫，一次另開一個程序（獨立執行的另一個 Python），像下文那樣在 repo 根目錄執行指令（指令記在紀錄的 `image_cli_compatibility.standalone_cli.command`）。兩次都用評估的門檻（score≥0.1、NMS 的 IoU 門檻 0.5）；還原到原圖的框、類別與分數，要和 letterbox 座標的預測換算回去的結果一致；`detect_image.py` 每次推論都會另存一份記錄框、類別與分數的 JSON，這兩次的兩份 JSON 除了路徑的寫法也要逐值相同，否則腳本報錯停下。
+
+
+??? note "計時範圍：一次小實驗，不是效能測試"
+
+    本次 CPU 訓練約 10.877 秒（紀錄的 `training_seconds`），只算訓練迴圈：每一步的 batch 索引、target 建立、前向／反向、有限梯度檢查、optimizer 與 loss 記錄。完整流程約 14.002 秒（`end_to_end_seconds`），另含資料生成與檢查（第二次獨立實驗還要用 160 步那次的 seed 重建那批資料來核對）、評估與訓練框的檢查、存檔、重新載入、原圖推論（包括另開程序執行 `scripts/detect_image.py`，連同那個程序的啟動與 import），以及其他輸出檔與 SVG；不含套件安裝、腳本自己的程序啟動與 import，以及最後寫出紀錄 JSON。這是一次小實驗的耗時，不是正式的效能測試。
+
 
 ### 換成自己的 JSON 與圖片
 

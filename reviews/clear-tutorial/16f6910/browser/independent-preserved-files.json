@@ -1,0 +1,98 @@
+{
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-loss-readable-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-loss-readable-390.png",
+    "sha256": "a3b240a11ada4afa7f149691b6afcf3a6facc6fbd0ec63d0cc9dfe9adbd52af8"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-loss-readable-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-loss-readable-390-clean.png",
+    "sha256": "a3b240a11ada4afa7f149691b6afcf3a6facc6fbd0ec63d0cc9dfe9adbd52af8"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-predictions-readable-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-predictions-readable-390.png",
+    "sha256": "76883801f8aa5634ec640ff279cd192baa1aac03177f58f863a47befdc414e8f"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-predictions-readable-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-predictions-readable-390-clean.png",
+    "sha256": "76883801f8aa5634ec640ff279cd192baa1aac03177f58f863a47befdc414e8f"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-heldout-07-grid-predictions-readable-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-heldout-07-grid-predictions-readable-390.png",
+    "sha256": "19956d9d55b00a6fe1afe7caba59bd4a0e0f2b1548fb171acd0b74487b8ed3b1"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-heldout-07-grid-predictions-readable-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-heldout-07-grid-predictions-readable-390-clean.png",
+    "sha256": "19956d9d55b00a6fe1afe7caba59bd4a0e0f2b1548fb171acd0b74487b8ed3b1"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/09-anchors-09-anchors-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/09-anchors-09-anchors-390.png",
+    "sha256": "1ed360399de306d1c5913e87cbf8c8aa7582ac7dd760ede4a0cbc6bc8afe45d9"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/09-anchors-09-anchors-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/09-anchors-09-anchors-390-clean.png",
+    "sha256": "1ed360399de306d1c5913e87cbf8c8aa7582ac7dd760ede4a0cbc6bc8afe45d9"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/09-anchor-clustering-09-anchor-clustering-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/09-anchor-clustering-09-anchor-clustering-390.png",
+    "sha256": "b28fed7900e0908d76acbc59507aa46175ebf11f44f5bbc7ddc17e20af69d1e1"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/09-anchor-clustering-09-anchor-clustering-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/09-anchor-clustering-09-anchor-clustering-390-clean.png",
+    "sha256": "b097558494e83b0ff0abc2d1322ff955571ef1c9c11193b3a973f766491c7d10"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/11-csp-11-csp-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/11-csp-11-csp-390.png",
+    "sha256": "ec380b81a234411328442d079eb1f9c4a5faa9cc3797d4d8bb2633026ae16cb0"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/11-csp-11-csp-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/11-csp-11-csp-390-clean.png",
+    "sha256": "c9fdbee8b60ec99f921a10d3ecd0ded875bafa3723234c4f91a51fe4aed81264"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/11-augmentation-11-augmentation-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/11-augmentation-11-augmentation-390.png",
+    "sha256": "0d5471a10e3d4f55a13e3e13da0726553dcf4eed7e8bbbf8e5caed073a74ee9b"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/11-augmentation-11-augmentation-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/11-augmentation-11-augmentation-390-clean.png",
+    "sha256": "389b990582948946e5dbf13be8ba50ac385355fceca3e570276695586bd89f93"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/12-anchor-free-12-anchor-free-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/12-anchor-free-12-anchor-free-390.png",
+    "sha256": "1f61fba1160704db47a205cfc484013259d8b9f65ce26b39f9b342820fed38e8"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/12-anchor-free-12-anchor-free-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/12-anchor-free-12-anchor-free-390-clean.png",
+    "sha256": "ac502f6400ccea612de794824b1272740a3d2e409468deb42d3ee8d53c189364"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/12-assignment-12-assignment-390.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/12-assignment-12-assignment-390.png",
+    "sha256": "019d68c4072d905e1d6c485d12488c7e6d8f494e69497f8fe6272c3f324902b5"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/12-assignment-12-assignment-390-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/12-assignment-12-assignment-390-clean.png",
+    "sha256": "c5e75e60d384adc5f63d078af7a0db012537cd45aa43eb0552d490166561e832"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-loss-readable-1280.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-loss-readable-1280.png",
+    "sha256": "f3836e3df6a369f542b1521c0fd071bc9a4cfca5b323a553c0ae4b25c7bc15f1"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-loss-readable-1280-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-loss-readable-1280-clean.png",
+    "sha256": "08365e3c3e2b7344aea23671feb7e5a78efa2902807db153ebf175d5b3f21b44"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-predictions-readable-1280.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-predictions-readable-1280.png",
+    "sha256": "2f4ebd632d69325e68be522f090e238a695e86e32b9eb9d9e204b869f6429928"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-training-07-grid-predictions-readable-1280-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-training-07-grid-predictions-readable-1280-clean.png",
+    "sha256": "fe47fd2d6b092a40145ac6c0025d79d3940c61c5043763502a3ac09c797851ab"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-heldout-07-grid-predictions-readable-1280.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-heldout-07-grid-predictions-readable-1280.png",
+    "sha256": "d7bdc4f7075710f48a3294fa6c118aa27625bc731ae7a932cf84e04c6f0b9cb1"
+  },
+  "artifacts/runs/clear-tutorial-16f6910/grid-transition-browser/07-heldout-07-grid-predictions-readable-1280-clean.png": {
+    "preserved_path": "reviews/clear-tutorial/16f6910/browser/independent/07-heldout-07-grid-predictions-readable-1280-clean.png",
+    "sha256": "bceacce5bc82d730cf136540f64f36f781a0eb06af57d8b3edf39335a87047ce"
+  }
+}

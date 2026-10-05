@@ -1,6 +1,6 @@
 # 9.2 尺寸聚類：先驗由哪一份資料決定
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/09-anchor-clustering.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/09-anchor-clustering.ipynb){ .md-button }
 
 上一節的 anchor 寬高是手填的（標題的「先驗」指的就是 anchor）。本節改從訓練資料找 anchor，用的方法是聚類（clustering，也叫分群）：把相近的資料分成幾群，每群用一個代表值。這裡的資料是訓練框的寬高，每群的代表寬高就當一個 anchor。讀完你能用 1−IoU 當距離手算一次聚類，並用一個數字比較幾組 anchor 和訓練框的形狀有多接近。
 
@@ -30,7 +30,7 @@
 
 ![中心對齊時的交集，以及寬高平面上的兩群與中心移動](../assets/diagrams/09-anchor-clustering.svg)
 
-左圖：兩框的中心疊在一起後，黃色交集的寬取兩框寬的較小者、高取兩框高的較小者，兩例的 IoU 分別是 0.25 與 0.5。右圖對應下一小節〈手做一次聚類〉：橫軸是寬、縱軸是高，6 個尺寸分成兩群，放大圖裡的紫色箭頭是群中心從初始值移到群平均。
+① 圖板：兩框的中心疊在一起後，黃色交集的寬取兩框寬的較小者、高取兩框高的較小者，兩例的 IoU 分別是 0.25 與 0.5。②～④ 圖板對應下一小節〈手做一次聚類〉：橫軸是寬、縱軸是高，6 個尺寸分成兩群，放大圖裡的紫色箭頭是群中心從初始值移到群平均。
 
 IoU 越接近 1，兩個形狀越像，所以聚類用 1−IoU 當兩個尺寸的距離。8×8 與 16×16：交集 64，IoU=64/(64+256−64)=64/256=0.25，距離=0.75。8×8 與 9×8：IoU=64/72≈0.888889，距離≈0.111111。
 

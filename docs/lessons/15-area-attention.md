@@ -1,6 +1,6 @@
 # 15.2 YOLOv12 Area Attention：互動範圍是一筆預算
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/15-area-attention.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/15-area-attention.ipynb){ .md-button }
 
 上一節的 full attention 讓每個位置讀全圖，代價是要算的權重數隨 token 數的平方成長：feature map 越大，越貴。YOLOv12 的省法是把 token 分成幾個區域（area），各區只在自己內部做 attention，再接回原圖。這樣會少哪些計算，又失去哪一些互動？
 

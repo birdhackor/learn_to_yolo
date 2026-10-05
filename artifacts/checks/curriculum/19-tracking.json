@@ -1,7 +1,7 @@
 {
   "id": "19-tracking",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:19:25.104444+00:00",
+  "executed_at_utc": "2026-10-05T10:25:35.400051+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa"
   },
-  "process_wall_seconds": 1.5758,
+  "process_wall_seconds": 2.0489,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "max_age: 2\nper-frame IDs in detection order A,B (frame4 has only A):\nlast-box IoU: [[1, 2], [1, 2], [2, 1], [2, 1], [2], [2, 3]] ; switches: 3\nvelocity IoU: [[1, 2], [1, 2], [1, 2], [1, 2], [1], [1, 2]] ; switches: 0\ndetector recall=11/12, false positives=0 (same detections feed both trackers)\nexact small matching passes non-greedy counterexample and empty detections\nactual ID panel: artifacts/lesson-19/ids.svg\n",
   "stderr": "",

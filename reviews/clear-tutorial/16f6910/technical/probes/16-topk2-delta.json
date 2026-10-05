@@ -1,0 +1,179 @@
+{
+  "reviewed_at_utc": "2026-10-05T10:47:33.848456+00:00",
+  "scope": "Independent technical delta for transitions/modern-applications.md T01, 16.2 and 16.3 current full text; not a blind first-read and not a change to prior raw records. SVG source/coordinates checked; Zensical browser not tested.",
+  "gpu_used": false,
+  "training_rerun": false,
+  "docs_modified_by_reviewer": false,
+  "files_sha256": {
+    "docs/lessons/16-inference-head.md": "4251983ae7b3f6685b6d8d6071d345308e6079f4b5681c571f00ef9083ff129c",
+    "docs/lessons/16-training.md": "c84b993d07e157ce382e42d5635bc3532b84b853d955695de55c1dabce2ea37a",
+    "docs/assets/diagrams/16-head-paths.svg": "1acac44ac36b5b847e55a22e24d2a97fc2095a25800e3ed0df71e75dbcebf2c4",
+    "docs/assets/diagrams/16-stal-candidates.svg": "04d26cccdc1c78a9f72ce64550a6c156d0f9bccef78b895ff3080fa67c7fc49f",
+    "lesson_cases/16-inference-head.py": "e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d",
+    "lesson_cases/16-training.py": "b50fb995486aa0ff042edb1486de27605fc0c3ec28f201ecb290b97a733fe31e",
+    "artifacts/checks/curriculum/16-inference-head.json": "95a8dd773033000bb327f849348ded72bcf2350afdd13de124ddc1ea8af144ae",
+    "artifacts/checks/curriculum/16-training.json": "286c24f3ece775b4a60df2afa9b9f373c335f08eb2c8386a583c6e10d1b18e38"
+  },
+  "previous_second_round_sha256": {
+    "docs/lessons/16-inference-head.md": "bcd753feb76eb77021582f6990354cb49e6cc087fde1f25c06947076f0faeb53",
+    "docs/lessons/16-training.md": "b73abb0c11697febbbf753ba4a36746a2171d6febfee5f69db1bbea84c5d001c",
+    "docs/assets/diagrams/16-head-paths.svg": "1acac44ac36b5b847e55a22e24d2a97fc2095a25800e3ed0df71e75dbcebf2c4",
+    "docs/assets/diagrams/16-stal-candidates.svg": "04d26cccdc1c78a9f72ce64550a6c156d0f9bccef78b895ff3080fa67c7fc49f",
+    "lesson_cases/16-inference-head.py": "e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d",
+    "lesson_cases/16-training.py": "b50fb995486aa0ff042edb1486de27605fc0c3ec28f201ecb290b97a733fe31e",
+    "artifacts/checks/curriculum/16-inference-head.json": "95b2f301b0b45e22ba7ec1b1aff8f4a21d7d2f5aae8e8706f00fb571c8ccb4cb",
+    "artifacts/checks/curriculum/16-training.json": "fd0152b46b05f3ba20c8fd15330ff5b8aa5558d99889438b26450cfdb739bc38"
+  },
+  "changed_since_second_round": [
+    "docs/lessons/16-inference-head.md",
+    "docs/lessons/16-training.md",
+    "artifacts/checks/curriculum/16-inference-head.json",
+    "artifacts/checks/curriculum/16-training.json"
+  ],
+  "official_commit": "441632cdfd19e22e60a4b1b1999d46326ca51ec4",
+  "official_sources": [
+    {
+      "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py",
+      "sha256": "c69ec67990777a4d13df219ef9b254085b2df283fbe5fd283245b76d6b461b3c",
+      "support_lines": "tal.py 158–173: get_pos_mask -> select_highest_overlaps -> get_targets; 364–382: conflict rewrite followed by masked rowwise topk2 and multiplication"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py",
+      "sha256": "8eb4e089b7c36cef13bb872f9aa37e346da5c022bcfd979e11e7a57a0666b106",
+      "support_lines": "loss.py 374–381 forwards tal_topk/tal_topk2 to TaskAlignedAssigner; E2ELoss 1327–1328 sets many10, one7/topk2=1"
+    }
+  ],
+  "replay": {
+    "command": ".venv-model/bin/python /tmp/16-topk2-delta/v26-post-conflict.py",
+    "isolated_copy": true,
+    "probe_sha256": "4d50c6d38cc1e899f24117adad441b30e7717879a2a808f8bc952a8af31c7389",
+    "json_equal_to_retained_original": true,
+    "result": {
+      "method": "Original AST select_highest_overlaps only, input mask before conflict; verifies the order and row bound without substituting official implementation",
+      "commit": "441632cdfd19e22e60a4b1b1999d46326ca51ec4",
+      "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py",
+      "source_sha256": "c69ec67990777a4d13df219ef9b254085b2df283fbe5fd283245b76d6b461b3c",
+      "gpu_used": false,
+      "topk": 7,
+      "topk2": 1,
+      "before": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "after": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "gt_positive_counts": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "fg": [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "owner": [
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "proof": "After the column-wise conflict rewrite, topk_idx has exactly topk2 entries per GT row. mask_pos *= topk_idx can never increase a row count above topk2; masked zero ties cannot create new positives."
+    }
+  },
+  "current_claims": {
+    "16-inference-head.md:20": "YOLOv10 top-1 is initial selection, not a post-conflict per-GT bound; YOLO26 uses post-conflict topk2=1, yielding at most one and possibly zero.",
+    "16-training.md:29": "Same version distinction before Progressive Loss.",
+    "16-training.md:181,237": "Seven initial candidates -> conflict -> highest-quality one after conflict; four STAL-eligible points are not four positives. Exercise asks for maximum, not exactly one."
+  },
+  "result": "T01 cross-reference wording closed; original v10 counterexample is not extrapolated to YOLO26; no new blocking issue found in delta.",
+  "current_evidence_binding_checks": [
+    {
+      "record": "artifacts/checks/curriculum/16-inference-head.json",
+      "executed_at_utc": "2026-10-05T10:40:00.241633+00:00",
+      "bound_case_and_dependencies_match": true,
+      "stdout_equal_to_second_round_independent_cpu_run": true,
+      "exit_code": 0,
+      "device": "cpu",
+      "record_sha_changed_since_second_round": true
+    },
+    {
+      "record": "artifacts/checks/curriculum/16-training.json",
+      "executed_at_utc": "2026-10-05T10:40:04.299388+00:00",
+      "bound_case_and_dependencies_match": true,
+      "stdout_equal_to_second_round_independent_cpu_run": true,
+      "exit_code": 0,
+      "device": "cpu",
+      "record_sha_changed_since_second_round": true
+    }
+  ]
+}

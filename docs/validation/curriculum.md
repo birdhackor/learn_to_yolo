@@ -85,9 +85,17 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提
 
 ## 審查
 
-網站導覽裡的每一頁都有一份審查紀錄。課程頁由 AI 獨立查核：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，檢查程式摘錄與網頁轉換，也從初學讀者（高中程度、數學好、程式新手）的角度看用詞與說明順序；頁面引用原始論文、官方程式或函式庫文件的說法，另由 AI 打開原始來源逐句核對（論文看原文，官方程式看固定的 commit 或 tag，函式庫看官方文件），查閱的來源記在該頁的審查紀錄。其他 17 頁由 AI 對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。查到的問題修正後，都由另一位 AI 檢查修正。每份紀錄列出查核的方法、全部的發現與每一項的處理。審查者都是 AI，沒有真人學生測試。
+這一版依 repo 的 `clear-tutorial` skill 重審，審查者都是 AI。先前的完整頁面審查仍保留，不改標成逐段盲讀。
 
-審查紀錄存在 `reviews/`。`reviews/coverage.json` 用 SHA-256 記下每份審查看的是哪個版本：頁面文字、頁面上的 SVG 圖，以及課程頁的程式與它 import 的模組；頁尾自動產生的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。Pages 工作流程建置網站之前，`scripts/validate_lessons.py` 會核對這些 SHA-256；有任何一頁在審查之後又改過，網站就不會發布。正文引用的紀錄數字不在這項核對裡：紀錄重產後，由維護者在 `docs/` 與 `README.md` 搜尋紀錄的檔名與舊數字，對照新紀錄逐一核對，改了正文就重審那一頁（見〈[發布與帳號設定](../preparation/publish.md)〉）。課程頁的審查紀錄連在上方〈逐節執行清單〉的表格裡，其他頁如下：
+1. **先記首次閱讀的理解。** 凍結 `16f6910` 的 59 個導覽頁，由六位獨立讀者按段落讀。每開放下一段前，先保存當下的理解、原文卡點、猜測與缺圖；沒有先交全文再要求扮演初學者。各組按指定路線實際補讀前提，並非每組都已讀過整本書。
+2. **修改後查技術與證據。** 由未撰寫該頁的人對照程式、執行紀錄與圖；疑點回查論文、固定版本的官方程式或文件。必要實驗用 CPU 重跑；這次文字與圖解修訂沒有新增 GPU 訓練。
+3. **再看銜接與修正。** 另一位讀者檢查受影響的前文、本節和下一節，並在實際 Zensical 頁面看桌面、手機的圖與公式。修改處有對應複查，不以一份全文摘要代替。
+
+共用檔案系統沒有技術隔離，首次閱讀依揭露規則執行。本輪也記下協調者的問題：部分前提頁漏列、08後段太早收到作者任務提示；這些紀錄不能全部算嚴格盲讀證據，原始問題保留，修正後另作複查。這些限制和每項處理見[本輪原始閱讀與修正紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/16f6910)。
+
+AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有做真人學生的學習效果測試。
+
+審查紀錄存在 `reviews/`。`reviews/coverage.json` 用 SHA-256 記下每份審查看的是哪個版本：頁面文字、頁面上的 SVG 圖，以及課程頁的程式與它 import 的模組；頁尾自動產生的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。Pages 工作流程建置網站之前，`scripts/validate_lessons.py` 會核對這些 SHA-256；有任何一頁在審查之後又改過，網站就不會發布。這項檢查會核對正文的內容指紋，卻不會自動核算正文數字與重產紀錄是否一致：紀錄重產後，由維護者在 `docs/` 與 `README.md` 搜尋紀錄的檔名與舊數字，對照新紀錄逐一核對，改了正文就重審那一頁（見〈[發布與帳號設定](../preparation/publish.md)〉）。課程頁的審查紀錄連在上方〈逐節執行清單〉的表格裡，其他頁如下：
 
 |頁面|審查紀錄|
 |---|---|
@@ -111,7 +119,7 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提
 
 ## 發布後的公開驗證
 
-網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.4.1`）。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
+網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.5.0`）。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
 
 - [`curriculum-publication.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)：在 runner 上嚴格建置（`zensical build --strict`，有警告就算失敗）這個 tag 的網站，再和公開網站比對：導覽裡每一頁的正文，以及 `assets/diagrams/` 的每張圖，都要完全相同。也確認每節的 Colab 連結開的是這個 tag 的 notebook、環境格固定在這個 tag、最後一格就是該節程式，以及先前發布的 tag 仍指向原本的 commit。
 - [`curriculum-release-bootstrap.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)：除了第 20 章，41 本 notebook 的環境格逐字相同，所以用第 0 章的 notebook 測四種情況：沒有 PyTorch、裝著其他版本、已經是 2.9.1，以及其他版本已經載入（環境格改裝 2.9.1 後要求重新啟動，用新的程序重跑兩格後通過）。每種情況都用全新的資料夾與虛擬環境，照 notebook 的順序執行環境格與最後一格，最後一格的輸出要和 notebook 存的輸出相同。第 20 章的環境格另外安裝 ONNX 套件，所以另在沒有 PyTorch 的環境執行一次它的兩格（輸出含計時，不要求相同）。接著在另一份全新的 clone 裡，依序執行 README 的 bash 區塊裡的每個指令（不會自己結束的 `zensical serve` 除外），其中包括 pytest，以及把 42 節的實驗格各跑一次、和紀錄比對輸出的 `scripts/check_lesson_runtime.py`（輸出和紀錄不同不算失敗，哪些節逐字相同記在紀錄的 `lesson_runtime`）。

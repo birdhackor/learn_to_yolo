@@ -1,8 +1,8 @@
 # 9.1 YOLOv2 機制：anchor 是尺寸起點
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/09-anchors.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/09-anchors.ipynb){ .md-button }
 
-本節把第 7 章的寬高寫法換成 YOLOv2 的 anchor 寫法（簡化版），每格也從一個槽變成兩個槽。槽（slot）是第 5 章介紹過的概念，指一個可以輸出框的位置。讀完你能手算一個框在新寫法下的四個數 tx、ty、tw、th，也能說出全部 32 個槽（4×4 格，每格 2 個）中，哪個負責學物件、哪個不算 loss、哪些學背景。
+本節把第 7 章的寬高寫法換成 YOLOv2 的 anchor 寫法（簡化版），每格也從一個槽變成兩個槽。槽（slot）是第 5 章介紹過的概念，指一個可以輸出框的位置。讀完你能手算一個框的訓練 target（中心比例與寬高修正量），也能說出全部 32 個槽（4×4 格，每格 2 個）中，哪個負責學物件、哪個不算 loss、哪些學背景。
 
 前置：第 7 章的 [grid targets](07-targets.md)（標註框怎麼變成每格的訓練目標）與 [loss](07-loss.md)（三項 loss 怎麼算）。
 
@@ -36,7 +36,9 @@ w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
 
 為什麼寬高要用 exp？模型輸出的 tw 可以是任何實數，但寬一定要是正數。\(e^{t_w}\) 永遠大於 0，所以寬高不會算成負的。tw=0 時 \(e^0=1\)，框剛好等於 anchor，這就是「起點」的意思。tw=ln2≈0.693 時倍率是 2：預測寬 = anchor 寬 16 × 2 = 32，anchor 本身仍是 16。tw=−ln2 時倍率是 0.5，預測寬縮成 8。倍率一定為正，但修正值 tw 可正可負；放大 2 倍和縮小一半的 tw 大小相同，只差正負號。
 
-接著用紅框 `[8,12,24,28]`（xyxy，單位 pixel）一步一步算出它的 target，順序和完整程式相同：
+**訓練 target 和原始輸出要分開看。** 本例中心 loss 比較 `sigmoid(tx,ty)` 與格內比例 `(ox,oy)`；寬高 loss 直接比較原始 `(tw,th)` 與 `(ln(w/aw),ln(h/ah))`。所以訓練的四項答案是 `[ox,oy,ln(w/aw),ln(h/ah)]`，不是四個 raw logits。這點和第 7 章不同：第 7 章的寬高也先經 sigmoid，才與全圖比例比較。
+
+接著用紅框 `[8,12,24,28]`（xyxy，單位 pixel）算出真正放進 loss 的 target：
 
 1. **中心與寬高**：中心 ((8+24)/2, (12+28)/2) = (16,20)，寬高 (24−8, 28−12) = (16,16)。
 2. **負責格**：中心除以格寬 16 得 (1, 1.25)，取 floor（向下取整）得 gx=1、gy=1，和第 7 章是同一格。gx、gy 是整數格座標。
@@ -48,13 +50,20 @@ w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
     圖中兩個紫色虛線框是格 (1,1) 兩個槽的 anchor，比尺寸時中心都疊在紅框中心 (16,20)：16×16 和紅框重合，尺寸 IoU 1 最大，所以是 positive；8×8 是同一格的另一個槽，尺寸 IoU 0.25 大於 0.2，所以是 ignore。這兩種狀態的規則見下方〈一格兩槽，不等於兩種類別〉。
 
 5. **tw、th**：把 \(w=a_w\times e^{t_w}\) 兩邊除以 \(a_w\)，得 \(e^{t_w}=w/a_w\)；再取 ln，得 \(t_w=\ln(w/a_w)\)。th 同理。選 `[16,16]` 時，tw = ln(16/16) = 0、th = ln(16/16) = 0；若選 `[8,8]`，則是 ln(16/8) = ln2 ≈ 0.693147。都是同一個物件，只是起點不同。
-6. **encode 再 decode，驗算回原框**：encode 是 decode 的反方向，由真值框算出模型該輸出的數。寬高的 encode 就是第 5 步的 ln。中心要從 σ(tx)=ox 反解出 tx，用的是 sigmoid 的反函數 logit(p)=ln(p/(1−p))。logit 這個函數把比例 p 換回對應的原始分數，所以這樣算出的 tx、ty，就是模型該輸出的 logits。
+本例的四項訓練答案因此是 **`[0, 0.25, 0, 0]`**，只用在負責的 positive 槽；框與類別 loss 都不算其他槽。它們在完整程式中的名字如下：
 
-    p 越接近 0，logit(p) 越往負無限大跑；p=0 時 ln 0 沒有定義，得不到有限的 tx。所以程式先用 clamp（把數夾在 [下限, 上限] 之間：小於下限取下限，大於上限取上限）把 0 換成 0.0001，寫成 `tx=logit(clamp(ox,1e-4,1-1e-4))`，y 同理。結果 tx = ln(0.0001/0.9999) ≈ −9.21024，ty = ln(0.25/0.75) = ln(1/3) ≈ −1.09861。
+| 進 loss 的答案 | 程式中的來源 | 預測值先做什麼 |
+| --- | --- | --- |
+| 中心比例 `(ox,oy)=(0,0.25)` | `offsets` | `raw[pos][:,:2].sigmoid()` |
+| 寬高修正量 `(tw,th)=(0,0)` | `torch.log(wh/anchors[best])` | `raw[pos][:,2:4]`，不經 sigmoid |
 
-    再 decode 回去：cx = (1+0.0001)×16 = 16.0016，所以 x1 = 16.0016 − 8 = 8.0016；四個座標還原成 [8.0016, 12, 24.0016, 28]。有限的 logit 無法得到精確的比例 0，本例用 0.0001 近似，還原誤差約 0.0016 pixel。
+??? note "反解中心 raw 值，只用來核對 decode"
 
-程式用 logit 做 encode，只是為了驗證 encode 再 decode 能回到原框；訓練時用不到 logit 這個函數。訓練時，中心 loss 直接比較 sigmoid(raw tx, ty) 和比例 target (0, 0.25)，這裡的 raw 指模型的原始輸出。寬高則不經 sigmoid：loss 直接拿 raw tw、th 和 target \(\ln(w/a_w)\)、\(\ln(h/a_h)\)（本例都是 0）做 MSE（均方誤差）。這點和第 7 章不同：第 7 章的 tw、th 要先經 sigmoid，才和 0.25 這種比例 target 比較。框 loss 和類別 loss 都只算負責的那個槽，也就是下面說的 positive 槽。
+    完整程式另建 `encoded`，驗證 encode→decode 能回到原框。寬高仍是上表的 ln 比例；中心則用 sigmoid 的反函數 `logit(p)=ln(p/(1−p))`，把比例換回 raw 值。**`encoded` 的前兩項不是中心 loss 的 target；訓練仍比較 `offsets`。**
+
+    ox=0 時 logit 趨向負無限大，不能得到有限值，因此程式先用 clamp 把比例夾在 `[0.0001,0.9999]`。得到 tx=ln(0.0001/0.9999)≈−9.21024、ty=ln(0.25/0.75)≈−1.09861。
+
+    再 decode：cx=(1+0.0001)×16=16.0016，還原框為 `[8.0016,12,24.0016,28]`，誤差約 0.0016 pixel。這個 clamp 近似只用在反解核對；訓練的中心比例答案仍是精確的 `(0,0.25)`。
 
 ??? note "如果 anchor 改用「格」當單位"
 
@@ -74,7 +83,11 @@ w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
 - **ignore**：同一格的其他槽，若和物件的尺寸 IoU 大於 0.2，就什麼 loss 都不算。本例格 (1,1) 的槽 1（8×8，尺寸 IoU 0.25）就是 ignore。
 - **negative**：其餘的槽，只學「這裡沒有物件」。
 
-為什麼要 ignore？8×8 槽和物件在同一格，尺寸也有幾分像（尺寸 IoU 0.25）。把它當 negative，等於要它的 objectness 學「這裡沒有物件」，但這一格明明有物件。本節選擇讓它不計任何 loss。0.2 是本節為了示範三種狀態設的教學值。這條 ignore 規則是本節自訂的，和原版不同：YOLOv2 論文沒有說明 ignore 規則。官方 Darknet 程式（[region_layer.c](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/region_layer.c#L236-L306)）把每個槽解碼後的預測框（含位置）和圖中每個 GT 算一般的 IoU；最大值超過 0.6（[yolov2-voc.cfg](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/yolov2-voc.cfg#L257) 的 thresh）的槽不算 objectness loss，範圍不限同一格，比的也不是 anchor 尺寸。唯一的例外是負責學某個 GT 的槽（相當於本節的 positive）：不論 IoU 多大，它都照常計算 objectness loss。本節的規則也不代表原版其他訓練細節。
+為什麼要 ignore？8×8 槽和物件在同一格，尺寸也有幾分像（尺寸 IoU 0.25）。把它當 negative，就要它在有物件的位置學「沒有物件」。本節用 0.2 這個教學門檻讓它不計任何 loss；這是自訂規則，和原版不同。
+
+??? note "原版 YOLOv2 的 ignore 規則"
+
+    [YOLOv2 論文](https://arxiv.org/abs/1612.08242)沒有說明 ignore。官方 Darknet 的 [region_layer.c](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/region_layer.c#L236-L306) 比的是每個槽解碼後的預測框（含位置）與 GT 的一般 IoU；最大值超過 0.6（[yolov2-voc.cfg](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/yolov2-voc.cfg#L257) 的 thresh）便不計 objectness loss，範圍不限同格，也不是 anchor 尺寸。負責某個 GT 的槽是例外，仍算 objectness。本節的規則不代表原版其他訓練細節。
 
 因此本例有 1 個 positive、1 個 ignore、30 個 negative。各自算哪些 loss：
 
@@ -104,42 +117,46 @@ ignore 不參與 objectness loss，所以 objectness BCE 是對 31 個槽（1 po
 
     `raw.grad` 是 backward 存在 raw 上的梯度，形狀和 raw 一樣是 [1,4,4,2,7]。`[0,1,1,:,4]` 依序取第 0 張圖、格列 y=1、格欄 x=1、兩個槽全取（`:`），最後的 4 是 7 個數裡的編號（從 0 起編：0 到 3 是 tx、ty、tw、th，4 是 obj）。所以它是格 (1,1) 兩個槽的 obj 梯度，約為 [−0.0161, 0]：槽 0 是 positive，槽 1 是 ignore。`[0,0,0,:,4]` 是格 (0,0) 兩個 negative 槽的 obj 梯度，約為 [0.0161, 0.0161]。加上的這一行會最先印出，排在完整程式本身的四行輸出之前。
 
-下面是依完整程式改寫的簡化版，只列選 anchor、寬高 loss 與 objectness loss；中心 loss 和類別 loss 沒有列出。有幾個變數名稱和完整程式不同，對應關係寫在註解裡。
+下面直接摘錄完整程式，用同一組名稱：`wh` 是紅框寬高 `[16,16]`，`offsets` 是中心比例 `[0,.25]`；`pos`／`ignore` 是 `[1,4,4,2]` 的布林 mask。`[None]` 在最前面加一軸，讓兩項答案變成 `[1,2]`，對齊唯一的 positive 槽。
 
-```python
-# gt_wh 是紅框的寬高 [16,16]，在完整程式裡叫 wh；形狀 [2]
-# gt_wh[None]：在最前面加一個軸，形狀變成 [1,2]
-# size_iou 回傳形狀 [1,2] 的尺寸 IoU（本例 [[1,.25]]），argmax 取最大者的編號（本例 0，即 16×16）
-best = size_iou(gt_wh[None], anchors).argmax()
-# tw、th 的 target，本例 [0,0]；完整程式沒有 target_log_wh 這個名字，直接寫 torch.log(wh/anchors[best])
-target_log_wh = torch.log(gt_wh / anchors[best])
-# pos：形狀 [1,4,4,2] 的布林 mask，只有 positive 槽是 True
-# raw[pos][:,2:4] 取出 positive 槽的 tw、th；不經 sigmoid，直接和 target 做 MSE
-# 完整程式沒有 wh_loss：這一項和中心 loss 相加，叫 regression
-wh_loss = F.mse_loss(raw[pos][:,2:4], target_log_wh[None])
-# ~ 是布林取反：ignore 以外的 31 個槽才算 objectness
-valid = ~ignore
-# raw[...,4]：每格每槽的 obj logit，形狀 [1,4,4,2]；obj_target 在 positive 槽為 1、其餘為 0
-# obj_loss 在完整程式裡叫 objectness
-obj_loss = F.binary_cross_entropy_with_logits(raw[...,4][valid], obj_target[valid])
+``` { .python data-excerpt="lesson_cases/09-anchors.py" }
+ious = size_iou(wh[None],anchors)[0]   # [1,.25]
+best = int(ious.argmax())             # 0：16×16 anchor
+...                                  # 省略：建立 raw、pos、ignore、obj_target
+valid = ~ignore                      # 只取非 ignore 的 31 個槽
+...
+regression = F.mse_loss(raw[pos][:,:2].sigmoid(), offsets[None])
+regression = regression + F.mse_loss(raw[pos][:,2:4],torch.log(wh/anchors[best])[None])
+objectness = F.binary_cross_entropy_with_logits(raw[...,4][valid],obj_target[valid])
+classification = F.cross_entropy(raw[pos][:,5:],torch.tensor([0]))
+loss = regression+objectness+classification
 ```
 
-可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchors.py`。
+`regression` 是中心與寬高兩項 MSE 相加。`objectness` 比較有效槽的 obj logit 與 `obj_target`（positive=1、negative=0）；`classification` 只取 positive 槽的兩個類別 logits，答案是 class 0。
+
+## 這次單步更新能核對什麼
 
 本節程式沒有 CNN，也沒有輸入圖片。它直接建立一個形狀 [1,4,4,2,7]、全為 0 的 tensor raw，假裝它是模型輸出，並用 `torch.nn.Parameter` 包起來，讓 optimizer 直接更新這 224 個數字。anchor `[16,16]`、`[8,8]` 是固定常數，不會被訓練。
 
-應看到四行輸出，裡面的數都在上面算過：第 1 行是尺寸 IoU `[1.0, 0.25]`、best anchor `0` 與 log wh `[0.0, 0.0]`；第 2 行是格內比例 `[0.0, 0.25]` 與 encode 出的兩個 logits（約 −9.21024、−1.09861）；第 3 行是 positive／ignore／negative 的槽數 `1 1 30`；第 4 行是 decode 回來的框，約 [8.0016, 12, 24.0016, 28]。
+一次 SGD 更新會改變 positive 槽的中心、obj 與類別 logits，以及 30 個 negative 槽的 obj。ignore 槽完全不變；positive 的 tw、th 初值已等於 target 0，這一步也不變。程式以斷言核對 ignore 梯度為 0、非 positive 的框梯度為 0，並比對更新前後的 `raw` 確實不同。這是在核對責任規則，還不是 anchor 偵測器的效果評測。
 
-第 4 行最後的 `one slot update completed` 是直接寫在 print 裡的字樣，不是計算結果；印到這裡時，raw 已做完一次 SGD 更新。這次更新改變的不只一個槽：positive 槽的 tx、ty、obj 與兩個類別 logits，以及 30 個 negative 槽的 obj 都會變。ignore 槽不參與任何 loss，所以不變；positive 槽的 tw、th 一開始就等於 target 0，梯度是 0，這一步也不變。
+??? example "執行單步實驗與輸出核對"
 
-印出這些結果之前，完整程式會先用斷言（assert：條件不成立就報錯停下，用來自動核對答案）核對七項，全部通過才會印出。其中三項核對手算的數：尺寸 IoU 是 [1, 0.25]；兩個 logits 約是 −9.21024 與 −1.09861；這兩個 logits 經 sigmoid 後是 0.0001 與 0.25，也就是 clamp 後的格內比例。另外四項是：
+    可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchors.py`。
 
-1. encode 再 decode 回到 [8,12,24,28]，誤差在 0.02 pixel 以內。
-2. ignore 槽的 7 個輸出梯度全為 0，因為它不參與任何 loss。
-3. 非 positive 槽的 tx、ty、tw、th 梯度全為 0，因為只有負責的槽學框。
-4. 做一次 SGD 更新後，raw 的數值確實改變。
+    應看到四行輸出，裡面的數都在上面算過：第 1 行是尺寸 IoU `[1.0, 0.25]`、best anchor `0` 與 log wh `[0.0, 0.0]`；第 2 行是格內比例 `[0.0, 0.25]` 與 encode 出的兩個 logits（約 −9.21024、−1.09861）；第 3 行是 positive／ignore／negative 的槽數 `1 1 30`；第 4 行是 decode 回來的框，約 [8.0016, 12, 24.0016, 28]。
 
-這些檢查都通過，只表示框的編碼、mask 與梯度在這個例子裡接對了；不代表已做出會看圖的 anchor 偵測器，也沒有 AP（平均精確率）可報告。
+    第 4 行的 `one slot update completed` 是 print 的固定字樣，不是計算出的更新槽數；實際改變的項目見上方單步說明。
+
+    印出這些結果之前，完整程式會先用斷言（assert：條件不成立就報錯停下，用來自動核對答案）核對七項，全部通過才會印出。其中三項核對手算的數：尺寸 IoU 是 [1, 0.25]；兩個 logits 約是 −9.21024 與 −1.09861；這兩個 logits 經 sigmoid 後是 0.0001 與 0.25，也就是 clamp 後的格內比例。另外四項是：
+
+    1. encode 再 decode 回到 [8,12,24,28]，誤差在 0.02 pixel 以內。
+    2. ignore 槽的 7 個輸出梯度全為 0，因為它不參與任何 loss。
+    3. 非 positive 槽的 tx、ty、tw、th 梯度全為 0，因為只有負責的槽學框。
+    4. 做一次 SGD 更新後，raw 的數值確實改變。
+
+    這些檢查都通過，只表示框的編碼、mask 與梯度在這個例子裡接對了；不代表已做出會看圖的 anchor 偵測器，也沒有 AP（平均精確率）可報告。
+
 
 ## 收益與代價
 

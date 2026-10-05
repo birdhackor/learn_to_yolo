@@ -1,6 +1,6 @@
 # 7.5 Grid MiniYOLO：把輸出接回圖片
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-inference.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-inference.ipynb){ .md-button }
 
 模型對每張圖只輸出 4×4×7 個數字。本節把這些數字變回畫得出來的框、分數和類別，並用答案已知的人工輸入逐步核對。讀完你能手算一格輸出對應的 pixel 框和分數，也看得懂 `decode_grid` 回傳的結果：不論一張圖有 0 個、1 個還是多個物件，格式都一樣。
 
@@ -24,7 +24,7 @@
 
 ![固定紅／藍矩形的 pixel 框](../assets/diagrams/07-data.svg)
 
-上圖是資料頁的真值圖，只用來對照紅框和藍框的位置（圖中的「畫素」就是本頁的 pixel）；圖上有 4×4 淡格線和紅框中心，但沒有標出負責格，也沒有解碼結果。負責格可以看首頁那張示意圖：
+上圖是資料頁的真值圖，只用來對照紅框和藍框的位置（圖中的「畫素」就是本頁的 pixel）；圖上有 4×4 淡格線和紅框中心，但沒有標出負責格，也沒有解碼結果。下面沿用 7.2 節的示意圖，標出紅框的負責格：
 
 ![64×64 圖片切成 4×4 格；紅框左上角 (8,12)、右下角 (24,28)，中心黑點 (16,20) 落在淺藍色虛線的負責格](../assets/diagrams/object-journey.svg){ width="400" }
 
@@ -90,7 +90,7 @@ print('untrained model candidate counts (no quality claim)', [len(p['boxes']) fo
 
 這裡的 model 還沒訓練。它的 head 把 obj 的 bias 設成 −2（見[三步訓練](07-training.md)），實際算出的 obj logit 約為 −2，sigmoid(−2)≈0.12；兩個類別的機率都約 0.5。每格的 score 約 0.12×0.5≈0.06，低於門檻 0.25，每張圖的 16 個候選全被濾掉，所以印出 `[0, 0, 0]`（三張圖的 N 都是 0）。這是預期內的結果，不是 decoder 壞了，也不代表模型的好壞。
 
-`eval()` 和 `inference_mode()` 用途不同。`eval()` 切換模型模式，只影響 Dropout、BatchNorm 這類在訓練和推論時行為不同的層。本模型沒有這些層，所以 `eval()` 在這裡不改變數字；仍要養成推論前呼叫的習慣，換成有這些層的模型才不會出錯。`inference_mode()` 和第 0 章學過的 `no_grad()` 一樣不記錄計算圖，但更嚴格：在裡面產生的 tensor，之後不能再拿去參與要算梯度的計算，換來一點速度。
+`eval()` 和 `inference_mode()` 用途不同。`eval()` 切換模型模式，只影響 Dropout、BatchNorm 這類在訓練和推論時行為不同的層。本模型沒有這些層，所以 `eval()` 在這裡不改變數字；仍要養成推論前呼叫的習慣，換成有這些層的模型才不會出錯。`inference_mode()` 和第 0 章學過的 `no_grad()` 一樣不記錄計算圖，但對新產生的 tensor 有更多限制，接回某些需要梯度的運算時會報錯。因此這裡只用它做推論；之後還要接回訓練計算時，改用 `no_grad()`。
 
 decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的框即使重疊，也不會互相刪掉。程式裡的兩個門檻各管一件事：score 門檻（`score_threshold=.25`，也就是全書說的顯示門檻）決定哪些候選留下；NMS 的 IoU 門檻（`nms_iou=.5`）決定哪些同類的重複候選被刪掉。
 
@@ -114,7 +114,7 @@ decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的�
         fixture[b,y,x,5+target['class_ids'][b,y,x].item()] = 10  # 正確類別改成 10
     ```
 
-在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-inference.ipynb) 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。完整程式依序檢查四件事，可對照頁尾的實際輸出：
+在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-inference.ipynb) 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。完整程式依序檢查四件事，可對照頁尾的實際輸出：
 
 1. 未訓練模型：印出 `untrained model candidate counts (no quality claim) [0, 0, 0]`（no quality claim：不代表模型品質）。原因見上面的說明；這只證明輸出格式接得上。
 2. 人工 fixture：印出 `artificial known-logit fixture counts [2, 1, 0]`，每個框和標註的誤差都在 0.02 pixel 以內。比對框時，程式按類別分開比：第 0 張的紅框和藍框 score 完全相同，誰排在前面不是要檢查的答案。下一行 `fixture red box` 是第 1 張的紅框，約 `[8.0016,12,24.0016,28]`。

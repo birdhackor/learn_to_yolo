@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 720" role="img" aria-labelledby="title desc">
+<title id="title">小 CNN 的 8 張實際合成訓練圖與答案</title><desc id="desc">按 lesson_cases/01-small-cnn.py 的 make_batch 規則繪製，每個畫素放大3倍。圖0至7皆為32乘32，黑底12乘12方塊，偶數紅色答案0，奇數藍色答案1。位置相同的1與4、3與6，顏色不同。</desc>
+<rect width="520" height="720" rx="12" fill="#f8fafc"/>
+<g font-family="sans-serif" fill="#0f172a">
+<text x="22" y="34" font-size="22" >先看材料：8 張圖，各有一個顏色答案</text>
+<rect x="28" y="58" width="96" height="96" fill="#000"/>
+<rect x="40" y="76" width="36" height="36" fill="#f00"/>
+<text x="138" y="88" font-size="24" >圖 0</text>
+<text x="138" y="125" font-size="24" >紅 → 0</text>
+<rect x="282" y="58" width="96" height="96" fill="#000"/>
+<rect x="306" y="76" width="36" height="36" fill="#00f"/>
+<text x="392" y="88" font-size="24" >圖 1</text>
+<text x="392" y="125" font-size="24" >藍 → 1</text>
+<rect x="28" y="208" width="96" height="96" fill="#000"/>
+<rect x="64" y="241" width="36" height="36" fill="#f00"/>
+<text x="138" y="238" font-size="24" >圖 2</text>
+<text x="138" y="275" font-size="24" >紅 → 0</text>
+<rect x="282" y="208" width="96" height="96" fill="#000"/>
+<rect x="294" y="241" width="36" height="36" fill="#00f"/>
+<text x="392" y="238" font-size="24" >圖 3</text>
+<text x="392" y="275" font-size="24" >藍 → 1</text>
+<rect x="28" y="358" width="96" height="96" fill="#000"/>
+<rect x="52" y="376" width="36" height="36" fill="#f00"/>
+<text x="138" y="388" font-size="24" >圖 4</text>
+<text x="138" y="425" font-size="24" >紅 → 0</text>
+<rect x="282" y="358" width="96" height="96" fill="#000"/>
+<rect x="318" y="376" width="36" height="36" fill="#00f"/>
+<text x="392" y="388" font-size="24" >圖 5</text>
+<text x="392" y="425" font-size="24" >藍 → 1</text>
+<rect x="28" y="508" width="96" height="96" fill="#000"/>
+<rect x="40" y="541" width="36" height="36" fill="#f00"/>
+<text x="138" y="538" font-size="24" >圖 6</text>
+<text x="138" y="575" font-size="24" >紅 → 0</text>
+<rect x="282" y="508" width="96" height="96" fill="#000"/>
+<rect x="306" y="541" width="36" height="36" fill="#00f"/>
+<text x="392" y="538" font-size="24" >圖 7</text>
+<text x="392" y="575" font-size="24" >藍 → 1</text>
+<text x="22" y="687" font-size="22" >1 與 4、3 與 6：位置相同，顏色不同。</text>
+
+</g></svg>

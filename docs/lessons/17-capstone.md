@@ -1,6 +1,6 @@
 # 17 靜態偵測結業：用一次有理由的改動交付結果
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/17-capstone.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/17-capstone.ipynb){ .md-button }
 
 本節是靜態偵測（單張圖片，不是影片）的結業任務。這次不從「要用哪一版 YOLO」出發，而是從一個具體需求出發：先訓練模型、看它錯在哪裡，再根據失敗只改一個設定。讀完後，你能用事先寫好的規則判斷一次改動該不該保留，並交付真實跑出的數字、失敗的圖，以及這次還不能下結論的地方。
 
@@ -96,7 +96,7 @@ baseline 的 5 個 FP 裡，4 個是定位 FP，1 個是背景 FP；錯類覆蓋
 
 每個 FP 的明細列在 `false_positive_cases`：validation 圖片編號、預測編號、class、score 與最佳 IoU，可以照編號回查。後面圖的最下方就是其中一例：validation #10 的背景 FP，class 1、score 約 0.068，和所有 GT 的 IoU 都是 0。它低於顯示門檻 0.25，所以一般的圖上看不到；但評估用的候選截斷門檻是 0.05，它仍會被算成 FP。
 
-這個 FP 影響的是 precision：baseline 的 precision 是 9/(9+5)=9/14≈0.6429，少了它會是 9/13≈0.6923。但它這次不影響 AP：它的分數排在 class 1 所有正確框之後，所以沒有改變 class 1 的 AP。真正會拉低 AP 的，是排在正確框前面的高分 FP，例如 class 0 裡 #4 那兩個高分的定位 FP（score 都約 1.00）。
+這個 FP 影響的是 precision：baseline 的 precision 是 9/(9+5)=9/14≈0.6429，少了它會是 9/13≈0.6923。但它這次不影響 AP：它的分數排在 class 1 所有正確框之後，所以沒有改變 class 1 的 AP。真正會拉低 AP 的，是排在正確框前面的高分 FP，例如 **validation 圖片 #4** 裡兩個 class 0 的定位 FP（score 都約 1.00）。#4 是圖片編號，不是預測編號。
 
 **由診斷推出假設。** baseline 沒覆蓋到的 8 個 GT 裡，4 個是近失敗，另 4 個幾乎沒有同類框碰到；5 個 FP 裡有 4 個是定位 FP，錯類為 0。所以先懷疑主要問題是框不準，而不是類別認錯。
 
@@ -156,7 +156,15 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 圖的讀法：上面兩列是同樣四張 validation 圖片，第一列是 baseline（圖上寫「基準」），第二列是改動版。綠框是 GT（真值），橘框是預測；每個橘框左上角的深色小標籤寫「class:score」。兩列都只畫 score≥0.25 的框；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
 
-這四張不是挑最好看的，而是依 baseline「沒被 IoU≥0.5 覆蓋的 GT 數」由多到少挑出（編號從 0 起算；同數時取編號較大者）。例如 #14 的紅色物件：baseline 的定位 FP 和它的 IoU 是 0.23；改動版的框看起來已經很接近，IoU 也升到 0.49，但仍沒過 0.5，所以還是 FP。
+這四張不是挑最好看的，而是依 baseline「沒被 IoU≥0.5 覆蓋的 GT 數」由多到少挑出（validation 圖片編號從 0 起算；同數時取編號較大者）。判斷框是否配對成功，要看 IoU，不能只看框很接近或 score 很高。圖中的兩例都是 class 0、score 約 0.99–1.00 的高分框，可直接對照：
+
+| validation 圖片／模型 | 最佳 IoU | 判定 |
+| --- | --- | --- |
+| #4／baseline（兩框） | 0.4918、0.3034 | 兩個定位 FP |
+| #14／baseline | 0.2275 | 定位 FP |
+| #14／改動版 | 0.4917 | 仍是定位 FP |
+
+這幾個框的同類最佳 IoU 都低於配對門檻 0.5。尤其 #14 的改動版看起來已很接近，仍差一點；原始值是 0.4917，四捨五入寫成 0.49。表中每個 # 都指圖片，不是框的排序編號；圖與表的數值來自本次紀錄的 `false_positive_cases`。
 
 最下方是前面提過的 #10，改用候選截斷門檻 0.05 來畫，橘框是 score≥0.05 的全部候選。紫色虛線框標出那個背景 FP（圖上寫「背景誤報」；誤報就是 FP），那裡只有背景雜訊，沒有物件。它的標籤 1:0.07 表示 class 1、score 0.068（四捨五入成 0.07）。
 
@@ -166,9 +174,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 選定模型接著在獨立的 test 上評估一次：mAP50 0.4452、precision 0.6364、recall 0.5385，都比它在 validation 上低。0.4452 是另外 16 張圖的分數，不能拿來和 baseline 在 validation 的 0.4444 比。test 只用來回報選定模型的成績一次，所以刻意不測 baseline，免得看了 test 又想回頭改選擇。test 也只有 13 個物件：recall 0.5385=7/13，多找到或漏掉一個物件，recall 就差 1/13≈0.077。這麼小的切分波動很大，不能把 0.7014 宣稱為穩定的效果，也不能由這一次斷定改動版在新圖片上一定比較好。
 
-兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.78 秒（baseline）與 0.87 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
+兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 1.03 秒（baseline）與 1.12 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
 
-選定模型的端到端時間（從輸入到畫好框的整段）中位數約 2.90 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
+選定模型的端到端時間（從輸入到畫好框的整段）中位數約 2.96 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
 
 計時路徑留下的候選數記在 `timed_image_candidates`，程式用斷言要求它大於 0。它不一定等於挑圖時數到的候選數：挑圖用的是前面 16 張 validation 圖一起評估的結果，像素值是 0～1 之間的小數；計時的路徑則一次只算一張，而且圖先轉成 0～255 的整數再轉回來，像素值會有極小的差異。score 剛好在 0.05 附近的候選，可能因此在一條路徑上留下、在另一條路徑上被刪掉。
 
@@ -384,11 +392,11 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
       },
       "parameters": 15511,
       "train_seconds": [
-        0.7786893089942168,
-        0.8680864610068966
+        1.0319139630009886,
+        1.1217075799941085
       ],
       "train_timing_scope": "only the training loop of each run, after one untimed 10-step warm-up fit; CPU, 2 threads",
-      "chosen_end_to_end_median_ms": 2.9047044954495504,
+      "chosen_end_to_end_median_ms": 2.9623954760609195,
       "timed_validation_image": 2,
       "timed_image_candidates": 2,
       "timing_scope": "uint8 RGB -> tensor -> model -> decode/NMS at score .05 -> drawing, on the validation image with the most candidates; CPU, batch 1, 2 threads; median of 12 runs after 3 warm-up runs; no file I/O",

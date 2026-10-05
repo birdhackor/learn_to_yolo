@@ -1,6 +1,6 @@
 # 11.1 CSP：分一部分通道走較短的路
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-csp.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-csp.ipynb){ .md-button }
 
 卷積網路常分成幾個 stage（階段）。同一個 stage 裡的特徵解析度相同，通常連續做好幾層卷積，每層都讓全部通道（channel）參與。一層 3×3 卷積的輸入、輸出都是 C 個通道時，參數與計算量大約和 C² 成正比。第 1 章提過：輸入、輸出通道數一起加倍，成本約變成 4 倍。所以讓全部通道走過每一層，成本很高。本節要問：能不能只讓一半通道做這串卷積，另一半直接繞過去，最後再把兩半接回來、混合一次，輸出仍保有原本的通道數？CSP 就是這樣做的。
 
@@ -9,18 +9,6 @@
 前置：[卷積 shape](01-small-cnn.md)（卷積輸出大小與參數數的算法）、[shortcut](03-identity.md)（把輸入逐值加回輸出的捷徑）、[1×1 卷積混合 channel](03-projection.md)。
 
 本節的實驗不接偵測器，範圍很小。程式只拿隨機產生的特徵 tensor，單獨測一個輸入、輸出 shape 都是 `[B,8,8,8]` 的 block。起點是全部通道都做卷積的 Full（對照組），CSP 只改 block 內部的路徑。要檢查的是 shape、參數數、梯度有沒有接通，以及 fuse 的權重會不會更新；偵測 head、資料與偵測 loss 都用不到。這個 CSP block 只留作學習用的元件，沒有放進 MiniYOLO。CSP 值不值得放進偵測器，要做條件固定的對照實驗才知道：資料、訓練步數與評估方式都相同，只換這個 block。本節不做這個實驗。第 14 章的特徵模組會再用到「切分、串接、融合」的想法。
-
-歷史機制：CSP 來自 [CSPNet](https://arxiv.org/abs/1911.11929)（Cross Stage Partial Network）論文。論文摘要報告，在 ImageNet（第 3 章提過的大型圖片分類資料集）上，計算量約減少 20%，準確率持平或更好；本節沒有重現這個結果。
-
-??? note "歷史與版本"
-
-    **CSPNet 的梯度說法**：CSPNet 論文認為，DenseNet（每一層都把前面各層的輸出串接起來當輸入的網路）這類網路在反向傳播時，不同層的權重更新會重複用到大量相同的梯度。論文稱這種現象為「重複的梯度資訊」（duplicate gradient information）。論文讓一部分通道直接跨到 stage 末端，說這樣能省下計算，也讓梯度路徑變成兩倍。要減少重複，論文認為關鍵在末端的融合順序：走完 dense block（DenseNet 裡層層串接的那一串卷積層）的那部分先經過一層 transition（過渡層，例如 1×1 卷積），再和跨過來的那部分串接。論文說這種排法截斷了梯度流（truncate the gradient flow），用來避免不同層學到重複的梯度資訊；這不是指梯度傳不回前面的層。論文也比較了先串接、再做 transition 的排法：也能省下計算，但論文說這樣仍會大量重用梯度資訊。本節的 block 是先串接、再用 1×1 融合，排法比較接近後者。本節只檢查兩條路都收得到梯度，不量測重複的程度。
-
-    **YOLOv4**：[YOLOv4](https://arxiv.org/abs/2004.10934) 的 backbone（主幹）採用 CSPDarknet53，也就是在 YOLOv3 的主幹 Darknet-53 上加入 CSP 結構。YOLOv4 另外還有其他訓練技巧與 neck（夾在 backbone 與 head 之間整理特徵的部分）設計。
-
-    **YOLOv5**：YOLOv5 由 Ultralytics 公司另行開發，以開源程式碼發布。可對照固定版本的[官方 v6.0 common.py](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/common.py)（連結固定在 v6.0 tag 指向的 commit）：v6.0 是 YOLOv5 程式庫的版本號，不是 YOLOv6；common.py 是定義各種模組的程式檔。v6.0 的模型配置用的 CSP 模組是 C3，程式註解寫著「CSP Bottleneck with 3 convolutions」。C3 不用 chunk 切半，而是用兩個 1×1 卷積從同一個輸入各算出一支，每支的通道數是輸出通道數的一半（`e=0.5`），相當於本節的切半。其中一支再經過一個或多個 Bottleneck，然後兩支串接，由第三個 1×1 卷積融合；所以 C3 和本節一樣是先串接、再融合。Bottleneck 是先做 1×1、再做 3×3 卷積的小模組。建立 C3 時有個選項 `shortcut`，預設為 True，這時 Bottleneck 還會像第 3 章的 shortcut 那樣，把輸入逐值加到這兩層卷積算出的結果上。以 v6.0 的 [yolov5s 配置](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/yolov5s.yaml)為例，backbone 的 C3 都用這個預設；backbone 之後的 C3 則設成 False，不做這個相加（YOLOv5 的設定檔把 neck 也寫在 `head:` 段落底下）。同一個檔案裡較早的 BottleneckCSP 與 YOLOv4 的 CSPDarknet53，則像論文那樣，在支路末端先接一層 1×1 卷積再串接。
-
-    YOLOv4、YOLOv5 相對 YOLOv3 的改進不只 CSP 一項，不能全部歸功於 CSP。本節簡化為 8 通道的一次切分、兩個小卷積，再串接並用 1×1 融合，不重現完整的 CSPDarknet 或 C3。原版的每個卷積後面都接 BatchNorm（一種把每個 channel 的數值重新標準化的層）與激勵函數：YOLOv5 的 C3 由 `Conv` 模組組成（不帶 bias 的卷積 → BatchNorm → SiLU），YOLOv4 的 CSPDarknet53 每層卷積後接 BatchNorm 與 Mish。BatchNorm 會減掉每個 channel 的平均值，卷積的 bias 加了也會被減掉，所以原版不帶 bias。本節不加 BatchNorm、改用 ReLU，卷積保留 `nn.Conv2d` 預設的 bias；1240 與 368 只算卷積的權重與 bias。
 
 ## 先把兩條路的 shape 對起來
 
@@ -93,7 +81,7 @@ ReLU 沒有參數，不影響參數數。`nn.Conv2d` 預設帶 bias（每個輸�
 | Full（3×3 為 8→8） | `2×(8×8×9+8)=1168` | `8×8+8=72` | 1240 |
 | CSP（3×3 支路 4→4，整體 8→8） | `2×(4×4×9+4)=296` | 72 | 368 |
 
-兩個 3×3 卷積的輸入、輸出通道都減半，權重從 8×8×9 變成 4×4×9，剛好是 (1/2)²=1/4；加上 bias，這部分從 1168 降到 296。fuse 的 72 不變，合計從 1240 降到 368，約剩三成。這是單一 block 的參數比例；CSPNet 論文的「計算量約減少 20%」是整個網路的計算量，兩者不能直接比。
+兩個 3×3 卷積的輸入、輸出通道都減半，權重從 8×8×9 變成 4×4×9，剛好是 (1/2)²=1/4；加上 bias，這部分從 1168 降到 296。fuse 的 72 不變，合計從 1240 降到 368，約剩三成。這是單一 block 的參數比例，不能直接推成整個偵測器的計算量或速度比例；原論文的結果放在主例後的選讀比較。
 
 這和把整個 block 改窄成 4 個通道不同：CSP 的輸出仍有 8 個通道，旁路那 4 個通道的原值也會送進 fuse，和卷積支路處理過的 4 個通道一起混合。
 
@@ -101,7 +89,7 @@ ReLU 沒有參數，不影響參數數。`nn.Conv2d` 預設帶 bias（每個輸�
 
 ## 執行與核對
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-csp.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-csp.py`。程式先核對串接與相加的小例子，再對 Full 與 CSP 各做一輪：
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-csp.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-csp.py`。程式先核對串接與相加的小例子，再對 Full 與 CSP 各做一輪：
 
 1. forward：把隨機輸入（shape `[2,8,8,8]`）送進模型。
 2. 算 loss：把輸出的每個值平方後取平均，等於以全 0 為目標的 MSE（均方誤差）。
@@ -129,6 +117,20 @@ ReLU 沒有參數，不影響參數數。`nn.Conv2d` 預設帶 bias（每個輸�
     - 本節只比參數數。若要問「參數量相同時，哪種結構比較準」，得另把 Full 調窄到參數相近再訓練比較，本節沒有做。
     - 隨機特徵上的平方 loss 和偵測無關，所以不報告 AP。
     - 要回答「CSP 放進偵測器好不好」，正式實驗應在偵測器的同一個位置替換 block，固定資料、訓練步數與評估方式，並同時報告參數、時間與品質。
+
+## 選讀：和原始 CSP、YOLO 的差別
+
+歷史機制：CSP 來自 [CSPNet](https://arxiv.org/abs/1911.11929)（Cross Stage Partial Network）論文。論文摘要報告，在 ImageNet（第 3 章提過的大型圖片分類資料集）上，計算量約減少 20%，準確率持平或更好；本節沒有重現這個結果。
+
+??? note "歷史與版本"
+
+    **CSPNet 的梯度說法**：CSPNet 論文認為，DenseNet（每一層都把前面各層的輸出串接起來當輸入的網路）這類網路在反向傳播時，不同層的權重更新會重複用到大量相同的梯度。論文稱這種現象為「重複的梯度資訊」（duplicate gradient information）。論文讓一部分通道直接跨到 stage 末端，說這樣能省下計算，也讓梯度路徑變成兩倍。要減少重複，論文認為關鍵在末端的融合順序：走完 dense block（DenseNet 裡層層串接的那一串卷積層）的那部分先經過一層 transition（過渡層，例如 1×1 卷積），再和跨過來的那部分串接。論文說這種排法截斷了梯度流（truncate the gradient flow），用來避免不同層學到重複的梯度資訊；這不是指梯度傳不回前面的層。論文也比較了先串接、再做 transition 的排法：也能省下計算，但論文說這樣仍會大量重用梯度資訊。本節的 block 是先串接、再用 1×1 融合，排法比較接近後者。本節只檢查兩條路都收得到梯度，不量測重複的程度。
+
+    **YOLOv4**：[YOLOv4](https://arxiv.org/abs/2004.10934) 的 backbone（主幹）採用 CSPDarknet53，也就是在 YOLOv3 的主幹 Darknet-53 上加入 CSP 結構。YOLOv4 另外還有其他訓練技巧與 neck（夾在 backbone 與 head 之間整理特徵的部分）設計。
+
+    **YOLOv5**：YOLOv5 由 Ultralytics 公司另行開發，以開源程式碼發布。可對照固定版本的[官方 v6.0 common.py](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/common.py)（連結固定在 v6.0 tag 指向的 commit）：v6.0 是 YOLOv5 程式庫的版本號，不是 YOLOv6；common.py 是定義各種模組的程式檔。v6.0 的模型配置用的 CSP 模組是 C3，程式註解寫著「CSP Bottleneck with 3 convolutions」。C3 不用 chunk 切半，而是用兩個 1×1 卷積從同一個輸入各算出一支，每支的通道數是輸出通道數的一半（`e=0.5`），相當於本節的切半。其中一支再經過一個或多個 Bottleneck，然後兩支串接，由第三個 1×1 卷積融合；所以 C3 和本節一樣是先串接、再融合。Bottleneck 是先做 1×1、再做 3×3 卷積的小模組。建立 C3 時有個選項 `shortcut`，預設為 True，這時 Bottleneck 還會像第 3 章的 shortcut 那樣，把輸入逐值加到這兩層卷積算出的結果上。以 v6.0 的 [yolov5s 配置](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/yolov5s.yaml)為例，backbone 的 C3 都用這個預設；backbone 之後的 C3 則設成 False，不做這個相加（YOLOv5 的設定檔把 neck 也寫在 `head:` 段落底下）。同一個檔案裡較早的 BottleneckCSP 與 YOLOv4 的 CSPDarknet53，則像論文那樣，在支路末端先接一層 1×1 卷積再串接。
+
+    YOLOv4、YOLOv5 相對 YOLOv3 的改進不只 CSP 一項，不能全部歸功於 CSP。本節簡化為 8 通道的一次切分、兩個小卷積，再串接並用 1×1 融合，不重現完整的 CSPDarknet 或 C3。原版的每個卷積後面都接 BatchNorm（一種把每個 channel 的數值重新標準化的層）與激勵函數：YOLOv5 的 C3 由 `Conv` 模組組成（不帶 bias 的卷積 → BatchNorm → SiLU），YOLOv4 的 CSPDarknet53 每層卷積後接 BatchNorm 與 Mish。BatchNorm 會減掉每個 channel 的平均值，卷積的 bias 加了也會被減掉，所以原版不帶 bias。本節不加 BatchNorm、改用 ReLU，卷積保留 `nn.Conv2d` 預設的 bias；1240 與 368 只算卷積的權重與 bias。
 
 ## 收益、代價與常見錯誤
 

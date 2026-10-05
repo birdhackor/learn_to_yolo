@@ -1,0 +1,64 @@
+[
+  {
+    "id": "13-dual-assignment",
+    "exit": 0,
+    "wall": 3.024351381987799
+  },
+  {
+    "id": "13-nms-free",
+    "exit": 0,
+    "wall": 2.9496857080084737
+  },
+  {
+    "id": "14-feature-module",
+    "exit": 0,
+    "wall": 3.22172498999862
+  },
+  {
+    "id": "15-attention-bridge",
+    "exit": 0,
+    "wall": 3.399783352011582
+  },
+  {
+    "id": "15-area-attention",
+    "exit": 0,
+    "wall": 3.0411012080148794
+  },
+  {
+    "id": "16-dfl-free",
+    "exit": 0,
+    "wall": 2.819369540986372
+  },
+  {
+    "id": "16-inference-head",
+    "exit": 0,
+    "wall": 2.6331245949841104
+  },
+  {
+    "id": "16-training",
+    "exit": 0,
+    "wall": 2.8188444010156672
+  },
+  {
+    "id": "18-video",
+    "exit": 0,
+    "wall": 3.569188972993288
+  },
+  {
+    "id": "19-tracking",
+    "exit": 0,
+    "wall": 1.694009016995551
+  },
+  {
+    "id": "20-deployment",
+    "exit": 0,
+    "wall": 3.3293537279823795
+  },
+  {
+    "id": "17-capstone",
+    "exit": 0,
+    "command": "PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/17-capstone.py",
+    "stdout": "cpu-runs/17-capstone.stdout",
+    "note": "Separately executed after the author finished page 17; no shared artifacts were written."
+  }
+]

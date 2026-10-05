@@ -1,0 +1,101 @@
+{
+  "method": "Original AST select_highest_overlaps only, input mask before conflict; verifies the order and row bound without substituting official implementation",
+  "commit": "441632cdfd19e22e60a4b1b1999d46326ca51ec4",
+  "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py",
+  "source_sha256": "c69ec67990777a4d13df219ef9b254085b2df283fbe5fd283245b76d6b461b3c",
+  "gpu_used": false,
+  "topk": 7,
+  "topk2": 1,
+  "before": [
+    [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ]
+  ],
+  "after": [
+    [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ]
+  ],
+  "gt_positive_counts": [
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "fg": [
+    [
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "owner": [
+    [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "proof": "After the column-wise conflict rewrite, topk_idx has exactly topk2 entries per GT row. mask_pos *= topk_idx can never increase a row count above topk2; masked zero ties cannot create new positives."
+}

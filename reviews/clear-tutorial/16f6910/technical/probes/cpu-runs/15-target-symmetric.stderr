@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/modern-applications-review/variants/15-target-symmetric.py", line 63, in <module>
+    main()
+  File "/tmp/modern-applications-review/variants/15-target-symmetric.py", line 53, in main
+    assert not torch.allclose(grad_q, grad_k)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

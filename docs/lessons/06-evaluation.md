@@ -1,6 +1,6 @@
 # 6.2 人工框評估與 AP50：把預測逐筆算成證據
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/06-evaluation.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/06-evaluation.ipynb){ .md-button }
 
 模型在很多張圖上畫了一堆框，要怎麼變成一個能和別人比較的分數？把框疊在圖上看起來不錯，不表示漏檢少或背景誤報少。本節用 2 張圖、3 個真值框、4 個人工給定的預測框，一步步判斷哪些框算對、哪些算錯、漏了幾個，最後算出 AP50 這個總分。讀完後，你能手算一組框的評估結果，並拿它核對評估程式。
 
@@ -52,26 +52,7 @@ R=\frac{TP}{TP+FN}=\frac{2}{3}\approx0.6667.
 
 排名 1 的框 score 高達 0.95，卻是背景誤報。score 是模型自己的排序訊號（見[上一節](06-decode-nms.md)講 score 的那一小節），高分不保證正確，所以 score 不等於 precision。
 
-本書這套配對規則是教學簡化版。常見的官方規則來自 Pascal VOC 與 COCO：它們是兩個常用的公開物件偵測資料集，各附官方評分程式。論文常拿它們的分數互相比較，這種固定資料與規則的公開評比叫 benchmark（基準測試）。規則文字見 [Pascal VOC 官方評估說明](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00054000000000000000)（VOC2012 開發套件文件的 4.4 節；AP 的算法在同一份文件的 3.4.1 節）與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)；配對順序、VOC 標成 difficult（難以辨認）的物件怎麼計數、候選數上限這類細節，以官方評分程式為準。本書和它們差在哪裡，以及這些細節在程式裡的出處，見下方摺疊區。
-
-??? note "本書配對與官方 VOC／COCO 的差別"
-
-    本書評估器先排除已被配對的 GT，再從剩下的 GT 中找 IoU 最高的。官方 VOC 則先在全部 GT 中找 IoU 最高的，再檢查它是否已被配對；若已被配對，這筆預測就算 FP。同一張圖有兩個高度重疊的 GT 時，兩種做法可能得到不同結果。
-
-    數字例：同一張圖有 GT 甲 [0,0,10,10] 與 GT 乙 [1,0,11,10]，兩個預測都是 [0,0,10,10]，score 分別是 0.9 與 0.8。第 1 個預測和甲的 IoU=1，兩種做法都配給甲。第 2 個預測：
-
-    - 本書：排除已被配對的甲，改找乙，IoU=9/11≈0.818，達標，所以兩個預測都是 TP。
-    - 官方 VOC：在全部 GT 中 IoU 最高的仍是甲；甲已被配對，所以第 2 個預測算 FP。
-
-    這是本書簡化過的配對規則，不能稱為完整的 VOC 評估器。COCO 官方程式（pycocotools）的基本配對順序則和本書一樣：先排除已被配對的 GT，再從剩下的 GT 中找 IoU 最高的（crowd、ignore 另有處理，見下）。所以上面的數字例交給 COCO 的程式、配對 IoU 門檻取 0.5 時，兩個預測也都是 TP。本書和 COCO 在配對上的差別，是 COCO 還有其他額外規則，例如：
-
-    - crowd：一大群擠在一起、很難逐一標框的物件，標成一個 crowd 區域；配到它的預測不算 TP，也不算 FP。
-    - ignore：像 crowd 這樣「評估時不計分」的 GT 或預測。VOC 標成 difficult 的物件也屬於這一類：不算進 GT 總數，配到它的預測不算 TP 也不算 FP。這和[第 5 章](05-assignment.md)訓練時「暫不給某項 loss」的 ignore 不是同一件事。
-    - 候選數上限：每張圖、每個類別最多只計分數最高的 100 個預測。COCO 網站的說明寫成每張圖跨所有類別合計 100 個，但官方評分程式（pycocotools）實際上按類別分開計。
-
-    這些細節的出處是官方評分程式。VOC 的程式是開發套件 [VOCdevkit_18-May-2011.tar](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/VOCdevkit_18-May-2011.tar) 裡的 `VOCcode/VOCevaldet.m`：每筆預測先跑完同一張圖、同一類別的全部 GT，記下 IoU 最高的那個（程式裡的 `ovmax`、`jmax`），之後才檢查它是不是 difficult（`diff`）、是否已被配對（`det`）；GT 總數也只加上非 difficult 的物件。COCO 的程式是 pycocotools 的 `cocoeval.py`：其中的 [`evaluateImg`](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L235-L296) 每次只處理一張圖的一個類別，先把預測截成分數最高的 `maxDet` 個（算 AP 時是 100），配對時跳過已被配對、又不是 crowd 的 GT；把 crowd 設成 ignore 的，是同一個檔案裡[準備資料的步驟](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L106-L109)。
-
-    所以正式 benchmark 應使用官方工具，不能只把 AP 的面積算法換掉，就當成官方分數。
+本節先走完這套簡化規則的主例，再看頁尾的官方評分差異；它的數字不能當成正式 benchmark 成績。
 
 ## PR 曲線：評估器由高分往低分逐筆納入
 
@@ -99,8 +80,6 @@ R=\frac{TP}{TP+FN}=\frac{2}{3}\approx0.6667.
 
 這塊面積就是 AP（Average Precision，平均精確率）。為什麼叫「平均」？把包絡各段的高度按寬度加權平均，等於「寬×高」的總和除以總寬；recall 軸從 0 到 1，總寬正好是 1，所以面積就等於包絡的平均高度。本例前 2/3 高 0.5、後 1/3 高 0，平均高度是 1/3。
 
-本例 AP 恰好等於最後的 P×R（0.5×2/3），因為包絡在 recall 0 到 2/3 一路都等於最後的 precision 0.5。一般來說，包絡在 recall 0 到最後的 R 之間至少是最後的 precision，所以 AP ≥ 最後的 P×R，只有包絡在這一段一路都等於最後的 precision 時才相等。光是包絡平坦還不夠：在主例最後再加一筆分數更低的 FP，包絡完全不變，AP 仍是 1/3，最後的 P×R 卻降成 0.4×2/3=4/15。本節的練習也是一個不相等的例子。
-
 程式更一般地在 recall 增加處累加「recall 增加量×包絡 precision」：
 
 \[
@@ -115,11 +94,36 @@ ap = sum((recall_next - recall_previous) * precision_envelope_next)  # 公式虛
 
 這不是把相鄰點用直線連起來、算梯形面積的做法，也不是舊 VOC 的 11 點平均。舊 VOC 只在 recall=0, 0.1, …, 1 這 11 個位置讀包絡高度再平均：主例在 0 到 0.6 的 7 個位置高 0.5，在 0.7 到 1 的 4 個位置高 0，平均 3.5/11≈0.318，不是 1/3。若比較不同工具，先確認 AP 定義。
 
+??? note "選讀：AP 為什麼通常不等於最後的 P×R？"
+
+    本例 AP 恰好等於最後的 P×R（0.5×2/3），因為包絡在 recall 0 到 2/3 一路都等於最後的 precision 0.5。一般來說，包絡在 recall 0 到最後的 R 之間至少是最後的 precision，所以 AP ≥ 最後的 P×R，只有包絡在這一段一路都等於最後的 precision 時才相等。光是包絡平坦還不夠：在主例最後再加一筆分數更低的 FP，包絡完全不變，AP 仍是 1/3，最後的 P×R 卻降成 0.4×2/3=4/15。本節的練習也是一個不相等的例子。
+
 ## AP50、mAP 與 COCO 多門檻
 
 AP50 的 50 表示上述配對使用 IoU≥0.5。多類別時先分別算每類的 AP，再平均成 mAP（mean AP：m 是 mean，即各類別 AP 的平均）；每一類都用 IoU≥0.5 配對時，這個平均就是 mAP50。例如兩個有 GT 的類別 AP50 為 1/3 及 1，mAP50 就是 2/3。沒有 GT 的類別，本節把 AP 記為 None，不放進平均；有 GT 但沒有預測，AP=0。整個資料都沒有 GT 時，mAP 也記為 None，避免把「沒東西可測」當作滿分。
 
-COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻的平均；每個門檻在 recall=0, 0.01, …, 1 這 101 個位置讀包絡高度再平均，也對所有有 GT 的類別取平均，所以照本節的用語，它其實是 mAP（COCO 官方不區分 AP 與 mAP）。另外還有其他規則（見前面的摺疊區）。因此不能把本節單一門檻、all-points 的數字直接當成 COCO AP。較高的 IoU 門檻要求更準的框：如果同一模型的 AP50 很高，但在 IoU 0.75 這類嚴格門檻下的 AP 很低，表示框大致找到了物件、位置卻不夠準，可能是定位問題。
+COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻的平均；每個門檻在 recall=0, 0.01, …, 1 這 101 個位置讀包絡高度再平均，也對所有有 GT 的類別取平均，所以照本節的用語，它其實是 mAP（COCO 官方不區分 AP 與 mAP）。另外還有其他規則（見下方摺疊區）。因此不能把本節單一門檻、all-points 的數字直接當成 COCO AP。較高的 IoU 門檻要求更準的框：如果同一模型的 AP50 很高，但在 IoU 0.75 這類嚴格門檻下的 AP 很低，表示框大致找到了物件、位置卻不夠準，可能是定位問題。
+
+本書這套配對規則是教學簡化版。常見的官方規則來自 Pascal VOC 與 COCO：它們是兩個常用的公開物件偵測資料集，各附官方評分程式。論文常拿它們的分數互相比較，這種固定資料與規則的公開評比叫 benchmark（基準測試）。規則文字見 [Pascal VOC 官方評估說明](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00054000000000000000)（VOC2012 開發套件文件的 4.4 節；AP 的算法在同一份文件的 3.4.1 節）與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)；配對順序、VOC 標成 difficult（難以辨認）的物件怎麼計數、候選數上限這類細節，以官方評分程式為準。本書和它們差在哪裡，以及這些細節在程式裡的出處，見下方摺疊區。
+
+??? note "本書配對與官方 VOC／COCO 的差別"
+
+    本書評估器先排除已被配對的 GT，再從剩下的 GT 中找 IoU 最高的。官方 VOC 則先在全部 GT 中找 IoU 最高的，再檢查它是否已被配對；若已被配對，這筆預測就算 FP。同一張圖有兩個高度重疊的 GT 時，兩種做法可能得到不同結果。
+
+    數字例：同一張圖有 GT 甲 [0,0,10,10] 與 GT 乙 [1,0,11,10]，兩個預測都是 [0,0,10,10]，score 分別是 0.9 與 0.8。第 1 個預測和甲的 IoU=1，兩種做法都配給甲。第 2 個預測：
+
+    - 本書：排除已被配對的甲，改找乙，IoU=9/11≈0.818，達標，所以兩個預測都是 TP。
+    - 官方 VOC：在全部 GT 中 IoU 最高的仍是甲；甲已被配對，所以第 2 個預測算 FP。
+
+    這是本書簡化過的配對規則，不能稱為完整的 VOC 評估器。COCO 官方程式（pycocotools）的基本配對順序則和本書一樣：先排除已被配對的 GT，再從剩下的 GT 中找 IoU 最高的（crowd、ignore 另有處理，見下）。所以上面的數字例交給 COCO 的程式、配對 IoU 門檻取 0.5 時，兩個預測也都是 TP。本書和 COCO 在配對上的差別，是 COCO 還有其他額外規則，例如：
+
+    - crowd：一大群擠在一起、很難逐一標框的物件，標成一個 crowd 區域；配到它的預測不算 TP，也不算 FP。
+    - ignore：像 crowd 這樣「評估時不計分」的 GT 或預測。VOC 標成 difficult 的物件也屬於這一類：不算進 GT 總數，配到它的預測不算 TP 也不算 FP。這和[第 5 章](05-assignment.md)訓練時「暫不給某項 loss」的 ignore 不是同一件事。
+    - 候選數上限：每張圖、每個類別最多只計分數最高的 100 個預測。COCO 網站的說明寫成每張圖跨所有類別合計 100 個，但官方評分程式（pycocotools）實際上按類別分開計。
+
+    這些細節的出處是官方評分程式。VOC 的程式是開發套件 [VOCdevkit_18-May-2011.tar](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/VOCdevkit_18-May-2011.tar) 裡的 `VOCcode/VOCevaldet.m`：每筆預測先跑完同一張圖、同一類別的全部 GT，記下 IoU 最高的那個（程式裡的 `ovmax`、`jmax`），之後才檢查它是不是 difficult（`diff`）、是否已被配對（`det`）；GT 總數也只加上非 difficult 的物件。COCO 的程式是 pycocotools 的 `cocoeval.py`：其中的 [`evaluateImg`](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L235-L296) 每次只處理一張圖的一個類別，先把預測截成分數最高的 `maxDet` 個（算 AP 時是 100），配對時跳過已被配對、又不是 crowd 的 GT；把 crowd 設成 ignore 的，是同一個檔案裡[準備資料的步驟](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L106-L109)。
+
+    所以正式 benchmark 應使用官方工具，不能只把 AP 的面積算法換掉，就當成官方分數。
 
 ## 截斷、核對與代價
 

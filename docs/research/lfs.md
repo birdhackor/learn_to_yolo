@@ -75,7 +75,7 @@ artifacts/reference/*.onnx filter=lfs diff=lfs merge=lfs -text
 
 ## Colab 的選定下載範本
 
-教材各節 notebook 的環境格以 `GIT_LFS_SKIP_SMUDGE=1` clone 固定的 tag，不下載 LFS 資料。需要某個 LFS 檔時，可照下列範本只取那一個檔；範本以示意路徑 `data/lfs/mini-voc/mini-voc-v1.tar.gz` 為例，repo 中沒有這個檔與對應的 manifest。使用時換成實際路徑，**不要直接把不存在的路徑當成已驗證 setup**。範本 clone 的是預設分支；在教材的 notebook 裡用時，改成 clone 固定的發布 tag（`git clone --branch <tag>`），才能確定取得的 LFS 檔和該版教材一致。
+教材各節 notebook 的環境格以 `GIT_LFS_SKIP_SMUDGE=1` clone 固定的 tag，不下載 LFS 資料。需要某個 LFS 檔時，可照下列範本只取那一個檔；範本以示意路徑 `data/lfs/mini-voc/mini-voc-v1.tar.gz` 為例，repo 中沒有這個檔與對應的 manifest。使用時換成實際路徑，**不要直接把不存在的路徑當成已驗證 setup**。下方先問 Git 目前是否在 repo 中：已執行教材環境格時，notebook 的目前目錄就在固定版本的 repo（名稱包含 tag），直接沿用，不再次 clone。否則範本 clone 預設分支到 `/content/learn_to_yolo`；在教材的 notebook 裡用時，改成 clone 固定的發布 tag（`git clone --branch <tag>`），才能確定取得的 LFS 檔和該版教材一致。
 
 ```bash
 %%bash
@@ -85,9 +85,14 @@ if ! git lfs version >/dev/null 2>&1; then
   apt-get install -y git-lfs
 fi
 
-GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 \
-  https://github.com/birdhackor/learn_to_yolo.git /content/learn_to_yolo
-cd /content/learn_to_yolo
+if git rev-parse --show-toplevel >/dev/null 2>&1; then
+  lesson_data_repository="$(git rev-parse --show-toplevel)"
+else
+  lesson_data_repository=/content/learn_to_yolo
+  GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 \
+    https://github.com/birdhackor/learn_to_yolo.git "$lesson_data_repository"
+fi
+cd "$lesson_data_repository"
 git lfs install --local --skip-smudge
 git lfs pull \
   --include='data/lfs/mini-voc/mini-voc-v1.tar.gz' \

@@ -1,6 +1,6 @@
 # 12.3 Sample assignment：哪個候選值得被教
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/12-assignment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/12-assignment.ipynb){ .md-button }
 
 密集偵測器對一張影像輸出許多候選，標註卻可能只有兩個物件。訓練時要決定哪些候選當正樣本、各自學哪個物件，其餘的學背景；這一步叫樣本分配（sample assignment）。這裡的 sample 就是第 5 章說的正／負樣本，不是「範例」。第 5、7 章的規則是「物件中心所在的格負責」，只看標註，訓練前就能算好，而且永遠不變。本節的規則改用模型當下的分類分數和預測框，所以每訓練一步，誰當正樣本都可能改變。
 
@@ -102,9 +102,20 @@ for p in range(len(points)):  # 第 4 步：逐個候選解衝突
 
 ## 把 owner 接回 loss
 
-前景（foreground）指被分配到某個 GT 的候選，也就是 owner ≥ 0 的正樣本；owner＝−1 的是背景。上面的 score 表是手填的，只用來做 assignment。為了單獨看 owner 怎麼變成 loss 的 target，本例另外建立 4 個 logits，每個候選一個，從 0 開始，表示「是不是前景」，作用像第 7 章的 objectness。完整模型則會對同一個 head 沒有 detach 的輸出計算 loss。
+前景（foreground）指被分配到某個 GT 的候選，也就是 owner ≥ 0 的正樣本；owner＝−1 是背景。現在要把「歸誰負責」接成 loss 能讀的 target。
 
-本例把正樣本的 target 簡化成 1，所以前景 target 是 `[1,1,1,0]`。YOLOv8 沒有 objectness：正樣本的 target 寫在所屬 GT 類別的那一欄，而且官方的值是依品質縮放的 0～1 小數，不是固定的 1。
+先對照上一節的兩類 head。**只為了這張對照表**，假設 GT A 屬類別 0、B 屬類別 1；先用 0／1 硬 target 表示類別，就會得到下面的兩欄。再把「不管哪一類，只問是不是前景」合成最後一欄：
+
+|候選|owner：GT 編號|兩類 target：類別 0、1|本節前景 target|
+|---|---|---|---|
+|p0|0：A|`[1,0]`|1|
+|p1|0：A|`[1,0]`|1|
+|p2|1：B|`[0,1]`|1|
+|p3|−1：背景|`[0,0]`|0|
+
+這一節**只實作最後一欄**：另外建立 4 個可更新的 logits，每個候選一個，從 0 開始。target 是 `[1,1,1,0]`，作用像第 7 章的 objectness，讓我們單獨看分配結果如何把正、負候選往不同方向推。上面的 score 表仍是手填的 assignment 材料，沒有一起訓練；這不是接上一節圖片模型繼續練。
+
+YOLOv8 沒有 objectness；完整模型在所屬 GT 類別的欄位寫 target，並且對同一個 head 未 detach 的輸出求 loss。官方的正樣本 target 還會按品質縮放為 0～1 小數，不是上表示意的固定 1。本例先把這些部分拿開，以便手算梯度。
 
 取平均的 BCE（二元交叉熵）對每個 logit 的梯度是 `(σ(z)−t)/4`。σ(z) 是 sigmoid(z)；四個 logits 都是 0，所以 σ(0)=0.5。t 是 target。4 是取平均的候選數，和第 7 章〈[Grid MiniYOLO loss](07-loss.md)〉的 (sigmoid−target)/格數是同一個式子。正樣本是 (0.5−1)/4=−0.125，背景是 (0.5−0)/4=+0.125，所以輸出的 `gradient` 那一行是 `[-0.125, -0.125, -0.125, 0.125]`。完整程式裡學習率是 1，一次 SGD 更新後，logits＝0−1×梯度＝[0.125, 0.125, 0.125, −0.125]（程式沒有印出這組數字，可自行驗算）：正樣本的 logit 上升，背景下降。完整 detector 的正樣本還要取 owner 對應的 GT 框和類別；背景不計框回歸 loss。
 
@@ -118,7 +129,7 @@ for p in range(len(points)):  # 第 4 步：逐個候選解衝突
 
     - **指數與名額**：品質一樣是 score^α × IoU^β，但 `loss.py` 設 α=0.5、β=6，每個 GT 取前 10 名；本例為了手算，用 α=1、β=2、前 2 名。
     - **重疊度**：官方算重疊度用的不是普通 IoU，而是第 11 章〈[IoU 類 loss](11-iou-loss.md)〉的 CIoU，並把負值截成 0；品質和解衝突都用它。本例為了手算，用普通 IoU。
-    - **解衝突時比哪些 GT**：本例只在選中這個候選的 GT 之間比 IoU；官方則在參考點落在框內（小物件用放大後的框）的所有 GT 之間取 CIoU 最大者，所以候選可能交給一個沒在 top-k 選中它的 GT。本例只有兩個 GT，兩種比法結果相同。
+    - **解衝突時比哪些 GT**：本例只在選中這個候選的 GT 之間比 IoU；官方則在所有 GT 的重疊度表中取最大值；不符合框內資格的位置先填 0，並非只在 top-k 選中這個候選的 GT 之間比。因此候選可能交給原本沒選它的 GT；全零同分時的主人依固定實作的 `max` 結果。本例只有兩個 GT，兩種比法結果相同。
     - **正樣本的 target**：官方不是 1，而是依品質縮放、介於 0～1 的小數；本例簡化成 1。
     - **跨尺度**：官方把幾種 stride（通常是 8、16、32）特徵圖上的候選點放在一起排名、挑前 k 名；本例只有一個尺度的四個點。
     - **整批計算**：官方把一個 batch 的圖片一起算。每張圖的 GT 數不同，就補齊到相同長度，再用遮罩標出哪些是真的 GT。本例只有一張圖，用 Python 迴圈逐一處理。

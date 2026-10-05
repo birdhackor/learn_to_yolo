@@ -1,0 +1,110 @@
+[
+  {
+    "id": "13-dual-assignment",
+    "files": {
+      "docs/lessons/13-dual-assignment.md": "23d265ae9a2236832e4fca60cdcddfe27972dda8fd4d32d184588ed206df97b6",
+      "lesson_cases/13-dual-assignment.py": "5ba8cda913f25bde1c82d93d91330b7db4a57f497e8305663aa3c0b3f62fa4d5",
+      "artifacts/checks/curriculum/13-dual-assignment.json": "20d1fefd17f382db2e43fe44eb0fc59362649d55459f000f2c6530f10fb74e85",
+      "docs/assets/diagrams/13-dual-head-flow.svg": "43f3c73fc6ddeb833ffcf7413a379d2dcc26f5abb0b29d2def4f4bbde633e3dc"
+    }
+  },
+  {
+    "id": "13-nms-free",
+    "files": {
+      "docs/lessons/13-nms-free.md": "023323d044c1253c07a4adc24a420107d8851de3a4674a9d71cf2704868a10ec",
+      "lesson_cases/13-nms-free.py": "7697044f6ea966ef1bbf1200a39a6d65d2d160ee186810a1f479e433a551c8be",
+      "artifacts/checks/curriculum/13-nms-free.json": "9f18ed0065d0386e3fd36b25ba3e79a5d81ef8018b717799e2ca1dbd0537d38f",
+      "docs/assets/diagrams/13-nms-free.svg": "1913ed758c16038685859224ee59b8ea78984fa1ffaa9fd5c2d84d2c3d33b831"
+    }
+  },
+  {
+    "id": "14-feature-module",
+    "files": {
+      "docs/lessons/14-feature-module.md": "f9a8f4240d4f095f15507f3a3e607e5c7362f106ce77540f89254a448649ca29",
+      "lesson_cases/14-feature-module.py": "5fceb84d094061f30744f2ac138702d55f24e746fe5780e3ca653e56843fac6c",
+      "artifacts/checks/curriculum/14-feature-module.json": "05bc8b0e823bac904f8d18ce9f7ab30ccd2079fb306138a6ffe3c3a3b99843c4",
+      "docs/assets/diagrams/14-split-paths.svg": "3dcd7a8b95cd422632559f86b3b91d573a3cf6fd19a944e291c12130c44ca299"
+    }
+  },
+  {
+    "id": "15-attention-bridge",
+    "files": {
+      "docs/lessons/15-attention-bridge.md": "eba51744673bf59c6c1e9cc913d3bb2d83faa73ed7463465b4f0728682f4cf8e",
+      "lesson_cases/15-attention-bridge.py": "9823e1f3b30b6feb92d96fe5a9dd74a315500eaa31987f89c2cdea4b686aed06",
+      "artifacts/checks/curriculum/15-attention-bridge.json": "67b0336c1add8a7fb1727c473b9e3d42a46c4c06200848eead39127353785f53",
+      "docs/assets/diagrams/15-attention-bridge.svg": "1f946ed74133526da208c15fc1ac52b33b8576bae8ea68ebf1f9efd6324f205b"
+    }
+  },
+  {
+    "id": "15-area-attention",
+    "files": {
+      "docs/lessons/15-area-attention.md": "1870d643f21078b9c40238f3c4d1eedb3fa3ee147897b6ef7927bb549a6e6436",
+      "lesson_cases/15-area-attention.py": "eb26ab33ea5718820880820062c1664945a8bb591fc3a7d80e04a71860854041",
+      "artifacts/checks/curriculum/15-area-attention.json": "604bb16d155348b43af65be5b0da3ff3fb8abd738fb6512c1e97d8ec4206e114",
+      "docs/assets/diagrams/15-area-layout.svg": "cc93577143d427cd8c089d8dd8e4c12b8039e38be11a17d7135cbd5f45f0e89d"
+    }
+  },
+  {
+    "id": "16-dfl-free",
+    "files": {
+      "docs/lessons/16-dfl-free.md": "8243eb1124300e1bc1aec55272418dfc3b9452dbc8cd9c105f62fd10e3518ce0",
+      "lesson_cases/16-dfl-free.py": "fc9aeedfab08771310905ea48dd78ea64f0b5cd76569b956e8a09c01de4c3a04",
+      "artifacts/checks/curriculum/16-dfl-free.json": "a7c1e7884b269918371d47dfc04566fccb0d1813d1ead5e9f37b885e4a7c3f8e",
+      "docs/assets/diagrams/16-distance-decode.svg": "fb41cf83ae19ea8c490e0ae2af3f61563251c6021e51ed7178a9d47b0a2d01f9"
+    }
+  },
+  {
+    "id": "16-inference-head",
+    "files": {
+      "docs/lessons/16-inference-head.md": "bcd753feb76eb77021582f6990354cb49e6cc087fde1f25c06947076f0faeb53",
+      "lesson_cases/16-inference-head.py": "e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d",
+      "artifacts/checks/curriculum/16-inference-head.json": "95b2f301b0b45e22ba7ec1b1aff8f4a21d7d2f5aae8e8706f00fb571c8ccb4cb",
+      "docs/assets/diagrams/16-head-paths.svg": "1acac44ac36b5b847e55a22e24d2a97fc2095a25800e3ed0df71e75dbcebf2c4"
+    }
+  },
+  {
+    "id": "16-training",
+    "files": {
+      "docs/lessons/16-training.md": "b73abb0c11697febbbf753ba4a36746a2171d6febfee5f69db1bbea84c5d001c",
+      "lesson_cases/16-training.py": "b50fb995486aa0ff042edb1486de27605fc0c3ec28f201ecb290b97a733fe31e",
+      "artifacts/checks/curriculum/16-training.json": "fd0152b46b05f3ba20c8fd15330ff5b8aa5558d99889438b26450cfdb739bc38",
+      "docs/assets/diagrams/16-stal-candidates.svg": "04d26cccdc1c78a9f72ce64550a6c156d0f9bccef78b895ff3080fa67c7fc49f"
+    }
+  },
+  {
+    "id": "17-capstone",
+    "files": {
+      "docs/lessons/17-capstone.md": "25c66ab672af41f9c08226a89b5f17c193b6c0ef26a84d583612349f0fe4445d",
+      "lesson_cases/17-capstone.py": "a5969a35c9409bae299c070229defef69a40e340d53c3aecd563f087fea12cf8",
+      "artifacts/checks/curriculum/17-capstone.json": "aefc743cfd67dccfb5867c377fe0063622aeb5288d6043797371afdd1a7119bf",
+      "docs/assets/diagrams/17-capstone.svg": "d86dca51873ecaa58df51d8388a704005699c20820d16854d3814c7b8735e9ce"
+    }
+  },
+  {
+    "id": "18-video",
+    "files": {
+      "docs/lessons/18-video.md": "aa37572bcc725c62156a6624fd32a30249eecb26d14faf842b222eb41aecc269",
+      "lesson_cases/18-video.py": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+      "artifacts/checks/curriculum/18-video.json": "f7d0eb05bad4a736b561c75463049d794d829a09397b19b526782e0e838bb609",
+      "docs/assets/diagrams/18-video.svg": "9c2bf9984e04e64f5a1f788ea774a74ad74799cb2732b0ce353369ae1d8f3040"
+    }
+  },
+  {
+    "id": "19-tracking",
+    "files": {
+      "docs/lessons/19-tracking.md": "7d8ba461b6d0a132a111ceafcb812a6761eccf57046df1f329b3950c2822db23",
+      "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa",
+      "artifacts/checks/curriculum/19-tracking.json": "0b331433e387dcc0f037634b6df18fc7667432fa09167064128fa9a2267cd306",
+      "docs/assets/diagrams/19-tracking.svg": "b49961cef2c248e1b163e652d77c89ff9e7670c5ce0a5f164ffeae36740bafe3"
+    }
+  },
+  {
+    "id": "20-deployment",
+    "files": {
+      "docs/lessons/20-deployment.md": "28e152b135fb2af9310e78d0cc3cea7880713cf0b10a8591fc4af01ad6b1825a",
+      "lesson_cases/20-deployment.py": "bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3",
+      "artifacts/checks/curriculum/20-deployment.json": "48b1cd9f50e8e6df94bf6acb1fc49beed817e55da1f94ea40dd297f99f981145",
+      "docs/assets/diagrams/20-deployment.svg": "45f53f5c670301be885cbc89767ee1195e8fbe908741eeec467b7f49ea6efda4"
+    }
+  }
+]

@@ -1,0 +1,5 @@
+many-head scores: [0.959, 0.959, 0.959, 0.041]
+one-head scores: [0.959, 0.041, 0.959, 0.041]
+many/no NMS: [] many/NMS: [] one/no NMS: []
+top-2 on duplicate-heavy scores: [0, 1] (misses object at candidate 2)
+duplicate IoU=0.8182

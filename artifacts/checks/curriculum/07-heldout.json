@@ -1,7 +1,7 @@
 {
   "id": "07-heldout",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:18:22.253151+00:00",
+  "executed_at_utc": "2026-10-05T10:46:12.859941+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -27,7 +27,7 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 2.7306,
+  "process_wall_seconds": 5.1186,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "artificial evaluation fixture {'ap_per_class': {0: 0.5, 1: None}, 'map': 0.5, 'precision': 0.3333333333333333, 'recall': 0.5}\n3-step held-out PIPELINE SMOKE, not trained detector evidence {'ap_per_class': {0: 0.0, 1: 0.0}, 'map': 0.0, 'precision': 0.0, 'recall': 0.0}\n",
   "stderr": "",

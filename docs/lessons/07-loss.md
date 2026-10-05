@@ -1,6 +1,6 @@
 # 7.3 Grid MiniYOLO：loss 必須能手算
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-loss.ipynb){ .md-button }
 
 上一節把標註框換成每一格的訓練目標（target）；本節把 target 和模型每格的輸出接起來，算出 loss。讀完你能用紙筆算出三項 loss，以及 objectness（這格有沒有物件）與正格類別 logits 的梯度，也知道沒有物件的圖要怎麼處理。
 
@@ -217,7 +217,7 @@ class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母
 
 ## 收益、代價與常見錯誤
 
-收益是每一項監督和梯度方向都能被驗證。代價有兩個。第一，MSE 只比四個數各差多少，沒有直接衡量預測框和真值框重疊得好不好。第二，物件很少的圖裡，背景格遠多於正格。本例 16 格只有 1 格有物件：背景的 objectness 梯度加起來是 15×0.03125=0.46875，正格只有 0.03125，模型可能先學會到處說沒有物件。不要在尚未確認資料與 mask 時先調權重。第 11 章才單獨研究定位 loss，看 IoU 類 loss（用兩框重疊程度算的 loss）改了什麼。
+收益是每一項監督和梯度方向都能被驗證。代價有兩個。第一，MSE 只比四個數各差多少，沒有直接衡量預測框和真值框重疊得好不好。第二，物件很少的圖裡，背景格遠多於正格。本例 16 格只有 1 格有物件：背景的 objectness 梯度加起來是 15×0.03125=0.46875，正格只有 0.03125。這是 **15 個輸出 logits 的梯度量合計**，不是直接把它當成某個 CNN 權重的梯度；權重的更新還要乘上各格輸出對它的變化率，再把帶方向的貢獻相加。它提醒我們背景監督很多，模型可能先學會到處說沒有物件。不要在尚未確認資料與 mask 時先調權重。第 11 章才單獨研究定位 loss，看 IoU 類 loss（用兩框重疊程度算的 loss）改了什麼。
 
 常見錯誤分兩類。第一類不會報錯，得到的是看似正常的有限 loss，要拿手算的 loss 與梯度來核對才會發現。本節完整程式的斷言做的就是這種核對，下面三種錯，每一種都會讓其中一個斷言失敗：
 

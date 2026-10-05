@@ -1,6 +1,6 @@
 # 19 簡易 tracking：框很準，ID 仍可能換人
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/19-tracking.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/19-tracking.ipynb){ .md-button }
 
 偵測只回答「這一幀（frame，影片裡的一張畫面）有哪些框」。追蹤（tracking）還要回答：這一幀的某個框，是否和上一幀的某個框是同一個物件？本節要讓你看到：兩個同類物件交叉時，偵測可以完全正確，追蹤給的編號（track ID）卻互換了。讀完本節，你能手算一個小型 tracker（追蹤器）每一幀怎麼配對，也能自己數出 ID 換了幾次。你也會知道：只看上一幀的框為什麼會換號，先用速度預測位置為什麼不會。
 
@@ -140,7 +140,7 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
     - SORT：用 Kalman filter 預測位置，再用匈牙利演算法依 IoU 配對。
     - DeepSORT：沿用 Kalman filter 與匈牙利演算法，但配對主要改看外觀特徵的距離（再用 Kalman 預測的位置排除不可能的配對），並讓上次配到的時間越近的 track 越先配。IoU 配對只留在最後一輪，處理兩種 track：剛建立、還在試用期的，以及上一幀還配到、這一幀外觀沒配上的。
-    - ByteTrack：分兩輪配對。先拿高分框配所有 track；第一輪沒配到的 track，再只用 IoU 去配低分框。沒配上的低分框當成背景丟掉，也不拿來開新 track。
+    - ByteTrack：先拿高分框配已確認、以及暫時失聯的 track。其中第一輪沒配到、仍在追蹤狀態的 track，再只用 IoU 去配低分框；暫時失聯的 track 不進這輪。新建、待確認的 track 另外用剩下的高分框配對。沒配上的低分框丟掉，不拿來開新 track。
 
     本節的 tracker 只取它們共同的核心（先預測位置，再一對一配對），不是這些方法的完整實作。
 

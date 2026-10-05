@@ -1,69 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 612" role="img" aria-labelledby="title desc">
- <title id="title">每格兩個 anchor：疊在物件中心，只比尺寸</title>
- <desc id="desc">依比例繪製：圖片座標 (x,y)（單位畫素）畫在圖面 (72+6x, 120+6y)，1 畫素畫成 6 個單位，每格 16 畫素畫成 96 個單位。64×64 圖切成 4×4 格；上方刻度是 x＝0、16、32、48、64 畫素，左側刻度是 y＝0、16、32、48、64 畫素，x 向右、y 向下；上方刻度列末端註明「單位：畫素」。上方由左到右標欄 0 到欄 3，左側由上到下標列 0 到列 3，都從 0 起算。淡藍色是格 (1,1)，也就是欄 1、列 1，紅框中心所在的格。紅框是 [8,12,24,28]（xyxy），寬高 16×16；中心黑點 (16,20) 壓在 x＝16 的格線上；黑點下方（列 2，跨欄 0 與欄 1）有一個淡灰色小註框，引線連到黑點，寫著「x=16 壓在格線上，16÷16 取 floor 得 1，所以歸欄 1」。兩個紫色虛線方框是格 (1,1) 兩個槽的 anchor，各有一條引線連到右側說明；右側說明上方有一行標頭「格 (1,1) 的兩個槽」。anchor 只有寬高、沒有自己的位置，所以比尺寸時把兩個 anchor 的中心都疊在物件中心 (16,20)。槽 0 的 anchor 16×16 疊上後是 [8,12,24,28]，和紅框完全重合（紫色虛線畫在紅框線外側）；右側說明寫：尺寸 IoU 1，最大，所以是 positive。槽 1 的 anchor 8×8 疊上後是 [12,16,20,24]，尺寸 IoU 是交集 64 ÷ 聯集 256 = 0.25；右側說明寫：它是同一格的另一個槽，尺寸 IoU 0.25，大於門檻 0.2，所以是 ignore。右下說明：其他 15 格、每格 2 槽，共 30 個槽是 negative。圖例：紅框 [8,12,24,28]，寬高 16×16；紫色虛線是 anchor，只有寬高、沒有自己的位置；黑點是中心 (16,20)；淡藍格是格 (1,1)，中心所在的格。</desc>
- <!-- 依比例：圖片座標 (x,y) 畫素對應圖面 (72+6x, 120+6y)；每格 16 畫素＝96 個單位。 -->
- <rect width="720" height="612" fill="#f8fafc"/>
- <rect x="72" y="120" width="384" height="384" fill="#fff"/>
- <rect id="cell-1-1" x="168" y="216" width="96" height="96" fill="#dbeafe"/>
- <path d="M168 120V504M264 120V504M360 120V504M72 216H456M72 312H456M72 408H456" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
- <rect x="72" y="120" width="384" height="384" fill="none" stroke="#475569" stroke-width="1.5"/>
- <path d="M72 113V120M168 113V120M264 113V120M360 113V120M456 113V120M65 120H72M65 216H72M65 312H72M65 408H72M65 504H72" stroke="#475569" stroke-width="1.5"/>
- <!-- 紅框 [8,12,24,28]：填色在真正邊界上，紅線畫在邊界內側。 -->
- <rect id="red-box" x="120" y="192" width="96" height="96" fill="#dc2626" fill-opacity=".12"/>
- <rect x="121.5" y="193.5" width="93" height="93" fill="none" stroke="#dc2626" stroke-width="3"/>
- <!-- 兩個 anchor 都以 (16,20) 為中心：16×16 → [8,12,24,28]，8×8 → [12,16,20,24]；虛線畫在邊界外側。 -->
- <rect id="anchor-16" x="118.5" y="190.5" width="99" height="99" fill="none" stroke="#7c3aed" stroke-width="3" stroke-dasharray="8 5"/>
- <rect id="anchor-8" x="142.5" y="214.5" width="51" height="51" fill="none" stroke="#7c3aed" stroke-width="3" stroke-dasharray="8 5"/>
- <!-- 小註：中心壓在 x=16 的直格線上；註框放在列 2（跨欄 0、欄 1），引線從框頂接到黑點。 -->
- <rect id="grid-line-note" x="80" y="321" width="177" height="78" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
- <path d="M118 321L164.6 245.5" fill="none" stroke="#334155" stroke-width="1.5"/>
- <circle id="center" cx="168" cy="240" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
- <!-- 引線：槽 0 從 16×16 右邊、槽 1 從 8×8 右邊，接到右側說明左邊的直線。 -->
- <path d="M219 196H470M195 260H470M470 156V230M470 250V350" fill="none" stroke="#334155" stroke-width="1.5"/>
- <circle cx="217.5" cy="196" r="3.5" fill="#334155"/>
- <circle cx="193.5" cy="260" r="3.5" fill="#334155"/>
- <g font-family="sans-serif" fill="#0f172a">
-  <text x="24" y="38" font-size="22" font-weight="700">每格兩個 anchor：疊在物件中心，只比尺寸</text>
-  <g font-size="18" fill="#334155" text-anchor="middle">
-   <text x="120" y="80">欄 0</text><text x="216" y="80">欄 1</text><text x="312" y="80">欄 2</text><text x="408" y="80">欄 3</text>
-  </g>
-  <g font-size="17" fill="#475569" text-anchor="middle">
-   <text x="72" y="106">0</text><text x="168" y="106">16</text><text x="264" y="106">32</text><text x="360" y="106">48</text><text x="456" y="106">64</text>
-  </g>
-  <text x="482" y="106" font-size="17" fill="#475569">單位：畫素</text>
-  <g font-size="18" fill="#334155">
-   <text x="8" y="174">列 0</text><text x="8" y="270">列 1</text><text x="8" y="366">列 2</text><text x="8" y="462">列 3</text>
-  </g>
-  <g font-size="17" fill="#475569" text-anchor="end">
-   <text x="60" y="126">0</text><text x="60" y="222">16</text><text x="60" y="318">32</text><text x="60" y="414">48</text><text x="60" y="510">64</text>
-  </g>
-  <g font-size="17">
-   <text x="88" y="343">x=16 壓在格線上，</text>
-   <text x="88" y="366">16÷16 取 floor 得 1，</text>
-   <text x="88" y="389">所以歸欄 1</text>
-  </g>
-  <text x="478" y="139" font-size="18" font-weight="700">格 (1,1) 的兩個槽</text>
-  <g font-size="20">
-   <text x="478" y="173" fill="#6d28d9">槽 0：anchor 16×16</text>
-   <text x="478" y="199">尺寸 IoU 1</text>
-   <text x="478" y="225">最大 → <tspan font-weight="700">positive</tspan></text>
-   <text x="478" y="267" fill="#6d28d9">槽 1：anchor 8×8</text>
-   <text x="478" y="293">同一格的另一個槽</text>
-   <text x="478" y="319">尺寸 IoU 0.25</text>
-   <text x="478" y="345">大於門檻 0.2 → <tspan font-weight="700">ignore</tspan></text>
-   <text x="478" y="410">其他 15 格 × 每格 2 槽</text>
-   <text x="478" y="436">= 30 個 → <tspan font-weight="700">negative</tspan></text>
-  </g>
-  <!-- 圖例 -->
-  <rect x="24" y="541" width="16" height="16" fill="#fce4e4" stroke="#dc2626" stroke-width="2.5"/>
-  <rect x="24" y="575" width="16" height="16" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="4 3"/>
-  <circle cx="400" cy="549" r="5" fill="#172554"/>
-  <rect x="392" y="575" width="16" height="16" fill="#dbeafe" stroke="#94a3b8" stroke-width="1"/>
-  <g font-size="20">
-   <text x="50" y="556">紅框 [8,12,24,28]，寬高 16×16</text>
-   <text x="50" y="590">anchor：只有寬高、沒有自己的位置</text>
-   <text x="418" y="556">中心 (16,20)</text>
-   <text x="418" y="590">格 (1,1)：中心所在的格</text>
-  </g>
- </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="1180" viewBox="0 0 480 1180" role="img" aria-labelledby="title desc">
+<title id="title">同一格的兩個 anchor 槽：positive、ignore 與其餘30個 negative</title>
+<desc id="desc">本節自訂的anchor責任規則。64×64圖片，4×4格，每格16畫素、兩個anchor槽。圖片座標轉為SVG座標：(x,y)→(80+5.5x,152+5.5y)。真值框[8,12,24,28]，中心(16,20)，floor後屬格(gx=1,gy=1)，中心x=16在格線上，歸右側第1欄。紅實線是GT；紫色虛線兩個anchor均以真值中心對齊：槽0是16×16，槽1是8×8。槽0尺寸IoU=1為positive；槽1尺寸IoU=0.25，大於本節ignore門檻0.2，所以不計任何loss。其餘15格各2槽，共30個negative。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#475569"/></marker><marker id="purple-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#7c3aed"/></marker></defs>
+<rect width="480" height="1180" fill="#f8fafc"/>
+<g font-family="Noto Sans CJK TC, sans-serif" fill="#0f172a">
+<text x="28" y="38" font-size="26" fill="#0f172a" font-weight="700">兩個 anchor 是兩個槽</text>
+<text x="28" y="74" font-size="24" fill="#0f172a">4×4 格 × 2 槽 = 32 槽</text>
+<rect x="12" y="94" width="456" height="518" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="110" font-size="22" fill="#0f172a">64×64 圖；每格 16 畫素</text>
+<rect x="80" y="152" width="352" height="352" fill="#fff" stroke="#64748b" stroke-width="2" />
+<rect x="168" y="240" width="88" height="88" fill="#dbeafe" />
+<path d="M80 152L80 504" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M80 152L432 152" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="80" y="532" font-size="22" fill="#0f172a" text-anchor="middle">0</text>
+<text x="68" y="160" font-size="22" fill="#0f172a" text-anchor="end">0</text>
+<path d="M168 152L168 504" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M80 240L432 240" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="168" y="532" font-size="22" fill="#0f172a" text-anchor="middle">16</text>
+<text x="68" y="248" font-size="22" fill="#0f172a" text-anchor="end">16</text>
+<path d="M256 152L256 504" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M80 328L432 328" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="256" y="532" font-size="22" fill="#0f172a" text-anchor="middle">32</text>
+<text x="68" y="336" font-size="22" fill="#0f172a" text-anchor="end">32</text>
+<path d="M344 152L344 504" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M80 416L432 416" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="344" y="532" font-size="22" fill="#0f172a" text-anchor="middle">48</text>
+<text x="68" y="424" font-size="22" fill="#0f172a" text-anchor="end">48</text>
+<path d="M432 152L432 504" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M80 504L432 504" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="432" y="532" font-size="22" fill="#0f172a" text-anchor="middle">64</text>
+<text x="68" y="512" font-size="22" fill="#0f172a" text-anchor="end">64</text>
+<text x="124" y="144" font-size="22" fill="#0f172a" text-anchor="middle">0</text>
+<text x="28" y="204" font-size="22" fill="#0f172a" text-anchor="middle">0</text>
+<text x="212" y="144" font-size="22" fill="#0f172a" text-anchor="middle">1</text>
+<text x="28" y="292" font-size="22" fill="#0f172a" text-anchor="middle">1</text>
+<text x="300" y="144" font-size="22" fill="#0f172a" text-anchor="middle">2</text>
+<text x="28" y="380" font-size="22" fill="#0f172a" text-anchor="middle">2</text>
+<text x="388" y="144" font-size="22" fill="#0f172a" text-anchor="middle">3</text>
+<text x="28" y="468" font-size="22" fill="#0f172a" text-anchor="middle">3</text>
+<text x="18" y="166" font-size="22" fill="#0f172a">gy</text>
+<text x="28" y="570" font-size="24" fill="#0f172a">欄 gx=1，列 gy=1；中心 (16,20)</text>
+<text x="28" y="600" font-size="22" fill="#0f172a">x=16 在格線上 → floor 後歸右格</text>
+<rect x="124" y="218" width="88" height="88" fill="none" stroke="#dc2626" stroke-width="4.5" id="gt-box" data-xyxy="8,12,24,28"/>
+<rect x="124" y="218" width="88" height="88" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="8 5" id="anchor-slot-0" data-xyxy="8,12,24,28"/>
+<rect x="146" y="240" width="44" height="44" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="5 4" id="anchor-slot-1" data-xyxy="12,16,20,24"/>
+<circle cx="168" cy="262" r="5" fill="#0f172a" id="gt-center" data-xy="16,20"/>
+<path d="M174 268L289 322.5" fill="none" stroke="#475569" stroke-width="1.5"/>
+<text x="294.5" y="339" font-size="22" fill="#0f172a">中心</text>
+<rect x="12" y="628" width="456" height="142" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="666" font-size="24" fill="#7c3aed" font-weight="700">槽 0：16×16 → positive（1 槽）</text>
+<text x="28" y="702" font-size="22" fill="#0f172a">尺寸 IoU=1；負責 GT 框與類別</text>
+<text x="28" y="738" font-size="24" fill="#0f172a">objectness 目標=1</text>
+<rect x="12" y="786" width="456" height="142" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="824" font-size="24" fill="#7c3aed" font-weight="700">槽 1：8×8 → ignore（1 槽）</text>
+<text x="28" y="860" font-size="24" fill="#0f172a">尺寸 IoU=0.25 &gt; 0.2</text>
+<text x="28" y="896" font-size="24" fill="#0f172a">本節自訂：不計任何 loss</text>
+<rect x="12" y="944" width="456" height="180" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="982" font-size="24" fill="#0f172a" font-weight="700">其他 15 格 × 2 槽 = 30 negative</text>
+<text x="28" y="1018" font-size="24" fill="#0f172a">只算 objectness，目標=0</text>
+<text x="28" y="1054" font-size="24" fill="#0f172a">GT=[8,12,24,28]（16×16）</text>
+<text x="28" y="1090" font-size="22" fill="#0f172a">紅實線：GT　紫虛線：anchor</text>
+<text x="28" y="1154" font-size="22" fill="#0f172a">上方欄 gx；左側列 gy</text>
+</g></svg>

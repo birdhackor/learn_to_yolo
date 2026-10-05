@@ -1,6 +1,6 @@
 # 3.3 Plain／residual 對照：先控制比較條件
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/03-comparison.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/03-comparison.ipynb){ .md-button }
 
 Residual 有直接路徑，是否就一定比 plain 更準？讀完你會知道：公平的對照要固定哪些條件、輸出怎麼讀，以及這種小實驗能寫出什麼程度的結論。前置是知道卷積與交叉熵；本節會重述 shortcut 的公式。
 
@@ -80,33 +80,35 @@ print(f"{name}: params={params}, MACs/image={macs}, shortcut_adds/image={shortcu
       f"validation_accuracy={acc:.2f}, 3_step_seconds={elapsed:.4f}")
 ```
 
-乘加數與加法次數交給函式 `count_per_image`，它用的是 forward hook。hook 原意是鉤子：forward hook 是「鉤」在某一層上的小函式，掛上之後，這一層每算完一次 forward，PyTorch 就呼叫它一次，並把這一層本身、這一層的輸入與輸出交給它。所以不必把模型拆開、自己一層層執行，只要照常讓整個模型跑一次 forward，掛了 hook 的層一算完，hook 就拿得到它的輸出。`count_per_image` 把同一個 `hook` 掛到每個卷積、Linear 與 Block 上，在 `torch.no_grad()` 下把傳進來的圖（這裡是 8 張訓練圖）送進模型，數完就把 hook 拿掉。以下摘自完整程式，中文註解是本頁加的：
+??? note "選讀：程式怎麼逐層數成本（forward hook）"
 
-``` { .python data-excerpt="lesson_cases/03-comparison.py" }
-def count_per_image(model, images):
-    """Multiply-accumulates and shortcut additions per image, counted by forward hooks."""
-    macs, shortcut_adds = [], []  # 兩個空清單：hook 數到的每一筆都放進來，最後再加總
+    乘加數與加法次數交給函式 `count_per_image`，它用的是 forward hook。hook 原意是鉤子：forward hook 是「鉤」在某一層上的小函式，掛上之後，這一層每算完一次 forward，PyTorch 就呼叫它一次，並把這一層本身、這一層的輸入與輸出交給它。所以不必把模型拆開、自己一層層執行，只要照常讓整個模型跑一次 forward，掛了 hook 的層一算完，hook 就拿得到它的輸出。`count_per_image` 把同一個 `hook` 掛到每個卷積、Linear 與 Block 上，在 `torch.no_grad()` 下把傳進來的圖（這裡是 8 張訓練圖）送進模型，數完就把 hook 拿掉。以下摘自完整程式，中文註解是本頁加的：
 
-    def hook(layer, inputs, output):  # PyTorch 傳入：剛算完的這一層、它的輸入、它的輸出
-        values = output[0].numel()  # 這一層替第 0 張圖輸出幾個值
-        if isinstance(layer, nn.Conv2d):  # 卷積：每個輸出值要 in_channels×3×3 次乘加
-            macs.append(values * layer.in_channels * layer.kernel_size[0] ** 2)
-        elif isinstance(layer, nn.Linear):  # Linear：每個輸出值要 in_features 次乘加
-            macs.append(values * layer.in_features)
-        elif isinstance(layer, Block) and layer.residual:  # x + F(x)：每個輸出值 1 次加法
-            shortcut_adds.append(values)
+    ``` { .python data-excerpt="lesson_cases/03-comparison.py" }
+    def count_per_image(model, images):
+        """Multiply-accumulates and shortcut additions per image, counted by forward hooks."""
+        macs, shortcut_adds = [], []  # 兩個空清單：hook 數到的每一筆都放進來，最後再加總
 
-    # 把同一個 hook 掛到每個卷積、Linear 與 Block 上，留下每個 handle
-    handles = [layer.register_forward_hook(hook) for layer in model.modules()
-               if isinstance(layer, (nn.Conv2d, nn.Linear, Block))]
-    with torch.no_grad():  # 只是數數，不需要梯度
-        model(images)  # 跑一次 forward；掛了 hook 的層每算完一次，hook 就被呼叫一次
-    for handle in handles:
-        handle.remove()  # 數完就把 hook 拿掉
-    return sum(macs), sum(shortcut_adds)
-```
+        def hook(layer, inputs, output):  # PyTorch 傳入：剛算完的這一層、它的輸入、它的輸出
+            values = output[0].numel()  # 這一層替第 0 張圖輸出幾個值
+            if isinstance(layer, nn.Conv2d):  # 卷積：每個輸出值要 in_channels×3×3 次乘加
+                macs.append(values * layer.in_channels * layer.kernel_size[0] ** 2)
+            elif isinstance(layer, nn.Linear):  # Linear：每個輸出值要 in_features 次乘加
+                macs.append(values * layer.in_features)
+            elif isinstance(layer, Block) and layer.residual:  # x + F(x)：每個輸出值 1 次加法
+                shortcut_adds.append(values)
 
-`model.modules()` 逐一給出模型裡的每個模組：模型本身、stem、head、每個 Block，以及 Block 裡的卷積與 ReLU 等；`isinstance(layer, nn.Conv2d)` 檢查 `layer` 是不是卷積。`if … elif …` 由上往下檢查條件，只執行第一個成立的那一段（`elif` 是 else if 的縮寫）；三個條件都不成立時，也就是 `residual` 為 False 的 Block，就什麼都不記。`register_forward_hook` 掛上 hook，並傳回一個 handle（把手），之後用 `handle.remove()` 把 hook 拿掉。一次 forward 雖然送進 8 張圖，hook 只看第 0 張（`output[0]`），所以數出的是一張圖的數字（每張圖大小相同，哪一張都一樣）；規則和上面的手算相同。Block 那一條看的是 `layer.residual`：這個旗標為 True 時，forward 算的是 `x + correction`，每個輸出值記 1 次加法。也就是說，加法次數是依旗標記下的，程式並沒有去偵測 forward 裡實際做了幾次加法。這次 forward 只用來數數，不會改動任何參數。
+        # 把同一個 hook 掛到每個卷積、Linear 與 Block 上，留下每個 handle
+        handles = [layer.register_forward_hook(hook) for layer in model.modules()
+                   if isinstance(layer, (nn.Conv2d, nn.Linear, Block))]
+        with torch.no_grad():  # 只是數數，不需要梯度
+            model(images)  # 跑一次 forward；掛了 hook 的層每算完一次，hook 就被呼叫一次
+        for handle in handles:
+            handle.remove()  # 數完就把 hook 拿掉
+        return sum(macs), sum(shortcut_adds)
+    ```
+
+    `model.modules()` 逐一給出模型裡的每個模組：模型本身、stem、head、每個 Block，以及 Block 裡的卷積與 ReLU 等；`isinstance(layer, nn.Conv2d)` 檢查 `layer` 是不是卷積。`if … elif …` 由上往下檢查條件，只執行第一個成立的那一段（`elif` 是 else if 的縮寫）；三個條件都不成立時，也就是 `residual` 為 False 的 Block，就什麼都不記。`register_forward_hook` 掛上 hook，並傳回一個 handle（把手），之後用 `handle.remove()` 把 hook 拿掉。一次 forward 雖然送進 8 張圖，hook 只看第 0 張（`output[0]`），所以數出的是一張圖的數字（每張圖大小相同，哪一張都一樣）；規則和上面的手算相同。Block 那一條看的是 `layer.residual`：這個旗標為 True 時，forward 算的是 `x + correction`，每個輸出值記 1 次加法。也就是說，加法次數是依旗標記下的，程式並沒有去偵測 forward 裡實際做了幾次加法。這次 forward 只用來數數，不會改動任何參數。
 
 乘加數不含 activation、空間平均與資料搬移，所以兩者「乘加數相同」不等於所有成本完全相同。Shortcut 要把輸入保留到相加為止，所以推論時的記憶體峰值（同一時刻最多占用多少記憶體）也要考慮：plain 的 block 輸入在第一個卷積算完後就能釋放，residual 卻要留到相加。訓練時則不同：第一個卷積在反向傳播時本來就要用這份輸入算梯度，有沒有 shortcut 都會保存，所以 identity shortcut 幾乎不增加訓練時的記憶體。
 
@@ -133,7 +135,14 @@ def count_per_image(model, images):
 
 讀 loss 時先記住一個基準。一張圖的交叉熵是 \(-\ln p\)，\(p\) 是模型給正確類別的機率；整批的 loss 再對所有圖平均。兩類分類時，若每張圖都給兩類各 50%，\(p=0.5\)，loss 就是 \(-\ln 0.5=\ln 2\approx0.693\)。所以 loss 停在 0.693 附近、accuracy 是 0.50，表示模型還在猜。
 
-對照頁尾的執行紀錄：residual 的 stem 梯度 L2 長度約 0.15，plain 只有約 0.001；residual 印出的 loss 一次比一次低，plain 幾乎停在 0.693；兩者的 validation accuracy 都是 0.50（4 張）。所以 3 步看得出 residual 的梯度傳得到 stem、plain 的小得多；但兩者都還在猜，看不出誰學得會。
+對照頁尾的實際執行紀錄，先只看最前面的 stem 收到多少梯度。下表三欄是第 1、2、3 次更新各自 backward 後、更新權重前的 stem 權重梯度 L2 長度：
+
+|模型|第 1 次|第 2 次|第 3 次|
+|---|---|---|---|
+|plain|0.000984|0.001001|0.001011|
+|residual|0.146701|0.147590|0.146128|
+
+每一步 residual 都約 0.15，plain 都約 0.001，相差約 150 倍；兩者都有梯度，但 plain 傳到最前層的量小得多。對應的 loss，residual 是 0.6921 → 0.6888 → 0.6855，plain 是 0.6938 → 0.6937 → 0.6936。3 次更新後兩者的 validation accuracy 卻同為 0.50（4 張）：梯度大小的差異已看得見，還不能據此判誰學得會。
 
 ## 訓練 40 步：plain 與 residual 學得動嗎
 
@@ -164,13 +173,21 @@ display(SVG(filename='artifacts/runs/learning/03-comparison/learning.svg'))
 
 **觀察。** 兩個模型都是 986 個參數、同樣的起點、同樣用 SGD 與 learning rate 0.1。plain 40 步後 loss 幾乎沒動，一直貼著 \(\ln 2\approx0.693\)，8 張訓練圖全部猜成類別 1，訓練與 validation accuracy 都是 0.50。residual 第 40 次更新前的 loss 約 0.031，表示模型給正確類別的機率已接近 1；訓練 8 張與 validation 4 張全對。validation 的每個位置都有一紅一藍兩張圖，兩張只差在顏色，residual 兩張都答對，所以它確實是靠顏色分開兩類，方塊往下移 2 列也分得對。兩個模型每一步的梯度都是有限值、L2 長度不為 0，權重也確實改變；所以 plain 並不是程式沒在更新，而是更新幾乎沒有效果。
 
-**機制。** 3 步實驗的紀錄裡，三步的 plain stem 梯度都只有 residual 的約 1/150。訊號（各層輸出的數值）會一層層變小，源頭是建立層時 PyTorch 自動給的隨機初始權重（預設初始化）偏小：block 裡每個 4→4 的 3×3 卷積，一個輸出值是 4×9＝36 個「權重×輸入」相加，PyTorch 預設讓權重取自 \(-1/\sqrt{36}\) 到 \(1/\sqrt{36}\)，也就是 −1/6 到 1/6 的均勻分布（這個範圍內每個值出現的機會都一樣）。在 −a 到 a 均勻分布時，平方的平均是 \(a^2/3\)（可用積分算出），所以這裡只有 \((1/6)^2\div3=1/108\)。權重有正有負、彼此獨立，36 項相加後平方，交叉相乘的部分平均會互相抵消（例如 \((w_1x_1+w_2x_2)^2\) 展開後的 \(2w_1x_1w_2x_2\)，因為權重正負機會相同，平均是 0），所以每過一個卷積，數值平方的平均約縮成 36×1/108＝1/3，中間的 ReLU 把負值變成 0，又再少約一半。一個 block 合起來，平方的平均約縮成 1/18；數值大小看它的平方根，\(\sqrt{1/18}\approx0.24\)，約剩 1/4。
+**機制。** 上面的梯度表回答「梯度到最前層時還有多少」；它沒有逐層量特徵幅度。從結構看，plain 的梯度必須穿過 6 個卷積與中間的 ReLU；本設定的預設初始權重偏小，又沒有 BatchNorm 把前向數值拉回穩定尺度，連續相乘可能讓特徵與梯度越傳越小。Head 收到的特徵若已接近 0，分數就主要由 bias 決定，這與 plain 幾乎給每張圖相同答案的現象一致。
 
-plain 沒有 shortcut 把 \(x\) 加回，本設定又沒有 BatchNorm 把尺度拉回，所以訊號每過一個 block 都越來越接近 0。傳到 head 時特徵已經非常接近 0，head 算出的分數幾乎只剩它自己的 bias，8 張圖拿到幾乎一樣的分數；這組 bias 稍微偏向類別 1，於是 8 張全猜類別 1。反過來，梯度從 loss 傳回 stem 時也要穿過同樣 6 個卷積，每過一個 block 也明顯變小。residual 每個 block 都把 \(x\) 原樣加回（identity shortcut 那節的直接路徑），stem 算出的紅／藍特徵能一路送到 head，梯度也能沿 shortcut 傳回 stem。
+residual 每個 block 多了把輸入直接加回的路徑，特徵與梯度都有一條不必穿過卷積權重的路（見 [identity shortcut 那節](03-identity.md)）。本次實測是 stem 梯度大得多、40 步學得動；初始化下的逐層縮小量則是下方選讀的粗略推算，不能當成已量出的每層數字。
 
-**限制。** 這只代表本設定：沒有 BatchNorm、PyTorch 預設初始化、3 個 block、人工色塊，而且只有一個 seed，也只試了 learning rate 0.1。如開頭所說，加回 BatchNorm 會怎樣，本節沒有測；改用權重較大的初始化會怎樣，本節也沒有測。例如 ResNet 論文用的 He 初始化（以作者何愷明 Kaiming He 命名）讓權重平方的平均是 2/36，搭配 ReLU 時，每層輸出的平方平均大致不變。
+**限制。** 這只代表本設定：沒有 BatchNorm、PyTorch 預設初始化、3 個 block、人工色塊，而且只有一個 seed，也只試了 learning rate 0.1。如開頭所說，加回 BatchNorm 會怎樣，本節沒有測；改用權重較大的初始化會怎樣，本節也沒有測。He 初始化的尺度估算放在下方選讀；這些替代設定仍需另做對照。
 
-本節 plain 學不動，直接原因是訊號與梯度一層層變小，也就是[第 2 章](02-diagnostics.md)說的梯度消失。這和論文研究的退化不是同一件事：論文的 plain 網路有 BatchNorm、用 He 初始化，論文第 4.1 節指出 BatchNorm 讓前向訊號不會消失，也檢查過反向梯度的大小正常；18 層時 plain 與 ResNet 的錯誤率幾乎相同，差距到 34 層才出現，論文推測深層 plain 是收斂得極慢。所以本節的結果不能用來解釋論文裡的退化，也不能說 shortcut 的作用只是防止訊號消失。validation 全對只表示：方塊往下移 2 列、兩類位置又完全相同時，模型仍能只憑顏色答對這 4 張；離真實照片的泛化還很遠。曲線也只畫這批訓練圖的 loss。所以不能據此宣稱真實圖片或更深網路的泛化效果。
+本節 plain 的 stem 梯度很小、loss 幾乎不降，符合梯度變小的現象，尚未逐層診斷；上面的結構分析與初始化估算提供了可能的機制。這和論文研究的退化不是同一件事：論文的 plain 網路有 BatchNorm、用 He 初始化，論文第 4.1 節指出 BatchNorm 讓前向訊號不會消失，也檢查過反向梯度的大小正常；18 層時 plain 與 ResNet 的錯誤率幾乎相同，差距到 34 層才出現，論文推測深層 plain 是收斂得極慢。所以本節的結果不能用來解釋論文裡的退化，也不能說 shortcut 的作用只是防止訊號消失。validation 全對只表示：方塊往下移 2 列、兩類位置又完全相同時，模型仍能只憑顏色答對這 4 張；離真實照片的泛化還很遠。曲線也只畫這批訓練圖的 loss。所以不能據此宣稱真實圖片或更深網路的泛化效果。
+
+??? note "選讀：預設初始化為什麼可能使訊號縮小"
+
+    以下用初始化時權重的分布估算尺度，假設權重彼此獨立、與輸入沒有相關，並把 ReLU 前的值近似看成正負對稱。這不是本次實驗逐層量出的特徵或梯度，也不保證訓練後仍成立。
+
+    先看建立層時 PyTorch 自動給的隨機初始權重（預設初始化）：block 裡每個 4→4 的 3×3 卷積，一個輸出值是 4×9＝36 個「權重×輸入」相加，PyTorch 預設讓權重取自 \(-1/\sqrt{36}\) 到 \(1/\sqrt{36}\)，也就是 −1/6 到 1/6 的均勻分布（這個範圍內每個值出現的機會都一樣）。在 −a 到 a 均勻分布時，平方的平均是 \(a^2/3\)（可用積分算出），所以這裡只有 \((1/6)^2\div3=1/108\)。權重有正有負、彼此獨立，36 項相加後平方，交叉相乘的部分平均會互相抵消（例如 \((w_1x_1+w_2x_2)^2\) 展開後的 \(2w_1x_1w_2x_2\)，因為權重正負機會相同，平均是 0），所以每過一個卷積，數值平方的平均約縮成 36×1/108＝1/3，中間的 ReLU 把負值變成 0，又再少約一半。一個 block 合起來，平方的平均約縮成 1/18；數值大小看它的平方根，\(\sqrt{1/18}\approx0.24\)，約剩 1/4。
+
+    例如 ResNet 論文用的 He 初始化（以作者何愷明 Kaiming He 命名）讓權重平方的平均是 2/36，搭配 ReLU 時，每層輸出的平方平均大致不變。
 
 ## 應如何下結論
 
@@ -208,11 +225,11 @@ plain 沒有 shortcut 把 \(x\) 加回，本設定又沒有 BatchNorm 把尺度�
     plain step=0, loss=0.6938, stem_grad_norm=0.000984
     plain step=1, loss=0.6937, stem_grad_norm=0.001001
     plain step=2, loss=0.6936, stem_grad_norm=0.001011
-    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0132
+    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0111
     residual step=0, loss=0.6921, stem_grad_norm=0.146701
     residual step=1, loss=0.6888, stem_grad_norm=0.147590
     residual step=2, loss=0.6855, stem_grad_norm=0.146128
-    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0154
+    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0104
     Same initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.
     ```
 

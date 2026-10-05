@@ -1,6 +1,6 @@
 # 11.3 增強：畫素怎麼變，框就怎麼變
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-augmentation.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-augmentation.ipynb){ .md-button }
 
 前兩節（CSP、特徵融合）改的是模型；本節換到資料這一側，模型和 loss 都不動，只改訓練資料的變換。
 
@@ -66,6 +66,10 @@ labels 不變，紅矩形仍是 class 0，所以 `horizontal_flip` 只需要圖�
 
 ## Crop 會改座標，也會改可見面積
 
+這段先留在裁切後的 32×32 座標，算新框和 keep；再處理刪框後的監督；最後才把圖與框接回 64×64 模型。
+
+### 在 32×32 座標裁框、判斷 keep
+
 從原圖裁切（crop）出 left=16、top=8、width=32、height=32 的區域。裁切區在原圖占 x [16,48)、y [8,40)（含頭不含尾），裁切後的圖 shape 是 `[3,32,32]`。紅框占 x [8,24)，左半邊在裁切區外。框分兩步換算：
 
 1. 把原點移到裁切區左上角：x 減 left=16、y 減 top=8，得 `[-8,4,8,20]`。x1=−8 表示框的左邊超出新圖左緣 8 個畫素。
@@ -104,17 +108,27 @@ cropped, clipped, keep = crop(image,boxes,16,8,32,32,.5)
 cropped_labels = labels[keep]  # labels 用同一個 keep 篩
 ```
 
+### 用同一個 keep 篩 labels，檢查剩下的監督
+
+這一步仍在 32×32 裁切圖上：刪除標註不會刪掉畫素。
+
 本例只有一個框，看不出漏篩 labels 的後果。換成三個框：`labels=[0,1,0]`、`keep=[True,False,True]`，boxes 剩兩個，labels 也要用同一個 keep 變成 `[0,0]`。若 labels 沒篩，boxes 剩 2 個、labels 仍有 3 個，數量對不上，本書的 build_targets 會拋出 ValueError；不檢查長度的程式則會把類別配錯框。
 
 門檻是訓練標註策略的選擇。門檻 0.6 時紅框被刪，但裁切後的圖左邊仍有一塊寬 8、高 16 的紅色。若把這張圖連同空的標註拿去訓練：第 7 章的 build_targets 不設 ignore 格（忽略、不算 loss 的格子），這張圖又沒有框，所以每一格的 objectness 目標都是 0，等於教模型「這塊紅色是背景」。這就是未標註前景：看得到物件（前景），卻沒有框。門檻設太低，又會留下只露出一小角、很難學的框，所以要依任務選。刪掉的框越多，不代表增強越有效。
+
+### 從 32×32 接回 64×64，重新分配格子
 
 裁切後，圖和框都在 32×32 的座標裡。若模型仍要求 64×64 輸入，接著要同時 resize（縮放）或 letterbox 圖片與框。若不縮放、直接用 32×32 的圖，呼叫 build_targets 時要傳 `image_size=32`：它只收框，預設 image_size=64，框會被當成 64×64 圖上的座標，格子和寬高都會算錯，卻不會報錯。letterbox 是等比例縮放後補邊；框也要乘縮放比例並加補邊偏移，見[座標轉換](04-coordinates.md)。再用新的框中心建立 targets（由新框算出的每格訓練目標，見[建立 targets](07-targets.md)），不能沿用增強前的格子。
 
 本節程式沒有做這一步，以下是手算：32×32 等比例放大到 64×64，比例是 2，不必補邊。框 `[0,4,8,20]` 乘 2 變成 `[0,8,16,40]`，中心 (8,24)；8/16=0.5、24/16=1.5，取 floor 落在 (gx=0, gy=1)。可見的紅色也跟著放大，寬、高都變成 2 倍，這就是增強帶來的大小（尺度）變化。
 
+![裁切後 32×32 的框，放大到 64×64 後，依新中心重新建立 4×4 targets](../assets/diagrams/11-crop-resize-target.svg)
+
+這是依座標畫出的示意圖。兩站使用不同的畫素座標：上站對應 crop 程式產生的 32×32 圖，下站是正文手算的 resize 結果。下站才疊上第 7 章的 4×4 targets 網格；藍色虛線標出新中心 (8,24) 所屬的 (gx=0, gy=1)。先決定 resize 後的圖與框，再建立 targets，不能沿用原圖中心 (16,20) 所屬的 (gx=1, gy=1)。
+
 ## 執行完整程式
 
-[在 Colab 執行完整程式](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-augmentation.ipynb)（和頁首按鈕相同），或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-augmentation.py`。這是資料幾何實驗，不需 backward，也沒有 AP 結論。開頭的 `torch.manual_seed(7)`、`torch.set_num_threads(2)` 是各節程式共用的設定；本節的翻轉與裁切參數都直接寫在程式裡，沒有抽任何亂數。預期輸出四行：
+[在 Colab 執行完整程式](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-augmentation.ipynb)（和頁首按鈕相同），或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-augmentation.py`。這是資料幾何實驗，不需 backward，也沒有 AP 結論。開頭的 `torch.manual_seed(7)`、`torch.set_num_threads(2)` 是各節程式共用的設定；本節的翻轉與裁切參數都直接寫在程式裡，沒有抽任何亂數。預期輸出四行：
 
 ```text
 flip box [[40.0, 12.0, 56.0, 28.0]] double flip is identity

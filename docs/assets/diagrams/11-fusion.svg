@@ -1,49 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 690" role="img" aria-labelledby="title desc">
-<title id="title">兩尺度特徵融合：原圖 stride、lateral 與 top-down 路徑</title>
-<desc id="desc">示意圖，方框大小不代表特徵圖大小。左側四個框畫的是真實網路裡這兩層特徵從哪裡來：64×64 RGB 輸入圖片進入 backbone（特徵提取），得到畫在上方的 Shallow 淺層特徵（stride 8，8 channel、8×8 格，每格間距 8 pixel）；再繼續下取樣，得到畫在下方的 Deep 深層特徵（stride 16，16 channel、4×4 格，每格間距 16 pixel）。本節的 top-down 路徑在圖上由下往上走：Deep 先經 1×1 reduce 從 16 channel 減成 8 channel，再用 nearest 從 4×4 放大到 8×8；Shallow 則經「lateral 同尺度接入」直接送到右側。兩路 concat 成 8+8=16 channel，再經 3×3 mix 混成 8 channel，輸出 8 channel、8×8 的融合特徵。融合特徵往上接到右上角的框「細 head 接在這裡」，框內註明本節程式只算到融合特徵，沒接 head。從融合特徵往下的橘色虛線箭頭標「PAN 的 bottom-up 路徑（本節未實作）」。圖下文字：本節的 neck = reduce + upsample + concat + mix，位於 backbone 與預測 head 之間；FPN 原版是 top-down 加 lateral，用 add，本例用 concat，只示範一次 deep→shallow。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="680" viewBox="0 0 420 680" role="img" aria-labelledby="title desc">
+<title id="title">本節的四步融合：深層在上，top-down 向下</title>
+<desc id="desc">只畫本節 Fusion.forward 實際計算的路徑。上方 Deep 是隨機輸入 [1,16,4,4]，經第一步 1×1 reduce 得 [1,8,4,4]，第二步 nearest 上取樣得 [1,8,8,8]；藍色 top-down 箭頭由上向下。下方 Shallow 是另一個隨機輸入 [1,8,8,8]，沿綠色 lateral 橫向線直接接入第三步 concat，與上取樣輸出串接成 [1,16,8,8]。第四步 3×3 mix 輸出 [1,8,8,8] 的融合特徵。框的圖面大小不表示特徵圖大小。此圖不畫本節沒有執行的 backbone、head 或 PAN bottom-up。</desc>
 <defs>
-<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563eb"/></marker>
-<marker id="arrow-pan" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#d97706"/></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563eb"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#15803d"/></marker>
 </defs>
-<rect width="720" height="690" fill="#f8fafc"/>
+<rect width="420" height="680" fill="#f8fafc"/>
 <g font-family="sans-serif" fill="#172033">
-<text x="14" y="36" font-size="22">本節：同一張圖的深層資訊，融合到細網格</text>
-<g stroke="#64748b" stroke-width="2" fill="#fff">
-<rect id="input-box" x="14" y="58" width="118" height="76" rx="8"/>
-<rect id="backbone-box" x="14" y="186" width="118" height="76" rx="8"/>
-<rect id="shallow-box" x="164" y="170" width="172" height="108" rx="8" fill="#dcfce7"/>
-<rect id="deep-box" x="164" y="424" width="172" height="108" rx="8" fill="#dbeafe"/>
-<rect id="nearest-box" x="370" y="312" width="114" height="76" rx="8"/>
-<rect id="reduce-box" x="370" y="440" width="114" height="76" rx="8"/>
-<rect id="fused-box" x="518" y="170" width="188" height="108" rx="8" fill="#e0f2fe"/>
-<rect id="head-box" x="370" y="58" width="336" height="76" rx="8" fill="#dcfce7"/>
+<text x="16" y="32" font-size="22">本節程式：一次深→淺融合</text>
+<g stroke="#64748b" stroke-width="2">
+<rect x="202" y="62" width="202" height="72" rx="8" fill="#dbeafe"/>
+<rect x="202" y="166" width="202" height="72" rx="8" fill="white"/>
+<rect x="202" y="270" width="202" height="72" rx="8" fill="white"/>
+<rect x="16" y="376" width="166" height="72" rx="8" fill="#dcfce7"/>
+<rect x="202" y="376" width="202" height="72" rx="8" fill="#e0f2fe"/>
+<rect x="202" y="480" width="202" height="72" rx="8" fill="white"/>
+<rect x="202" y="584" width="202" height="72" rx="8" fill="#e0f2fe"/>
 </g>
-<g font-size="18" text-anchor="middle">
-<text x="73" y="88">輸入圖片</text><text x="73" y="116">64×64 RGB</text>
-<text x="73" y="216">Backbone</text><text x="73" y="244">特徵提取</text>
-<text x="250" y="200">Shallow：stride 8</text><text x="250" y="230">8 channel × 8×8</text><text x="250" y="260">每格間距 8 pixel</text>
-<text x="250" y="454">Deep：stride 16</text><text x="250" y="484">16 channel × 4×4</text><text x="250" y="514">每格間距 16 pixel</text>
-<text x="427" y="342">Nearest ↑</text><text x="427" y="370">4×4→8×8</text>
-<text x="427" y="470">1×1 reduce</text><text x="427" y="498">16ch→8ch</text>
-<text x="612" y="200">Concat：8+8=16ch</text><text x="612" y="230">3×3 mix：16→8ch</text><text x="612" y="260">輸出 8ch × 8×8</text>
-<text x="538" y="88">細 head 接在這裡</text><text x="538" y="116" font-size="16">（本節程式只算到融合特徵，沒接 head）</text>
+<g text-anchor="middle" font-size="20">
+<text x="303" y="89">Deep：深、粗</text><text x="303" y="120">[1,16,4,4]</text>
+<text x="303" y="193">1. 1×1 reduce</text><text x="303" y="224">[1,8,4,4]</text>
+<text x="303" y="297">2. nearest</text><text x="303" y="328">[1,8,8,8]</text>
+<text x="99" y="403">Shallow：淺、細</text><text x="99" y="434">[1,8,8,8]</text>
+<text x="303" y="403">3. concat：8+8ch</text><text x="303" y="434">[1,16,8,8]</text>
+<text x="303" y="507">4. 3×3 mix</text><text x="303" y="538">16→8 channel</text>
+<text x="303" y="611">融合特徵</text><text x="303" y="642">[1,8,8,8]</text>
 </g>
-<g fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow)">
-<path d="M73 134V186"/><path d="M132 224H164"/><path d="M336 206H518"/><path d="M250 278V424"/><path d="M336 478H370"/><path d="M427 440V388"/><path d="M484 350H501V252H518"/><path d="M612 170V134"/>
+<g fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#blue)"><path d="M303 134V166"/><path d="M303 238V270"/><path d="M303 342V376"/><path d="M303 448V480"/><path d="M303 552V584"/></g>
+<path d="M182 412H202" stroke="#15803d" stroke-width="3" marker-end="url(#green)"/>
+<g font-size="19">
+<text x="16" y="90">塔頂：4×4</text>
+<text x="16" y="168" fill="#1d4ed8">top-down</text><text x="16" y="195" fill="#1d4ed8">深→淺，向下</text>
+<path d="M91 210V294" stroke="#2563eb" stroke-width="3" marker-end="url(#blue)"/>
+<text x="16" y="324" fill="#15803d">lateral：橫向</text><text x="16" y="352" fill="#15803d">同一個 8×8 網格</text>
+<text x="16" y="485">塔底：8×8</text>
+<text x="16" y="551" fill="#475569">輸入是隨機張量。</text><text x="16" y="581" fill="#475569">本節沒有執行</text><text x="16" y="611" fill="#475569">backbone、head</text><text x="16" y="641" fill="#475569">或 PAN 回程。</text>
 </g>
-<g font-size="17">
-<text x="427" y="194" text-anchor="middle">lateral 同尺度接入</text>
-<text x="260" y="356">繼續下取樣</text>
-</g>
-<path id="pan-bottom-up" d="M612 278V436" fill="none" stroke="#d97706" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-pan)"/>
-<g font-size="17" fill="#b45309" text-anchor="middle">
-<text x="612" y="462">PAN 的 bottom-up 路徑</text><text x="612" y="486">（本節未實作）</text>
-</g>
-<g font-size="17" fill="#334155">
-<text x="14" y="576">本節的 neck = reduce + upsample + concat + mix，</text>
-<text x="14" y="602">位於 backbone 與預測 head 之間。</text>
-<text x="14" y="638">FPN 原版：top-down + lateral，用 add；</text>
-<text x="14" y="664">本例用 concat，只示範一次 deep→shallow。</text>
-</g>
-</g>
-</svg>
+</g></svg>

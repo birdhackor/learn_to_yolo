@@ -1,0 +1,190 @@
+{
+  "data_seeds": [
+    1100,
+    2200,
+    3300
+  ],
+  "train_samples": 32,
+  "validation_samples": 16,
+  "test_samples": 16,
+  "steps_per_run": 160,
+  "box_weights": [
+    5,
+    2
+  ],
+  "score_threshold": 0.05,
+  "display_threshold": 0.25,
+  "eval_iou": 0.5,
+  "baseline_validation": {
+    "ap_per_class": {
+      "0": 0.3333333333333333,
+      "1": 0.5555555555555556
+    },
+    "map": 0.4444444444444444,
+    "precision": 0.6428571428571429,
+    "recall": 0.5294117647058824
+  },
+  "changed_validation": {
+    "ap_per_class": {
+      "0": 0.5208333333333334,
+      "1": 0.4222222222222222
+    },
+    "map": 0.47152777777777777,
+    "precision": 0.6428571428571429,
+    "recall": 0.5294117647058824
+  },
+  "baseline_coverage": {
+    "covered_iou50": 9,
+    "iou10_to_50": 4,
+    "below_iou10": 4
+  },
+  "changed_coverage": {
+    "covered_iou50": 9,
+    "iou10_to_50": 4,
+    "below_iou10": 4
+  },
+  "baseline_errors": {
+    "score_threshold": 0.05,
+    "matching_iou": 0.5,
+    "background_iou_below": 0.1,
+    "wrong_class_gt_count": 0,
+    "wrong_class_gt_cases": [],
+    "true_positives": 9,
+    "false_positive_counts": {
+      "background": 1,
+      "localization": 4,
+      "wrong_class": 0,
+      "duplicate": 0
+    },
+    "false_positive_cases": [
+      {
+        "image": 4,
+        "prediction": 0,
+        "kind": "localization",
+        "class": 0,
+        "score": 1.0,
+        "best_any_iou": 0.4917936623096466,
+        "best_same_class_iou": 0.4917936623096466
+      },
+      {
+        "image": 4,
+        "prediction": 1,
+        "kind": "localization",
+        "class": 0,
+        "score": 0.9999768733978271,
+        "best_any_iou": 0.30342045426368713,
+        "best_same_class_iou": 0.30342045426368713
+      },
+      {
+        "image": 5,
+        "prediction": 0,
+        "kind": "localization",
+        "class": 1,
+        "score": 0.2380521446466446,
+        "best_any_iou": 0.2817327380180359,
+        "best_same_class_iou": 0.2817327380180359
+      },
+      {
+        "image": 10,
+        "prediction": 1,
+        "kind": "background",
+        "class": 1,
+        "score": 0.0679774135351181,
+        "best_any_iou": 0.0,
+        "best_same_class_iou": 0.0
+      },
+      {
+        "image": 14,
+        "prediction": 0,
+        "kind": "localization",
+        "class": 0,
+        "score": 0.986950695514679,
+        "best_any_iou": 0.22750937938690186,
+        "best_same_class_iou": 0.22750937938690186
+      }
+    ]
+  },
+  "changed_errors": {
+    "score_threshold": 0.05,
+    "matching_iou": 0.5,
+    "background_iou_below": 0.1,
+    "wrong_class_gt_count": 0,
+    "wrong_class_gt_cases": [],
+    "true_positives": 9,
+    "false_positive_counts": {
+      "background": 2,
+      "localization": 3,
+      "wrong_class": 0,
+      "duplicate": 0
+    },
+    "false_positive_cases": [
+      {
+        "image": 2,
+        "prediction": 1,
+        "kind": "localization",
+        "class": 1,
+        "score": 0.3950245678424835,
+        "best_any_iou": 0.4966280162334442,
+        "best_same_class_iou": 0.4966280162334442
+      },
+      {
+        "image": 4,
+        "prediction": 0,
+        "kind": "localization",
+        "class": 0,
+        "score": 1.0,
+        "best_any_iou": 0.3426646292209625,
+        "best_same_class_iou": 0.3426646292209625
+      },
+      {
+        "image": 4,
+        "prediction": 1,
+        "kind": "background",
+        "class": 0,
+        "score": 0.9971473813056946,
+        "best_any_iou": 0.0,
+        "best_same_class_iou": 0.0
+      },
+      {
+        "image": 10,
+        "prediction": 0,
+        "kind": "localization",
+        "class": 1,
+        "score": 0.9999624490737915,
+        "best_any_iou": 0.4913027882575989,
+        "best_same_class_iou": 0.4913027882575989
+      },
+      {
+        "image": 10,
+        "prediction": 1,
+        "kind": "background",
+        "class": 1,
+        "score": 0.10655266046524048,
+        "best_any_iou": 0.0,
+        "best_same_class_iou": 0.0
+      }
+    ]
+  },
+  "keep_change": true,
+  "chosen_test": {
+    "ap_per_class": {
+      "0": 0.03571428571428571,
+      "1": 0.5
+    },
+    "map": 0.26785714285714285,
+    "precision": 0.36363636363636365,
+    "recall": 0.3076923076923077
+  },
+  "parameters": 15511,
+  "train_seconds": [
+    1.21258657600265,
+    1.4728025649965275
+  ],
+  "train_timing_scope": "only the training loop of each run, after one untimed 10-step warm-up fit; CPU, 2 threads",
+  "chosen_end_to_end_median_ms": 7.411632002913393,
+  "timed_validation_image": 2,
+  "timed_image_candidates": 2,
+  "timing_scope": "uint8 RGB -> tensor -> model -> decode/NMS at score .05 -> drawing, on the validation image with the most candidates; CPU, batch 1, 2 threads; median of 12 runs after 3 warm-up runs; no file I/O",
+  "limits": "single initialization, tiny synthetic rectangles; no real-image or multi-seed evidence"
+}
+actual validation panel: artifacts/lesson-17/validation.svg

@@ -1,0 +1,24 @@
+[
+  {
+    "license_file": "LICENSE-yolov10.txt",
+    "url": "https://raw.githubusercontent.com/THU-MIG/yolov10/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/LICENSE",
+    "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "bytes": 34523,
+    "covers_retained_files": [
+      "v10-tal.py",
+      "v10-metrics.py"
+    ],
+    "retrieved_at_utc": "2026-10-05T10:31:51.958680+00:00"
+  },
+  {
+    "license_file": "LICENSE-ultralytics.txt",
+    "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/LICENSE",
+    "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "bytes": 34523,
+    "covers_retained_files": [
+      "u-tal.py",
+      "u-muon.py"
+    ],
+    "retrieved_at_utc": "2026-10-05T10:31:51.964882+00:00"
+  }
+]

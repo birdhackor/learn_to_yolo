@@ -1,0 +1,485 @@
+{
+  "source_commit": "16f69103d1f216d1024a40610623083557324701",
+  "parts": {
+    "foundations": {
+      "target_pages": [
+        "docs/index.md",
+        "docs/learning-path.md",
+        "docs/lessons/00-warmup.md",
+        "docs/lessons/01-small-cnn.md",
+        "docs/lessons/02-diagnostics.md",
+        "docs/lessons/03-identity.md",
+        "docs/lessons/03-projection.md",
+        "docs/lessons/03-comparison.md",
+        "docs/lessons/04-localization.md",
+        "docs/lessons/04-coordinates.md",
+        "docs/lessons/05-assignment.md",
+        "docs/lessons/06-decode-nms.md",
+        "docs/lessons/06-evaluation.md",
+        "docs/lessons/07-data.md"
+      ],
+      "prerequisites": [],
+      "packets": 110
+    },
+    "grid": {
+      "target_pages": [
+        "docs/lessons/07-targets.md",
+        "docs/lessons/07-loss.md",
+        "docs/lessons/07-training.md",
+        "docs/lessons/07-inference.md",
+        "docs/lessons/07-heldout.md",
+        "docs/lessons/08-own-images.md",
+        "docs/lessons/08-own-data.md"
+      ],
+      "prerequisites": [
+        "docs/lessons/00-warmup.md",
+        "docs/lessons/01-small-cnn.md",
+        "docs/lessons/02-diagnostics.md",
+        "docs/lessons/04-localization.md",
+        "docs/lessons/04-coordinates.md",
+        "docs/lessons/05-assignment.md",
+        "docs/lessons/06-decode-nms.md",
+        "docs/lessons/06-evaluation.md",
+        "docs/lessons/07-data.md"
+      ],
+      "packets": 131
+    },
+    "evolution": {
+      "target_pages": [
+        "docs/lessons/09-anchors.md",
+        "docs/lessons/09-anchor-clustering.md",
+        "docs/lessons/10-multiscale.md",
+        "docs/lessons/11-csp.md",
+        "docs/lessons/11-fusion.md",
+        "docs/lessons/11-augmentation.md",
+        "docs/lessons/11-iou-loss.md",
+        "docs/lessons/12-anchor-free.md",
+        "docs/lessons/12-decoupled-head.md",
+        "docs/lessons/12-assignment.md",
+        "docs/lessons/12-dfl.md"
+      ],
+      "prerequisites": [
+        "docs/lessons/04-coordinates.md",
+        "docs/lessons/05-assignment.md",
+        "docs/lessons/06-decode-nms.md",
+        "docs/lessons/06-evaluation.md",
+        "docs/lessons/07-data.md",
+        "docs/lessons/07-targets.md",
+        "docs/lessons/07-loss.md",
+        "docs/lessons/07-training.md"
+      ],
+      "packets": 148
+    },
+    "modern": {
+      "target_pages": [
+        "docs/lessons/13-dual-assignment.md",
+        "docs/lessons/13-nms-free.md",
+        "docs/lessons/14-feature-module.md",
+        "docs/lessons/15-attention-bridge.md",
+        "docs/lessons/15-area-attention.md",
+        "docs/lessons/16-dfl-free.md",
+        "docs/lessons/16-inference-head.md",
+        "docs/lessons/16-training.md"
+      ],
+      "prerequisites": [
+        "docs/lessons/07-data.md",
+        "docs/lessons/07-targets.md",
+        "docs/lessons/07-loss.md",
+        "docs/lessons/11-iou-loss.md",
+        "docs/lessons/12-anchor-free.md",
+        "docs/lessons/12-decoupled-head.md",
+        "docs/lessons/12-assignment.md",
+        "docs/lessons/12-dfl.md"
+      ],
+      "packets": 109
+    },
+    "applications": {
+      "target_pages": [
+        "docs/lessons/17-capstone.md",
+        "docs/lessons/18-video.md",
+        "docs/lessons/19-tracking.md",
+        "docs/lessons/20-deployment.md"
+      ],
+      "prerequisites": [
+        "docs/lessons/07-data.md",
+        "docs/lessons/07-targets.md",
+        "docs/lessons/07-loss.md",
+        "docs/lessons/07-training.md",
+        "docs/lessons/07-inference.md",
+        "docs/lessons/07-heldout.md",
+        "docs/lessons/08-own-images.md",
+        "docs/lessons/08-own-data.md"
+      ],
+      "packets": 100
+    },
+    "reference": {
+      "target_pages": [
+        "docs/glossary.md",
+        "docs/planning/course-research.md",
+        "docs/planning/feedback.md",
+        "docs/planning/outline.md",
+        "docs/preparation/architecture.md",
+        "docs/preparation/data.md",
+        "docs/preparation/publish.md",
+        "docs/research/detection-data.md",
+        "docs/research/foundation-data.md",
+        "docs/research/lfs.md",
+        "docs/research/pages-colab.md",
+        "docs/research/version-sources.md",
+        "docs/status.md",
+        "docs/validation/curriculum.md",
+        "docs/validation/gpu-smoke.md"
+      ],
+      "prerequisites": [
+        "docs/index.md",
+        "docs/learning-path.md"
+      ],
+      "packets": 143
+    }
+  },
+  "pages": {
+    "docs/index.md": "62ef04ee681cf65ea62be3fb71c37d2440b33b6372eb7025275dd7d367c43314",
+    "docs/learning-path.md": "7008aa1575e26490fd7d731450975fc6b67fd8ad5bbc9988a5b1b5f00714f825",
+    "docs/lessons/00-warmup.md": "afe070a6def3cc7074654738c32b0939687f69ffaa6ae47e784c8bd83625f570",
+    "docs/lessons/01-small-cnn.md": "f328d8ce58e384d92b92ff1d2e600c67a936ca725d23aa1e8cfc61cff45e2f9a",
+    "docs/lessons/02-diagnostics.md": "78b19adee474befbf4909ac3f1fd30aea599b4dddd219363510901ed2a53208c",
+    "docs/lessons/03-identity.md": "e5278cbf88397587e964a925fb7584c0525fccd7bf50181e5d779e234cd82ae7",
+    "docs/lessons/03-projection.md": "723e8637316ad8639b2ecda9feafacc53f0f84ba3c4a43dc5c285c205f1d7346",
+    "docs/lessons/03-comparison.md": "ab58a438cae92b0fcb0523bc0210b00ebf4ac297320c1ce3341f8644788efa18",
+    "docs/lessons/04-localization.md": "70693eca86fa7a01f9d455cf6173bb1bd879c2c3d497fb6288734f95f0e0e22c",
+    "docs/lessons/04-coordinates.md": "61aa9c74789efb16fdaeba7b2a3870188309786ca75a1033c56b321117f22a2a",
+    "docs/lessons/05-assignment.md": "1375252ad848eddac892e0c43852187e3121d1f0abe33d315ab0609fa8013ee2",
+    "docs/lessons/06-decode-nms.md": "42fb0197a1c32a277d532e5cffb7791b398ed74d17f6cc548ddc65b4c27656e8",
+    "docs/lessons/06-evaluation.md": "4e5af4c10b98a72d1531d5a4e3c6c26d89e003bebd41d94e762c4b93a53e826a",
+    "docs/lessons/07-data.md": "264a1544b9a67077b6eae67c6a8df03851dd31d55187d94c7a28f8b093367224",
+    "docs/lessons/07-targets.md": "e6972f1b0fa32544cb30a3ef78c9dab50445eaf242d6ca2dddbfe5f8a4f244b1",
+    "docs/lessons/07-loss.md": "687c03558f0a88ba008d712f361007f5ee4d99a040c69101c735304686e8af3a",
+    "docs/lessons/07-training.md": "6f4da577b287d62ab857d64de8b08fdbaa2bb893a53825fbc14f434f94ebb090",
+    "docs/lessons/07-inference.md": "8c81ddd09e6abad1aae585d41d93336370cda11ede933bfde6692fbb4808c162",
+    "docs/lessons/07-heldout.md": "47de79cd823bab9a304265e627dc5ec7b51e13176924a001b7e752fb568431c6",
+    "docs/lessons/08-own-images.md": "79f0caed462791b97c9363703fa1be60eeeca02101826a50f6f587723f299a1e",
+    "docs/lessons/08-own-data.md": "52da753bc27a6eecfb0d4fa7dd32f5966bf38588b9acd9f8bb0a551ba6f0f48d",
+    "docs/lessons/09-anchors.md": "d016cc9c93656279583cd4fc17fb7aee7e2b491c2daa8ecd4e597084c51accc6",
+    "docs/lessons/09-anchor-clustering.md": "88eb66e2672dfaeb0cd8fa2ca28ee304e3df4372c47d81b437d776b0d28df148",
+    "docs/lessons/10-multiscale.md": "5c0b11794c6808422f1adea087ead02837b418ac085ba57586322121723224bc",
+    "docs/lessons/11-csp.md": "9421edcdfba1720469a079e67b21188b300e46b6229393ba986dec4316591273",
+    "docs/lessons/11-fusion.md": "2c63fe246069f3b6ee59077dd36be407015045000c3e67618c4de25a581d9941",
+    "docs/lessons/11-augmentation.md": "6d228c9c98c978eadde46d4f6facbccc9925a36609fb3336defd3b2ce66b0ab7",
+    "docs/lessons/11-iou-loss.md": "38168e7639ba14802837c9207f90f8a73ec4862ba8fc833919d6bf85de53a8a0",
+    "docs/lessons/12-anchor-free.md": "2455f5362cee618176b8a5997da5c5a9505b8eec9f800570e2b6e4e9a5107648",
+    "docs/lessons/12-decoupled-head.md": "e4beee37b4d6809c1a07a8aa656fe8e514a6fd8288a92dbe9d806fbbce2b1203",
+    "docs/lessons/12-assignment.md": "7af1815e386047891064303585209bee592f8dc1ab3a61c00367be3d59d28c89",
+    "docs/lessons/12-dfl.md": "f266e9dcfb77e17993518226a690f3787377fd85d8d2259466353209965227c9",
+    "docs/lessons/13-dual-assignment.md": "a0c9137cf03000eb723dee18cd8864c309ac35ea2231d2f64e2f1abf0382a9c5",
+    "docs/lessons/13-nms-free.md": "c0810f6b3f4df53d85e2c00b41467db5128f82560db36e6e894d0065365afb42",
+    "docs/lessons/14-feature-module.md": "93b0c5e8fb7e171e7762dab9a907ca616b6a25928ffe5a0d0d89e79072042b5e",
+    "docs/lessons/15-attention-bridge.md": "b1522851be85185534bd59db626b670767ce872d5116c366223fc12bb4212886",
+    "docs/lessons/15-area-attention.md": "dd0e00c69ff501745e3a728c147cd8ea4c6af9dc0bbdcde07d36a8132a596402",
+    "docs/lessons/16-dfl-free.md": "4fa1367de7256f6c5cec78a010c0fd9f997595219bca28367575e934123ef1d5",
+    "docs/lessons/16-inference-head.md": "6c54bc3a1e9da5b810821f6b3fbb44587326e2e47f067275cb99dbada4e00a1a",
+    "docs/lessons/16-training.md": "6483cd8a1d779015eb90ca87c78634259e4397d989383d5166faf051ace793b0",
+    "docs/lessons/17-capstone.md": "22aaaadaa43ca7cc1519899ff07a4d06000b0acfa7b45406526883e893ce56ac",
+    "docs/lessons/18-video.md": "315448d66e3e3bfc87fb425a221577438680e74e5d2162399b08c0c0dd7eebef",
+    "docs/lessons/19-tracking.md": "4fd0f9ffbb6ec2466987977f9d50c87cfca191ebe934819b50047cab95a27d6b",
+    "docs/lessons/20-deployment.md": "84ed8bf5bb501ff16c76886da56769e8e4f3487ae9627fb87eb3eca2bac7f75b",
+    "docs/glossary.md": "f1f6fbb72f85924b45fd2aaaf663880a308957a7fb6782e84ba13394a8e67b2e",
+    "docs/planning/course-research.md": "6922ad22cf822cf611bfea9092bc20616732010f92ff8471693ba778ba5973d0",
+    "docs/planning/feedback.md": "4b805cc1729450bff04d27ae6ef2f6026adde52b80f50dc87d57ae7541524819",
+    "docs/planning/outline.md": "c39976a22714e917696a6337721a10e87eec1c335e0725933fef223b057c535f",
+    "docs/preparation/architecture.md": "0caae854e533e78ab32ba44368af437c7d0121f9d30fdd8285f2127d0b559fcf",
+    "docs/preparation/data.md": "14193c547d7c88a092164abf75fadf99a5226472e145525f8443af2ae68cf7e5",
+    "docs/preparation/publish.md": "f3ee082cad861e915504fe6867e52596b3a382d8e16caf6258e0583edd874db6",
+    "docs/research/detection-data.md": "8e92538e820c7ea4ac3a0cd6f236a426ce0aff5dd220f8281a66abb666f2b5c3",
+    "docs/research/foundation-data.md": "582aaade84655bcc75e2b338445114bfd4a581575a402360f06859b797abe99c",
+    "docs/research/lfs.md": "831b8ea4bde598293f28ae6571344e37fc39832576feba112339e5261139344e",
+    "docs/research/pages-colab.md": "c23b21afc8b5c7899d889e2462e6e472f2f61b275c63289b14227b52d59144f0",
+    "docs/research/version-sources.md": "7248ab8f8c0e00af80e76314201edd7cf5921b3384ad3fec9bbbe9511935ac44",
+    "docs/status.md": "329bae18484ba39889378e64b1583f9181545f490610420ed41abbbbc82d322f",
+    "docs/validation/curriculum.md": "fb7393a8588304af68ef41048f3050db709eb2ecdd9a4c80ea1771ad35dc5285",
+    "docs/validation/gpu-smoke.md": "18150faefd3b660bcddd8423fddd76a20b7857378ca5671bb1362bf740b5cc92"
+  },
+  "review_mode": "Six independent readers; foundations reads from the homepage. Other lesson groups first read actual prerequisite units and then target units. Reference pages form a separate reading route.",
+  "disclosure": "Coordinator gate reveals one unit at a time and requires a saved raw note before the next unit. Shared filesystem is not technical isolation.",
+  "initial_visual_scope": "Browser-rendered static SVG previews only; actual Zensical desktop/mobile layout is a separate later check.",
+  "protocol_amendments": [
+    {
+      "reader": "grid",
+      "kind": "Coordinator omitted the explicitly required 07-data prerequisite. This is a disclosure setup issue, not a textbook omission.",
+      "preserved_records": "grid-0066 through grid-0076 retain the original contemporaneous notes.",
+      "remedy": "Supplied 7 frozen 07-data prerequisite units after grid-0076 before continuing.",
+      "first_read_limit": "07-targets and the start of 07-loss were initially read without this prerequisite; do not claim those initial units had complete prerequisite context."
+    },
+    {
+      "utc": "2026-10-05T10:01:39.334181+00:00",
+      "kind": "early-author-brief",
+      "reader": "grid",
+      "page": "docs/lessons/08-own-data.md",
+      "description": "協調者在08-own-data最後幾個閱讀單位完成前，先發了後續作者任務，其中包含來自applications已讀前提的接續1600與非零梯度疑點。08頁相關後續紀錄不能全部標為嚴格盲讀；grid自身0120/0121負擔紀錄與由brief提供的問題分開保留。修正後由未读该页者另作分段複查。",
+      "original_notes_preserved": true
+    },
+    {
+      "utc": "2026-10-05T10:05:34.457009+00:00",
+      "kind": "omitted-explicit-prerequisite",
+      "reader": "applications",
+      "page": "docs/lessons/06-evaluation.md",
+      "description": "applications原前提route漏列教材已明确指定的AP50章节；0029/0037的AP/all-points未知属于协调者未提供必要前文，不判正文缺AP定义。原始问题保留，该route的相关理解范围受限；后续按真实06章衔接复查。",
+      "original_notes_preserved": true
+    },
+    {
+      "utc": "2026-10-05T10:05:34.457019+00:00",
+      "kind": "incorrect-author-brief-number",
+      "reader": "grid",
+      "page": "docs/lessons/08-own-data.md",
+      "description": "协调者作者brief误写3200步；作者核对正文与实际记录发现只有160与1600，继续保留160→1600的独立run事实，未制造3200数据或额外训练。"
+    }
+  ],
+  "preserved_first_read_previews": [
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/122dfec30b5d05e2.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/122dfec30b5d05e2.png",
+      "sha256": "8cb20f1840b0b18a0765e53a75464d6ffffbcf658e429ae78695067f4c88a32b",
+      "bytes": 191578
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/66f41cacf2de2a8d.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/66f41cacf2de2a8d.png",
+      "sha256": "b04992744032a2036a7e9a507deeebce6f93aa4c1c80679a8c9800ed6b7259fb",
+      "bytes": 64368
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/9d80e3250df1853d.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/9d80e3250df1853d.png",
+      "sha256": "e06f6647cce942071a4e14f98052ffade69448471ddcb422d7b28658568b7d7f",
+      "bytes": 88475
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/0c72577993208aa9.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/0c72577993208aa9.png",
+      "sha256": "dc3196b56a7951ada78a8d8f1b7f78bc2ddf8cf41c6bdbaa20fef199095cbcdf",
+      "bytes": 177532
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/8a83baa6fd58595f.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/8a83baa6fd58595f.png",
+      "sha256": "1f7bfe7d819bc04a567a41f11e273b63d06f0d47b26183465a32c214a4833592",
+      "bytes": 74647
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/2a7a319bcaa9499a.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/2a7a319bcaa9499a.png",
+      "sha256": "85dfea98d789efac1f91c3d8a497d3e70b57f32d14a41aa62664d850080fd48c",
+      "bytes": 34147
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/e8b2a5f8c2e41f3b.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/e8b2a5f8c2e41f3b.png",
+      "sha256": "d6f81973f7acf18034052b7741f0063d088094e9302bfd66a995df7826702e47",
+      "bytes": 75391
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/ec01384b3b26d809.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/ec01384b3b26d809.png",
+      "sha256": "3f2baff4c9042c8abe02984fe1c2d911fb4d72c9189f58cabb3f7c071f9e8a17",
+      "bytes": 115879
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/4bbb2a7ace4779e6.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/4bbb2a7ace4779e6.png",
+      "sha256": "740fdbea94d28412c5557f232b0496b1bf16b8bb388d403666f36c471424604f",
+      "bytes": 74352
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/ec7046c52826453e.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/ec7046c52826453e.png",
+      "sha256": "0928f14820d922fb943ae706022ca42ea2e02c791f4f2468df577f74cf29cd3e",
+      "bytes": 89000
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/242ee1b4499ea43a.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/242ee1b4499ea43a.png",
+      "sha256": "2f3824f252b500c7033248e48fbcbf114de75f631f3663ceb695c70ae11d11f2",
+      "bytes": 23716
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/d34fb5ca03d504a5.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/d34fb5ca03d504a5.png",
+      "sha256": "64f359382e2fd7116c39e918d1bd34f44cf5181f0e4e787463344b2e4e212281",
+      "bytes": 110448
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/02646adeba1ea876.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/02646adeba1ea876.png",
+      "sha256": "bf2b9d076e7bf99978a00efcd26f400524d544a99411b8992d2d5bd05f56a3f2",
+      "bytes": 98899
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/4676372541e9b5dd.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/4676372541e9b5dd.png",
+      "sha256": "6a715ea40bb9c8a4ca8386fbc670fe87705d44350077ccb19de40ff5776fb5f9",
+      "bytes": 65193
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/bfbde9baa2c597b7.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/bfbde9baa2c597b7.png",
+      "sha256": "36cd8a3c4fe85944c680e884acad30eafc23c29dc93c386c62882c1471cd855f",
+      "bytes": 103215
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/05e9d224ecc50116.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/05e9d224ecc50116.png",
+      "sha256": "bd2d5189e6605bfbc80cd1a6c52da931018758fdbcb5a288dcef038cc079b55b",
+      "bytes": 78331
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/b2bcab88a92808d4.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/b2bcab88a92808d4.png",
+      "sha256": "6874d098088234cd7e05da53bd5e5e68653aa6bf2a3e9f4d4245e3bca8f2b51c",
+      "bytes": 86183
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/2d108579bdcbdfe9.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/2d108579bdcbdfe9.png",
+      "sha256": "0ba369cffd9a5a07d5295d8c29822fe697e64d2ed3e284200ebce00f94602c06",
+      "bytes": 95101
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/aea78368752c82a8.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/aea78368752c82a8.png",
+      "sha256": "659d2a702f8b51a50c4311f5599d723005c69f9e6227adf92de56f97e5d8a3b3",
+      "bytes": 108751
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/f2d871f65f501a94.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/f2d871f65f501a94.png",
+      "sha256": "f4c5129b5a04c147dc85a7c8b9d97bb068a4fd7c130488ce243c92f8ce1a5fa8",
+      "bytes": 76218
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/9d3e243c946e2cc9.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/9d3e243c946e2cc9.png",
+      "sha256": "f675196ab48fa2db1c5a3d0ef540d342e38aaf3dcae1e446603b2c7171fb97ec",
+      "bytes": 93017
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/e0fa515030012d04.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/e0fa515030012d04.png",
+      "sha256": "fce312434d2fa9cb55ab079eb259cfbd33fe909e8f45674311760a99d98964cc",
+      "bytes": 216867
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/943836f3d0ed7172.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/943836f3d0ed7172.png",
+      "sha256": "3f6acafe755053d60438b51ceaecc9278cf523ddec1b45f68ce6ca2be1cf5b67",
+      "bytes": 78813
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/b30fab1e6c2b15e2.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/b30fab1e6c2b15e2.png",
+      "sha256": "c515735971b3cb891cc487dbc989d7a84f6ccb97af729a86f9d21a52506b01ab",
+      "bytes": 139839
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/19b22ec8bd1521ec.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/19b22ec8bd1521ec.png",
+      "sha256": "db1a69840a23b79a8a22db31eed0c7eb7964af781cb158f40567e3d2e685c74d",
+      "bytes": 352040
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/a2f1561370e731e4.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/a2f1561370e731e4.png",
+      "sha256": "427502cb8cc79fe9ce90779e2d96cf010507705a31e6ea41dd62bf53c2d4bdaf",
+      "bytes": 93847
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/1fc27b05ccf876ae.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/1fc27b05ccf876ae.png",
+      "sha256": "e3e0d722f953db3227f891129cbef241a436cb029e7dd10c7046cc5c269d2ca2",
+      "bytes": 92004
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/8da4c9ad7640a2ef.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/8da4c9ad7640a2ef.png",
+      "sha256": "be608ffff057f856b20c4b1296f34c8b7efda01d24e4c05a17edb2d4d6fb29a1",
+      "bytes": 94771
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/ae97fe447833c8a4.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/ae97fe447833c8a4.png",
+      "sha256": "f2a14146b2e625c664bba489df0ca70ec488f67fbf3ea2f0d1279fed87fd5ec2",
+      "bytes": 94808
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/f814f5a5079aa329.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/f814f5a5079aa329.png",
+      "sha256": "31199f8c460f1ed02313e6c894f0da7a5c4f14e7a6cf87f80b4f791ffd92006f",
+      "bytes": 47985
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/a70599f511482096.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/a70599f511482096.png",
+      "sha256": "49f0260fdbb14980e84eba93f9b277e4590603d27db3af1c3ae7f19faac4f31c",
+      "bytes": 24245
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/b7c9790c7b715b0b.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/b7c9790c7b715b0b.png",
+      "sha256": "a55445c8708b97435707f0fc478c5e44911d080a4b4de11b982cbc905c1de121",
+      "bytes": 99401
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/48aaa9b0d3cfe4d2.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/48aaa9b0d3cfe4d2.png",
+      "sha256": "9c6d453f3ac619e387d3b4701b7691980fa0cd1a6c54e018ca0e1ce037145cc5",
+      "bytes": 206110
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/d4d358f525b0dfb7.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/d4d358f525b0dfb7.png",
+      "sha256": "6f82f943a7653684eb9f6977ecb903914b750f2ea7e3d13f64cd222ad26eed2d",
+      "bytes": 139973
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/0420f5474adeda77.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/0420f5474adeda77.png",
+      "sha256": "ce9b937c42e11c13c402e5b9ed71bc4607d8af88cdc02325ba1182e1ce40b683",
+      "bytes": 116685
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/c2df34c161c99f51.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/c2df34c161c99f51.png",
+      "sha256": "69a5dcaffc80f76e3a5e413dc82053544cf9170d8e1ede93e167e3813fd79797",
+      "bytes": 105213
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/64baa3616300d728.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/64baa3616300d728.png",
+      "sha256": "be2f5de27f1f11726a83403ec72ff9acfbab65b11e4cf072f42e7485e88d30c8",
+      "bytes": 28586
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/f88fc925bdd5aebf.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/f88fc925bdd5aebf.png",
+      "sha256": "f2c378cf1e20a99a55d5a93fe1cff5c46a69460b033c62a4b6afa1569b33be44",
+      "bytes": 39519
+    },
+    {
+      "original_preview": "/workspace/learn_to_yolo/artifacts/runs/clear-tutorial-16f6910/figure-previews/6d5fb8195571c3a7.png",
+      "preserved_path": "reviews/clear-tutorial/16f6910/first-read-figures/6d5fb8195571c3a7.png",
+      "sha256": "945f8d3bfa685aaa3cd5a31b4bcceea3b68cb6a3085aeeed735eb4dc0529d1b7",
+      "bytes": 109095
+    }
+  ],
+  "source_snapshot_reconstruction": "git show 16f69103d1f216d1024a40610623083557324701:<page or SVG path>; source hashes are preserved above. PNG files preserve the exact static preview shown to first readers; this is not a Zensical screenshot.",
+  "corrected_08_recheck": {
+    "reader": "clear_first_modern",
+    "round": "third: actual sequential prerequisite and transition reading",
+    "previous_08_full_page_reading": false,
+    "context": "Existing first-read/author/technical context for other chapters; not a fresh-context segmented blind read",
+    "method": "Read actual 06→07-data→07 target/loss/train/inference/heldout→08-images→08-own-data, save comprehension before opening prior 08 raw issues",
+    "state": "completed: independent actual prerequisite/transition reading; not a new blind gate pass",
+    "report": "transitions/grid.md",
+    "current_read": "transitions/grid-current-read.jsonl",
+    "current_read_sha256": "0c214d888fd40f73f5c4e925fd4a2386c0120d47a21626e03af8fd36410aa6dc",
+    "report_sha256": "6545b0b307ecbdd403b9b5c872755498ce91e53ced8e3d59d1be42d4d792973c"
+  }
+}

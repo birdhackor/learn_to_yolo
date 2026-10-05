@@ -1,7 +1,7 @@
 {
   "id": "11-fusion",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:18:39.311278+00:00",
+  "executed_at_utc": "2026-10-05T10:24:15.947317+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/11-fusion.py": "4de6c1260d6f76f55013b4d17d935dbff46f4c1ec21975cbae5b065cd887af63"
   },
-  "process_wall_seconds": 2.3239,
+  "process_wall_seconds": 3.0693,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "nearest example [[1.0, 1.0, 2.0, 2.0], [1.0, 1.0, 2.0, 2.0], [3.0, 3.0, 4.0, 4.0], [3.0, 3.0, 4.0, 4.0]] source gradient [[4.0, 4.0], [4.0, 4.0]]\nshapes shallow (1, 8, 8, 8) deep (1, 16, 4, 4) -> reduce (1, 8, 4, 4) -> nearest (1, 8, 8, 8) -> concat (1, 16, 8, 8) -> mix (1, 8, 8, 8)\nparameters 1296 both branches backward and one step\n",
   "stderr": "",

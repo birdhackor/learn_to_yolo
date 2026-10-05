@@ -13,7 +13,7 @@
 
 比較不同版本時，要用同一份資料與同一組固定的困難案例；每換一版就換資料，就分不出差異來自改動還是資料。各節合成實驗的設定與執行結果，寫在各節頁面與〈[全套實驗與審查](../validation/curriculum.md)〉；教材沒有在真實照片上做各版本的完整比較。
 
-`python scripts/download_data.py list` 列出 `data/manifest.json`（資料清單：每份資料的來源、大小、校驗值與狀態）的每一項。狀態是 `download-ready` 的 Fashion-MNIST 與 Penn-Fudan 能用 `fetch` 下載；合成資料是 `generated`，由程式產生；VOC2007、COCO2017 與 Oxford-IIIT Pet 是 `candidate`，下載器不會下載。對後兩種執行 `fetch`，下載器會回「Candidate only」並指回本頁：合成資料不必下載，候選資料請從本頁下方〈[偵測資料：大小、格式與下載](#detection-downloads)〉表格的官方連結取得。
+`python scripts/download_data.py list` 列出 `data/manifest.json`（資料清單：每份資料的來源、大小、校驗值與狀態）的每一項。狀態是 `download-ready` 的 Fashion-MNIST 與 Penn-Fudan 能用 `fetch` 下載；合成資料是 `generated`，由程式產生；VOC2007、COCO2017 與 Oxford-IIIT Pet 是 `candidate`，下載器不會下載。對 `generated` 或 `candidate` 項目執行 `fetch`，下載器會回「Candidate only」並指回本頁：合成資料不必下載，候選資料請從本頁下方〈[偵測資料：大小、格式與下載](#detection-downloads)〉表格的官方連結取得。
 
 ## Fashion-MNIST：選用的真實分類資料
 
@@ -88,7 +88,7 @@ tar -xf data/curated/fashion-mnist-v1.tar -C data/downloads
 | --- | --- | --- | --- |
 | Penn-Fudan | 53,723,336 bytes，53.72 MB | PNG instance mask＋PASCAL 1.00 TXT；不是 VOC XML | [ZIP](https://www.cis.upenn.edu/~jshi/ped_html/PennFudanPed.zip)／[說明](https://www.cis.upenn.edu/~jshi/ped_html/) |
 | VOC2007 | trainval 460.03 MB；test 451.02 MB | VOC XML、類別名、difficult／truncated | [trainval](https://thor.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar)／[test](https://thor.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar) |
-| COCO2017 | train 19.34 GB；val 815.59 MB；annotations 252.91 MB | JSON；畫素 xywh、非連續 category ID、iscrowd | [官方下載頁](https://cocodataset.org/#download) |
+| COCO2017 | train 19.34 GB；val 815.59 MB；annotations 252.91 MB | JSON；`xywh=(左上x,左上y,寬,高)`，單位畫素；category ID 需重編為連續類別；iscrowd 是群體區域標記 | [官方下載頁](https://cocodataset.org/#download) |
 | Oxford-IIIT Pet | 圖片 791.92 MB；annotations 19.17 MB | 頭部 XML、foreground／background／unknown trimap | [官方頁](https://www.robots.ox.ac.uk/~vgg/data/pets/) |
 
 VOC 的連結指向 Oxford 現用的主機 `thor.robots.ox.ac.uk`；舊主機的 `https://host.robots.ox.ac.uk/…` 查核時無法下載。COCO 官方下載頁列的檔案網址以 `http://images.cocodataset.org/` 開頭；要用 HTTPS（加密連線）下載，不能只把開頭改成 `https://`，2026-10-04 查核時這樣會連線失敗。請改用指向同一批檔案的 `https://s3.amazonaws.com/images.cocodataset.org/…`，原因見〈[偵測資料](../research/detection-data.md)〉的 COCO2017 一節。
@@ -123,7 +123,7 @@ Git LFS 只用來放確認可再散布的精選封裝、自有權重與匯出模
 1. 每個子集保存來源版本、image ID、split、class mapping、選樣條件與 checksum。大小記封裝 bytes，解壓後的空間另外量。
 2. Penn-Fudan 先按來源、場景與近重複圖片分組再切；單人子集只挑恰好一個實例的圖片，不能把多人圖裡其他行人刪掉當背景。它沒有真正無人的圖片。
 3. VOC 小型實驗以官方 train 訓練、val 調參、test 最後檢查；trainval 包含 val，訓練 trainval 之後就不能再把 val 當獨立評估。標成 difficult 的物件照 ignore 規則處理，不刪掉後當背景。
-4. COCO 從 train 選訓練、從 val 選評估，不混用 2014 與 2017 的 split。iscrowd 的標註保留 crowd 的處理規則，不刪掉後當背景。
+4. COCO 從 train 選訓練、從 val 選評估，不混用 2014 與 2017 的 split。`iscrowd=1` 表示難以逐一區分的同類群體區域，不當成普通的單物件框，也不刪掉後當背景。保存這個旗標；COCO 評估會特殊處理落入該區域的預測，詳見〈[COCO crowd 規則](../research/detection-data.md#coco-crowd)〉。本專案的合成資料評估器沒有實作這套規則，不能直接拿它報 COCO 指標。
 5. 圖片與框同步 resize、padding、flip；bbox 端點、畫素或正規化座標、0-based 或 1-based，以及 class index，各有明確的轉換。
 6. 小物件與重疊子集保留相關的完整標註；官方的 small 面積與 resize 後的大小分開記。來源 ID 清單在看過資料之後才固定，不事先憑空訂張數。
 

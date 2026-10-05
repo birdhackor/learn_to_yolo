@@ -289,3 +289,15 @@
 | 本次 `checks.json` | `0e97169a83d8aca94b0e32461ce8911018e2e7cf858089f15513298332039297` |
 
 限制：原保存的排名沒有原始預測座標或匹配 GT 編號；本次重新計算反例幾何、保存的逐筆門檻／計數／AP，以及實際 validation GT 數，沒有宣稱重新從原始預測座標算出全部 validation IoU。完整 digest（含圖與相依程式）、本次探針、結果及段落截圖保存在副本 `artifacts/runs/fix17-status-final/`。
+
+
+## 2026-10-05 clear-tutorial 三輪重審
+
+以上是原審查歷史；不追溯改成首次盲讀。這次由固定基線 `16f6910` 分段開放並保存當時理解，再修改、核技術及檢查銜接，詳見 [本輪方法與限制](clear-tutorial/16f6910/README.md)。
+
+- 第一輪：[applications當場閱讀原始紀錄](clear-tutorial/16f6910/first-read/applications.jsonl)，基線來源與圖指紋保留；共享檔案系統不是技術隔離。
+- 第二輪：[非作者技術／證據核對](clear-tutorial/16f6910/technical/modern-applications.md)，實際來源、數字及必要執行範圍見該報告。
+- 第三輪：[另一位讀者前文→本節→後文複查](clear-tutorial/16f6910/transitions/modern-applications.md)，此輪完整頁閱讀非盲讀；受影響段落及圖另有delta核回。
+- [原始卡點與具體處理](clear-tutorial/16f6910/decisions.json)保留未新增的選讀建議。原先前提包漏發及08提前brief的限制另列，沒有算成教材錯或冒稱08全程盲讀。
+
+本輪修正後沒有未解的必要問題；這是AI閱讀／技術查核的實際範圍，不是學生學習成效驗收。全站實際Zensical桌面／手機、公式換頁與執行檢查見 [verification.json](clear-tutorial/16f6910/verification.json)，不以SVG檔存在或strict build取代視覺查核。

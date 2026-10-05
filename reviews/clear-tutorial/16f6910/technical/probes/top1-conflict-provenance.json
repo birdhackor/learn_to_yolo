@@ -1,0 +1,17 @@
+{
+  "execution": "CPU PyTorch 2.9.1+cpu; AST extracts original bbox_iou and TaskAlignedAssigner without changing nodes; only unrelated imports excluded; full get_pos_mask and forward called. No GPU.",
+  "command": "python reviews/clear-tutorial/16f6910/technical/probes/top1-conflict.py",
+  "sources": [
+    {
+      "file": "v10-tal.py",
+      "url": "https://raw.githubusercontent.com/THU-MIG/yolov10/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/tal.py",
+      "sha256": "d6b723f70e62553841a50d68588a804bb80f09a8f616b7a3f9ea4763001b965c"
+    },
+    {
+      "file": "v10-metrics.py",
+      "url": "https://raw.githubusercontent.com/THU-MIG/yolov10/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/metrics.py",
+      "sha256": "539d0c8ad2fe7d05f5da613768938e5a03edace402971932c7c4174761243e03"
+    }
+  ],
+  "replay": "Fixed upstream source files are retained in fixed-sources/. AST extraction compiles unchanged class/function nodes; no upstream package installation or downloads at replay."
+}

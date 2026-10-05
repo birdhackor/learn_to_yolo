@@ -1,6 +1,6 @@
 # 6.1 人工框解碼與 NMS：少一個框不一定更好
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/06-decode-nms.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/06-decode-nms.ipynb){ .md-button }
 
 上一節的 head 在每一格輸出 7 個數字，但這些數字還不是能直接畫在圖上的 xyxy 框。本節把它們一步步變成最後要畫的框。讀完後，你能手算一個框的座標和分數，也能說出 NMS（非極大值抑制）刪掉了哪個框、為什麼。最後會用一個反例說明：框變少，不一定比較好。
 
