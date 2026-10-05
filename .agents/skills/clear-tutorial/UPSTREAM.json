@@ -1,0 +1,33 @@
+{
+  "repository": "birdhackor/tiny-perceptron-vlm",
+  "commit": "6b8fb865b6f4f5f1c1649420520232f9911c1227",
+  "directory": ".agents/skills/clear-tutorial",
+  "imported_on": "2026-10-05",
+  "preservation": "The four source files are copied byte-for-byte. README.md and this manifest are local additions.",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "bytes": 6411,
+      "git_blob_sha1": "219357a3b83b3b44d02bbdcdd2f8c253096812ee",
+      "sha256": "5139fb7f63d87d6ee339fa8330b95b7706831413d70edc484251d8cc3f743d47"
+    },
+    {
+      "path": "references/review-protocol.md",
+      "bytes": 6100,
+      "git_blob_sha1": "bfcde60de9ce26867f68dafa56d170fc4bb04b84",
+      "sha256": "e4a3d6c81021f0212c742643e84df06b10b55dff86667c4b4917548e08e272c0"
+    },
+    {
+      "path": "references/writing-prompt.md",
+      "bytes": 738,
+      "git_blob_sha1": "e79615abc748494e087609b2b9325c23ba70874e",
+      "sha256": "dc06d32ebb2532a07c0b0f7fb2f7ea978f428d417719b2b413d7d8a7303b45bf"
+    },
+    {
+      "path": "references/review-example-10-5.md",
+      "bytes": 2364,
+      "git_blob_sha1": "b7b631dfb3a49df7db64e3e129f730f304a9b843",
+      "sha256": "cc584a73b4023fbedb0eb311ddc2f997669b95683e1ec277105daf5c17715240"
+    }
+  ]
+}
