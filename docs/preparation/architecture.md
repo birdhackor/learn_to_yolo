@@ -4,6 +4,8 @@
 
 採用 **Zensical** 的 modern 主題：Markdown 與小型圖片建成純靜態 GitHub Pages。`zensical.toml` 管理中文導覽、內建搜尋、深淺色模式與快速換頁；`requirements-docs.txt` 固定建置版本。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
 
+本次配對範圍是 52 節：原第 0–20 章的 42 節主線，以及從 15.1 attention 分岔的第 21–23 章 10 節 ViT／DINO 選讀支線。本版教材與 notebook 固定為 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準，既有 `lessons-v0.5.0` 紀錄保留原本範圍。
+
 Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag（已發布的固定版本標籤）再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
 
 ```text
@@ -11,7 +13,7 @@ zensical.toml                 網站設定、主題與小節導覽
 requirements-docs.txt         網站建置的固定版本
 overrides/                    主題覆寫（404 頁）
 docs/                         網頁文字、圖與保存下來的實驗結果
-docs/lessons/                 42 節閱讀頁，頁尾附實際執行紀錄
+docs/lessons/                 52 節閱讀頁，頁尾附實際執行紀錄
 docs/assets/                  示意圖、實驗結果圖與公式用的 MathJax
 docs/validation/              全套實驗與審查、GPU／checkpoint 實測
 docs/preparation/             資料規劃、發布與帳號設定、網頁與 Colab 規格
@@ -70,9 +72,11 @@ Colab URL 格式：
 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/notebooks/<section>.ipynb
 ```
 
-`section-map.json` 記錄 42 個教學小節 ID，各自配對網頁、獨立 notebook 與固定的 release tag（`source_ref`）；另有一筆首頁連結的 Colab 環境檢查 notebook，指向 `main`。教學小節標成 `ready`，表示閱讀頁、實驗程式與 notebook 都存在；執行紀錄在 `artifacts/checks/curriculum/`，審查紀錄在 `reviews/`，`ready` 本身不代表 GPU 訓練或效果驗證。網址與檔名都用小節 ID，不用標題，改標題不會讓外部連結失效。
+`section-map.json` 記錄 52 個教學小節 ID，各自配對網頁、獨立 notebook 與固定的 release tag（`source_ref`）；另有一筆首頁連結的 Colab 環境檢查 notebook，指向 `main`。一節標成 `ready`，只表示閱讀頁、實驗程式與 notebook 都存在；執行紀錄在 `artifacts/checks/curriculum/`，審查紀錄在 `reviews/`，`ready` 本身不代表審查、發布、GPU 訓練或效果驗證。網址與檔名都用小節 ID，不用標題，改標題不會讓外部連結失效。
 
-`scripts/build_lesson_notebooks.py --ref <tag>` 產生 42 本 notebook，並讓各頁的 Colab 連結與 `section-map.json` 都指向這個 tag。每本 notebook 有四格：說明、環境格、實驗說明、完整實驗程式；最後一格與 `lesson_cases/<節>.py` 逐字相同，並存著執行紀錄的輸出。環境格 clone 這個 tag 並確認版本相符；PyTorch 不是 2.9.1 時改裝 2.9.1 的 CPU 版（已經是 2.9.1 就沿用，CPU 或 CUDA 版都可以），若改裝前 torch 已載入，改裝後就停下，要求重新啟動工作階段。各節實驗都只用 CPU。環境格在這幾種情況下的行為有單元測試（`tests/test_notebook_bootstrap.py`，pip 與 git 都換成假的，不實際安裝或 clone）。
+`scripts/build_lesson_notebooks.py --ref <tag>` 產生 52 本 notebook，並讓各頁的 Colab 連結與 `section-map.json` 都指向這個 tag。每本 notebook 有四格：說明、環境格、實驗說明、完整實驗程式；最後一格與 `lesson_cases/<節>.py` 逐字相同，並存著執行紀錄的輸出。環境格 clone 這個 tag 並確認版本相符；PyTorch 不是 2.9.1 時改裝 2.9.1 的 CPU 版（已經是 2.9.1 就沿用，CPU 或 CUDA 版都可以），若改裝前 torch 已載入，改裝後就停下，要求重新啟動工作階段。各節實驗都只用 CPU。環境格在這幾種情況下的行為有單元測試（`tests/test_notebook_bootstrap.py`，pip 與 git 都換成假的，不實際安裝或 clone）。
+
+支線共用的小 ViT 與合成資料在 `miniyolo/vision_transformer.py`、`miniyolo/vision_data.py`；自監督核心在 `miniyolo/self_distillation.py`，不改既有 CNN、ResNet 或 MiniYOLO 的架構與訓練入口。預設課堂資料由程式生成，不下載權重；23.1 的官方預訓練特徵操作另選，不是 notebook 啟動的必要條件。支線目前有 CPU 實測，沒有新增 GPU 訓練或 DINOv3 實作。
 
 ## 純閱讀模式如何保留成果
 
@@ -86,7 +90,7 @@ https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/not
 
 需要真實資料時（例如 `scripts/run_fashion_cnn.py` 的 Fashion-MNIST 分類檢查），`scripts/download_data.py fetch <資料集 ID>` 從 `data/manifest.json` 記錄的已查核來源下載到快取（預設 `data/downloads/`，不進 Git），並核對 bytes 與 SHA-256；`--asset` 只下載指定檔案，`--output` 可改到 Colab 的 `/content/data` 等位置。下載的檔案存在 `<output>/<資料集 ID>/`；`run_fashion_cnn.py` 預設讀 `data/downloads/fashion-mnist/`，所以用 `--output /content/data` 下載時，執行它要加 `--data-root /content/data/fashion-mnist`。Colab runtime 中斷後可能要重新下載，所以只取自己需要的部分。原始資料與衍生 split 分開記錄。
 
-repository 裡唯一的 LFS 檔是 `data/curated/fashion-mnist-v1.tar`（Fashion-MNIST 四個原始檔加 MIT 授權），42 節教材沒有用到。要用時才裝好 `git-lfs`，以 `git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""` 只取這一個檔；完整步驟見〈[資料規劃](data.md)〉。
+repository 裡唯一的 LFS 檔是 `data/curated/fashion-mnist-v1.tar`（Fashion-MNIST 四個原始檔加 MIT 授權），52 節教材沒有用到。要用時才裝好 `git-lfs`，以 `git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""` 只取這一個檔；完整步驟見〈[資料規劃](data.md)〉。
 
 ## 官方參考
 

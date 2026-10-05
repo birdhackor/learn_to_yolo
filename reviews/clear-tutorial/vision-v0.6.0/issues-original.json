@@ -1,0 +1,101 @@
+[
+  {
+    "reader": "vit",
+    "unit": "vit/01-small-cnn/08",
+    "source": "docs/lessons/01-small-cnn.md",
+    "quote": "對照上面的表：`models.cnn` 底下的 `initial_loss`、`last_pre_update_loss` 是表中箭頭兩邊的 loss，`train_accuracy`、`validation_accuracy` 是後兩欄",
+    "reason": "已讀40步表是『觀察／結果』兩欄四列，沒有箭頭或後兩欄。可以靠字段名猜是前兩列loss與後兩列accuracy，但照文字找不到對應位置。",
+    "severity": "optional",
+    "needed": "改為前兩列的loss及後兩列的正確率，或實際提供含箭頭的表。"
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/03-identity/01",
+    "source": "docs/lessons/03-identity.md",
+    "quote": "主分支的 18 個權重全部設成 0，所以 F(x) 全為 0",
+    "reason": "小CNN已教卷積可有bias且参数公式含+1。这里只說18個權重為0，尚未說兩個卷積沒有bias或bias也置0；需猜為何F必為0以及為何不是20参数。",
+    "severity": "burden",
+    "needed": "在此先說本節卷積不用bias，或先交代bias也如何處理；後文若程式才揭露可追加，不倒改本卡點。"
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/21-patches/04",
+    "source": "docs/lessons/21-patches.md",
+    "quote": "前面切塊核對的實驗採預設 dropout=0",
+    "reason": "迄今已揭露前段只有材料、切块与forward摘要，尚未见明确的切块核对实验或结果。dropout=0含义能理解，但『前面』所指需猜。",
+    "severity": "optional",
+    "needed": "改称『本节切块核对实验』或在实际核对段就地交代dropout=0。"
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/21-attention/01",
+    "source": "docs/lessons/21-attention.md",
+    "quote": "## 矩形跨格，一塊需要讀其他塊",
+    "reason": "任務仍只回答顏色，圖中patch6自身已含紅色。可理解互讀能混合其他位置資訊，但『需要』的任務原因目前無法只憑已讀內容說出，容易猜成矩形跨格就必須attention才能分顏色。",
+    "severity": "burden",
+    "needed": "交代此處是在展示如何整合跨塊內容，或具體說明當前例子哪項判斷需要其他塊；避免把未證明的必要性當動機。"
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/21-attention/03",
+    "source": "docs/lessons/21-attention.md",
+    "quote": "觀察 CLS 輸出有沒有改變，而不是評分準確率。",
+    "reason": "目前只教embedding及單個attention forward，後段稱此表是『未訓練TinyViT交換檢查』，尚未交代完整TinyViT路線。『CLS輸出』是本attention輸出第0token，還是經未教的後續residual/MLP後的向量，無法定位測量點。",
+    "severity": "burden",
+    "needed": "就地指明表中CLS在哪一層/哪些操作之後取值，或先介紹該路線再做完整TinyViT交換檢查。"
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/01-small-cnn/08",
+    "source": "docs/lessons/01-small-cnn.md",
+    "quote": "`initial_loss`、`last_pre_update_loss` 是表中箭頭兩邊的 loss",
+    "reason": "当前表没有箭头，能由字段名和前表推回初始及末次更新前，但指图形不存在增加查找负担。",
+    "severity": "optional",
+    "needed": "改成表中前两项loss或提供实际箭头。"
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-views/01",
+    "source": "docs/lessons/22-views.md",
+    "quote": "A、B 的原圖 crop 分別為 `[1,1,29,29]`、`[2,1,29,28]` 像素。",
+    "reason": "crop四个数字的轴/顺序/终点约定未教；可以看图懂视角，但要说它对应哪条边必须猜是xyxy而非xywh。",
+    "severity": "burden",
+    "needed": "首次给crop时定义如[x1,y1,x2,y2]和终点范围约定。"
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-views/01",
+    "source": "docs/lessons/22-views.md",
+    "quote": "以 seed 101 生成 1 張圖，取索引 0",
+    "reason": "前置21材料seed101图0是蓝，当前同seed索引0图是红；当下不知是重新生成数量变了还是沿用同图，增加例子辨认负担。",
+    "severity": "optional",
+    "needed": "说明本页另生成一张，和21章128张批次的图0不是同一图片。"
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-distillation/01",
+    "source": "docs/lessons/22-distillation.md",
+    "quote": "再按 ①、②、③、④追蹤更新次序。",
+    "reason": "桌機rawSVG PNG中②③④位置显示方框，不能直接靠编号追图；操作文字仍可认出顺序。尚未验证真实Zensical是否同样缺字。",
+    "severity": "burden",
+    "needed": "用能可靠显示的普通1/2/3/4编号，并在真实网页验证字体。"
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-features/02",
+    "source": "docs/lessons/22-features.md",
+    "quote": "SSL 找到 train 59，random 找到 train 64",
+    "reason": "random首次出现还未说是随机参数模型还是随机参考选择；从「两套特征」可猜是前者，当前对比来源不完全清楚。",
+    "severity": "optional",
+    "needed": "首次称未训练随机初始化backbone的random baseline。"
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-features/05",
+    "source": "docs/lessons/22-features.md",
+    "quote": "圖上半部是同一設定下的 160 步跨 view loss。",
+    "reason": "桌機rawSVG PNG曲线约130至145步落到下轴外并消失一段，无法看完整160点变化幅度；当前图无截断说明。",
+    "severity": "burden",
+    "needed": "纵轴包含全部loss范围，或明确标截断并给最低点。"
+  }
+]

@@ -1,0 +1,37 @@
+{
+  "id": "21-transformer",
+  "passed": true,
+  "executed_at_utc": "2026-10-05T11:47:54.965887+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "ca67a8e8bb8aedf4f362e4c0a323bd0ee26ee20ee53a17163539a87160c6fce4",
+  "dependencies_sha256": {
+    "lesson_cases/21-transformer.py": "ca67a8e8bb8aedf4f362e4c0a323bd0ee26ee20ee53a17163539a87160c6fce4",
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "miniyolo/vision_data.py": "92b1cc3885a0b897eba2a24ac1cd604c55b5ea903a1886904e64b9364c67dde1",
+    "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
+  },
+  "process_wall_seconds": 3.3126,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "{\"event\": \"transformer\", \"block_count\": 2, \"input_tokens_shape\": [1, 17, 32], \"pre_ln\": true, \"first_attention_update_norm\": 0.18654006719589233, \"first_mlp_update_norm\": 0.21488948166370392, \"manual_residual_matches_block\": true, \"cls_feature_shape\": [1, 32], \"patch_feature_shape\": [1, 16, 32], \"logit_shape\": [1, 2], \"permutation\": [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], \"without_position_equivariance_max_error\": 3.5762786865234375e-07, \"with_fixed_position_cls_max_change\": 0.030437029898166656, \"parameters\": 23970, \"limitation\": \"Untrained mechanism check; changed CLS values do not show successful color classification.\"}\n",
+  "stderr": "",
+  "exit_code": 0
+}

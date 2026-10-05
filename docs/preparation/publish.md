@@ -1,6 +1,6 @@
 # GitHub Pages、Colab 與 Git LFS：操作步驟
 
-Learn to YOLO 的 42 節教材各配一本 Colab notebook；網站用 Zensical 建成靜態網頁，由 GitHub Actions 發布到 GitHub Pages。repository `birdhackor/learn_to_yolo` 是 public，預設分支是 main。本頁依序說明本地預覽、推送、Pages 設定、Colab 入口與 Git LFS，最後是發布新版教材的完整流程。
+Learn to YOLO 的 52 節教材各配一本 Colab notebook；網站用 Zensical 建成靜態網頁，由 GitHub Actions 發布到 GitHub Pages。repository `birdhackor/learn_to_yolo` 是 public，預設分支是 main。本頁依序說明本地預覽、推送、Pages 設定、Colab 入口與 Git LFS，最後是發布新版教材的完整流程。
 
 ## 1. 本地預覽與授權選擇
 
@@ -143,7 +143,7 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 
 ## 6. 發布新版教材
 
-42 節頁面的 Colab 按鈕與 notebook 固定在同一個發布 tag：按鈕開啟這個 tag 的 notebook，notebook 的環境格也 clone 這個 tag（`section-map.json` 各節的 `source_ref` 記著它）。已發布的 `lessons-v*` tag 一律不移動、不覆寫；教材的程式或實驗結果改了，就發布一個新 tag。
+52 節頁面的 Colab 按鈕與 notebook 固定在同一個發布 tag：按鈕開啟這個 tag 的 notebook，notebook 的環境格也 clone 這個 tag（`section-map.json` 各節的 `source_ref` 記著它）。已發布的 `lessons-v*` tag 一律不移動、不覆寫；教材的程式或實驗結果改了，就發布一個新 tag。
 
 先用這張圖決定本次需要走哪些分支；詳細指令在後面的編號步驟。所有 GPU 工作仍只能手動啟動。兩類紀錄都過期時，依詳細步驟先重產 GPU、再 CPU；圖中的每類重產步驟只在該類過期時執行。
 
@@ -167,7 +167,7 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
     python3 scripts/build_lesson_notebooks.py --ref <新 tag>
     ```
 
-    它重建 42 本 notebook，並把各節頁面的 Colab 連結與 `section-map.json` 的 `source_ref` 改成新 tag。正文裡直接寫出 tag 的地方不會跟著改：`README.md`、〈驗證範圍〉、〈全套實驗與審查〉與第 0 章〈一次學習的超短暖身〉（環境格印出的版本）都寫著目前的 tag，要另外搜尋 `lessons-v`，逐一改成新 tag；審查涵蓋只略過 Colab 連結裡的 tag，所以改了這些地方的 tag 之後，`README.md` 以外的三頁都要重新審查。`lesson_cases/<節>.py` 沒變的節，最後一格直接填回紀錄裡的輸出；改過的節列在輸出的最後。紀錄是否過期（包括 import 的模組有沒有改），由下一步判斷。
+    它重建 52 本 notebook，並把各節頁面的 Colab 連結與 `section-map.json` 的 `source_ref` 改成新 tag。正文裡直接寫出 tag 的地方不會跟著改：`README.md`、〈驗證範圍〉、〈全套實驗與審查〉與第 0 章〈一次學習的超短暖身〉（環境格印出的版本）都寫著目前的 tag，要另外搜尋 `lessons-v`，逐一改成新 tag；審查涵蓋只略過 Colab 連結裡的 tag，所以改了這些地方的 tag 之後，`README.md` 以外的三頁都要重新審查。`lesson_cases/<節>.py` 沒變的節，最後一格直接填回紀錄裡的輸出；改過的節列在輸出的最後。紀錄是否過期（包括 import 的模組有沒有改），由下一步判斷。
 
 2. **列出過期的紀錄。**
 
@@ -217,7 +217,7 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
     .venv-model/bin/python scripts/verify_curriculum.py --render-only
     ```
 
-    第二行的 `--render-only` 不執行任何實驗，只依紀錄重寫 42 節頁尾的執行紀錄區塊、notebook 最後一格的輸出，以及紀錄索引 `artifacts/checks/curriculum/index.json`；有任何一節沒有現行紀錄就停下。用其他方式帶回紀錄，或 `git pull` 合併時保留了這邊的頁面或 notebook，也執行這一行。
+    第二行的 `--render-only` 不執行任何實驗，只依紀錄重寫 52 節頁尾的執行紀錄區塊、notebook 最後一格的輸出，以及紀錄索引 `artifacts/checks/curriculum/index.json`；有任何一節沒有現行紀錄就停下。用其他方式帶回紀錄，或 `git pull` 合併時保留了這邊的頁面或 notebook，也執行這一行。
 
     紀錄與圖則一定要從記錄的那台電腦帶回：圖只在那台電腦上重畫，`--render-only` 不會重畫、也不會複製任何圖。少帶了圖，網站會在新的輸出旁邊顯示舊圖，而 Pages 建置前的檢查都不會發現：`validate_curriculum_evidence.py` 不檢查圖；圖檔沒變，`review_coverage.py` 也不會要求重新審查。
 

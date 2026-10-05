@@ -1,0 +1,32 @@
+[
+  {
+    "mode": "desktop",
+    "kind": "15.1 optional branch entry",
+    "entry_text": "選讀支線：圖片直接交給 Transformer\n\n主線接著讀 15.2 Area Attention。如果已讀過 CNN 與 ResNet，也可以從 21.1 圖片切成 patch分岔：沿紅／藍矩形例子，把本節的 Q／K／V 接成小 ViT，再理解 DINO（2021）的自監督特徵，最後接回單物件定位。這是第 21–23 章的 10 節選讀支線，不改主線順序；DINO（2021）與同名的 DETR 系列偵測器不同。完整安排見閱讀路線。",
+    "screenshot": "artifacts/runs/vision-browser-review/15-attention-branch-desktop.png",
+    "clicked_url": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-patches/",
+    "clicked_h1": "21.1 ViT patches：把圖片排成一串小塊¶"
+  },
+  {
+    "mode": "desktop",
+    "kind": "curriculum branch table",
+    "headers": "節次／教材\t實驗範圍\t執行紀錄\t審查紀錄\n",
+    "rows": 10,
+    "screenshot": "artifacts/runs/vision-browser-review/curriculum-branch-table-desktop.png"
+  },
+  {
+    "mode": "mobile",
+    "kind": "15.1 optional branch entry",
+    "entry_text": "選讀支線：圖片直接交給 Transformer\n\n主線接著讀 15.2 Area Attention。如果已讀過 CNN 與 ResNet，也可以從 21.1 圖片切成 patch分岔：沿紅／藍矩形例子，把本節的 Q／K／V 接成小 ViT，再理解 DINO（2021）的自監督特徵，最後接回單物件定位。這是第 21–23 章的 10 節選讀支線，不改主線順序；DINO（2021）與同名的 DETR 系列偵測器不同。完整安排見閱讀路線。",
+    "screenshot": "artifacts/runs/vision-browser-review/15-attention-branch-mobile.png",
+    "clicked_url": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-patches/",
+    "clicked_h1": "21.1 ViT patches：把圖片排成一串小塊¶"
+  },
+  {
+    "mode": "mobile",
+    "kind": "curriculum branch table",
+    "headers": "節次／教材\t實驗範圍\t執行紀錄\t審查紀錄\n",
+    "rows": 10,
+    "screenshot": "artifacts/runs/vision-browser-review/curriculum-branch-table-mobile.png"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "baseline_commit": "823232bf9eba4074b4db4c99b6b076feaa1a9992",
+  "frozen_pages": [
+    {
+      "path": "docs/lessons/01-small-cnn.md",
+      "sha256": "434c49f8ecd00ae79cd7ee76db4ae33935957d3b936a223058958fe717a5a82c"
+    },
+    {
+      "path": "docs/lessons/03-identity.md",
+      "sha256": "5af0147567fe9bfefb6424962c8a2dde6001f1f75ff09a41403112a146cf4555"
+    },
+    {
+      "path": "docs/lessons/15-attention-bridge.md",
+      "sha256": "eba51744673bf59c6c1e9cc913d3bb2d83faa73ed7463465b4f0728682f4cf8e"
+    },
+    {
+      "path": "docs/lessons/21-patches.md",
+      "sha256": "e16ab460deee5468d043005ebc2c3fc6fbae9079d6f705151933f5e8d54da0ae"
+    },
+    {
+      "path": "docs/lessons/21-attention.md",
+      "sha256": "45604d87d0f718c5502574cd22b2227dc663ff2e7e2c192841bff01eaebb735f"
+    },
+    {
+      "path": "docs/lessons/21-transformer.md",
+      "sha256": "d8fa05e42d1850b1796b0e918097c2bce2e54f69cecaa2e45f7c8e292a2e8405"
+    },
+    {
+      "path": "docs/lessons/21-training.md",
+      "sha256": "0859c5db9239431c9ebe08c7fa55b6f6df4e43793aed7a63142e43b9a6d97369"
+    }
+  ],
+  "units": 46,
+  "scope": "Source packets and raw SVG previews; shared filesystem access is controlled by disclosure instructions, not technical isolation."
+}

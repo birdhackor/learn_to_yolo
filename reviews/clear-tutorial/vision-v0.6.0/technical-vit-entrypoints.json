@@ -1,0 +1,214 @@
+{
+  "case_sha256": "6c9593ba8ef5fb0e4a1f445f0ccd22ce237a5766d87682dea78af8f12ef44322",
+  "notebook_sha256": "7fe982b783b5193a48c856044fbcf348e938984e00107d6c6e9b360527dbe479",
+  "notebook_case_cell_index": 3,
+  "cell_bytes_equal_case": true,
+  "formal_case_sha_matches": true,
+  "kernel_has_no_file_before_and_after": true,
+  "kernel_argv_preserved": [
+    "ipykernel_launcher",
+    "-f",
+    "/tmp/vision-technical-kernel-connection.json"
+  ],
+  "cwd": "/workspace/learn_to_yolo",
+  "checks": {
+    "kernel_no_file": {
+      "exit_code": 0,
+      "output_directory": "/workspace/learn_to_yolo/artifacts/runs/vit-training",
+      "current_output_and_checkpoint_written": true,
+      "matches_formal_numerical_fields": [
+        "fixed_train_loss_before",
+        "fixed_train_loss_after",
+        "train_before",
+        "train_after",
+        "heldout",
+        "loss_history",
+        "gradient_norm_min_max",
+        "first_step_gradient_norms",
+        "weights_changed",
+        "all_gradients_finite",
+        "optimizer_step_min_max",
+        "resume"
+      ],
+      "source_hash_matches": true,
+      "checkpoint_resume": {
+        "additional_steps": 30,
+        "model_max_abs_error": 0.0,
+        "optimizer_max_abs_error": 0.0,
+        "loss_history_matches": true,
+        "rng_states_match": true,
+        "optimizer_step_min_max": [
+          60,
+          60
+        ]
+      },
+      "checkpoint_details": {
+        "path": "artifacts/runs/vit-training/checkpoint.pt",
+        "keys": [
+          "class_names",
+          "config",
+          "format_version",
+          "model_state_dict",
+          "optimizer_state_dict",
+          "rng_state",
+          "scheduler_state_dict",
+          "steps_completed"
+        ],
+        "steps_completed": 30,
+        "restored_optimizer_step_min_max": [
+          30,
+          30
+        ],
+        "restored_learning_rate": 0.003,
+        "rng_sources": [
+          "numpy",
+          "python",
+          "torch_cpu",
+          "torch_cuda"
+        ]
+      },
+      "command": [
+        "/workspace/learn_to_yolo/.venv-model/bin/python",
+        "-c",
+        "exact body saved at artifacts/runs/vision-technical/kernel-vit-check.py"
+      ],
+      "train_loss_before_after": [
+        0.7100589871406555,
+        0.007154781371355057
+      ]
+    },
+    "cli_default": {
+      "exit_code": 0,
+      "output_directory": "/workspace/learn_to_yolo/artifacts/runs/vit-training",
+      "current_output_and_checkpoint_written": true,
+      "matches_formal_numerical_fields": [
+        "fixed_train_loss_before",
+        "fixed_train_loss_after",
+        "train_before",
+        "train_after",
+        "heldout",
+        "loss_history",
+        "gradient_norm_min_max",
+        "first_step_gradient_norms",
+        "weights_changed",
+        "all_gradients_finite",
+        "optimizer_step_min_max",
+        "resume"
+      ],
+      "source_hash_matches": true,
+      "checkpoint_resume": {
+        "additional_steps": 30,
+        "model_max_abs_error": 0.0,
+        "optimizer_max_abs_error": 0.0,
+        "loss_history_matches": true,
+        "rng_states_match": true,
+        "optimizer_step_min_max": [
+          60,
+          60
+        ]
+      },
+      "checkpoint_details": {
+        "path": "artifacts/runs/vit-training/checkpoint.pt",
+        "keys": [
+          "class_names",
+          "config",
+          "format_version",
+          "model_state_dict",
+          "optimizer_state_dict",
+          "rng_state",
+          "scheduler_state_dict",
+          "steps_completed"
+        ],
+        "steps_completed": 30,
+        "restored_optimizer_step_min_max": [
+          30,
+          30
+        ],
+        "restored_learning_rate": 0.003,
+        "rng_sources": [
+          "numpy",
+          "python",
+          "torch_cpu",
+          "torch_cuda"
+        ]
+      },
+      "command": [
+        "PYTHONPATH=.",
+        "/workspace/learn_to_yolo/.venv-model/bin/python",
+        "lesson_cases/21-training.py"
+      ],
+      "train_loss_before_after": [
+        0.7100589871406555,
+        0.007154781371355057
+      ]
+    },
+    "cli_output": {
+      "exit_code": 0,
+      "output_directory": "/workspace/learn_to_yolo/artifacts/runs/vision-technical/vit-cli-output",
+      "current_output_and_checkpoint_written": true,
+      "matches_formal_numerical_fields": [
+        "fixed_train_loss_before",
+        "fixed_train_loss_after",
+        "train_before",
+        "train_after",
+        "heldout",
+        "loss_history",
+        "gradient_norm_min_max",
+        "first_step_gradient_norms",
+        "weights_changed",
+        "all_gradients_finite",
+        "optimizer_step_min_max",
+        "resume"
+      ],
+      "source_hash_matches": true,
+      "checkpoint_resume": {
+        "additional_steps": 30,
+        "model_max_abs_error": 0.0,
+        "optimizer_max_abs_error": 0.0,
+        "loss_history_matches": true,
+        "rng_states_match": true,
+        "optimizer_step_min_max": [
+          60,
+          60
+        ]
+      },
+      "checkpoint_details": {
+        "path": "artifacts/runs/vision-technical/vit-cli-output/checkpoint.pt",
+        "keys": [
+          "class_names",
+          "config",
+          "format_version",
+          "model_state_dict",
+          "optimizer_state_dict",
+          "rng_state",
+          "scheduler_state_dict",
+          "steps_completed"
+        ],
+        "steps_completed": 30,
+        "restored_optimizer_step_min_max": [
+          30,
+          30
+        ],
+        "restored_learning_rate": 0.003,
+        "rng_sources": [
+          "numpy",
+          "python",
+          "torch_cpu",
+          "torch_cuda"
+        ]
+      },
+      "command": [
+        "PYTHONPATH=.",
+        "/workspace/learn_to_yolo/.venv-model/bin/python",
+        "lesson_cases/21-training.py",
+        "--output",
+        "artifacts/runs/vision-technical/vit-cli-output"
+      ],
+      "train_loss_before_after": [
+        0.7100589871406555,
+        0.007154781371355057
+      ]
+    }
+  },
+  "invocation_diagnosis": "Initial direct CLI invocation omitted documented PYTHONPATH=., causing ModuleNotFoundError miniyolo. Corrected invocation uses the repository documented PYTHONPATH; no code change and no fake __file__."
+}

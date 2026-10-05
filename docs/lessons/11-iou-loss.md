@@ -1,6 +1,6 @@
 # 11.4 IoU 類 loss：沒有重疊時還能往哪裡移
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-iou-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/11-iou-loss.ipynb){ .md-button }
 
 第 7 章用座標 MSE 當框 loss：把預測框和真值框的四個數字逐一相減、平方再平均。評估時看的卻是兩框重疊多少：用 IoU（交集面積÷聯集面積）判斷框找得對不對，例如第 6 章的 AP50 要 IoU 至少 0.5 才算找對。這兩件事並不一致。第 4 章算過，同樣往右、往下各偏 2 pixel，12×12 的框 IoU 約 0.53，4×4 的框只剩約 0.14，兩者的正規化座標 MSE 卻一樣。
 
@@ -170,7 +170,7 @@ CIoU 在 DIoU 上再加一項 \(\alpha v\)。v 衡量兩框的寬高比（寬÷�
 
 ## 兩次單步更新的核對
 
-在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-iou-loss.ipynb) 執行本節，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。完整程式對 GIoU（lr=50）和 DIoU（lr=100）各做一次單步更新，兩次互相獨立，都從中心 `(40,20)` 出發。對照下方執行紀錄，由上而下逐行核對：
+在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/11-iou-loss.ipynb) 執行本節，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-iou-loss.py`。完整程式對 GIoU（lr=50）和 DIoU（lr=100）各做一次單步更新，兩次互相獨立，都從中心 `(40,20)` 出發。對照下方執行紀錄，由上而下逐行核對：
 
 - 第 1 行 `GIoU gradient …`：GIoU 的中心梯度 `[0.02,0]`。行尾的 1.179487 是 lr=50 走一步之後的 \(L_{\text{GIoU}}\)，不是移動量；完整程式也用斷言確認走完後中心是 `(39,20)`。
 - 第 2 行 `initial losses`：\(L_{\text{IoU}}=1\)、\(L_{\text{GIoU}}=1.2\)、\(L_{\text{DIoU}}=L_{\text{CIoU}}=1.310345\)。這裡的 `'iou'`、`'giou'` 等鍵存的都是 loss，例如 `'iou': 1.0` 是 \(L_{\text{IoU}}\)，不是 IoU。

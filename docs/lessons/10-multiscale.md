@@ -1,6 +1,6 @@
 # 10 YOLOv3 機制：同一個 pixel 框看兩種尺度
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/10-multiscale.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/10-multiscale.ipynb){ .md-button }
 
 只用 4×4 的格子預測時，8×8 pixel 的小物件容易被背景淹沒。本節試著多加一個較細、8×8 格的預測 head。讀完你能算出同一個框在兩種格子下的 target，說出兩個 head 各學什麼，也知道推論時怎麼合併兩個 head 的框、去掉重複。
 
@@ -118,7 +118,7 @@ coarse 正格的位置可驗算：44÷16=2.75，所以是 `(2,2)`、格內 xy `(
 
 ??? example "執行單步程式與核對輸出"
 
-    執行[本節 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/10-multiscale.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/10-multiscale.py`。應核對：
+    執行[本節 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/10-multiscale.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/10-multiscale.py`。應核對：
 
     - 表內兩個 target：輸出第 2、3 行的 4 個數，依序是表中的格內 x、y 與 normalized w、h。
     - 兩個 head 的輸出 shape，以及候選數 `64+16=80`（輸出第 4 行）。

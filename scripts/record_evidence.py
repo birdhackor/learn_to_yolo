@@ -53,6 +53,8 @@ COMMANDS = {
     C + "04-localization-learning.json": [[PY, "scripts/run_learning_extensions.py", "--section", "04-localization", "--record"]],
     C + "10-multiscale-learning.json": [[PY, "scripts/run_multiscale_learning.py", "--record"]],
     C + "video-file.json": [[PY, "scripts/verify_video_file.py", "--record", C + "video-file.json"]],
+    # Optional official DINOv2 probe: fixed public code/weights (~84.2 MiB), hashes verified.
+    C + "dinov2-pretrained.json": [[PY, "scripts/run_dino_pretrained.py", "--report", C + "dinov2-pretrained.json"]],
     # Downloads Fashion-MNIST (30.88 MB, checked against data/manifest.json) unless data/downloads/ has it.
     C + "fashion-mnist-learning.json": [
         [PY, "scripts/download_data.py", "fetch", "fashion-mnist"],

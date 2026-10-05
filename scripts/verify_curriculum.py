@@ -129,14 +129,14 @@ def main():
         parser.error(f"unknown section: {', '.join(sorted(unknown))}")
     stale = [s["id"] for s in lessons if current_record(s) is None]
     if args.check:
-        print("\n".join(f"{sid}: no current record" for sid in stale) or "All 42 records match the current code.")
+        print("\n".join(f"{sid}: no current record" for sid in stale) or f"All {len(lessons)} records match the current code.")
         raise SystemExit(1 if stale else 0)
     if args.render_only:
         if stale:
             raise SystemExit(f"STOP: run these sections first: {', '.join(stale)}")
         changed = [s["id"] for s in lessons if attach(s, current_record(s))]
         write_index(lessons)
-        print(f"Rendered 42 evidence blocks from saved records; changed: {', '.join(changed) or 'none'}")
+        print(f"Rendered {len(lessons)} evidence blocks from saved records; changed: {', '.join(changed) or 'none'}")
         return
     selected = {s["id"] for s in lessons} if args.all else set(stale) | set(args.section or [])
     FOLDER.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,6 @@
 # 14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/14-feature-module.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/14-feature-module.ipynb){ .md-button }
 
 本節想做到一件事：把轉換程度不同的特徵都留下來（有的只經過一層 1×1 卷積，有的轉換了好幾次），讓最後一層自己挑著用。對照一下：最普通的做法是直接疊兩層 `8→8` 的 3×3 卷積（後文稱 plain），每個值都經過同樣的兩層。第 11 章的 CSP 讓一半 channel 走旁路、不做卷積，但最後只串接「旁路＋最後結果」兩份。本節再進一步：另一半依序經過兩個殘差小塊，而且每一步的中間結果都留下，一起交給最後的 1×1 融合（fuse）。
 

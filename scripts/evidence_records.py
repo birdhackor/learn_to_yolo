@@ -31,6 +31,7 @@ CPU_RECORDS = {
     C + "10-multiscale-learning.json": ("scripts/run_multiscale_learning.py", "lesson_cases/10-multiscale.py"),
     C + "video-file.json": ("scripts/verify_video_file.py", "lesson_cases/18-video.py", "lesson_cases/19-tracking.py"),
     C + "fashion-mnist-learning.json": ("scripts/run_fashion_cnn.py",),
+    C + "dinov2-pretrained.json": ("scripts/run_dino_pretrained.py",),
 }
 # Made on one NVIDIA L4 by a manually started GitHub Actions workflow that runs the code on Modal;
 # the record is that run's result.json artifact.

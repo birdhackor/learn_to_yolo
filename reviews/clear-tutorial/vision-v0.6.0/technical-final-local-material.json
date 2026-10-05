@@ -1,0 +1,17 @@
+{
+  "21_attention_new_material_claim": {
+    "source_seed": 101,
+    "samples": 128,
+    "index": 3,
+    "label": 0,
+    "bbox_xyxy": [
+      4,
+      9,
+      19,
+      25
+    ],
+    "patch1_object_intersection_pixel2": 0,
+    "patch6_object_intersection_pixel2": 56,
+    "verified": true
+  }
+}

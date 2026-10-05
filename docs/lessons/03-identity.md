@@ -1,6 +1,6 @@
 # 3.1 ResNet identity shortcut：先確定真的能原樣通過
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/03-identity.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/03-identity.ipynb){ .md-button }
 
 照理說，網路加深不該變差：多加的幾層只要學成「輸出＝輸入」，深網路就能算出和原本淺網路一樣的結果，訓練誤差不該更高。但 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)的圖 1 顯示，在 CIFAR-10 圖片分類資料上，56 層的普通（plain）網路連訓練誤差（訓練資料上的錯誤率）都比 20 層的高。論文把這種「更深反而連訓練誤差都較高」的現象稱為退化（degradation）。這不是 overfit（訓練資料學得好、新資料卻變差）：這裡連訓練資料都學得比較差，屬於[第 2 章](02-diagnostics.md)說的最佳化問題。
 
@@ -10,7 +10,7 @@ identity（恆等）指輸出與輸入完全相同，就像 \(f(x)=x\)。identit
 
 前置只需會用[小 CNN 那一節](01-small-cnn.md)的公式算卷積輸出大小，並知道兩個 tensor 怎麼逐值相加；梯度部分會用到[暖身節](00-warmup.md)的連鎖律（chain rule）。兩條路 shape 不同的情況留到[下一節](03-projection.md)。本節的 block 是把論文的設計簡化後的教學版：原版每個卷積後還有 BatchNorm（把每個 channel 的數值調到穩定尺度的層，[Plain／residual 對照](03-comparison.md)會再說明），相加後還有一個 ReLU，本節都拿掉了（拿掉相加後 ReLU 的理由見下文）。
 
-可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU 實驗分兩部分。第一部分手動把主分支的權重全部設成 0，讓主分支輸出全為 0（下文稱「人工零分支」），檢查輸出是否等於輸入、輸入的梯度是否都是 1。第二部分另建一個權重隨機的 block，訓練 2 步，只確認主分支末層的權重收得到梯度、真的會更新。兩部分都不是在比分類準確率。
+可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU 實驗分兩部分。本節兩層卷積都不加 bias（偏置）。第一部分手動把主分支的權重全部設成 0，讓主分支輸出全為 0（下文稱「人工零分支」），檢查輸出是否等於輸入、輸入的梯度是否都是 1。第二部分另建一個權重隨機的 block，訓練 2 步，只確認主分支末層的權重收得到梯度、真的會更新。兩部分都不是在比分類準確率。
 
 ## 把「修正」與「完整答案」分開
 

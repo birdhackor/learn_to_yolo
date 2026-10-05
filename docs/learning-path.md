@@ -1,6 +1,6 @@
 # 閱讀路線：先追一個問題，再加下一個機制
 
-全書分為第 0–20 章、共 42 節，從第一節（第 0 章的暖身）依序讀即可。你會走過小 CNN（卷積神經網路）、ResNet（殘差網路）、單物件定位，以及第 7 章可訓練的 grid MiniYOLO：它把圖分成格子，由物件中心所在的那一格預測這個物件的框（程式裡的 class 叫 `GridDetector`）。之後再用小實驗理解 YOLO 的不同設計。每節網頁都附一個獨立的 Colab notebook；只想先讀網頁時，不必連上 Colab 的執行階段（runtime：Colab 替你開的雲端機器）。第一次遇到或想複習術語時，都可以查[術語快速查](glossary.md)。
+全書安排 52 節：第 0–20 章的 42 節主線，加上第 21–23 章的 10 節 ViT／DINO 選讀支線。主線仍從第一節（第 0 章的暖身）依序讀即可。你會走過小 CNN（卷積神經網路）、ResNet（殘差網路）、單物件定位，以及第 7 章可訓練的 grid MiniYOLO：它把圖分成格子，由物件中心所在的那一格預測這個物件的框（程式裡的 class 叫 `GridDetector`）。之後再用小實驗理解 YOLO 的不同設計。每節配對一個獨立的 Colab notebook；只想先讀網頁時，不必連上 Colab 的執行階段（runtime：Colab 替你開的雲端機器）。第一次遇到或想複習術語時，都可以查[術語快速查](glossary.md)。
 
 **開始前需要會什麼？**
 
@@ -17,6 +17,7 @@
 - **先取得一個成果：**第 0–7 章完成單張圖片的物件偵測流程；第 8 章接自己的圖片與資料。
 - **完整演化：**再讀第 9–16 章。
 - **整合與應用：**第 17 章是結業任務，讀完第 0–7 章就能做，不必先讀第 9–16 章。第 18–20 章是選修，可按需求挑讀，但第 18、20 章要先讀 8.1 節（非正方形圖片的補邊與框還原），第 19 章要先讀第 18 章。
+- **ViT／DINO 選讀支線：**先讀第 1、3 章與 15.1 attention，再從 21.1 開始。這條支線沿分類、影像特徵與單物件定位前進，不改主線順序，也不要求先讀完所有 YOLO 版本。數學仍從向量、shape 與實際數字說起。
 
 第 9–16 章（版本節）不會把每一代 YOLO 的改動依序全部疊到同一個模型上。每節都寫明自己的起點（從哪個簡化設定出發）和這一節改了什麼；和起點還有其他差異時，該節也會列出，例如 9.1 節同時改了寬高的寫法和每格的槽數，第 10 章的兩尺度模型是另外寫的小網路。這些小實驗用來看懂機制怎麼算、多了哪些成本，不是公平的效果比較；哪些結果有實測，見[驗證範圍](status.md)。
 
@@ -79,6 +80,23 @@ VGG 是牛津大學 Visual Geometry Group 提出的經典 CNN，以堆疊 3×3 �
 - 18 [影片串流](lessons/18-video.md)：處理每一幀，並分清 FPS（frames per second，每秒幀數）與延遲
 - 19 [簡易 tracking](lessons/19-tracking.md)（追蹤：在影片裡跨畫面維持同一個物件的編號）：框很準，ID 仍可能換人
 - 20 [ONNX／TensorRT](lessons/20-deployment.md)（ONNX：Open Neural Network Exchange，一種通用的模型格式；TensorRT：NVIDIA 的推論加速工具）：匯出後先證明同一個輸入得到同一個結果
+
+## E. 從 attention 分岔：ViT／DINO（第 21–23 章，選讀）
+
+第 21 章讓紅／藍矩形圖走過「切成 patch → 交換資訊 → CLS 分類」；第 22 章再問，訓練時不看類別答案，如何學影像特徵？這裡的 DINO 指 2021 年的自監督方法，與同名的 DETR 系列偵測器不同。第 23 章區分後續版本，再把逐 patch 特徵接回單物件定位。21、22 章不需要先會偵測的 assignment 或 AP；23.2 會用到 [4.1 的框與定位](lessons/04-localization.md)及 [6.2 的 IoU](lessons/06-evaluation.md)。
+
+- 21.1 [圖片切成 patch](lessons/21-patches.md)：追蹤每塊圖的順序、位置與 CLS
+- 21.2 [Patch 如何交換資訊](lessons/21-attention.md)：沿用 15.1 的 Q／K／V，接上多頭 attention
+- 21.3 [組成 tiny ViT](lessons/21-transformer.md)：LayerNorm、兩次殘差相加與 MLP 如何組成一個 block
+- 21.4 [訓練、評估與恢復 ViT](lessons/21-training.md)：真正更新全部參數，用獨立圖評估，並恢復 optimizer 與 RNG
+- 22.1 [沒有標籤的兩種視圖](lessons/22-views.md)：同一張圖的不同裁切如何成為訓練材料
+- 22.2 [一致但沒有資訊：collapse](lessons/22-collapse.md)：兩個輸出一樣，為什麼還可能沒學到可用特徵
+- 22.3 [從零實作 DINO 核心](lessons/22-distillation.md)：teacher、student、停止梯度與 teacher 更新各負責什麼
+- 22.4 [特徵有沒有用：近鄰與 linear probe](lessons/22-features.md)：凍結特徵，再與同起點的隨機特徵比較
+- 23.1 [DINO 版本與官方預訓練特徵](lessons/23-dino-versions.md)：分清版本來源與可選的權重下載操作
+- 23.2 [凍結 patch 特徵接回定位](lessons/23-detection-bridge.md)：保留 patch 順序，讓小 head 學一個框與類別
+
+預設實驗只用 CPU 和固定 seed 的合成資料，不下載權重；官方預訓練操作另選。小 ViT 與 DINO 核心實作縮小了原版規模，這次沒有新增 GPU 訓練或 DINOv3 實作。支線的分類及定位數字只支持受控紅／藍矩形任務；在這次簡單分類中，隨機特徵與自監督特徵都得到 64／64，不能說自監督比較好。本版網頁與 notebook 固定到 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準。
 
 ## 遇到卡住的地方
 

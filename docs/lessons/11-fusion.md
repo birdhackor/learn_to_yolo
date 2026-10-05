@@ -1,6 +1,6 @@
 # 11.2 特徵融合：把深層資訊送回細網格
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/11-fusion.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/11-fusion.ipynb){ .md-button }
 
 第 10 章加了 8×8 的細 head，讓細格子也能輸出框。但細 head 只拿到淺層特徵，而淺層特徵的「語義」可能不足。本節把深層特徵的資訊送回 8×8 的細網格，和淺層特徵合在一起，這就是特徵融合。讀完你能一步步追出融合時每一步的 shape，說出 concat（串接）需要什麼條件，並手算這個融合模組的參數與記憶體。
 

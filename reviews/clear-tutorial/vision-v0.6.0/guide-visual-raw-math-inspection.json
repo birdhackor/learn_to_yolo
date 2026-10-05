@@ -1,0 +1,142 @@
+[
+  {
+    "id": "21-transformer",
+    "math": 1,
+    "screenshot": "artifacts/runs/vision-browser-review/21-transformer-mobile-math01.png",
+    "dimensions": {
+      "rect": {
+        "x": 0,
+        "y": 279.921875,
+        "width": 457.5625,
+        "height": 17.890625,
+        "top": 279.921875,
+        "right": 457.5625,
+        "bottom": 297.8125,
+        "left": 0
+      },
+      "parentScrollWidth": 458,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  },
+  {
+    "id": "22-distillation",
+    "math": 1,
+    "screenshot": "artifacts/runs/vision-browser-review/22-distillation-mobile-math01.png",
+    "dimensions": {
+      "rect": {
+        "x": 53.3125,
+        "y": 280.046875,
+        "width": 236.359375,
+        "height": 17.890625,
+        "top": 280.046875,
+        "right": 289.671875,
+        "bottom": 297.9375,
+        "left": 53.3125
+      },
+      "parentScrollWidth": 343,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  },
+  {
+    "id": "22-distillation",
+    "math": 2,
+    "screenshot": "artifacts/runs/vision-browser-review/22-distillation-mobile-math02.png",
+    "dimensions": {
+      "rect": {
+        "x": 74.5,
+        "y": 279.75,
+        "width": 193.984375,
+        "height": 17.890625,
+        "top": 279.75,
+        "right": 268.484375,
+        "bottom": 297.640625,
+        "left": 74.5
+      },
+      "parentScrollWidth": 343,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  },
+  {
+    "id": "22-distillation",
+    "math": 3,
+    "screenshot": "artifacts/runs/vision-browser-review/22-distillation-mobile-math03.png",
+    "dimensions": {
+      "rect": {
+        "x": 43.359375,
+        "y": 280.453125,
+        "width": 256.265625,
+        "height": 53.625,
+        "top": 280.453125,
+        "right": 299.625,
+        "bottom": 334.078125,
+        "left": 43.359375
+      },
+      "parentScrollWidth": 343,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  },
+  {
+    "id": "22-distillation",
+    "math": 4,
+    "screenshot": "artifacts/runs/vision-browser-review/22-distillation-mobile-math04.png",
+    "dimensions": {
+      "rect": {
+        "x": 20.09375,
+        "y": 279.890625,
+        "width": 302.8125,
+        "height": 17.890625,
+        "top": 279.890625,
+        "right": 322.90625,
+        "bottom": 297.78125,
+        "left": 20.09375
+      },
+      "parentScrollWidth": 343,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  },
+  {
+    "id": "22-distillation",
+    "math": 5,
+    "screenshot": "artifacts/runs/vision-browser-review/22-distillation-mobile-math05.png",
+    "dimensions": {
+      "rect": {
+        "x": 28.234375,
+        "y": 279.59375,
+        "width": 286.53125,
+        "height": 18.546875,
+        "top": 279.59375,
+        "right": 314.765625,
+        "bottom": 298.140625,
+        "left": 28.234375
+      },
+      "parentScrollWidth": 343,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  },
+  {
+    "id": "23-detection-bridge",
+    "math": 1,
+    "screenshot": "artifacts/runs/vision-browser-review/23-detection-bridge-mobile-math01.png",
+    "dimensions": {
+      "rect": {
+        "x": 78.0625,
+        "y": 279.984375,
+        "width": 186.859375,
+        "height": 15.015625,
+        "top": 279.984375,
+        "right": 264.921875,
+        "bottom": 295,
+        "left": 78.0625
+      },
+      "parentScrollWidth": 343,
+      "parentWidth": 343,
+      "overflow": "auto"
+    }
+  }
+]

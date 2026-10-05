@@ -1,6 +1,6 @@
 # 7.5 Grid MiniYOLO：把輸出接回圖片
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-inference.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/07-inference.ipynb){ .md-button }
 
 模型對每張圖只輸出 4×4×7 個數字。本節把這些數字變回畫得出來的框、分數和類別，並用答案已知的人工輸入逐步核對。讀完你能手算一格輸出對應的 pixel 框和分數，也看得懂 `decode_grid` 回傳的結果：不論一張圖有 0 個、1 個還是多個物件，格式都一樣。
 
@@ -114,7 +114,7 @@ decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的�
         fixture[b,y,x,5+target['class_ids'][b,y,x].item()] = 10  # 正確類別改成 10
     ```
 
-在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-inference.ipynb) 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。完整程式依序檢查四件事，可對照頁尾的實際輸出：
+在 [Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/07-inference.ipynb) 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-inference.py`。完整程式依序檢查四件事，可對照頁尾的實際輸出：
 
 1. 未訓練模型：印出 `untrained model candidate counts (no quality claim) [0, 0, 0]`（no quality claim：不代表模型品質）。原因見上面的說明；這只證明輸出格式接得上。
 2. 人工 fixture：印出 `artificial known-logit fixture counts [2, 1, 0]`，每個框和標註的誤差都在 0.02 pixel 以內。比對框時，程式按類別分開比：第 0 張的紅框和藍框 score 完全相同，誰排在前面不是要檢查的答案。下一行 `fixture red box` 是第 1 張的紅框，約 `[8.0016,12,24.0016,28]`。

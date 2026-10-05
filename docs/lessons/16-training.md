@@ -1,6 +1,6 @@
 # 16.3 YOLO26 訓練補強：Progressive Loss、STAL 與 MuSGD
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/16-training.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/16-training.ipynb){ .md-button }
 
 YOLO26 官方介紹了三個訓練技巧：Progressive Loss、STAL 和 MuSGD。本節逐一說明三者在做什麼，只對第一個做實驗。讀完本節，你能說出兩個分支的 loss 權重怎麼隨訓練移動，能手算一步加了 loss 權重的 SGD 更新，能用 loss 權重總量相同的對照組分辨差距從哪裡來，也能說明小物件為什麼要放寬候選資格。
 

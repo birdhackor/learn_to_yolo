@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="588" viewBox="0 0 480 588" role="img" aria-labelledby="title desc">
+<title id="title">patch之間的內容讀取</title><desc id="desc">手工資料流示意。來源小圖取實際train圖3的patch1、6、7、10。四条箭頭都表示來源V按讀取比例送到接收patch6；沒有畫實測權重，真正模型讀全部17个tokens。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#475569"/></marker></defs>
+<style>text{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;fill:#172554;font-size:24px} .small{font-size:22px}.head{font-size:28px;font-weight:700}.line{fill:none;stroke:#475569;stroke-width:3;marker-end:url(#arrow)} image{image-rendering:pixelated}</style>
+<rect width="480" height="588" rx="12" fill="#f8fafc"/>
+<text x="240" y="42" text-anchor="middle" style="font-size:28px">誰提供內容給 patch 6？</text>
+<text x="240" y="78" text-anchor="middle" style="font-size:24px">來源：圖 3 的實際小塊</text>
+<text x="66" y="120" text-anchor="middle" style="font-size:22px">patch 1</text>
+<image x="24" y="138" width="84" height="84" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAhUlEQVR4nAXBQZIEIQgEwKIAXW8TMf//5rQtCJspn+/HBi9gD44YJ3oLZ9GF9xXdFkvcDhtrgR2WJBp3YGU38DYqQ8Po6lXBLVuY9TeRV+UoWHHYo+2dJ3P0Q+a+bSBsTFi5QmTd9k2KjrdYeHLeTukez+2LNLo6TMJ9hFSLtOsAQ5i/6H9qWFBTpdXhVgAAAABJRU5ErkJggg=="/>
+<path d="M66 232 V265 H165 V340" class="line"/>
+<text x="182" y="120" text-anchor="middle" style="font-size:22px">patch 6</text>
+<image x="140" y="138" width="84" height="84" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAOElEQVR4nGMUFhRn+P/nPyvrP6Y//5n+Mf76z8rG8ucXM8tWPg4GKGBnYGBgYGOAkEwMOMCASgAA0LwMLJ8xDzcAAAAASUVORK5CYII="/>
+<path d="M182 232 V280 H215 V340" class="line"/>
+<text x="298" y="120" text-anchor="middle" style="font-size:22px">patch 7</text>
+<image x="256" y="138" width="84" height="84" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAeklEQVR4nEXMSw7DMAiE4cGAH/tK7bF62F4tSrADdNV6tp/mp8frKWFY1XTmQu+gOVxMPq0DHQPv4yZNuBqHJxf8ZhRgPRe3IHHIH/oaSVmQHiHl3pA8zyBumIgeslOEyoiaOiYHYj8uZPG44EQLt26oaobWYJkyrXwBStk8ZfuTpP0AAAAASUVORK5CYII="/>
+<path d="M298 232 V295 H265 V340" class="line"/>
+<text x="414" y="120" text-anchor="middle" style="font-size:22px">patch 10</text>
+<image x="372" y="138" width="84" height="84" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAFElEQVR4nGM8IS/PgA0wYRUdtBIA0lUBFnD7LEIAAAAASUVORK5CYII="/>
+<path d="M414 232 V310 H315 V340" class="line"/>
+<rect x="86" y="350" width="308" height="100" rx="10" fill="#fef3c7" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="392.0" text-anchor="middle" style="font-size:24px">各來源 V × 讀取比例</text>
+<text x="240.0" y="424.0" text-anchor="middle" style="font-size:24px">相加成新內容</text>
+<path d="M240 458V486" class="line"/>
+<rect x="100" y="496" width="280" height="50" rx="10" fill="#dcfce7" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="529.0" text-anchor="middle" style="font-size:24px">patch 6 的新特徵</text>
+<text x="240" y="578" text-anchor="middle" style="font-size:22px">手工示意 · 實際讀全部 17 tokens</text>
+</svg>

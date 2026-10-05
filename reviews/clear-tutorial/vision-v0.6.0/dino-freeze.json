@@ -1,0 +1,63 @@
+{
+  "baseline_commit": "823232bf9eba4074b4db4c99b6b076feaa1a9992",
+  "frozen_pages": [
+    {
+      "path": "docs/lessons/01-small-cnn.md",
+      "sha256": "9b7549f0c5f42de76880dab6d1c24f447bfb77c552d2a8580c260cdd0146ef69"
+    },
+    {
+      "path": "docs/lessons/03-identity.md",
+      "sha256": "a80703d8a6f1a0c64899cd08e482bfc1a31e053f3924abe18c0b46b44049bb05"
+    },
+    {
+      "path": "docs/lessons/15-attention-bridge.md",
+      "sha256": "92b0f5b3aed32c4122df8ab202021577bea22782d2eabe15e710a84f55864281"
+    },
+    {
+      "path": "docs/lessons/21-patches.md",
+      "sha256": "a984f17925e09239437ad09275c2412ffa091f355aa9882d4b23663140b6886c"
+    },
+    {
+      "path": "docs/lessons/21-attention.md",
+      "sha256": "a405ea7717d829a3f59bc918a253c798da36fe42cc7b9d90f71a42cb356c0b3f"
+    },
+    {
+      "path": "docs/lessons/21-transformer.md",
+      "sha256": "76a58fc85a6b4292f775f4a119a4d03c1b6db3654783496be07cbd6b6ed2d5af"
+    },
+    {
+      "path": "docs/lessons/21-training.md",
+      "sha256": "984f522767eb139274d8c881c8cd14ae3b15bb4091803cfd21b3887bb49ea054"
+    },
+    {
+      "path": "docs/lessons/22-views.md",
+      "sha256": "b90d33b83ae69d9521904a4d1b8cbebaa887c9f8b1be39d372c42535be224be5"
+    },
+    {
+      "path": "docs/lessons/22-collapse.md",
+      "sha256": "b5e3dac06b3fc34668c454b2b91295b4cfd56d0c30dd6ebeddc5b2b6651a8f29"
+    },
+    {
+      "path": "docs/lessons/22-distillation.md",
+      "sha256": "79aa873c8181297bf72c9eaac36d76117fcaf4a5b3adf84d21c4e3ccb28bec51"
+    },
+    {
+      "path": "docs/lessons/22-features.md",
+      "sha256": "0b7c4e6a1a971b309ffef54b122d0bf85bd516ba6dd44aa4041ff728736ec640"
+    },
+    {
+      "path": "docs/lessons/23-dino-versions.md",
+      "sha256": "d1e093fd14b9268c8d47f988956bcfdb309a22beee8679bcdd90f31b6688108e"
+    },
+    {
+      "path": "docs/lessons/04-localization.md",
+      "sha256": "7857e6e2c9c8f420d8b0cb89cbb25572754033ae19094c6a3a0b70c2899a96f3"
+    },
+    {
+      "path": "docs/lessons/23-detection-bridge.md",
+      "sha256": "d8cc53fd52dcc293f44a76afd1c5432534673ccf779834c4c2d8353a15f73c7e"
+    }
+  ],
+  "units": 93,
+  "scope": "Source packets and raw SVG previews; shared filesystem access is controlled by disclosure instructions, not technical isolation."
+}

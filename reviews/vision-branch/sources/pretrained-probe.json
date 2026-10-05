@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "probe_sha256": "d086760bd64a2f24b135f8295fdab5fe841bf596744855392dcc201b9b5afda6",
+  "report_sha256": "418959fe7d681c63df2389281d2b2aac5a94fa5d6b4f59041f3974e477598a9f",
+  "repeat_report_sha256": "ef05fc72cf435d519bb900a1a3927305d11f0a8ebf15a7dda93f0c618891ad6d",
+  "source_code_matches": true,
+  "official_artifact_hashes_match": true,
+  "saved_png_npz_hashes_match": true,
+  "repeat_values_equal": true,
+  "numpy_float64_cosine_max_abs_error": 1.446027380058723e-07,
+  "numpy_float64_gram_max_abs_error": 1.0145079689660719e-06,
+  "corrupted_cache_rejected_without_network": true,
+  "scope": "Saved DINOv2 frozen CPU feature evidence; no training, benchmark or DINOv3 execution."
+}

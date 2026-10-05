@@ -1,6 +1,6 @@
 # 全套實驗與審查
 
-本頁列出教材的每一份執行紀錄與審查紀錄：42 節各自的實驗、把幾節實驗延長或接上真實檔案與資料的補充實驗、兩項 GPU 檢查、網站導覽裡每一頁的審查，以及發布後的公開驗證。這些結果能支持哪些結論、哪些事沒有驗證，見〈[驗證範圍](../status.md)〉。
+本頁列出教材的每一份執行紀錄與審查紀錄：52 節各自的實驗、把幾節實驗延長或接上真實檔案與資料的補充實驗、兩項 GPU 檢查、網站導覽裡每一頁的審查，以及發布後的公開驗證。這些結果能支持哪些結論、哪些事沒有驗證，見〈[驗證範圍](../status.md)〉。
 
 ## 執行紀錄怎麼產生、怎麼檢查
 
@@ -9,6 +9,8 @@
 紀錄綁定的檔案都沒變，紀錄就一直有效；其中任何一個改了，紀錄才算過期，要重跑。過期的紀錄由 `scripts/record_evidence.py` 列出並重產（GPU 紀錄經 GitHub Actions 重跑），步驟見〈[發布與帳號設定](../preparation/publish.md)〉。沒有過期的紀錄沿用，保留原本的日期與電腦，所以各節頁尾的日期不一定相同。發布網站的 Pages 工作流程（Publish Learn to YOLO）建置網站之前，先用 `scripts/validate_curriculum_evidence.py` 核對：每份紀錄都要對得上目前的程式，notebook 最後一格的輸出要和紀錄一字不差，頁面上也要找得到紀錄的日期、CPU 型號與 PyTorch 版本（比對整頁文字）；有一項不符，網站就不會發布。頁尾區塊裡的輸出由 `scripts/verify_curriculum.py` 從紀錄寫入，這項檢查不逐字比對它，也不檢查網站上的任何實驗圖。這項檢查只比對、不重跑程式，確認的是紀錄對得上目前的程式、notebook 存的就是紀錄的輸出；頁面講得對不對，由下方的審查負責。
 
 第 9–16 章（各版 YOLO 的機制）的通過條件，是數值、shape、監督訊號與梯度符合該節寫出的定義，不是把每個版本的完整模型重訓一次。沒有在相同資料與相同訓練預算（例如步數）下做完整對照的地方，教材不寫 AP 或速度提升的結論。
+
+第 21–23 章是選讀支線。tiny ViT 用 60 步訓練紅／藍矩形分類；tiny DINO 用 160 步無標籤訓練，再凍結特徵做近鄰、linear probe 與定位。兩者都核對中途 checkpoint 恢復後與連續訓練的狀態。原始 DINO 的完整 multi-crop、DINOv2 與 DINOv3 預訓練都沒有重現。23.1 主例只算手工 Gram 矩陣；另有選讀的官方 DINOv2 CPU 特徵實驗，約 84.2 MiB 權重不進 Git。
 
 ## 逐節執行清單
 
@@ -59,6 +61,19 @@
 |19 [簡易 tracking](../lessons/19-tracking.md)|固定數值／幾何／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/19-tracking.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/19-tracking.md)|
 |20 [ONNX／TensorRT](../lessons/20-deployment.md)|短步更新／管線|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/20-deployment.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/20-deployment.md)|
 
+|節次／教材|實驗範圍|執行紀錄|審查紀錄|
+|---|---|---|---|
+|[21.1 圖片切成 patch](../lessons/21-patches.md)|固定數值／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-patches.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/21-patches.md)|
+|[21.2 Patch 如何交換資訊](../lessons/21-attention.md)|固定數值／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-attention.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/21-attention.md)|
+|[21.3 組成 tiny ViT](../lessons/21-transformer.md)|固定數值／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-transformer.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/21-transformer.md)|
+|[21.4 訓練、評估與恢復 ViT](../lessons/21-training.md)|完整小模型訓練／評估／checkpoint|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-training.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/21-training.md)|
+|[22.1 沒有標籤的兩種視圖](../lessons/22-views.md)|固定數值／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-views.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/22-views.md)|
+|[22.2 一致但沒有資訊：collapse](../lessons/22-collapse.md)|固定數值／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-collapse.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/22-collapse.md)|
+|[22.3 從零實作 DINO 核心](../lessons/22-distillation.md)|完整小模型訓練／評估／checkpoint|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-distillation.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/22-distillation.md)|
+|[22.4 特徵有沒有用：近鄰與 linear probe](../lessons/22-features.md)|凍結特徵／下游訓練與評估|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-features.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/22-features.md)|
+|[23.1 DINO 版本與官方預訓練特徵](../lessons/23-dino-versions.md)|固定數值／張量機制|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-dino-versions.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/23-dino-versions.md)|
+|[23.2 凍結 patch 特徵接回定位](../lessons/23-detection-bridge.md)|凍結特徵／下游訓練與評估|[紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-detection-bridge.json)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/23-detection-bridge.md)|
+
 ## 補充實驗清單
 
 下面這些實驗把第 1、3、4、7、8、10 章的實驗延長、讓第 18、19 章讀寫真正的影片檔，並用 Fashion-MNIST 核對分類的訓練流程，結果在對應的頁面解說。每份紀錄也都記下執行的電腦，並用 SHA-256 綁定所用的腳本與它 import 的模組：完整的檔案清單記在各紀錄的 `dependencies_sha256`，`scripts/evidence_records.py` 列出每份紀錄從哪些入口檔開始追查 import。
@@ -85,7 +100,7 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提
 
 ## 審查
 
-這一版依 repo 的 `clear-tutorial` skill 重審，審查者都是 AI。先前的完整頁面審查仍保留，不改標成逐段盲讀。
+既有主線上一輪依 repo 的 `clear-tutorial` skill 重審，審查者都是 AI；下列是 `16f6910` 那一輪的歷史範圍，新支線另記於下方。先前的完整頁面審查仍保留，不改標成逐段盲讀。
 
 1. **先記首次閱讀的理解。** 凍結 `16f6910` 的 59 個導覽頁，由六位獨立讀者按段落讀。每開放下一段前，先保存當下的理解、原文卡點、猜測與缺圖；沒有先交全文再要求扮演初學者。各組按指定路線實際補讀前提，並非每組都已讀過整本書。
 2. **修改後查技術與證據。** 由未撰寫該頁的人對照程式、執行紀錄與圖；疑點回查論文、固定版本的官方程式或文件。必要實驗用 CPU 重跑；這次文字與圖解修訂沒有新增 GPU 訓練。
@@ -117,12 +132,18 @@ AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有�
 |[Pages 與 Colab](../research/pages-colab.md)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/research-pages-colab.md)|
 |[版本來源查證](../research/version-sources.md)|[審查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/research-version-sources.md)|
 
+## ViT／DINO 支線的審閱與選讀紀錄
+
+新支線依 clear-tutorial 分成逐段首次閱讀、技術與證據核對、前後銜接三輪；原始記錄與修正複查保存在 [本次審閱目錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/vision-v0.6.0)。先前 `16f6910` 的審閱是舊版紀錄，不充當新增十節的審閱。AI 審閱仍不等於真人學生的理解測試。
+
+[官方 DINOv2 選讀紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/dinov2-pretrained.json)保存固定官方程式、權重 SHA-256、前處理、輸出 shape、近鄰與計時範圍。這是兩張受控圖的凍結特徵提取，不是自然影像語意品質評測，也沒有 DINOv3 訓練。
+
 ## 發布後的公開驗證
 
-網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.5.0`）。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
+網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.6.0`）。下文說明本版的驗證流程；連結紀錄實際驗證的版本以各自的 `source_ref` 為準。`lessons-v0.5.0` 的紀錄只涵蓋原有 42 節，不驗證新增的十節。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
 
 - [`curriculum-publication.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)：在 runner 上嚴格建置（`zensical build --strict`，有警告就算失敗）這個 tag 的網站，再和公開網站比對：導覽裡每一頁的正文，以及 `assets/diagrams/` 的每張圖，都要完全相同。也確認每節的 Colab 連結開的是這個 tag 的 notebook、環境格固定在這個 tag、最後一格就是該節程式，以及先前發布的 tag 仍指向原本的 commit。
-- [`curriculum-release-bootstrap.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)：除了第 20 章，41 本 notebook 的環境格逐字相同，所以用第 0 章的 notebook 測四種情況：沒有 PyTorch、裝著其他版本、已經是 2.9.1，以及其他版本已經載入（環境格改裝 2.9.1 後要求重新啟動，用新的程序重跑兩格後通過）。每種情況都用全新的資料夾與虛擬環境，照 notebook 的順序執行環境格與最後一格，最後一格的輸出要和 notebook 存的輸出相同。第 20 章的環境格另外安裝 ONNX 套件，所以另在沒有 PyTorch 的環境執行一次它的兩格（輸出含計時，不要求相同）。接著在另一份全新的 clone 裡，依序執行 README 的 bash 區塊裡的每個指令（不會自己結束的 `zensical serve` 除外），其中包括 pytest，以及把 42 節的實驗格各跑一次、和紀錄比對輸出的 `scripts/check_lesson_runtime.py`（輸出和紀錄不同不算失敗，哪些節逐字相同記在紀錄的 `lesson_runtime`）。
+- [`curriculum-release-bootstrap.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)：除了第 20 章，51 本 notebook 的環境格逐字相同，所以用第 0 章的 notebook 測四種情況：沒有 PyTorch、裝著其他版本、已經是 2.9.1，以及其他版本已經載入（環境格改裝 2.9.1 後要求重新啟動，用新的程序重跑兩格後通過）。每種情況都用全新的資料夾與虛擬環境，照 notebook 的順序執行環境格與最後一格，最後一格的輸出要和 notebook 存的輸出相同。第 20 章的環境格另外安裝 ONNX 套件，所以另在沒有 PyTorch 的環境執行一次它的兩格（輸出含計時，不要求相同）。接著在另一份全新的 clone 裡，依序執行 README 的 bash 區塊裡的每個指令（不會自己結束的 `zensical serve` 除外），其中包括 pytest，以及把 52 節的實驗格各跑一次、和紀錄比對輸出的 `scripts/check_lesson_runtime.py`（輸出和紀錄不同不算失敗，哪些節逐字相同記在紀錄的 `lesson_runtime`）。
 
 依發布步驟，兩份紀錄最外層的 `passed` 都是 `true`，才 commit 到 main。這兩份紀錄在 tag 建立之後才產生，所以 tag 裡的 `curriculum-publication.json` 是上一版的驗證。紀錄裡逐項記著每一頁、每種情況與每個指令的結果。runner 是 GitHub 的 Linux 機器，不是 Google Colab 的託管 runtime；這兩項驗證沒有登入 Google，也沒有用到 GPU。
 

@@ -1,0 +1,39 @@
+{
+  "id": "22-distillation",
+  "passed": true,
+  "executed_at_utc": "2026-10-05T11:48:24.915909+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "bc6e6a5daf699ac89a7073aa2612331e3f409d77ec09ddb8124db092478c95ba",
+  "dependencies_sha256": {
+    "lesson_cases/22-distillation.py": "bc6e6a5daf699ac89a7073aa2612331e3f409d77ec09ddb8124db092478c95ba",
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/figures.py": "155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/self_distillation.py": "15d60e80fe19a14d980cd44999143a4da18847f19737fb1d762f85c90f8f11d0",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "miniyolo/vision_data.py": "92b1cc3885a0b897eba2a24ac1cd604c55b5ea903a1886904e64b9364c67dde1",
+    "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
+  },
+  "process_wall_seconds": 12.4181,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "{\n  \"seed\": 7,\n  \"device\": \"cpu\",\n  \"steps\": 160,\n  \"checkpoint_step\": 80,\n  \"train_samples\": 128,\n  \"batch_size\": 24,\n  \"backbone\": {\n    \"image_size\": 32,\n    \"patch_size\": 8,\n    \"embed_dim\": 32,\n    \"depth\": 2,\n    \"num_heads\": 4,\n    \"mlp_ratio\": 2,\n    \"num_classes\": 2,\n    \"dropout\": 0.0\n  },\n  \"training_config\": {\n    \"output_dim\": 16,\n    \"hidden_dim\": 64,\n    \"bottleneck_dim\": 16,\n    \"batch_size\": 24,\n    \"learning_rate\": 0.0005,\n    \"student_temperature\": 0.15,\n    \"teacher_temperature\": 0.08,\n    \"teacher_momentum\": 0.95,\n    \"center_momentum\": 0.9,\n    \"global_scale\": [\n      0.65,\n      1.0\n    ]\n  },\n  \"first_step\": {\n    \"step\": 1,\n    \"loss\": 1.9427120685577393,\n    \"teacher_entropy\": 1.7583107948303223,\n    \"student_grad_norm\": 24.119150161743164\n  },\n  \"last_step\": {\n    \"step\": 160,\n    \"loss\": 1.8742752075195312,\n    \"teacher_entropy\": 1.8416004180908203,\n    \"student_grad_norm\": 0.9461426734924316\n  },\n  \"backbone_weights_changed\": true,\n  \"teacher_has_no_grad\": true,\n  \"resume\": {\n    \"next_random_views_identical\": true,\n    \"student_teacher_optimizer_center_identical\": true,\n    \"loss_history_identical\": true,\n    \"final_step\": 160\n  },\n  \"diagnostics_train\": {\n    \"feature_std\": 0.32309845089912415,\n    \"normalized_feature_std\": 0.056578539311885834,\n    \"mean_pair_cosine\": 0.8623811602592468,\n    \"mean_output_entropy\": 1.7878174781799316,\n    \"marginal_output_entropy\": 2.215689182281494\n  },\n  \"elapsed_training_and_resume_seconds\": 7.333005840016995,\n  \"checkpoint_path\": \"artifacts/runs/dino/22-distillation-midpoint.pt\",\n  \"simplifications\": \"2 global views; ordinary MLP and no weight normalization; fixed temperatures/LR/EMA; no multi-crop or official schedules\",\n  \"limitation\": \"DINO2021 mechanism demonstration from scratch; loss/diagnostics are not downstream or natural-image capability proof\"\n}\nactual history: artifacts/runs/dino/22-distillation.json\n",
+  "stderr": "",
+  "exit_code": 0
+}

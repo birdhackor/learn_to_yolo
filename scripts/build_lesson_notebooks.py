@@ -43,6 +43,11 @@ def optional_experiment(lesson_id: str) -> str:
                 "!python scripts/verify_video_file.py\n```\n\n"
                 "它自行產生 12 幀的無損 AVI，實際讀檔、模型推論、只替 class 0 配 track ID，"
                 "並檢查 RGB 與框一致、影片資源有釋放；結果寫在 artifacts/runs/video-file/。沒有測實體相機。")
+    if lesson_id == "23-dino-versions":
+        return ("\n\n### 可選：官方 DINOv2 凍結特徵\n\n下面的三向量主例不下載權重。跑完後可另開一個 code cell：\n\n"
+                "```python\n!python scripts/run_dino_pretrained.py --report artifacts/runs/dinov2-pretrained/report.json\n```\n\n"
+                "第一次下載約 84.2 MiB 官方權重，並核對固定官方程式與權重 SHA-256。"
+                "這只提取兩張受控圖的特徵，不訓練 DINOv2／DINOv3；輸入 PNG、NPZ 與 JSON 存在 artifacts/runs/，解讀見網頁。")
     return ""
 
 
@@ -166,7 +171,7 @@ def main() -> None:
     registry["note"] = ("status ready means the page, lesson program and notebook exist; execution records are in "
                         "artifacts/checks/curriculum/ and reviews in reviews/.")
     registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n")
-    print(f"Paired 42 authored lessons with notebooks pinned to {args.ref}.")
+    print(f"Paired {sum(s['kind'] == 'lesson' for s in registry['sections'])} authored lessons with notebooks pinned to {args.ref}.")
     if missing:
         print("No current execution record (run scripts/verify_curriculum.py): " + ", ".join(missing))
 

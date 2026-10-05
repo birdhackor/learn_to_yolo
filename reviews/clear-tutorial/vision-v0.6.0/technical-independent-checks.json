@@ -1,0 +1,157 @@
+{
+  "data_and_patch": {
+    "samples": {
+      "train": 128,
+      "val": 64,
+      "test": 64
+    },
+    "class_counts": {
+      "train": [
+        64,
+        64
+      ],
+      "val": [
+        32,
+        32
+      ],
+      "test": [
+        32,
+        32
+      ]
+    },
+    "cross_split_identical_image_counts": {
+      "train/val": 0,
+      "train/test": 0,
+      "val/test": 0
+    },
+    "conv_linear_max_abs_error": 7.152557373046875e-07,
+    "tiny_parameters": 23970,
+    "row1_column2_patch_index": 6
+  },
+  "one_step": {
+    "loss": 2.003119945526123,
+    "independent_cross_view_ce": 2.003119945526123,
+    "center_formula_max_abs_error": 7.450580596923828e-09,
+    "teacher_ema_formula_max_abs_error": 1.1920928955078125e-07,
+    "teacher_has_no_grad": true,
+    "baseline_equals_exact_initial_backbone": true
+  },
+  "checkpoint_nondefault": {
+    "keys": [
+      "backbone_config",
+      "config",
+      "format_version",
+      "initial_backbone",
+      "loss",
+      "optimizer",
+      "python_rng",
+      "seed",
+      "step",
+      "student",
+      "teacher",
+      "torch_rng",
+      "view_rng"
+    ],
+    "config": {
+      "output_dim": 16,
+      "hidden_dim": 64,
+      "bottleneck_dim": 16,
+      "batch_size": 4,
+      "learning_rate": 0.001,
+      "student_temperature": 0.19,
+      "teacher_temperature": 0.05,
+      "teacher_momentum": 0.77,
+      "center_momentum": 0.66,
+      "global_scale": [
+        0.5,
+        0.9
+      ]
+    },
+    "backbone_config": {
+      "image_size": 32,
+      "patch_size": 8,
+      "embed_dim": 32,
+      "depth": 2,
+      "num_heads": 4,
+      "mlp_ratio": 2,
+      "num_classes": 2,
+      "dropout": 0.1
+    },
+    "optimizer_weight_decay": 0.01,
+    "completed_step": 5,
+    "exact_student_teacher_center_optimizer_suffix": true,
+    "next_views_equal": true,
+    "torch_python_view_rng_equal": true,
+    "scope": "3 continuous updates then 2-update suffix; CPU PyTorch 2.9.1; no cross-hardware claim"
+  },
+  "bridge_saved_checkpoint": {
+    "sha256": "b05286d1b8a8bee23615a696cf79f95e48f0e7f4511168538b9d8348792e1002",
+    "train_mean_std_exactly_match_saved": true,
+    "independently_recomputed_metrics": {
+      "train": {
+        "count": 128,
+        "class_correct": 128,
+        "mean_iou": 0.8593764049657036,
+        "joint_correct_count": 128
+      },
+      "val": {
+        "count": 64,
+        "class_correct": 64,
+        "mean_iou": 0.6160325198768952,
+        "joint_correct_count": 49
+      },
+      "test": {
+        "count": 64,
+        "class_correct": 64,
+        "mean_iou": 0.6056987739109005,
+        "joint_correct_count": 54
+      }
+    },
+    "independently_recomputed_first4_test_iou": [
+      0.4459248079420622,
+      0.35220033766069886,
+      0.5610500001184117,
+      0.6325744118405716
+    ],
+    "matches_versioned_evidence": true,
+    "scope": "Saved weights + independently regenerated splits; no rerun of SSL or head training."
+  },
+  "official_saved_features": {
+    "npz_sha256": "e9016bde6689a139f857d8b1876085a67da0d1639f4b5f9c94e5f4d8401da167",
+    "cls_cosine_0_1": 0.9850406646728516,
+    "query_index": 68,
+    "query_xyxy_pixels": [
+      56,
+      56,
+      70,
+      70
+    ],
+    "top8_index": [
+      187,
+      68,
+      6,
+      188,
+      4,
+      214,
+      182,
+      64
+    ],
+    "top8_cosine": [
+      0.8331384062767029,
+      0.7685461640357971,
+      0.689591109752655,
+      0.6859009861946106,
+      0.6820250749588013,
+      0.6808254718780518,
+      0.6657797694206238,
+      0.6625752449035645
+    ],
+    "official_code_and_weights_verified": {
+      "official_code": "209c4f04fb0d63a869f7ea5c18d61dc7d8196c88cb1cb4a53bf3b0607146685c",
+      "checkpoint": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9"
+    },
+    "all_official_python_license_sha_match_record": true,
+    "matches_versioned_evidence": true,
+    "scope": "Recompute from SHA-matching saved model outputs, no new official forward."
+  }
+}

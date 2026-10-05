@@ -1,6 +1,6 @@
 # 7.4 Grid MiniYOLO：三步訓練與診斷
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-training.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/07-training.ipynb){ .md-button }
 
 前置：[資料](07-data.md)、[targets](07-targets.md)、[loss](07-loss.md)。這三節已經確認：畫素和框對得上（資料）、每個物件由哪一格負責（targets）、loss 與梯度能手算（loss）。本節才把真正的 CNN 和 optimizer 接到這條偵測管線上，先確認 forward、backward、`optimizer.step()` 三段都真的執行、參數真的會改變；之後才規劃少量 overfit 和獨立資料評估。讀完本節，你能說出這個 CNN 怎麼輸出 4×4 格的預測、看懂三步訓練印出的數字，也知道「一個框都畫不出來」時該依序查什麼。
 
@@ -83,7 +83,7 @@ for step in range(3):
 
 完整程式每一步最後印出 total、box、objectness、classification，以及上面算出的正格／負格 sigmoid(objectness) 平均。這兩個平均用的是這一步更新前算出的 prediction，所以每一行顯示的是該次更新前的狀態，不是更新後重新 forward 的結果。
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/07-training.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-training.py`。應看到 step 0、1、2 三行分項 loss，都是有限值；最後一行是 `3 real CPU optimizer steps; parameters changed; no generalization claim`（意思是：真的在 CPU 做了 3 次更新、參數已改變、不宣稱泛化）。通過的條件是梯度有限、參數有更新、正格數與 shape 正確；三個點的 loss 不要求一路下降（單調）。PyTorch 版本或底層運算的實作不同時，loss 的最後一兩位小數可能不同。
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/07-training.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-training.py`。應看到 step 0、1、2 三行分項 loss，都是有限值；最後一行是 `3 real CPU optimizer steps; parameters changed; no generalization claim`（意思是：真的在 CPU 做了 3 次更新、參數已改變、不宣稱泛化）。通過的條件是梯度有限、參數有更新、正格數與 shape 正確；三個點的 loss 不要求一路下降（單調）。PyTorch 版本或底層運算的實作不同時，loss 的最後一兩位小數可能不同。
 
 以本頁最下方的執行紀錄為例，step 0 的 total 與 objectness 能用前幾節的公式手算核對，classification 能估出接近 ln 2 的值；三步之間 box 微升、total 仍下降，這是正常的。
 

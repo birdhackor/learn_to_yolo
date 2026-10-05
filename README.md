@@ -4,7 +4,9 @@
 
 **[閱讀教材](https://birdhackor.github.io/learn_to_yolo/)** · [課程大綱](docs/planning/outline.md) · [驗證範圍](docs/status.md)
 
-42 節網頁各有一本獨立的 Colab notebook，只讀網頁也能學；Colab 與 notebook 用的程式固定在 `lessons-v0.5.0` 這個 tag。本次依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做逐段閱讀、修改後的技術核對與銜接複查；[原始閱讀紀錄與處理](reviews/clear-tutorial/16f6910/)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查也保存在 [`reviews/`](reviews/)，不改標成盲讀。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[全套實驗與審查](docs/validation/curriculum.md)。模型是教學用的簡化版，不是原版的完整重現。
+本次工作版安排 52 節：第 0–20 章的原有 42 節主線，加上第 21–23 章的 10 節 ViT／DINO 選讀支線。主線順序不變；學過 CNN、ResNet 與 [15.1 attention](docs/lessons/15-attention-bridge.md) 後，可分岔讀 [21.1 圖片切成 patch](docs/lessons/21-patches.md)，理解圖片如何交給 Transformer、自監督特徵如何學習，再接回單物件定位。只讀網頁也能學；每節配對一本獨立 notebook。
+
+本版教材與 notebook 固定到 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準。既有 `lessons-v0.5.0` 的發布驗證與依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做的主線審查保留原本範圍；[原始閱讀紀錄與處理](reviews/clear-tutorial/16f6910/)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查也保存在 [`reviews/`](reviews/)，不改標成盲讀，也不當成新支線的審查。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[驗證範圍](docs/status.md)。模型是教學用的簡化版，不是原版的完整重現。
 
 ## CPU 本機執行
 
@@ -19,11 +21,19 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 .venv-model/bin/python scripts/check_lesson_runtime.py
 ```
 
-最後一行在這台電腦依序執行 42 節 notebook 的實驗格，逐節和執行紀錄比對輸出。計時與部分小數換一台電腦可能不同，這不算失敗；有任何一節報錯，這個命令就回報失敗（結束代碼不是 0）。報告寫到 git 不追蹤的 `artifacts/runs/lesson-runtime.json`，repo 追蹤的檔案不會改變。
+最後一行在這台電腦依序執行配對表中的 52 節 notebook 實驗格，逐節和執行紀錄比對輸出。計時與部分小數換一台電腦可能不同，這不算失敗；有任何一節報錯，這個命令就回報失敗（結束代碼不是 0）。報告寫到 git 不追蹤的 `artifacts/runs/lesson-runtime.json`，repo 追蹤的檔案不會改變。
 
 要照網頁上的 `python ...` 命令執行，先用 `source .venv-model/bin/activate` 啟用環境，或一律改用完整路徑 `.venv-model/bin/python`。Windows 改用 `.venv-model\Scripts\python.exe`，並先在 PowerShell 設定 `$env:PYTHONPATH='.'`。各節實驗不需要下載資料、GPU、torchvision 或預訓練權重。
 
 Notebook 的最後一格是完整、可修改的實驗程式，與 `lesson_cases/` 的同名檔逐字相同。前面的環境格直接使用 Colab runtime 的 Python，取得固定 tag 的程式並安裝固定版本的套件（PyTorch 不是 2.9.1 時改裝 2.9.1 的 CPU 版）。
+
+## ViT／DINO 選讀支線
+
+[第 21 章](docs/lessons/21-patches.md)從 32×32 RGB 圖的 patch、位置與 CLS 開始，組成 2 個 Transformer blocks、23,970 個參數的小 ViT，再實際更新全部參數。固定設定的 CPU 60 步實驗，train 分類 loss 從 0.710059 降到 0.007155；獨立 seed 的 validation 與 test 各答對 64／64 張，checkpoint 續訓也和連續訓練一致。這只支持紅／藍矩形這個受控分類任務。
+
+[第 22 章](docs/lessons/22-views.md)介紹 DINO（2021）的自監督影像特徵方法：訓練時不看類別標籤，讓 student 對同一張圖的不同視圖，學習 teacher 提供的目標。這裡用小模型重現核心機制，並非原版規模；CPU 160 步後，凍結的自監督特徵與隨機特徵接上相同線性分類器，test 都是 64／64，這次沒有觀察到自監督的分類優勢。DINO（2021）與同名的 DETR 系列偵測器是不同方法。
+
+[第 23 章](docs/lessons/23-dino-versions.md)區分 DINO、DINOv2、DINOv3 的來源與適用範圍，再把凍結 patch 特徵接到可訓練的單物件定位 head。CPU 範例的 test 平均 IoU 為 0.605699，類別正確且 IoU≥0.5 的圖片有 54／64 張；這不是多物件偵測的 AP。支線預設不下載資料或權重、不需 GPU；官方預訓練特徵是另選的操作，沒有新增 GPU 訓練，也沒有實作 DINOv3。
 
 ## 從零訓練小偵測器
 
@@ -89,4 +99,4 @@ python3 scripts/validate_site.py
 - `artifacts/checks/`：執行與檢查紀錄。每節一份的執行紀錄在 `artifacts/checks/curriculum/`。這些紀錄和補充實驗、GPU 的紀錄都記下執行的電腦或 GPU，並以 SHA-256 綁定各自的程式；補充與 GPU 紀錄的清單在 `scripts/evidence_records.py`。其他輸出寫在 git 不追蹤的 `artifacts/runs/` 等位置。
 - `reviews/`：網站導覽裡每一頁的 AI 審查紀錄；`coverage.json` 以 SHA-256 記下每份審查涵蓋的頁面文字、圖與程式。
 - `scripts/`：資料下載、補充實驗、執行紀錄與網站檢查的工具。
-- `section-map.json`：42 節的網頁、notebook 與固定 tag 對應表；`status: ready` 只表示網頁、程式與 notebook 都在。
+- `section-map.json`：52 節的網頁、notebook 與固定 tag 對應表；`status: ready` 只表示網頁、程式與 notebook 都在，不代表已審查或發布。

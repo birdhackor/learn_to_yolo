@@ -1,6 +1,6 @@
 # 1 VGG 風格小 CNN：讓局部圖樣重複使用
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/01-small-cnn.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/01-small-cnn.ipynb){ .md-button }
 
 上一節讓一個權重學會把 2 變成 4。現在換成圖片：**看到紅矩形，回答 0；看到藍矩形，回答 1。** 我們要做的 CNN（卷積神經網路）怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。
 
@@ -298,7 +298,7 @@ step=2, loss=0.6940
     display(SVG(filename='artifacts/runs/learning/01-small-cnn/learning.svg'))
     ```
 
-    第一行開頭的 `!` 表示把這行當成終端機指令執行。這支腳本只把結果寫到 `artifacts/runs/learning/01-small-cnn/`，不會覆寫網站用的紀錄與圖：`report.json` 是完整結果（JSON 格式的文字檔），`learning.svg` 是 loss 曲線。JSON 是一種用純文字寫資料的格式，每一項依序寫欄位名稱、冒號與值，例如 `"seed": 7`。腳本執行時也會印出同樣的 JSON，只省略每一步的 loss。後兩行把這張曲線顯示在 notebook 裡。在本機則於專案根目錄執行 `python scripts/run_learning_extensions.py --section 01-small-cnn`（不加 `!`），再用瀏覽器打開 `artifacts/runs/learning/01-small-cnn/learning.svg`。對照上面的表：`models.cnn` 底下的 `initial_loss`、`last_pre_update_loss` 是表中箭頭兩邊的 loss，`train_accuracy`、`validation_accuracy` 是後兩欄，`predicted_classes` 是 40 次更新後的預測，`min_gradient_l2`、`max_gradient_l2` 是梯度 L2 長度的最小、最大值；`machine`、`code`、`dependencies_sha256` 記錄執行的電腦與程式版本，可以先略過。重跑得到的 loss 小數可能和紀錄略有不同，這是正常的。原始完整紀錄：[40 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn-learning.json)。
+    第一行開頭的 `!` 表示把這行當成終端機指令執行。這支腳本只把結果寫到 `artifacts/runs/learning/01-small-cnn/`，不會覆寫網站用的紀錄與圖：`report.json` 是完整結果（JSON 格式的文字檔），`learning.svg` 是 loss 曲線。JSON 是一種用純文字寫資料的格式，每一項依序寫欄位名稱、冒號與值，例如 `"seed": 7`。腳本執行時也會印出同樣的 JSON，只省略每一步的 loss。後兩行把這張曲線顯示在 notebook 裡。在本機則於專案根目錄執行 `python scripts/run_learning_extensions.py --section 01-small-cnn`（不加 `!`），再用瀏覽器打開 `artifacts/runs/learning/01-small-cnn/learning.svg`。對照上面的表：`models.cnn` 底下的 `initial_loss`、`last_pre_update_loss` 對應表中的第 1 點與第 40 點 loss，`train_accuracy` 對應 8 張訓練圖的正確率；`validation_accuracy` 是 `null`（沒有結果），因為這個 40 步實驗沒有評估未參與訓練的資料，`predicted_classes` 是 40 次更新後的預測，`min_gradient_l2`、`max_gradient_l2` 是梯度 L2 長度的最小、最大值；`machine`、`code`、`dependencies_sha256` 記錄執行的電腦與程式版本，可以先略過。重跑得到的 loss 小數可能和紀錄略有不同，這是正常的。原始完整紀錄：[40 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn-learning.json)。
 
 
     每步梯度的 L2 長度，是所有參數梯度平方相加、再開根號。這 40 次的長度最小約 \(1.4\times10^{-18}\)，最大約 0.80。大於 0 表示有非零梯度；程式另比較訓練前後的參數，確認權重改變。梯度大小本身不代表分類好不好。

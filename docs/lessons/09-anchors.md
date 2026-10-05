@@ -1,6 +1,6 @@
 # 9.1 YOLOv2 機制：anchor 是尺寸起點
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/09-anchors.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/09-anchors.ipynb){ .md-button }
 
 本節把第 7 章的寬高寫法換成 YOLOv2 的 anchor 寫法（簡化版），每格也從一個槽變成兩個槽。槽（slot）是第 5 章介紹過的概念，指一個可以輸出框的位置。讀完你能手算一個框的訓練 target（中心比例與寬高修正量），也能說出全部 32 個槽（4×4 格，每格 2 個）中，哪個負責學物件、哪個不算 loss、哪些學背景。
 

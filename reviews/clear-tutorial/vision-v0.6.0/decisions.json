@@ -1,0 +1,97 @@
+[
+  {
+    "reader": "vit",
+    "unit": "vit/01-small-cnn/08",
+    "original_severity": "optional",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "vit-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/03-identity/01",
+    "original_severity": "burden",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "vit-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/21-patches/04",
+    "original_severity": "optional",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "vit-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/21-attention/01",
+    "original_severity": "burden",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "vit-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "vit",
+    "unit": "vit/21-attention/03",
+    "original_severity": "burden",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "vit-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/01-small-cnn/08",
+    "original_severity": "optional",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "vit-recheck.md",
+    "note": "Shared CNN wording closed by ViT and guide reviewer; DINO reviewer did not recheck this optional instance."
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-views/01",
+    "original_severity": "burden",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "dino-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-views/01",
+    "original_severity": "optional",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "dino-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-distillation/01",
+    "original_severity": "burden",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "dino-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-features/02",
+    "original_severity": "optional",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "dino-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "dino",
+    "unit": "dino/22-features/05",
+    "original_severity": "burden",
+    "status": "closed_in_scoped_recheck",
+    "evidence": "dino-recheck.md",
+    "note": "Original first-read note retained."
+  },
+  {
+    "reader": "vision_transitions",
+    "unit": "22-distillation",
+    "status": "optional_deferred",
+    "suggestion": "交叉熵公式可就地註明log是自然對數ln。",
+    "reason": "第三輪未發現此處影響理解，標為非必改；本輪保留已獨立核回的正文，供下一次教材修訂評估。"
+  }
+]

@@ -1,6 +1,6 @@
 # 15.1 Feature map 到 attention：四個位置怎麼互相讀取
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/15-attention-bridge.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/15-attention-bridge.ipynb){ .md-button }
 
 3×3 卷積在每個位置都用同一組濾鏡，一層只讀以自己為中心的 3×3 格。這組權重訓練完就固定，不管輸入哪張圖都一樣。特徵圖很大時，要讓左上角知道右下角的資訊，得疊很多層卷積。attention（注意力）換一種讀法：每個位置一層就能讀所有位置，而且「讀誰多一點」是用當下的特徵算出來的，換一張圖就不同。
 
@@ -209,6 +209,10 @@ N² 是把整張權重表實際存下來時的大小。上面提到的 FlashAtte
     目標改用原 feature 後，輸入和目標都有 channel 對調的對稱，三塊投影又都從單位矩陣出發，所以 Q、K 兩塊收到的梯度相同（用 float32 計算，最多只差捨入誤差）。`torch.allclose` 判定兩者相等，加上 `not` 就不成立。前一條斷言照樣通過：三塊梯度都不全為 0，只是 Q、K 兩塊彼此相同。這就是目標要把 channel1 乘 0.5 的原因。
 
 參考來源：[Attention Is All You Need](https://arxiv.org/abs/1706.03762)、[YOLOv12 作者 AAttn 實作](https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py)（AAttn 是作者程式裡 area attention 模組的類別名稱）。
+
+??? note "選讀支線：圖片直接交給 Transformer"
+
+    主線接著讀 [15.2 Area Attention](15-area-attention.md)。如果已讀過 CNN 與 ResNet，也可以從 [21.1 圖片切成 patch](21-patches.md)分岔：沿紅／藍矩形例子，把本節的 Q／K／V 接成小 ViT，再理解 DINO（2021）的自監督特徵，最後接回單物件定位。這是第 21–23 章的 10 節選讀支線，不改主線順序；DINO（2021）與同名的 DETR 系列偵測器不同。完整安排見[閱讀路線](../learning-path.md)。
 
 <!-- curriculum-evidence:start -->
 

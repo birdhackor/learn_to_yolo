@@ -68,7 +68,8 @@ def excerpt_problems(page: Path) -> list[str]:
 
 sections = json.loads((ROOT / "section-map.json").read_text())["sections"]
 lessons = [s for s in sections if s["kind"] == "lesson"]
-assert len(lessons) == 42
+assert lessons and len({s["id"] for s in lessons}) == len(lessons)
+assert {s["id"] for s in lessons} == {p.stem for p in (ROOT / "lesson_cases").glob("*.py")}
 excerpts = []
 for section in lessons:
     lesson_id = section["id"]
@@ -94,4 +95,4 @@ for svg in (ROOT / "docs/assets/diagrams").glob("*.svg"):
     assert root.attrib.get("viewBox"), f"SVG needs responsive viewBox: {svg}"
     namespace = {"s": "http://www.w3.org/2000/svg"}
     assert root.find("s:title", namespace) is not None, f"SVG needs accessible title: {svg}"
-print("42 lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK")
+print(f"{len(lessons)} lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK")

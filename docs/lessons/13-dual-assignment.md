@@ -1,6 +1,6 @@
 # 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/13-dual-assignment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/13-dual-assignment.ipynb){ .md-button }
 
 第 6 章的 [NMS](06-decode-nms.md) 在推論最後保留高分框，刪掉重疊太多的同類框。本節要回答：能不能在訓練時就教模型少報重複框，推論時省掉 NMS？讀完後，你能說出 YOLOv10 為什麼訓練兩個 head、推論只留一個，並用小程式確認兩個 loss 的梯度走到哪裡。
 

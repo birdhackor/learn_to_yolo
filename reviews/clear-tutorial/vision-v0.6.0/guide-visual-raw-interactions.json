@@ -1,0 +1,87 @@
+{
+  "scope": "Actual local Chromium interaction checks; Google Colab runtime and published site are unrun",
+  "checks": [
+    {
+      "mode": "desktop",
+      "kind": "article-next-link",
+      "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-attention/#_2",
+      "h1": "21.2 ViT attention：讓小塊交換內容¶",
+      "instant_navigation_preserved_window": true,
+      "math_count": 1,
+      "math_errors": 0,
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-desktop-next-math.png"
+    },
+    {
+      "mode": "desktop",
+      "kind": "dark-mode",
+      "scheme": "slate",
+      "math_count": 1,
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-desktop-dark-math.png"
+    },
+    {
+      "mode": "desktop",
+      "kind": "search",
+      "query": "DINO",
+      "rendered_result_count": 10,
+      "first_result": "E. ViT／DINO 支線（選讀）\n23.1 DINO 版本與官方預訓練特徵\n官方 DINOv2：同一張圖，取整體與局部兩種特徵\n選讀實驗使用官方 DINOv2 ViT-S/14、沒有 register 的版本。S 表示這系列的小型模型，14 是 patch 邊長；224×224 的圖切成 16×16，共 256 個 patch。與前幾節的 tiny ViT 相比，這是另一個架構設定與一份已訓練好的權重。 它有 22,056,576 個參數，權重約 84.2 MiB。載入後固定權重，只做前向推論；沒有在本專案訓練它。 兩張輸入都是程式畫的 224×224 RGB 圖：紅方塊、綠圓形、藍三角形移到不同位置。這組材料方便核對位置；沒有自然照片的分類、偵測或語意評測。 圖中的 query 是第一張圖第 (row=4, col=4) 個 patch，列、欄從 0 開始，位於紅方塊內。拿它的 384 維特徵，和第二張圖全部 256 個 patch 算 cosine similarity，再由大到小排序。 這次 top-1 在第二張圖的 (11,11)，相似度約 0.8331，落在紅方塊；top-2 在 (4,4)，約 0.7685",
+      "first_href": "http://127.0.0.1:8765/learn_to_yolo/lessons/23-dino-versions/?h=DINO#dinov2",
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-desktop-search-DINO.png",
+      "clicked_url": "http://127.0.0.1:8765/learn_to_yolo/lessons/23-dino-versions/?h=DINO#dinov2",
+      "clicked_h1": "23.1 DINO 版本：從整張圖的答案，走到 patch 的關係¶",
+      "target_matched": true
+    },
+    {
+      "mode": "desktop",
+      "kind": "search",
+      "query": "矩形",
+      "rendered_result_count": 10,
+      "first_result": "E. ViT／DINO 支線（選讀）\n21.2 Patch 如何交換資訊\n矩形跨格，一塊需要讀其他塊\n材料仍是 seed 101 的訓練圖 3，正確答案為紅色 0。紅矩形跨過幾個 patch；我們選 patch 6 當接收者。圖中只畫 patch 1、6、7、10 四個來源，讓箭頭能看清楚；真正的模型同時讀全部 16 塊和 CLS。 箭頭從提供內容的來源指向接收者。它不表示把原圖搬動或把紅色塗到別塊；改變的是 patch 6 的特徵向量。每個來源提供一份 V，接收者按權重相加，得到包含其他位置資訊的新向量。CLS 也以同樣方式參與讀取，所以它能取得整圖各塊的內容。",
+      "first_href": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-attention/?h=%E7%9F%A9%E5%BD%A2#_1",
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-desktop-search-矩形.png",
+      "clicked_url": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-attention/?h=%E7%9F%A9%E5%BD%A2#_1",
+      "clicked_h1": "21.2 ViT attention：讓小塊交換內容¶",
+      "target_matched": true
+    },
+    {
+      "mode": "mobile",
+      "kind": "article-next-link",
+      "url": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-attention/#8-4",
+      "h1": "21.2 ViT attention：讓小塊交換內容¶",
+      "instant_navigation_preserved_window": true,
+      "math_count": 1,
+      "math_errors": 0,
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-mobile-next-math.png"
+    },
+    {
+      "mode": "mobile",
+      "kind": "dark-mode",
+      "scheme": "slate",
+      "math_count": 1,
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-mobile-dark-math.png"
+    },
+    {
+      "mode": "mobile",
+      "kind": "search",
+      "query": "DINO",
+      "rendered_result_count": 10,
+      "first_result": "E. ViT／DINO 支線（選讀）\n23.1 DINO 版本與官方預訓練特徵\n官方 DINOv2：同一張圖，取整體與局部兩種特徵\n選讀實驗使用官方 DINOv2 ViT-S/14、沒有 register 的版本。S 表示這系列的小型模型，14 是 patch 邊長；224×224 的圖切成 16×16，共 256 個 patch。與前幾節的 tiny ViT 相比，這是另一個架構設定與一份已訓練好的權重。 它有 22,056,576 個參數，權重約 84.2 MiB。載入後固定權重，只做前向推論；沒有在本專案訓練它。 兩張輸入都是程式畫的 224×224 RGB 圖：紅方塊、綠圓形、藍三角形移到不同位置。這組材料方便核對位置；沒有自然照片的分類、偵測或語意評測。 圖中的 query 是第一張圖第 (row=4, col=4) 個 patch，列、欄從 0 開始，位於紅方塊內。拿它的 384 維特徵，和第二張圖全部 256 個 patch 算 cosine similarity，再由大到小排序。 這次 top-1 在第二張圖的 (11,11)，相似度約 0.8331，落在紅方塊；top-2 在 (4,4)，約 0.7685",
+      "first_href": "http://127.0.0.1:8765/learn_to_yolo/lessons/23-dino-versions/?h=DINO#dinov2",
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-mobile-search-DINO.png",
+      "clicked_url": "http://127.0.0.1:8765/learn_to_yolo/lessons/23-dino-versions/?h=DINO#dinov2",
+      "clicked_h1": "23.1 DINO 版本：從整張圖的答案，走到 patch 的關係¶",
+      "target_matched": true
+    },
+    {
+      "mode": "mobile",
+      "kind": "search",
+      "query": "矩形",
+      "rendered_result_count": 10,
+      "first_result": "E. ViT／DINO 支線（選讀）\n21.2 Patch 如何交換資訊\n矩形跨格，一塊需要讀其他塊\n材料仍是 seed 101 的訓練圖 3，正確答案為紅色 0。紅矩形跨過幾個 patch；我們選 patch 6 當接收者。圖中只畫 patch 1、6、7、10 四個來源，讓箭頭能看清楚；真正的模型同時讀全部 16 塊和 CLS。 箭頭從提供內容的來源指向接收者。它不表示把原圖搬動或把紅色塗到別塊；改變的是 patch 6 的特徵向量。每個來源提供一份 V，接收者按權重相加，得到包含其他位置資訊的新向量。CLS 也以同樣方式參與讀取，所以它能取得整圖各塊的內容。",
+      "first_href": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-attention/?h=%E7%9F%A9%E5%BD%A2#_1",
+      "screenshot": "artifacts/runs/vision-browser-review/interaction-mobile-search-矩形.png",
+      "clicked_url": "http://127.0.0.1:8765/learn_to_yolo/lessons/21-attention/?h=%E7%9F%A9%E5%BD%A2#_1",
+      "clicked_h1": "21.2 ViT attention：讓小塊交換內容¶",
+      "target_matched": true
+    }
+  ]
+}

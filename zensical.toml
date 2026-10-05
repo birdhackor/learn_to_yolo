@@ -1,7 +1,7 @@
 # Website configuration. Lesson code and Colab retain their frozen release tag.
 [project]
 site_name = "Learn to YOLO"
-site_description = "從小型 CNN、ResNet 到 YOLO 演化的中文 PyTorch 教材，42 節圖文與獨立 Colab。"
+site_description = "從小型 CNN、ResNet 到 YOLO 演化的中文 PyTorch 教材，52 節圖文與獨立 Colab，另有 ViT／DINO 支線。"
 site_url = "https://birdhackor.github.io/learn_to_yolo/"
 repo_url = "https://github.com/birdhackor/learn_to_yolo"
 repo_name = "birdhackor/learn_to_yolo"
@@ -73,6 +73,18 @@ nav = [
     { "18 影片串流" = "lessons/18-video.md" },
     { "19 簡易 tracking" = "lessons/19-tracking.md" },
     { "20 ONNX／TensorRT" = "lessons/20-deployment.md" },
+  ] },
+  { "E. ViT／DINO 支線（選讀）" = [
+    { "21.1 圖片切成 patch" = "lessons/21-patches.md" },
+    { "21.2 Patch 如何交換資訊" = "lessons/21-attention.md" },
+    { "21.3 組成 tiny ViT" = "lessons/21-transformer.md" },
+    { "21.4 訓練、評估與恢復 ViT" = "lessons/21-training.md" },
+    { "22.1 沒有標籤的兩種視圖" = "lessons/22-views.md" },
+    { "22.2 一致但沒有資訊：collapse" = "lessons/22-collapse.md" },
+    { "22.3 從零實作 DINO 核心" = "lessons/22-distillation.md" },
+    { "22.4 特徵有沒有用：近鄰與 linear probe" = "lessons/22-features.md" },
+    { "23.1 DINO 版本與官方預訓練特徵" = "lessons/23-dino-versions.md" },
+    { "23.2 凍結 patch 特徵接回定位" = "lessons/23-detection-bridge.md" },
   ] },
   { "前置準備" = [
     { "資料規劃" = "preparation/data.md" },

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="940" viewBox="0 0 480 940" role="img" aria-labelledby="title desc">
+<title id="title">完整Pre-LayerNorm Transformer block</title><desc id="desc">手工資料流。兩條shortcut不經LN，分別將輸入X與第一段结果U送到加號。attention交換token資訊，MLP只組合每個token的特徵。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#475569"/></marker></defs>
+<style>text{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;fill:#172554;font-size:24px} .small{font-size:22px}.head{font-size:28px;font-weight:700}.line{fill:none;stroke:#475569;stroke-width:3;marker-end:url(#arrow)} image{image-rendering:pixelated}</style>
+<rect width="480" height="940" rx="12" fill="#f8fafc"/>
+<text x="240" y="42" text-anchor="middle" style="font-size:28px">一個 Pre-LN block</text>
+<rect x="56" y="62" width="300" height="62" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="206.0" y="101.0" text-anchor="middle" style="font-size:24px">X：[B,17,32]</text>
+<path d="M206 132V154" class="line"/>
+<rect x="56" y="164" width="300" height="64" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="206.0" y="204.0" text-anchor="middle" style="font-size:24px">1. LayerNorm</text>
+<path d="M206 236V258" class="line"/>
+<rect x="56" y="268" width="300" height="88" rx="10" fill="#ede9fe" stroke="#64748b" stroke-width="2"/>
+<text x="206.0" y="304.0" text-anchor="middle" style="font-size:24px">2. 4-head attention</text>
+<text x="206.0" y="336.0" text-anchor="middle" style="font-size:24px">[B,17,32]</text>
+<path d="M206 364V390" class="line"/>
+<circle cx="206" cy="421" r="26" fill="#fef3c7" stroke="#64748b" stroke-width="2"/>
+<text x="206" y="430" text-anchor="middle" style="font-size:28px">＋</text>
+<path d="M364 94H414V421H240" class="line"/>
+<text x="424" y="250" text-anchor="middle" style="font-size:24px">X</text>
+<text x="206" y="480" text-anchor="middle" style="font-size:24px">U：[B,17,32]</text>
+<path d="M206 490V512" class="line"/>
+<rect x="56" y="522" width="300" height="64" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="206.0" y="562.0" text-anchor="middle" style="font-size:24px">3. LayerNorm</text>
+<path d="M206 594V616" class="line"/>
+<rect x="56" y="626" width="300" height="88" rx="10" fill="#ede9fe" stroke="#64748b" stroke-width="2"/>
+<text x="206.0" y="662.0" text-anchor="middle" style="font-size:24px">4. 每 token 的 MLP</text>
+<text x="206.0" y="694.0" text-anchor="middle" style="font-size:24px">32 → 64 → 32</text>
+<path d="M206 722V750" class="line"/>
+<circle cx="206" cy="780" r="26" fill="#fef3c7" stroke="#64748b" stroke-width="2"/>
+<text x="206" y="789" text-anchor="middle" style="font-size:28px">＋</text>
+<path d="M310 472H414V780H240" class="line"/>
+<text x="424" y="648" text-anchor="middle" style="font-size:24px">U</text>
+<path d="M206 814V838" class="line"/>
+<rect x="56" y="848" width="300" height="56" rx="10" fill="#dcfce7" stroke="#64748b" stroke-width="2"/>
+<text x="206.0" y="884.0" text-anchor="middle" style="font-size:24px">Y：[B,17,32]</text>
+<text x="240" y="932" text-anchor="middle" style="font-size:22px">手工示意 · 兩次逐值相加</text>
+</svg>

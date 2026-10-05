@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="556" viewBox="0 0 480 556" role="img" aria-labelledby="title desc">
+<title id="title">TinyViT六十次更新的實際loss</title><desc id="desc">實際result.json的loss_history。橫軸為更新編號1到60，縱軸是當次更新前的訓練batch交叉熵。第30次更新後保存checkpoint。曲線不包含val/test。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#475569"/></marker></defs>
+<style>text{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;fill:#172554;font-size:24px} .small{font-size:22px}.head{font-size:28px;font-weight:700}.line{fill:none;stroke:#475569;stroke-width:3;marker-end:url(#arrow)} image{image-rendering:pixelated}</style>
+<rect width="480" height="556" rx="12" fill="#f8fafc"/>
+<metadata>{&quot;source&quot;: &quot;artifacts/runs/vit-training/result.json&quot;, &quot;sha256&quot;: &quot;48937a751628e41f59e15d65370570fdecaf3a7f775af8acaad35fd1eb72d601&quot;, &quot;loss_history&quot;: [{&quot;step&quot;: 1, &quot;loss&quot;: 0.7308351397514343}, {&quot;step&quot;: 2, &quot;loss&quot;: 0.855794370174408}, {&quot;step&quot;: 3, &quot;loss&quot;: 0.6613631844520569}, {&quot;step&quot;: 4, &quot;loss&quot;: 0.6734545826911926}, {&quot;step&quot;: 5, &quot;loss&quot;: 0.6836580634117126}, {&quot;step&quot;: 6, &quot;loss&quot;: 0.6668286919593811}, {&quot;step&quot;: 7, &quot;loss&quot;: 0.6884805560112}, {&quot;step&quot;: 8, &quot;loss&quot;: 0.7003495097160339}, {&quot;step&quot;: 9, &quot;loss&quot;: 0.6685369610786438}, {&quot;step&quot;: 10, &quot;loss&quot;: 0.6673541069030762}, {&quot;step&quot;: 11, &quot;loss&quot;: 0.6837713718414307}, {&quot;step&quot;: 12, &quot;loss&quot;: 0.642971932888031}, {&quot;step&quot;: 13, &quot;loss&quot;: 0.6408815383911133}, {&quot;step&quot;: 14, &quot;loss&quot;: 0.5884947180747986}, {&quot;step&quot;: 15, &quot;loss&quot;: 0.5772536396980286}, {&quot;step&quot;: 16, &quot;loss&quot;: 0.48671919107437134}, {&quot;step&quot;: 17, &quot;loss&quot;: 0.3998703062534332}, {&quot;step&quot;: 18, &quot;loss&quot;: 0.4131404161453247}, {&quot;step&quot;: 19, &quot;loss&quot;: 0.30822813510894775}, {&quot;step&quot;: 20, &quot;loss&quot;: 0.532218873500824}, {&quot;step&quot;: 21, &quot;loss&quot;: 0.5027525424957275}, {&quot;step&quot;: 22, &quot;loss&quot;: 0.21528878808021545}, {&quot;step&quot;: 23, &quot;loss&quot;: 0.44306284189224243}, {&quot;step&quot;: 24, &quot;loss&quot;: 0.6368486285209656}, {&quot;step&quot;: 25, &quot;loss&quot;: 0.16455009579658508}, {&quot;step&quot;: 26, &quot;loss&quot;: 0.15104886889457703}, {&quot;step&quot;: 27, &quot;loss&quot;: 0.1439937949180603}, {&quot;step&quot;: 28, &quot;loss&quot;: 0.2785603702068329}, {&quot;step&quot;: 29, &quot;loss&quot;: 0.12201142311096191}, {&quot;step&quot;: 30, &quot;loss&quot;: 0.09960795938968658}, {&quot;step&quot;: 31, &quot;loss&quot;: 0.08667142689228058}, {&quot;step&quot;: 32, &quot;loss&quot;: 0.07601948082447052}, {&quot;step&quot;: 33, &quot;loss&quot;: 0.06844038516283035}, {&quot;step&quot;: 34, &quot;loss&quot;: 0.060496117919683456}, {&quot;step&quot;: 35, &quot;loss&quot;: 0.05394979193806648}, {&quot;step&quot;: 36, &quot;loss&quot;: 0.04822302982211113}, {&quot;step&quot;: 37, &quot;loss&quot;: 0.04354671388864517}, {&quot;step&quot;: 38, &quot;loss&quot;: 0.03929387032985687}, {&quot;step&quot;: 39, &quot;loss&quot;: 0.035383373498916626}, {&quot;step&quot;: 40, &quot;loss&quot;: 0.03179437294602394}, {&quot;step&quot;: 41, &quot;loss&quot;: 0.029231294989585876}, {&quot;step&quot;: 42, &quot;loss&quot;: 0.026580242440104485}, {&quot;step&quot;: 43, &quot;loss&quot;: 0.02420295961201191}, {&quot;step&quot;: 44, &quot;loss&quot;: 0.022466396912932396}, {&quot;step&quot;: 45, &quot;loss&quot;: 0.020317381247878075}, {&quot;step&quot;: 46, &quot;loss&quot;: 0.018821336328983307}, {&quot;step&quot;: 47, &quot;loss&quot;: 0.01760789565742016}, {&quot;step&quot;: 48, &quot;loss&quot;: 0.01632445491850376}, {&quot;step&quot;: 49, &quot;loss&quot;: 0.015179765410721302}, {&quot;step&quot;: 50, &quot;loss&quot;: 0.01429313886910677}, {&quot;step&quot;: 51, &quot;loss&quot;: 0.013074316084384918}, {&quot;step&quot;: 52, &quot;loss&quot;: 0.012501879595220089}, {&quot;step&quot;: 53, &quot;loss&quot;: 0.01174933835864067}, {&quot;step&quot;: 54, &quot;loss&quot;: 0.010995798744261265}, {&quot;step&quot;: 55, &quot;loss&quot;: 0.01052827574312687}, {&quot;step&quot;: 56, &quot;loss&quot;: 0.009894234128296375}, {&quot;step&quot;: 57, &quot;loss&quot;: 0.009510871022939682}, {&quot;step&quot;: 58, &quot;loss&quot;: 0.00901343859732151}, {&quot;step&quot;: 59, &quot;loss&quot;: 0.008609597571194172}, {&quot;step&quot;: 60, &quot;loss&quot;: 0.00831844937056303}]}</metadata>
+<text x="240" y="40" text-anchor="middle" style="font-size:28px">實際訓練 batch loss</text>
+<text x="240" y="78" text-anchor="middle" style="font-size:24px">每點：當次更新之前</text>
+<path d="M78 414.0H448" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68" y="422.0" text-anchor="end" style="font-size:22px">0.0</text>
+<path d="M78 312.0H448" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68" y="320.0" text-anchor="end" style="font-size:22px">0.3</text>
+<path d="M78 210.0H448" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68" y="218.0" text-anchor="end" style="font-size:22px">0.6</text>
+<path d="M78 108.0H448" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68" y="116.0" text-anchor="end" style="font-size:22px">0.9</text>
+<path d="M78 108V414H448" fill="none" stroke="#334155" stroke-width="2"/>
+<polyline points="78.000,165.516 84.271,123.030 90.542,189.137 96.814,185.025 103.085,181.556 109.356,187.278 115.627,179.917 121.898,175.881 128.169,186.697 134.441,187.100 140.712,181.518 146.983,195.390 153.254,196.100 159.525,213.912 165.797,217.734 172.068,248.515 178.339,278.044 184.610,273.532 190.881,309.202 197.153,233.046 203.424,243.064 209.695,340.802 215.966,263.359 222.237,197.471 228.508,358.053 234.780,362.643 241.051,365.042 247.322,319.289 253.593,372.516 259.864,380.133 266.136,384.532 272.407,388.153 278.678,390.730 284.949,393.431 291.220,395.657 297.492,397.604 303.763,399.194 310.034,400.640 316.305,401.970 322.576,403.190 328.847,404.061 335.119,404.963 341.390,405.771 347.661,406.361 353.932,407.092 360.203,407.601 366.475,408.013 372.746,408.450 379.017,408.839 385.288,409.140 391.559,409.555 397.831,409.749 404.102,410.005 410.373,410.261 416.644,410.420 422.915,410.636 429.186,410.766 435.458,410.935 441.729,411.073 448.000,411.172" fill="none" stroke="#2563eb" stroke-width="3"/>
+<circle cx="78.000" cy="165.516" r="2.5" fill="#2563eb"/>
+<circle cx="84.271" cy="123.030" r="2.5" fill="#2563eb"/>
+<circle cx="90.542" cy="189.137" r="2.5" fill="#2563eb"/>
+<circle cx="96.814" cy="185.025" r="2.5" fill="#2563eb"/>
+<circle cx="103.085" cy="181.556" r="2.5" fill="#2563eb"/>
+<circle cx="109.356" cy="187.278" r="2.5" fill="#2563eb"/>
+<circle cx="115.627" cy="179.917" r="2.5" fill="#2563eb"/>
+<circle cx="121.898" cy="175.881" r="2.5" fill="#2563eb"/>
+<circle cx="128.169" cy="186.697" r="2.5" fill="#2563eb"/>
+<circle cx="134.441" cy="187.100" r="2.5" fill="#2563eb"/>
+<circle cx="140.712" cy="181.518" r="2.5" fill="#2563eb"/>
+<circle cx="146.983" cy="195.390" r="2.5" fill="#2563eb"/>
+<circle cx="153.254" cy="196.100" r="2.5" fill="#2563eb"/>
+<circle cx="159.525" cy="213.912" r="2.5" fill="#2563eb"/>
+<circle cx="165.797" cy="217.734" r="2.5" fill="#2563eb"/>
+<circle cx="172.068" cy="248.515" r="2.5" fill="#2563eb"/>
+<circle cx="178.339" cy="278.044" r="2.5" fill="#2563eb"/>
+<circle cx="184.610" cy="273.532" r="2.5" fill="#2563eb"/>
+<circle cx="190.881" cy="309.202" r="2.5" fill="#2563eb"/>
+<circle cx="197.153" cy="233.046" r="2.5" fill="#2563eb"/>
+<circle cx="203.424" cy="243.064" r="2.5" fill="#2563eb"/>
+<circle cx="209.695" cy="340.802" r="2.5" fill="#2563eb"/>
+<circle cx="215.966" cy="263.359" r="2.5" fill="#2563eb"/>
+<circle cx="222.237" cy="197.471" r="2.5" fill="#2563eb"/>
+<circle cx="228.508" cy="358.053" r="2.5" fill="#2563eb"/>
+<circle cx="234.780" cy="362.643" r="2.5" fill="#2563eb"/>
+<circle cx="241.051" cy="365.042" r="2.5" fill="#2563eb"/>
+<circle cx="247.322" cy="319.289" r="2.5" fill="#2563eb"/>
+<circle cx="253.593" cy="372.516" r="2.5" fill="#2563eb"/>
+<circle cx="259.864" cy="380.133" r="2.5" fill="#2563eb"/>
+<circle cx="266.136" cy="384.532" r="2.5" fill="#2563eb"/>
+<circle cx="272.407" cy="388.153" r="2.5" fill="#2563eb"/>
+<circle cx="278.678" cy="390.730" r="2.5" fill="#2563eb"/>
+<circle cx="284.949" cy="393.431" r="2.5" fill="#2563eb"/>
+<circle cx="291.220" cy="395.657" r="2.5" fill="#2563eb"/>
+<circle cx="297.492" cy="397.604" r="2.5" fill="#2563eb"/>
+<circle cx="303.763" cy="399.194" r="2.5" fill="#2563eb"/>
+<circle cx="310.034" cy="400.640" r="2.5" fill="#2563eb"/>
+<circle cx="316.305" cy="401.970" r="2.5" fill="#2563eb"/>
+<circle cx="322.576" cy="403.190" r="2.5" fill="#2563eb"/>
+<circle cx="328.847" cy="404.061" r="2.5" fill="#2563eb"/>
+<circle cx="335.119" cy="404.963" r="2.5" fill="#2563eb"/>
+<circle cx="341.390" cy="405.771" r="2.5" fill="#2563eb"/>
+<circle cx="347.661" cy="406.361" r="2.5" fill="#2563eb"/>
+<circle cx="353.932" cy="407.092" r="2.5" fill="#2563eb"/>
+<circle cx="360.203" cy="407.601" r="2.5" fill="#2563eb"/>
+<circle cx="366.475" cy="408.013" r="2.5" fill="#2563eb"/>
+<circle cx="372.746" cy="408.450" r="2.5" fill="#2563eb"/>
+<circle cx="379.017" cy="408.839" r="2.5" fill="#2563eb"/>
+<circle cx="385.288" cy="409.140" r="2.5" fill="#2563eb"/>
+<circle cx="391.559" cy="409.555" r="2.5" fill="#2563eb"/>
+<circle cx="397.831" cy="409.749" r="2.5" fill="#2563eb"/>
+<circle cx="404.102" cy="410.005" r="2.5" fill="#2563eb"/>
+<circle cx="410.373" cy="410.261" r="2.5" fill="#2563eb"/>
+<circle cx="416.644" cy="410.420" r="2.5" fill="#2563eb"/>
+<circle cx="422.915" cy="410.636" r="2.5" fill="#2563eb"/>
+<circle cx="429.186" cy="410.766" r="2.5" fill="#2563eb"/>
+<circle cx="435.458" cy="410.935" r="2.5" fill="#2563eb"/>
+<circle cx="441.729" cy="411.073" r="2.5" fill="#2563eb"/>
+<circle cx="448.000" cy="411.172" r="2.5" fill="#2563eb"/>
+<text x="78.0" y="449" text-anchor="middle" style="font-size:22px">1</text>
+<text x="259.86440677966107" y="449" text-anchor="middle" style="font-size:22px">30</text>
+<text x="448.0" y="449" text-anchor="middle" style="font-size:22px">60</text>
+<path d="M259.864 108V414" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="240" y="482" text-anchor="middle" style="font-size:24px">更新編號（step）</text>
+<text x="240" y="518" text-anchor="middle" style="font-size:24px">虛線：第 30 次更新後存檔</text>
+<text x="240" y="550" text-anchor="middle" style="font-size:22px">交叉熵 · train only · 非新圖得分</text>
+</svg>

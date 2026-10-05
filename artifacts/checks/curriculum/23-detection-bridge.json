@@ -1,0 +1,39 @@
+{
+  "id": "23-detection-bridge",
+  "passed": true,
+  "executed_at_utc": "2026-10-05T11:48:48.841089+00:00",
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "device": "cpu",
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "5245e58eeacb93fa265b33e9518ea0effc32e82e3f12cc8cbe585a446e4c9317",
+  "dependencies_sha256": {
+    "lesson_cases/23-detection-bridge.py": "5245e58eeacb93fa265b33e9518ea0effc32e82e3f12cc8cbe585a446e4c9317",
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/figures.py": "155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/self_distillation.py": "15d60e80fe19a14d980cd44999143a4da18847f19737fb1d762f85c90f8f11d0",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "miniyolo/vision_data.py": "92b1cc3885a0b897eba2a24ac1cd604c55b5ea903a1886904e64b9364c67dde1",
+    "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
+  },
+  "process_wall_seconds": 9.8968,
+  "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
+  "stdout": "{\n  \"ssl_steps\": 160,\n  \"head_steps\": 200,\n  \"device\": \"cpu\",\n  \"split\": {\n    \"train\": {\n      \"samples\": 128,\n      \"seed\": 101\n    },\n    \"val\": {\n      \"samples\": 64,\n      \"seed\": 202\n    },\n    \"test\": {\n      \"samples\": 64,\n      \"seed\": 303\n    }\n  },\n  \"ssl_first_loss\": 1.9427120685577393,\n  \"ssl_last_loss\": 1.8742752075195312,\n  \"feature_shapes\": {\n    \"patches\": [\n      128,\n      16,\n      32\n    ],\n    \"map\": [\n      128,\n      32,\n      4,\n      4\n    ]\n  },\n  \"head\": \"Flatten512 -> Linear64/GELU -> class Linear2 + box Linear4; sigmoid center, size=.05+.7*sigmoid; clamp decoded xyxy to [0,1]\",\n  \"head_learning_rate\": 0.003,\n  \"head_batch_size\": 32,\n  \"head_seed\": 901,\n  \"loss\": \"cross_entropy(class) + 10*smooth_l1(normalized_xyxy)\",\n  \"first_head_step\": {\n    \"step\": 1,\n    \"loss\": 0.8860687017440796,\n    \"class_loss\": 0.6687705516815186,\n    \"box_loss\": 0.021729812026023865\n  },\n  \"last_head_step\": {\n    \"step\": 200,\n    \"loss\": 0.0009670326253399253,\n    \"class_loss\": 1.56007481564302e-05,\n    \"box_loss\": 9.514318662695587e-05\n  },\n  \"backbone_unchanged\": true,\n  \"backbone_has_no_grad\": true,\n  \"head_weights_changed\": true,\n  \"metrics\": {\n    \"train\": {\n      \"count\": 128,\n      \"class_correct\": 128,\n      \"class_accuracy\": 1.0,\n      \"mean_iou\": 0.8593764305114746,\n      \"iou_ge_0_5_count\": 128,\n      \"class_correct_and_iou_ge_0_5_count\": 128\n    },\n    \"val\": {\n      \"count\": 64,\n      \"class_correct\": 64,\n      \"class_accuracy\": 1.0,\n      \"mean_iou\": 0.6160324811935425,\n      \"iou_ge_0_5_count\": 49,\n      \"class_correct_and_iou_ge_0_5_count\": 49\n    },\n    \"test\": {\n      \"count\": 64,\n      \"class_correct\": 64,\n      \"class_accuracy\": 1.0,\n      \"mean_iou\": 0.6056987643241882,\n      \"iou_ge_0_5_count\": 54,\n      \"class_correct_and_iou_ge_0_5_count\": 54\n    }\n  },\n  \"examples\": [\n    {\n      \"test_index\": 0,\n      \"source_seed\": 303,\n      \"truth_xyxy_pixel\": [\n        9,\n        4,\n        25,\n        12\n      ],\n      \"predicted_xyxy_pixel\": [\n        13.051470756530762,\n        0.0,\n        23.608638763427734,\n        13.815780639648438\n      ],\n      \"truth_class\": \"blue\",\n      \"predicted_class\": \"blue\",\n      \"iou\": 0.4459247589111328\n    },\n    {\n      \"test_index\": 1,\n      \"source_seed\": 303,\n      \"truth_xyxy_pixel\": [\n        10,\n        17,\n        18,\n        27\n      ],\n      \"predicted_xyxy_pixel\": [\n        13.031095504760742,\n        15.765176773071289,\n        22.852426528930664,\n        26.953554153442383\n      ],\n      \"truth_class\": \"blue\",\n      \"predicted_class\": \"blue\",\n      \"iou\": 0.35220029950141907\n    },\n    {\n      \"test_index\": 2,\n      \"source_seed\": 303,\n      \"truth_xyxy_pixel\": [\n        17,\n        4,\n        25,\n        17\n      ],\n      \"predicted_xyxy_pixel\": [\n        17.466455459594727,\n        2.604665756225586,\n        28.128145217895508,\n        15.542051315307617\n      ],\n      \"truth_class\": \"red\",\n      \"predicted_class\": \"red\",\n      \"iou\": 0.5610500574111938\n    },\n    {\n      \"test_index\": 3,\n      \"source_seed\": 303,\n      \"truth_xyxy_pixel\": [\n        13,\n        16,\n        28,\n        31\n      ],\n      \"predicted_xyxy_pixel\": [\n        12.647476196289062,\n        19.411514282226562,\n        26.247318267822266,\n        32.0\n      ],\n      \"truth_class\": \"red\",\n      \"predicted_class\": \"red\",\n      \"iou\": 0.6325743794441223\n    }\n  ],\n  \"elapsed_seconds\": 6.428522803005762,\n  \"evaluation\": \"one prediction paired with one truth per image; class argmax, paired IoU, joint class-correct and IoU>=.5; no AP/mAP\",\n  \"limitation\": \"tiny frozen self-supervised ViT plus supervised single-object head; not DINO detector, not official DINOv2 backbone, no architecture ranking or natural-image transfer claim\"\n}\nactual boxes: artifacts/runs/dino/23-detection-bridge.svg\n",
+  "stderr": "",
+  "exit_code": 0
+}

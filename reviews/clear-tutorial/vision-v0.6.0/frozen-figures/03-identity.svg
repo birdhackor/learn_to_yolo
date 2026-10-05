@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 646" role="img" aria-labelledby="title desc">
+  <title id="title">residual block：主分支與 identity shortcut 在加號相加</title>
+  <desc id="desc">示意圖，不按比例，方框大小不代表計算量或參數多寡。由上往下：輸入 x 的 shape 是 B 乘 4 乘 8 乘 8，往下分成兩條路。左邊的主分支依序經過 3 乘 3 卷積、ReLU、3 乘 3 卷積，每段連線旁都標 [B,4,8,8]；主分支的輸出是 F(x)，shape 也是 [B,4,8,8]。右邊的 identity shortcut 不做計算、沒有參數，把 x 原樣送到加號，shape 仍是 [B,4,8,8]。兩條路在畫成圓圈加號的節點逐值相加，得到輸出 y = x + F(x)，shape 是 [B,4,8,8]。右下的虛線框以一條虛線指向加號與輸出之間那段線，註明：原版 ResNet 在相加後還有一個 ReLU，本節拿掉。B 是 batch 筆數，本節第二部分 B=2。</desc>
+  <!-- 示意圖，不按比例。主分支在 x=270 這一欄由上往下；shortcut 走右邊 x=460。 -->
+  <rect width="720" height="646" fill="#f8fafc"/>
+  <g fill="#e0f2fe" stroke="#0369a1" stroke-width="2">
+    <rect x="162" y="16" width="216" height="52" rx="8"/>
+    <rect x="162" y="140" width="216" height="52" rx="8"/>
+    <rect x="162" y="248" width="216" height="52" rx="8"/>
+    <rect x="162" y="356" width="216" height="52" rx="8"/>
+    <circle cx="270" cy="496" r="26"/>
+    <rect x="162" y="578" width="216" height="52" rx="8"/>
+  </g>
+  <g stroke="#334155" stroke-width="3" fill="none">
+    <path d="M270 68V129M270 192V237M270 300V345M270 408V459M270 522V567M270 112H460V496H307"/>
+  </g>
+  <g fill="#334155">
+    <path d="M263 128H277L270 140Z"/>
+    <path d="M263 236H277L270 248Z"/>
+    <path d="M263 344H277L270 356Z"/>
+    <path d="M263 458H277L270 470Z"/>
+    <path d="M263 566H277L270 578Z"/>
+    <path d="M308 489V503L296 496Z"/>
+    <circle cx="270" cy="112" r="5"/>
+  </g>
+  <path d="M270 484V508M258 496H282" stroke="#0f172a" stroke-width="3" fill="none"/>
+  <path d="M146 140H134V408H146" stroke="#64748b" stroke-width="2" fill="none"/>
+  <rect x="400" y="516" width="304" height="68" rx="8" fill="#fff" stroke="#64748b" stroke-width="2" stroke-dasharray="7 5"/>
+  <path d="M400 550H280" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+  <g font-family="sans-serif" fill="#0f172a">
+    <g font-size="22" text-anchor="middle">
+      <text x="270" y="50">輸入 x</text>
+      <text x="270" y="174">3×3 Conv</text>
+      <text x="270" y="282">ReLU</text>
+      <text x="270" y="390">3×3 Conv</text>
+      <text x="270" y="612">輸出 y = x + F(x)</text>
+    </g>
+    <text x="122" y="282" font-size="22" text-anchor="end">主分支</text>
+    <g font-size="20" fill="#334155" text-anchor="end">
+      <text x="256" y="97">[B,4,8,8]</text>
+      <text x="256" y="227">[B,4,8,8]</text>
+      <text x="256" y="335">[B,4,8,8]</text>
+      <text x="256" y="446">F(x)：[B,4,8,8]</text>
+      <text x="256" y="557">[B,4,8,8]</text>
+      <text x="230" y="503">逐值相加</text>
+    </g>
+    <text x="476" y="262" font-size="22">identity shortcut</text>
+    <g font-size="20" fill="#334155">
+      <text x="476" y="292">不做計算、沒有參數</text>
+      <text x="476" y="322">x：[B,4,8,8]</text>
+      <text x="414" y="543">原版 ResNet 在相加後</text>
+      <text x="414" y="571">還有一個 ReLU，本節拿掉</text>
+    </g>
+  </g>
+</svg>

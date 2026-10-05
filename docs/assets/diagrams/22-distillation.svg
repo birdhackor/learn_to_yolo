@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="1120" viewBox="0 0 520 1120" role="img" aria-labelledby="title desc">
+<title id="title">DINO的一步：前向、停止梯度、student更新、teacher EMA、center EMA</title><desc id="desc">以teacher的view1對student的view2示意一個交叉配對，反向配對也加入loss。teacher的raw logits減舊center除teacher溫度，停止梯度後成為目標；student logits除student溫度。只有student由loss梯度更新。student更新後teacher參數EMA；最後用本步raw teacher logits更新center供下一步。</desc>
+<defs><marker id="data" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#536476" stroke-width="1.5"/></marker><marker id="ema" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#bc6324" stroke-width="1.5"/></marker><marker id="center" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#238263" stroke-width="1.5"/></marker></defs>
+<rect width="520" height="1120" rx="16" fill="#f7f9fc"/>
+<g font-family="sans-serif" font-size="23" fill="#152c43">
+<text x="24" y="38" font-size="27" font-weight="700">一個 DINO 更新步驟</text>
+<text x="24" y="74">機制示意；只畫一個跨 view 方向</text>
+<rect x="28" y="102" width="215" height="63" rx="10" fill="#e8eef7"/><rect x="276" y="102" width="215" height="63" rx="10" fill="#e8eef7"/>
+<text x="80" y="142">view 1</text><text x="328" y="142">view 2</text>
+<path d="M135 165V198M384 165V198" stroke="#536476" stroke-width="3" marker-end="url(#data)"/>
+<rect x="28" y="207" width="215" height="116" rx="10" fill="#e8f4f0" stroke="#238263" stroke-width="2"/><rect x="276" y="207" width="215" height="116" rx="10" fill="#e9effb" stroke="#4672b1" stroke-width="2"/>
+<text x="78" y="243" font-weight="700">teacher</text><text x="326" y="243" font-weight="700">student</text>
+<text x="64" y="278">ViT + 投影頭</text><text x="313" y="278">ViT + 投影頭</text>
+<text x="47" y="309">raw logits zₜ</text><text x="300" y="309">raw logits zₛ</text>
+<path d="M135 324V361M384 324V361" stroke="#536476" stroke-width="3" marker-end="url(#data)"/>
+<rect x="28" y="371" width="215" height="128" rx="10" fill="#fff7db" stroke="#a58325" stroke-width="2"/><rect x="276" y="371" width="215" height="128" rx="10" fill="#fff7db" stroke="#a58325" stroke-width="2"/>
+<text x="41" y="405">1 減舊 c、除 τₜ</text><text x="47" y="441">softmax → pₜ</text><text x="66" y="478" font-weight="700">停止梯度</text>
+<text x="291" y="405">除 τₛ、softmax</text><text x="324" y="441">→ pₛ</text><text x="305" y="478">可傳回梯度</text>
+<path d="M135 500V527H215V549M384 500V527H304V549" stroke="#536476" stroke-width="3" fill="none" marker-end="url(#data)"/>
+<rect x="74" y="558" width="372" height="85" rx="10" fill="#e9effb"/>
+<text x="145" y="591" font-weight="700">跨 view 交叉熵</text><text x="99" y="626">另一方向也計算，再取平均</text>
+<path d="M260 643V680" stroke="#536476" stroke-width="3" marker-end="url(#data)"/>
+<rect x="40" y="690" width="440" height="90" rx="10" fill="#e9effb" stroke="#4672b1" stroke-width="2"/>
+<text x="86" y="726" font-weight="700">2 backward / optimizer.step</text><text x="106" y="762">只更新 student 的參數</text>
+<path d="M260 780V814" stroke="#bc6324" stroke-width="3" marker-end="url(#ema)"/>
+<rect x="40" y="825" width="440" height="94" rx="10" fill="#fff0e3" stroke="#bc6324" stroke-width="2"/>
+<text x="70" y="860" font-weight="700">3 teacher 參數的 EMA</text><text x="61" y="895">θₜ ← mₜ θₜ + (1−mₜ) 新 θₛ</text>
+<path d="M480 870H508V183H252V265H245" stroke="#bc6324" stroke-width="3" fill="none" marker-end="url(#ema)"/>
+<path d="M29 310H13V988H38" stroke="#238263" stroke-width="3" stroke-dasharray="8 5" fill="none" marker-end="url(#center)"/>
+<rect x="40" y="952" width="440" height="95" rx="10" fill="#e8f4f0" stroke="#238263" stroke-width="2"/>
+<text x="74" y="988" font-weight="700">4 center 的 EMA</text><text x="57" y="1025">c ← m꜀ c + (1−m꜀) mean(zₜ)</text>
+<text x="27" y="1083">綠：本步 raw logits → 下一步 center</text>
+</g></svg>

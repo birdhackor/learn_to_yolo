@@ -1,6 +1,6 @@
 # 6.2 人工框評估與 AP50：把預測逐筆算成證據
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.5.0/notebooks/06-evaluation.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/06-evaluation.ipynb){ .md-button }
 
 模型在很多張圖上畫了一堆框，要怎麼變成一個能和別人比較的分數？把框疊在圖上看起來不錯，不表示漏檢少或背景誤報少。本節用 2 張圖、3 個真值框、4 個人工給定的預測框，一步步判斷哪些框算對、哪些算錯、漏了幾個，最後算出 AP50 這個總分。讀完後，你能手算一組框的評估結果，並拿它核對評估程式。
 
