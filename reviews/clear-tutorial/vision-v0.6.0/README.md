@@ -26,4 +26,14 @@
 
 逐頁摘要位於reviews/21-*.md、22-*.md、23-*.md；其正文／SVG／code依賴以reviews/coverage.json的hash覆蓋。舊14頁僅追加本次範圍，不把舊0–20全書冒稱再完成全新盲讀。
 
-發布前差異檢查：除Matplotlib產生的22-features.svg及其修前凍結副本含path屬性行末空白外，staged diff無格式問題。兩份SVG保留精確bytes以維持凍結與獨立核查SHA；沒有把這些行末空白當成圖面問題或更改原始審阅紀錄。
+發布前差異檢查：除Matplotlib產生的22-features.svg及其修前凍結副本含path屬性行末空白外，staged diff無格式問題。兩份SVG保留精確bytes以維持凍結與獨立核查SHA；沒有把這些行末空白當成圖面問題或更改原始審閱紀錄。
+
+## 發布後獨立環境檢查
+
+2026-10-05，immutable `lessons-v0.6.0` 指向 `6903a243cb9eab96ca0795a217bca5c605574c9b`；[Pages 37309717088](https://github.com/birdhackor/learn_to_yolo/actions/runs/37309717088)與[verify-release 37309821109](https://github.com/birdhackor/learn_to_yolo/actions/runs/37309821109)皆success。
+
+[公開網站紀錄](../../../artifacts/checks/curriculum-publication.json)核69個導覽頁面、77個SVG、52個固定tag的Colab連結與notebook，以及五個既有tag指向未變；[乾淨環境紀錄](../../../artifacts/checks/curriculum-release-bootstrap.json)核五種notebook安裝情境、16項README命令、96個tests與全部52節runtime。每節assert通過不等於跨CPU stdout逐字相同：40節相同、12節有計時／平台／浮點等差異，名單保存於lesson_runtime，不另冒稱不同hardware逐位重現。
+
+協調者另在公開網站以Chromium核十頁×桌機／手機20組DOM、圖片載入、MathJax零錯及article instant navigation；實際檢視四份無sticky header遮擋的代表截圖：21.3手機公式、22.3更新圖、22.4完整loss曲線、23.1官方特徵對應圖。[public-browser.json](public-browser.json)保存結果、截圖SHA與測試探針修正；全部必要圖的兩種尺寸視覺仍以獨立本機guide report為準，沒有冒稱公開網站19張圖全重新視覺審查。
+
+以上結果以發布後的獨立commit保存到main，不改動lesson tag。沒有啟動GPU工作，也沒有Google Colab託管工作階段的登入測試。

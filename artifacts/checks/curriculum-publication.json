@@ -1,7 +1,7 @@
 {
-  "verified_at_utc": "2026-10-05T10:58:16+00:00",
-  "source_ref": "lessons-v0.5.0",
-  "release_commit": "a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb",
+  "verified_at_utc": "2026-10-05T12:29:19+00:00",
+  "source_ref": "lessons-v0.6.0",
+  "release_commit": "6903a243cb9eab96ca0795a217bca5c605574c9b",
   "website": "https://birdhackor.github.io/learn_to_yolo/",
   "runner": {
     "os": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
@@ -9,28 +9,28 @@
     "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 4,
     "python": "3.12.14",
-    "workflow_run": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37299900616"
+    "workflow_run": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37309821109"
   },
   "build": [
     {
-      "command": "/tmp/tmp0c73h9gl/docs-venv/bin/python -m pip install -q -r requirements-docs.txt",
+      "command": "/tmp/tmpk41wk3vz/docs-venv/bin/python -m pip install -q -r requirements-docs.txt",
       "exit_code": 0,
-      "seconds": 4.7,
+      "seconds": 5.8,
       "stdout": "",
       "stderr": "\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: python -m pip install --upgrade pip\n"
     },
     {
-      "command": "/tmp/tmp0c73h9gl/docs-venv/bin/zensical build --clean --strict",
+      "command": "/tmp/tmpk41wk3vz/docs-venv/bin/zensical build --clean --strict",
       "exit_code": 0,
-      "seconds": 2.8,
-      "stdout": "Build started\nBuild finished in 2.55s\n",
+      "seconds": 3.1,
+      "stdout": "Build started\nBuild finished in 2.83s\n",
       "stderr": "No issues found\n"
     }
   ],
   "pages_workflow": {
-    "workflow_run_id": 37299823086,
-    "workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37299823086",
-    "deployed_commit": "a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb",
+    "workflow_run_id": 37309717088,
+    "workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37309717088",
+    "deployed_commit": "6903a243cb9eab96ca0795a217bca5c605574c9b",
     "deployed_commit_is_release_commit": true
   },
   "old_releases_retained": [
@@ -53,21 +53,26 @@
       "source_ref": "lessons-v0.4.1",
       "code_commit": "e28f85a5591db42830a8fb0365c686b0d3676e8d",
       "matches_previous_verification": true
+    },
+    {
+      "source_ref": "lessons-v0.5.0",
+      "code_commit": "a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb",
+      "matches_previous_verification": true
     }
   ],
-  "navigation_pages_verified": 59,
+  "navigation_pages_verified": 69,
   "pages": [
     {
       "path": "",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "a53a36682a430b1d55c18e79e3b754f69c6076774b4203e64e29b89dd24b1893"
+      "article_sha256": "bbfe4b8b16ca88e78ddc6231d1a5d3f752564b82552caa49487f2567e889988e"
     },
     {
       "path": "learning-path/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "1d1a0f1539ac069c4859626163b4a4dab735e90a4ad36238e98c323ac7d4373f"
+      "article_sha256": "de0d27b133bafd67d57f7b216a87ba1debf58a7bed719e4e015cb9e4d312cbea"
     },
     {
       "path": "glossary/",
@@ -79,7 +84,7 @@
       "path": "status/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "4346240514288e6de844946d8dd210969d1703cf0a6959d81c1aaa39a7881560"
+      "article_sha256": "b56f71c38ba3f1ed2618353353a3126b48fb635eff288f2a5abe05188186f730"
     },
     {
       "path": "validation/gpu-smoke/",
@@ -91,283 +96,343 @@
       "path": "validation/curriculum/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "ed8291ec86788a5e05154ccf0ec82e6bbb39dcaa5a6b32c77856f4118396c267"
+      "article_sha256": "c24c9b58073bc11a31ca9f7a85598b080afecd635314d34ac389f47cb3ff4e53"
     },
     {
       "path": "lessons/00-warmup/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "91a98a07f45634af0d69962659c5e08358c11cc79bbb068b9870feabc8d978e2"
+      "article_sha256": "3262bb7096d82eebaa8ca03e796cf59bdb7ce512ed63ebeb0524b8611f21c102"
     },
     {
       "path": "lessons/01-small-cnn/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "994adfc48071ebfc9c03958e4ed529a05df6e830d18eeb0470931458a450209c"
+      "article_sha256": "b3b1b5002fbfa56a91fbe10b1a4318f04baa4a6d9f2fbb42d5c12f55792842a9"
     },
     {
       "path": "lessons/02-diagnostics/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "17ccc4a6b79f8d22b59fb1e8c41139e58e483e7d85e44ea5aab2814e471e9407"
+      "article_sha256": "d0107be18ba5946586e00e1e046231c0a8d9199b71a697450252c8c28db17ae4"
     },
     {
       "path": "lessons/03-identity/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "95bee5839ca8c26d1d20e3378c5c66441663641a389e60c8a434cb284a6d4747"
+      "article_sha256": "42e72975592cf30a5e111e3052674d7ee8d1975e2a14bf007bd4814b102f0a30"
     },
     {
       "path": "lessons/03-projection/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "4158fc8bb061844feb4c5e2237b6db3aadc7a27087a91df695f7fbd47e934532"
+      "article_sha256": "70374297a6ff1c2d40f7e808865dbb90517c8bc1009916db597b598c6feabd55"
     },
     {
       "path": "lessons/03-comparison/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "3fe572e664d206f664e8fae31d58184daf7f0411e96f0d9eda2f1f225ad8eb04"
+      "article_sha256": "df94c94e46b79648390bf719173c8f9eaa0c137d3a081042f6085f3a72cedeb8"
     },
     {
       "path": "lessons/04-localization/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "a549f73aa2c544dc2cc1cea72acc9728d37bcfcd3b6f337b0bd917e8016a06a7"
+      "article_sha256": "3db3294cf3ab176d1e6d3ec5b41a9109158d12222ca38f1ece4067438f3641b2"
     },
     {
       "path": "lessons/04-coordinates/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "fdaffe3f6779716bc46b6a793caf20481ca677cbc6aad0a93d33ac9603286e80"
+      "article_sha256": "17b2e5998ab7bd2a67b611c37b4c025b6657e85059b36d6373ff543ea4e7a378"
     },
     {
       "path": "lessons/05-assignment/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "74aa7556e7fb1607f8c491a74dc8d7740a1d8c6a8f45d6e94307b4002776e53c"
+      "article_sha256": "f60e98653ec969b080e407b6c766aceb6d6e78d1c7629908a8c36969c49e3e72"
     },
     {
       "path": "lessons/06-decode-nms/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "25fc26eefaec6a43a79ee5f8942c5939cf7f3d32506ebeeeb1cda71f4704a5a5"
+      "article_sha256": "ba571b2b7b205e282ea0d56b31c59d54a242a5c8e19ddb50f3ffc41f01868cd0"
     },
     {
       "path": "lessons/06-evaluation/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "ec59a1336f0ba0b1a7089c1f4f502fcd83772d1473bac6c7ecabbfef484878b7"
+      "article_sha256": "ee91ee25984a3d04bbdd15ebbd78068d277a7cd320b3e03661ec84aca4fd9c74"
     },
     {
       "path": "lessons/07-data/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "28cfd0f74ea6385cac76d0bf71a8465c9e6832908d3fbbdbab416a8c40ae429e"
+      "article_sha256": "e602eea92d19db8eaef827957efde8d7d216db473947481e707646c04afa339f"
     },
     {
       "path": "lessons/07-targets/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "0a8b924930515115bb495124e3ebea9d3a75f1c5db9a46c427befddf3f72b30d"
+      "article_sha256": "f23a6115ec49398271e4e5264373fc5bfe3e0cd1e230b625b711291c7db45790"
     },
     {
       "path": "lessons/07-loss/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "45b56a7243b32a6075117a710788893da0b0982b557162c86b5883a6bd8e7695"
+      "article_sha256": "d6f3a6c94f694988c0e79518fe8742ad5b25b72fe8331ef38def81914d64c65d"
     },
     {
       "path": "lessons/07-training/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "5f92b0d4f2f4250c9c1d0e5db6a78d3f11e7fae0cb1af87f5495a6f27302e1cf"
+      "article_sha256": "f8de55101ff10b9b1e94bea79187ae67afc4102645ab946e01c9b2996fb71053"
     },
     {
       "path": "lessons/07-inference/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "3f503445cf298baff9bba85a8bcd8a3beda017520c1474f0c33eae688ade0839"
+      "article_sha256": "c899e0abd7e5a70ac12d2faf034205d857d215238b11bac4db59419f031a7bb6"
     },
     {
       "path": "lessons/07-heldout/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "a683b698de93ce4f76304abe8da5fb9fd6cac52b3857ec499d52614287556840"
+      "article_sha256": "19fc5045eea8f95916be72565bb25df51d80c8de1ccd3d483a477d31a861d013"
     },
     {
       "path": "lessons/08-own-images/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "39cd408344aadb9db155d44c20b29ad769b475c220921a4183c2b550df3ac58c"
+      "article_sha256": "0b669631b9669513fb7fb6ce1d9ada6d5fe62d357e7aedb9d32cf0311d452d0f"
     },
     {
       "path": "lessons/08-own-data/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "f01e752c8884919bbe4fe105239063a4f2aa2068c3afa13de438363ccba83282"
+      "article_sha256": "781e0c3fd1c8e148e28972a9bddc8c8ce6478f85e3e1aa562f9defeaec88a9c0"
     },
     {
       "path": "lessons/09-anchors/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "8cf19b5936c186fa5a6a72711afa723dcbc2fa21b1399eab715f8efcdf2dc8ea"
+      "article_sha256": "02e6abf96f42b00d206b147369ea5c59171326743ad136a0de9fa01312f93457"
     },
     {
       "path": "lessons/09-anchor-clustering/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "e5b1c3feb7fe0a18e8da94e0a8013cda67e5c9f81260270b830aa935dde665a5"
+      "article_sha256": "bdb802654a3cbc6664ea16861882db73bcb14b59385612ac18452dc8e9f12732"
     },
     {
       "path": "lessons/10-multiscale/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "7b871bdfbec2350bd79a19e0d93054a1eaab653614e84a7dbc91eda453fea363"
+      "article_sha256": "34bea8b74efd614028d88bc55f846e9bc4423435b3168d29b10df95e208c569a"
     },
     {
       "path": "lessons/11-csp/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "9842ad3a1567c3b90bb5a82b3a9a8b22558d72aa9cae9ad0a535f635ba014c1e"
+      "article_sha256": "1b0d438ce42b1a1ee55e395e2befc6f98692918356210439d190c9cca3fe8511"
     },
     {
       "path": "lessons/11-fusion/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "5af67b490f5e453e100e3b135a30c27df060dccc113aba2793c7af326618796b"
+      "article_sha256": "3c8ac385f6e5010a3ed38b134081b62235d6fbbd41698212d2b7b63ef8400e55"
     },
     {
       "path": "lessons/11-augmentation/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "a40c30d34fd53f9dd6d9caf5ace0fbc72c313b491d608eb8c1e80a94aceb381d"
+      "article_sha256": "5115d703f4dbf8710fe0cf010cbd104c194c835fd17f2997927a6a683c5c91af"
     },
     {
       "path": "lessons/11-iou-loss/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "ce5f5285c7f1721b2453e9351edaf92c032c32b655396800f3a7c273f0b8fc62"
+      "article_sha256": "46ddbd6368c834b1d5a7c068a86dc38f9dc6e65dfb1916f8316d840df04cee93"
     },
     {
       "path": "lessons/12-anchor-free/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "dd4267a1f759d40ff5024444581bcc2d4340ca3590b9b549134a1a3c97d128e5"
+      "article_sha256": "2f6b456014b3d9dc43fc9260548d56aac7a8cb8858b5f798bd722c9de443d8dc"
     },
     {
       "path": "lessons/12-decoupled-head/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "11cc84d3c9ed9ca54072398e7ac0d4cb5abcb4391bd4c2cbcfbd36403a194f30"
+      "article_sha256": "52b31b27dca5b297f592b2bff0e88bf843b9617b8eced203834489797d30e060"
     },
     {
       "path": "lessons/12-assignment/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "be16b735c425111938da2eda943d0f0a8fa39856599a45e01ca332cd12b82ed1"
+      "article_sha256": "c2ac556be8a7fb7c9eed3870979b90f373f29882509b5fe847f8868d1ebb0f51"
     },
     {
       "path": "lessons/12-dfl/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "c28774606b6e2fff3c4fbfd309620ec349f100cb6b8ee78f92028f4184f8a151"
+      "article_sha256": "d0f62a9435bcde3a658793aa091628bfa2ac8778588e04c5499854015b45db4c"
     },
     {
       "path": "lessons/13-dual-assignment/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "e763ea67ee21ce3d68c8fe8732907c2cace0c094743966ffcd14cf730d38b7ff"
+      "article_sha256": "56dfc1f5055cddf8ae63bd32e43613e6310d8407844913641af53c826a92b1ca"
     },
     {
       "path": "lessons/13-nms-free/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "4274204a1096d33b9a179e1743beb4433cdbd1f59e73c342df6afd36c5c6aac4"
+      "article_sha256": "212d31cd7671b4cf1c8a286c7879941c72842df4ebcf56120170e78abd90e948"
     },
     {
       "path": "lessons/14-feature-module/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "eb1d4a601f6d50b70cbe92fbf49a56cf200e57927db8801e47ff6f709d2f6466"
+      "article_sha256": "d9823a7391583a5c6f71fbf22c9d0866da3d01f723833053a861a5a40172ce71"
     },
     {
       "path": "lessons/15-attention-bridge/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "d5f53cbaefbe7c2ca7411eab20070a4dffd09ae891ace9a727434207bd4f82ed"
+      "article_sha256": "594be6120277331df34e223057b23e1b148b53e0c62d37a6883d21b3926dce69"
     },
     {
       "path": "lessons/15-area-attention/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "15cd6aed75b58d0e64e31115b897b2e9b98fa834f778834dad10cc8663f678ba"
+      "article_sha256": "8d6bd8d72947ff84fb344c76887ef99a3bc348e92853cb58b67e2918f9187996"
     },
     {
       "path": "lessons/16-dfl-free/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "ab694437d784a7080826fc4f6a80b3012b08a3b8e5a5a3428452fe0a2c0703f6"
+      "article_sha256": "2e730fa6e99cefd9d3279b027562176ad77ddc9136c1103f15d0db34efd9ce3d"
     },
     {
       "path": "lessons/16-inference-head/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "58bc5d0b92864af987ef412a9f0bbf066fa56828c4684bf857f709f7d8c6ee93"
+      "article_sha256": "24ff66177fb2d8e7abd6adedb6faa7c54913b4155bc365dd6e1f2ef261664f47"
     },
     {
       "path": "lessons/16-training/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "880dc065ef526890dbaacd57e047dbc21eca996c6b61176fa4b948a1e7e5e519"
+      "article_sha256": "7bfdf9ef6194e1d4a73be31e5b83f74c70bd7632f98903ce8f82ddfd0b8fc75f"
     },
     {
       "path": "lessons/17-capstone/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "88f5c51903a6812a2d4ff00ae46308c3155a09ad49daaf151319e11c19b58e80"
+      "article_sha256": "cbd0481390d89f1b7de10e46c1cc9a4d4be82f0758c4894d18a0cb1909543ff7"
     },
     {
       "path": "lessons/18-video/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "dc14fbbe72d03f8c1e6d7e9aa9a7c063a8b3814c036bec8cca13599138606ade"
+      "article_sha256": "3e9afa541d1e34b380f7e12125f1c4ed05d3251240c291dafc26fe386afce8f4"
     },
     {
       "path": "lessons/19-tracking/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "879806285b28580ed5c98d3ed4416f4e50747fac151c72abc53315b9dc5e6ad2"
+      "article_sha256": "ef19a5e523e11db0963f08d509c0dce164cba425719ca731e6bdf3bd97848c44"
     },
     {
       "path": "lessons/20-deployment/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "098a781b8bfa815e36c44e653162c56e7e9775f112cfada36f87adec395ea7bc"
+      "article_sha256": "fdd46d65a8a0a1df5be694a22fe4e9c04550e8e8d373ac5113bea228e1bf62d2"
+    },
+    {
+      "path": "lessons/21-patches/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "01000cce9f73c3e54cff7d761c05574f97d88e36d5e0a905b1169be5434cf068"
+    },
+    {
+      "path": "lessons/21-attention/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "11cf5b774e232f4371a47d006b63f150aa5258625457a243f688e0189064f5d9"
+    },
+    {
+      "path": "lessons/21-transformer/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "51306ddc514ccab4380632b7dcbf4f8da5d8ea727c17d70019459c7896068876"
+    },
+    {
+      "path": "lessons/21-training/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "ee26136dcfcfe15a5a544a5b26fb734e572f1e6df1cde0570b715852986fb830"
+    },
+    {
+      "path": "lessons/22-views/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "21943b9bef1af38b69da12d8fb9722f103cf49a67a12160cde1d404be390efed"
+    },
+    {
+      "path": "lessons/22-collapse/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "8dbf098f2872ec28a7cd8477ecdedfeecce8694475eb9413df6746c008741688"
+    },
+    {
+      "path": "lessons/22-distillation/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "48cf37ec75695869e4c92e03de48bd99e820f04e65b75288f5b3406fb4c4ebff"
+    },
+    {
+      "path": "lessons/22-features/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "976e8e7dead40dd58dba311edd049f0f63534f447be05c4bab06b479ea36ec83"
+    },
+    {
+      "path": "lessons/23-dino-versions/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "01a7332c80b5596c03125beddf918eb32b8365f00c3e74d8ee27b23681b64573"
+    },
+    {
+      "path": "lessons/23-detection-bridge/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "86f2cf545fd0cc0450fe2c2100f35e93d288389e0f76339fca4a64e229f28501"
     },
     {
       "path": "preparation/data/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "db29a6b7aa16df16d0b9641f339a924fa0c4e7a2795473e7ac457e42e8c7ebfa"
+      "article_sha256": "f10f3f41bfe013d8d1848f8b8804edac177a982a8ff15d6fe4007cb833115d97"
     },
     {
       "path": "preparation/publish/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "6e63b8a0830578863db4433d4eafb99fac15dbf64889fa790282ae3098821450"
+      "article_sha256": "9cd1564e9712a20bce2799efd93e49e2ee7f59fd0b696272ad811ac1cb4cc7c9"
     },
     {
       "path": "preparation/architecture/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "7d047085ec859e8993de499e01c10a41e48f47f073aa544c3489b9fd8676950e"
+      "article_sha256": "cb96bf69d5c5b3f402eba4660f12cc55c7699157ba4d2ecd07243a3bdc9e2fcd"
     },
     {
       "path": "planning/outline/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "1457dcb1268ff76e0b16e977c6ebeba29394f4c7dc983ce87f64e3e6cbc5cc94"
+      "article_sha256": "28e37dcc83ae228b84da7be28645d1ab5a66c9a197a469d258eb4d04e53805c9"
     },
     {
       "path": "planning/course-research/",
@@ -385,7 +450,7 @@
       "path": "research/foundation-data/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "9eb31001f0d84cc59ef756916b1597b5b59ffd75e539bf4101ddd3caf9a4b15a"
+      "article_sha256": "34d3958c9b6ff192552c1fed272f3d6f4fa32538539582b4c8fb6cad4681bef3"
     },
     {
       "path": "research/detection-data/",
@@ -403,7 +468,7 @@
       "path": "research/pages-colab/",
       "http_status": 200,
       "article_matches_build": true,
-      "article_sha256": "c923685099a3480b6645ddda4549ef39815d9db6b0ed12b939156b469203ab1a"
+      "article_sha256": "73b6a3cc4c64e07b92c92b8ed87160d8d63b5d864de92d3f91c00fbe9a460a2c"
     },
     {
       "path": "research/version-sources/",
@@ -680,6 +745,96 @@
     },
     {
       "name": "20-deployment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-attention-exchange.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-checkpoint-resume.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-classification-flow.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-materials.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-patch-grid.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-position-swap.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-preln-block.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-token-position.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "21-training-loss.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "22-collapse.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "22-distillation.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "22-features.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "22-neighbors.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "22-views.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "23-detection-bridge.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "23-detection-predictions.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "23-dinov2-patch-neighbor.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "23-gram-relations.svg",
       "http_status": 200,
       "bytes_match_build": true
     },
@@ -999,6 +1154,76 @@
     },
     {
       "id": "20-deployment",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "21-patches",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "21-attention",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "21-transformer",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "21-training",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "22-views",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "22-collapse",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "22-distillation",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "22-features",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "23-dino-versions",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "23-detection-bridge",
       "colab_link_on_public_page": true,
       "notebook_http_status": 200,
       "environment_cell_uses_tag": true,
