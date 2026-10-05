@@ -3,8 +3,15 @@
   "commit": "6b8fb865b6f4f5f1c1649420520232f9911c1227",
   "directory": ".agents/skills/clear-tutorial",
   "imported_on": "2026-10-05",
-  "preservation": "The four source files are copied byte-for-byte. README.md and this manifest are local additions.",
-  "files": [
+  "original_import_commit": "439603b0380ee6e75b85fb8e8cf5d5ef3aa4872f",
+  "checksum_scope": "The hashes below describe the pinned upstream originals, not the locally adapted working files.",
+  "local_adaptations": [
+    "SKILL.md: integrate YOLO reader, geometry, evolution, evidence and review rules into the entry point.",
+    "references/review-protocol.md: align reader background, examples, technical checks and record location.",
+    "references/writing-prompt.md: align the reusable writing prompt with the YOLO rules.",
+    "references/review-example-10-5.md: identify the external VLM example and use pinned source links."
+  ],
+  "source_files": [
     {
       "path": "SKILL.md",
       "bytes": 6411,

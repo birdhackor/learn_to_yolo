@@ -1,8 +1,10 @@
-# 10.5 的既有問題如何被攔下
+# 來源 VLM 專案 10.5 的既有問題如何被攔下
 
 這是作者依使用者回饋整理的方法示範，並非新做的獨立或盲讀驗收。它不修改教材，也不改寫先前的審閱紀錄。
 
-來源：[10.5 正文](../../../../course/chapters/10.md#10.5)、[既有審閱紀錄](../../../../docs/reader-reviews/10.5.json)。
+這裡的作者與 10.5 均指來源專案 `tiny-perceptron-vlm`，不是 `learn_to_yolo` 的作者或 YOLO 第 10 章。此案例只用於說明方法，不能當成本專案的審閱證據。
+
+來源固定在 `6b8fb865b6f4f5f1c1649420520232f9911c1227`：[第 10 章（含 10.5 正文）](https://github.com/birdhackor/tiny-perceptron-vlm/blob/6b8fb865b6f4f5f1c1649420520232f9911c1227/course/chapters/10.md)、[10.5 既有審閱紀錄](https://github.com/birdhackor/tiny-perceptron-vlm/blob/6b8fb865b6f4f5f1c1649420520232f9911c1227/docs/reader-reviews/10.5.json)。
 
 ## 斷點一：任務與數字答案尚未對上
 
