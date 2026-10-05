@@ -1,14 +1,27 @@
 {
   "id": "03-identity",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:40:17.399870+00:00",
+  "executed_at_utc": "2026-10-05T07:17:51.303127+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "9d9753c44c73fec08d5335a048433f8d932cba3009abfd3cd894b78de2ff0dc2",
-  "process_wall_seconds": 1.796,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "5b90ff32f504ebb96a831727e2dcd10b98640398148146f301a5e51bab0fc26d",
+  "dependencies_sha256": {
+    "lesson_cases/03-identity.py": "5b90ff32f504ebb96a831727e2dcd10b98640398148146f301a5e51bab0fc26d"
+  },
+  "process_wall_seconds": 3.0967,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]\ninput_gradient=[1.0, 1.0, 1.0, 1.0]; F=0 preserves negative values too\nstep=0, shape=(2, 4, 8, 8), loss=1.0816\nstep=1, shape=(2, 4, 8, 8), loss=1.0724\nrandom branch updated; this does not measure ResNet classification quality\n",
+  "stdout": "x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]\ninput_gradient=[1.0, 1.0, 1.0, 1.0]; negatives_preserved=True\nstep=0, shape=(2, 4, 8, 8), loss=1.0816\nstep=1, shape=(2, 4, 8, 8), loss=1.0724\nrandom branch updated; this does not measure ResNet classification quality\n",
   "stderr": "",
   "exit_code": 0
 }

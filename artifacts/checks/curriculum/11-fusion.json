@@ -1,14 +1,27 @@
 {
   "id": "11-fusion",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:40:51.853032+00:00",
+  "executed_at_utc": "2026-10-05T07:18:39.311278+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "1da3ebf9cc6f604affd281dc5e0e91d12955fbd389f3f39e0c7998e655dc5977",
-  "process_wall_seconds": 1.8689,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "4de6c1260d6f76f55013b4d17d935dbff46f4c1ec21975cbae5b065cd887af63",
+  "dependencies_sha256": {
+    "lesson_cases/11-fusion.py": "4de6c1260d6f76f55013b4d17d935dbff46f4c1ec21975cbae5b065cd887af63"
+  },
+  "process_wall_seconds": 2.3239,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "nearest example [[1.0, 1.0, 2.0, 2.0], [1.0, 1.0, 2.0, 2.0], [3.0, 3.0, 4.0, 4.0], [3.0, 3.0, 4.0, 4.0]] source gradient [[4.0, 4.0], [4.0, 4.0]]\n8ch shallow + 8ch upsampled deep -> 16ch concat -> 8ch mixed\nparameters 1296 both branches backward and one step\n",
+  "stdout": "nearest example [[1.0, 1.0, 2.0, 2.0], [1.0, 1.0, 2.0, 2.0], [3.0, 3.0, 4.0, 4.0], [3.0, 3.0, 4.0, 4.0]] source gradient [[4.0, 4.0], [4.0, 4.0]]\nshapes shallow (1, 8, 8, 8) deep (1, 16, 4, 4) -> reduce (1, 8, 4, 4) -> nearest (1, 8, 8, 8) -> concat (1, 16, 8, 8) -> mix (1, 8, 8, 8)\nparameters 1296 both branches backward and one step\n",
   "stderr": "",
   "exit_code": 0
 }

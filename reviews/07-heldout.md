@@ -87,3 +87,105 @@
 ### 第 4 輪：上一輪的處理：通過
 
 第 3 輪沒有發現，沒有處理說明需要核對。
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 在獨立副本重審 `docs/lessons/07-heldout.md` 全頁、`lesson_cases/07-heldout.py` 及其直接／間接 import 的 repo 模組、`grid-learning-curve.svg` 與 `grid-learning-predictions.svg`。讀過 AGENTS.md、發布流程第 7 節、舊審查、現行逐節紀錄與 160 步紀錄；本次結論是通過，沒有必要問題，有一項可選改善。頁尾自動執行紀錄及 Colab tag 不計入審查涵蓋 hash，但另對照現行 JSON／notebook 檢查。
+
+### 執行、練習與獨立計算
+
+本次使用 Python 3.12.14、PyTorch 2.9.1+cpu、INTEL(R) XEON(R) PLATINUM 8573C、2 個執行緒。下列工作都在副本進行：
+
+```bash
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/07-heldout.py
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python -m miniyolo.train --steps 160 --samples 32 --device cpu --output artifacts/runs/review-07-heldout-grid --report artifacts/runs/review-07-heldout-grid/report.json
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python review07-checks.py
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python scripts/render_learning_evidence.py --report artifacts/checks/grid-learning.json --output artifacts/runs/review-07-heldout-grid/rendered
+/workspace/learn_to_yolo/.venv-docs/bin/zensical build --clean --strict
+/workspace/learn_to_yolo/.venv-docs/bin/python scripts/validate_site.py
+/workspace/learn_to_yolo/.venv-docs/bin/python review07-browser.py
+/workspace/learn_to_yolo/.venv-docs/bin/python review07-sources.py
+```
+
+1. 案例 exit 0，兩行 stdout 與現行 `artifacts/checks/curriculum/07-heldout.json` 逐字相同。fixture 得到 AP50=0.5、precision=1/3、recall=0.5；藍類沒有 GT，因此 AP=None。三步模型的 AP、precision、recall 都為 0，與正文的「管線冒煙測試」定位一致。
+2. 從 Zensical 實際 HTML 的參考答案 code block 取出保留 4 格縮排的練習，插入 `print('artificial evaluation fixture', metrics)` 下一行，在副本產生的練習檔執行。exit 0、斷言通過，stdout 仍與原案例相同。
+3. 另外用普通 Python list 計算半開 xyxy 面積／IoU，跨圖逐類按 score 排序，排除已配對 GT，再以 Fraction 精確計算 PR 包絡面積；沒有呼叫 `miniyolo.metrics` 或 renderer 的 matching 函式。原 fixture 得到 AP=.5、precision=1/3、recall=.5；刪除兩個低分 FP 得到 AP=.5、precision=1、recall=.5；將背景 FP 改為 .95 得到 AP=.25。逐圖 AP 為 A=1、B=0，平均 .5，因此正文說此 fixture 無法展示逐圖平均與全體 AP 的差異正確。
+4. 三步 train seed=7 與 held-out seed=901 的全部 4×4 圖片配對都不相同。確認 ShapeDataset 每索引以 seed+1009×index 產生圖片，該批 held-out 不進 optimizer；不是把人工預測冒充模型輸出。
+5. 獨立重跑 160 步後的全部 loss_history（160×4 個 loss）與四張 validation_examples 的 GT／預測逐值等於現行 `grid-learning.json`。以重跑 checkpoint 對全部 validation／test 圖取得實際框，另用上述獨立計算重算；結果如下。
+
+| 資料 | 每類 AP50：紅／藍 | mAP50 | GT／預測框 | TP／FP／FN | precision／recall |
+|---|---|---|---|---|---|
+| validation | 6/7／3/4 | 0.8035714285714286 | 18／16 | 15／1／3 | 15/16=0.9375／15/18=0.8333333333333334 |
+| test | 6/7／160/231 | 0.7748917748917749 | 19／17 | 15／2／4 | 15/17=0.8823529411764706／15/19=0.7894736842105263 |
+
+更新前 validation mAP50=0.0017507002801120447；因此正文的 .0018、.8036、.7749、.8824／.7895、每類 test AP .857／.693 都正確。validation 唯一 FP 的 trace 是 image=0、pred_index=1。test 多找到一個物件會差 1/19≈.0526 recall，也支持正文對小樣本波動的提醒。
+
+6. 逐句對照 `miniyolo.train`：固定 seed 7／700／7000、train 32 張、validation／test 各 16 張、64×64、每張 0～2 個物件且包含空圖；只在 train 圖更新權重。訓練前／後各評一次 validation，末端評一次 test，沒有按 validation 自動選設定，也沒有按 test 結果再更新模型。查核另外載入同一 checkpoint 重算，沒有以查核結果改設定。
+7. 候選門檻、同類 NMS、matching IoU 的區分成立；三步案例 score=.01、160 步 score=.05，兩者的 NMS／matching 都為 .5。確認無效的 x2<x1、類別超出範圍都被 evaluate_ap 拒絕。摘錄專用檢查對本頁回傳空清單；notebook 最後一格等於案例、已存輸出等於現行 JSON，source_ref=lessons-v0.4.0。
+
+### 實際 SVG 與初學者閱讀
+
+- 依現行紀錄重畫兩張 SVG，與副本追蹤圖逐 byte 相同。另直接解析實際 SVG，而非只看 renderer：曲線的四條 polyline 每條 160 個座標，都對上當前 loss_history；total=5×box+objectness+classification 的加權關係全部成立。
+- predictions SVG 的四張 embedded PNG 與 seed=700 重生的圖片逐 pixel 相同；實際綠虛線 GT 與橙實線預測框的 x／y／width／height，皆與 JSON 按 5 倍比例映射的座標相同（SVG 的小數取整容差 .005）。
+- 圖片 0 藍框 #0 IoU=0.6238343188704405，TP；紅框 #1 score=0.9804154634475708、IoU=0.4734199231501358，FP；紅色 GT 為 FN。實際 SVG 的文字也依序為 `TP IoU 0.62`、`#1 class 0 score 0.980`、`FP IoU 0.47` 與 `FN`，與新正文完全一致。validation 唯一 FP 與 precision=15/16 的說明成立。
+- Zensical strict build 與 validate_site.py 通過；本頁渲染為 3 張表格、3 個摺疊區、2 個 Python 程式塊，練習縮排保留。Chromium 151.0.7922.173 使用 `/usr/bin/chromium` 與 `--no-sandbox --disable-gpu --disable-dev-shm-usage`，實際查看桌面頁、兩張原 SVG 與 390px 手機頁。沒有 JavaScript 錯誤，SVG 所有文字在 viewBox 內，沒有標籤重疊或裁切，手機沒有橫向頁面溢出。只啟動副本的暫時 HTTP server，檢查後已停止。
+- fixture、GT、TP／FP／FN、seed、held-out、validation／test、checkpoint、評估協議、regression test 的解釋符合高中程度、數學好但程式新手的閱讀順序。尤其保留「FP 降 precision 不一定降 AP」「score 高不代表 IoU 高」「三步可執行不是學習成功」三個關鍵區分。合成 seed 的獨立性只支持同生成規則的結論；本文沒有外推到照片或主張現代機制優劣。
+
+| # | 程度 | 位置 | 發現與處理 |
+|---|---|---|---|
+| 1 | 建議 | 補充實驗圖板／手機讀圖 | 390px 手機版會等比縮小整張 900px SVG，預測標籤約 6px，直接讀圖上的兩行標籤較吃力；正文已有完整讀圖解說，數字與圖均正確，因此不是發布必要修正。可選擇讓圖連到原 SVG，提供開啟原尺寸的入口，或另做窄畫面圖板。建議已記下，本次沒有修改。 |
+
+### 官方來源核對
+
+查核重新開啟以下來源，全部 HTTP 200，保留 TLS 驗證；不是沿用舊審查結論或靠記憶判定。
+
+- [VOC2012 官方文件](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00044100000000000000)，3.4.1：右側最大 precision 包絡、2010 以前 11 個 recall 取樣位置、VOC2010–2012 全部唯一 recall 的積分。
+- [VOCdevkit_18-May-2011.tar](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/VOCdevkit_18-May-2011.tar)：`VOCcode/VOCevaldet.m` 先在全部同圖同類 GT 求 ovmax／jmax，再查 diff／det；`VOCcode/VOCap.m` 補 recall 0／1 端點、反向 precision 包絡、在 recall 跳動處積分。這支持本頁說的 VOC 與本書配對順序差異。
+- [COCO 官方評估程式固定 commit 8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py)：_prepare L106–109 的 crowd ignore、computeIoU L163–176 逐圖逐類截 maxDets、evaluateImg L251–294 跳過已配對非 crowd GT 再找最佳配對、accumulate L372–405 的 101 recall 點包絡取樣、summarize L452–455 的有效項平均、Params L506–508 的 10 IoU／101 recall／100 maxDet。
+- [COCO 官方說明固定 commit 5e1c4da72464b1c6f068df0c02c91e3000ea62c4](https://github.com/cocodataset/cocodataset.github.io/blob/5e1c4da72464b1c6f068df0c02c91e3000ea62c4/dataset/detection-eval.htm)：10 個 IoU 門檻與各類別平均、R=101。網頁文字第 6 點寫「跨所有類別最多 100」；本頁依實際固定程式說「每張圖每個類別最多 100」，此處的程式核對成立。它也足以確認將本書單 IoU all-points AP 多跑 10 次，仍不等於 COCO AP@[.50:.95]。
+- [PyTorch v2.9.1 Module 原始碼](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/nn/modules/module.py#L2894)：eval 切成 train(False)，只影響特定在訓練／評估模式行為不同的層。
+- [PyTorch v2.9.1 grad_mode 原始碼](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/autograd/grad_mode.py#L212)：inference_mode 與 no_grad 同屬推論梯度控制，會另外關閉 view tracking／version counter，產生的 tensor 不可參與 autograd 記錄的運算。支持本頁摘錄中文註解。
+
+本頁明確使用「單 IoU=.5、每類 all-points、只平均有 GT 類別」的簡化指標，且介紹 VOC／COCO 差異；沒有把受控紅／藍矩形任務、人工 fixture 或三步模型當作官方 benchmark 成績。
+
+### 查核版本的 SHA-256
+
+以下頁面 hash 是含自動執行區塊的整份檔案 hash；正式 review coverage 另依工具的排除規則計算。本次只核對 hashes，沒有寫 coverage。
+
+| 檔案 | SHA-256 |
+|---|---|
+| `miniyolo/__init__.py` | `785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9` |
+| `miniyolo/checkpoint.py` | `2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b` |
+| `miniyolo/data.py` | `cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d` |
+| `miniyolo/geometry.py` | `6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483` |
+| `miniyolo/inference.py` | `995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313` |
+| `miniyolo/losses.py` | `81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4` |
+| `miniyolo/metrics.py` | `53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0` |
+| `miniyolo/models.py` | `49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6` |
+| `miniyolo/provenance.py` | `21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3` |
+| `miniyolo/targets.py` | `2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16` |
+| `miniyolo/train.py` | `aa5567f11be6ca7aee97bd082b9d5964414b12b73453763c915c7ffb409c4276` |
+| `lesson_cases/07-heldout.py` | `ada566e4f1c294156116f7771c2bf31dfc7d23770a7e76a56331a595cf888568` |
+| `docs/lessons/07-heldout.md` | `f27210db980f5cba76ef3bdd7047f660fb0bc352b630267429796b5e14ec1be4` |
+| `artifacts/checks/curriculum/07-heldout.json` | `38186fc33a15af761c5e4bc5baf00a047cf4009afbb4b46967eb66add6c5c332` |
+| `artifacts/checks/grid-learning.json` | `c66887b113691433f4f8787cb55fbbb6f4dacf26d635565dd259b5988417a298` |
+| `docs/assets/diagrams/grid-learning-curve.svg` | `818baea73d025d34b16eb67e16947d46b7615f49b6d4618f3c3f0567c120682d` |
+| `docs/assets/diagrams/grid-learning-predictions.svg` | `8eb7ba62adfa0df235a3530982ed6c73cdec7ced2ae47fcceabb1eac8b2b0bd4` |
+| `scripts/render_learning_evidence.py` | `89d764abed5b7e5e6fd998abbe1f324ed1eee195ffc0fe6a7694f1b799cee952` |
+
+### 實際開啟來源的 SHA-256
+
+| 來源 | SHA-256 |
+|---|---|
+| `voc2012.html` | `fb5900c42542afda9aca2543f52554af414ceeda9326480202b79ca695cbc90c` |
+| `VOCdevkit_18-May-2011.tar` | `6101e33483e1f252821085f4b85634d334c1d44a0a5bc3921cd64320a40bd2cf` |
+| `VOCdevkit/VOCcode/VOCap.m` | `03e77db8836fe9a0b680f623de9f0f3047745581fa0193e5f90b09ae5ba82da3` |
+| `VOCdevkit/VOCcode/VOCevaldet.m` | `c98716fd7f256af142d4362f3dc1d55f39339befa0c88ecf3aa83f786843bd78` |
+| `cocoeval.py` | `e514af401848d5a4cc5d3512bd93d2c317f92272c6d30f218e0f00b7b4110534` |
+| `coco-detection-eval.htm` | `2e434ed6c2b5eebeef6cefc225f2e32fa2478a25d276679d7a37e975064ab579` |
+| `torch-2.9.1-module.py` | `d076e98c7037d342c82662c13a11dbb2584d080279a140431243475f27056dfd` |
+| `torch-2.9.1-grad_mode.py` | `84d64257ccd56bd1af2994d84e34f4f4b04e11a90b8b82edccfe27ce210e7318` |
+
+### 編輯處理
+
+保留手機圖板的閱讀建議。本頁正文已逐項寫出圖上標籤、配對與 IoU 的數字，這次不另改圖板版型；圖與文字的數值檢查通過。沒有因此修改本頁正文。

@@ -141,8 +141,8 @@ def count_per_image(model, images):
 
 |模型|loss（第 1 次更新前→第 40 次更新前）|40 次更新後的訓練 accuracy（8 張）|40 次更新後的 validation accuracy（4 張）|
 |---|---|---|---|
-|plain|0.693791 → 0.692943|0.50|0.50|
-|residual|0.692160 → 0.030739|1.00|1.00|
+|plain|0.693793 → 0.692948|0.50|0.50|
+|residual|0.692138 → 0.030958|1.00|1.00|
 
 表中的 accuracy 是 40 次更新全部完成後，用 eval 模式量的。
 
@@ -174,7 +174,7 @@ plain 沒有 shortcut 把 \(x\) 加回，本設定又沒有 BatchNorm 把尺度�
 
 ## 應如何下結論
 
-合格的結論要寫出條件與實際數字，例如：「在 seed 7、8 張人工色塊、相同初始權重、SGD learning rate 0.1 的條件下，只訓練 3 步時，residual 的 stem 梯度 L2 長度約 0.15，plain 約 0.001；residual 印出的 loss 從 0.6922 降到 0.6855，plain 幾乎不變；兩者 validation accuracy 都是 0.50（4 張）。訓練 40 步時，plain 的 loss 仍停在 \(\ln 2\) 附近（第 1 次更新前 0.693791 → 第 40 次更新前 0.692943），40 次更新後訓練與 validation accuracy 都是 0.50；residual 第 40 次更新前的 loss 約 0.031，40 次更新後訓練 8 張與 validation 4 張全對。」3 步的數字取自頁尾的執行紀錄，40 步的取自上面的 40 步紀錄；換電腦重跑時，訓練後的小數可能從第 3、4 位起就不同，定性結論不受影響。
+合格的結論要寫出條件與實際數字，例如：「在 seed 7、8 張人工色塊、相同初始權重、SGD learning rate 0.1 的條件下，只訓練 3 步時，residual 的 stem 梯度 L2 長度約 0.15，plain 約 0.001；residual 印出的 loss 從 0.6921 降到 0.6855，plain 幾乎不變；兩者 validation accuracy 都是 0.50（4 張）。訓練 40 步時，plain 的 loss 仍停在 \(\ln 2\) 附近（第 1 次更新前 0.693793 → 第 40 次更新前 0.692948），40 次更新後訓練與 validation accuracy 都是 0.50；residual 第 40 次更新前的 loss 約 0.031，40 次更新後訓練 8 張與 validation 4 張全對。」3 步的數字取自頁尾的執行紀錄，40 步的取自上面的 40 步紀錄；換電腦重跑時，訓練後的小數可能從第 3、4 位起就不同，定性結論不受影響。
 
 這段結論能支持的範圍是：在這個沒有 BatchNorm、只有 3 個 block、用 PyTorch 預設初始化、SGD learning rate 0.1、8 張人工色塊、只跑 seed 7 一次的設定下，plain 40 步內學不動，residual 學得動，而且是靠顏色分類。不能寫「ResNet 總是更準」，也不能說這解釋了論文裡深層 plain 網路的退化，或把單次梯度 L2 長度較大解釋成泛化較好。
 
@@ -200,19 +200,19 @@ plain 沒有 shortcut 把 \(x\) 加回，本設定又沒有 BatchNorm 把尺度�
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
-    plain step=0, loss=0.6938, stem_grad_norm=0.000987
-    plain step=1, loss=0.6937, stem_grad_norm=0.001004
-    plain step=2, loss=0.6936, stem_grad_norm=0.001014
-    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0124
-    residual step=0, loss=0.6922, stem_grad_norm=0.146834
-    residual step=1, loss=0.6888, stem_grad_norm=0.147695
-    residual step=2, loss=0.6855, stem_grad_norm=0.146226
-    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0081
+    plain step=0, loss=0.6938, stem_grad_norm=0.000984
+    plain step=1, loss=0.6937, stem_grad_norm=0.001001
+    plain step=2, loss=0.6936, stem_grad_norm=0.001011
+    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0132
+    residual step=0, loss=0.6921, stem_grad_norm=0.146701
+    residual step=1, loss=0.6888, stem_grad_norm=0.147590
+    residual step=2, loss=0.6855, stem_grad_norm=0.146128
+    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0154
     Same initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.
     ```
 

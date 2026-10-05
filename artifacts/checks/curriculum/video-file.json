@@ -1,13 +1,37 @@
 {
-  "verified_at_utc": "2026-10-02T18:06:51.020971+00:00",
-  "code_commit": "c0463720b24c4d8a86c739f8c2784ad25164a6ee",
-  "code_commit_scope": "Base checkout commit before the extension is committed; script and lesson SHA-256 identify the executed working-tree bytes",
-  "script_sha256": "f7820880f0c89c715c58b2f7ad4682ee9283db4d1a4d76a75787831f155f5b4b",
+  "verified_at_utc": "2026-10-05T07:20:16.098192+00:00",
+  "code_commit": "3f72bb5eeb4ee417898bcee24c93d52c92085e2c",
+  "code_commit_scope": "Commit of the checkout (None outside git); dependencies_sha256 identifies the executed files",
+  "script_sha256": "ec77505526972a57b74cf757e303ccfea7459dfba2ffd9857b7634129070dcec",
   "lesson_case_sha256": {
-    "18-video": "2d7c5acafb068d819c740fd41c6b30e1d2ca798e94ab0ced29806fb732139f25",
-    "19-tracking": "adf6924a818b9d10e912a08d7aa1437abc27a2ec285a2d094b5834a5f1050895"
+    "18-video": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+    "19-tracking": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa"
+  },
+  "dependencies_sha256": {
+    "lesson_cases/18-video.py": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+    "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa",
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "scripts/verify_video_file.py": "ec77505526972a57b74cf757e303ccfea7459dfba2ffd9857b7634129070dcec"
   },
   "device": "cpu",
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
   "torch": "2.9.1+cpu",
   "numpy": "2.3.5",
   "opencv": "4.13.0",
@@ -85,18 +109,18 @@
     "original_pixel_boxes": [
       [
         [
-          4.660533905029297,
-          14.066386222839355,
-          16.72848892211914,
-          31.179786682128906
+          4.660059928894043,
+          14.06685733795166,
+          16.727819442749023,
+          31.179611206054688
         ]
       ],
       [
         [
-          6.64886999130249,
-          15.054085731506348,
-          19.934675216674805,
-          30.956418991088867
+          6.6479573249816895,
+          15.054295539855957,
+          19.933734893798828,
+          30.956140518188477
         ]
       ],
       [],
@@ -105,18 +129,18 @@
       [],
       [
         [
-          35.62268829345703,
-          18.666748046875,
-          47.192752838134766,
-          33.39585494995117
+          35.6220588684082,
+          18.667619705200195,
+          47.191471099853516,
+          33.39543914794922
         ]
       ],
       [
         [
-          37.14796447753906,
-          20.521753311157227,
-          50.35932540893555,
-          33.725948333740234
+          37.14718246459961,
+          20.52206039428711,
+          50.358150482177734,
+          33.72526931762695
         ]
       ],
       [],
@@ -126,9 +150,9 @@
     ],
     "limits": "Actual detector input; no GT identity matching, IDF1/HOTA or tracking quality claim"
   },
-  "file_pipeline_wall_seconds": 0.015970064000612183,
+  "file_pipeline_wall_seconds": 0.031932381010847166,
   "file_pipeline_timing_scope": "Entire file consumption including capture/open/read/decode, CPU preprocess/model/postprocess/drawing and Python collection; excludes prior training, encoding and disk output; no display or network queue",
-  "verification_wall_seconds": 1.009969137000553,
+  "verification_wall_seconds": 1.7881111379829235,
   "verification_timing_scope": "Inside verify(), including fixture encoding, decoding and resource checks, model initialization/training, two inference streams, tracking, first-overlay save and hashes; excludes imports, process startup and final JSON write",
   "limits": "Controlled lossless generated video, CPU only; no physical camera, lossy MP4/color-space parity, variable-frame-rate PTS, live/network latency or formal throughput benchmark"
 }

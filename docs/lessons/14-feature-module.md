@@ -163,13 +163,11 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 
 參考來源：[YOLO11 官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/11/yolo11.yaml)、[C3k2／C2f／Bottleneck 定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)。
 
-
-
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/14-feature-module.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/14-feature-module.json)
 
 ??? example "展開本次實際輸出"
 
@@ -178,8 +176,8 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
     concatenated channels: 4 + 4 + 4 + 4 = 16; fuse 16 -> 8
     parameters plain / split: 1168 800
     local transformation MSE 1.0722 -> 1.0049
-    concat order, each direct concat-slot gradient, and each path total gradient: verified
-    direct concat-slot gradient L1: [0.2967, 0.3349, 0.3481, 0.2779]
+    concat order, each direct concat-segment gradient, and each path total gradient: verified
+    direct concat-segment gradient L1: [0.2967, 0.3349, 0.3481, 0.2779]
     ```
 
 <!-- curriculum-evidence:end -->

@@ -242,14 +242,16 @@ progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-training.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-training.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
     many/one weight first: (0.8, 0.2)
     many/one weight last: (0.1, 0.9)
-    one-head MSE fixed=0.663073, progressive=0.016285
+    fixed many/one (0.8, 0.2): sum of b=6.000, one-head MSE=0.663073
+    progressive: sum of b=16.500, one-head MSE=0.016285
+    matched fixed many/one (0.45, 0.55): sum of b=16.500, one-head MSE=0.016882
     one-head first forward/backward/step: {"weight": 0.31842339038848877, "bias": 0.3137805461883545, "prediction": [-0.004642844200134277, 0.3137805461883545, 0.6322039365768433, 0.950627326965332], "one_mse": 5.866377353668213, "one_gain": 0.19999999999999996, "weighted_dw": -1.1461899280548096, "weighted_dbias": -0.6108031272888184, "updated_weight": 0.3757328987121582, "updated_bias": 0.34432071447372437}
     small-object eligible points original / expanded: 0 4
     GT regression box remains: [7.0, 7.0, 9.0, 9.0]

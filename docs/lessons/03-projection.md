@@ -157,13 +157,14 @@ assert torch.equal(probe_output, torch.tensor([[0.0, 2.0], [20.0, 22.0]]))  # �
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-projection.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-projection.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
     input=(1, 3, 4, 4), main=(1, 6, 2, 2), projection=(1, 6, 2, 2), output=(1, 6, 2, 2)
     first output channel=[[321.0, 321.0], [321.0, 321.0]]; 1*1 + 2*10 + 3*100 = 321
+    position probe (input channel 0 = 10*row + col): first output channel=[[0.0, 2.0], [20.0, 22.0]]
     step=0, loss=0.3553
     step=1, loss=0.3350
     projection changed; block parameters=504; no classification-quality claim

@@ -175,7 +175,7 @@ display(SVG(filename='artifacts/runs/learning/04-localization/learning.svg'))
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
 
 ??? example "展開本次實際輸出"
 
@@ -185,7 +185,7 @@ display(SVG(filename='artifacts/runs/learning/04-localization/learning.svg'))
     step=1, classification=0.7146, box=0.0127, total=0.7779
     step=2, classification=0.7123, box=0.0091, total=0.7576
     first_target_cxcywh=[0.3125, 0.375, 0.375, 0.375], class_shape=(2, 2), box_shape=(2, 4)
-    predicted pixel xyxy=[[7.4885783195495605, 7.199568748474121, 20.595396041870117, 19.995590209960938], [9.941701889038086, 8.684192657470703, 23.892370223999023, 22.775699615478516]]
+    predicted pixel xyxy=[[7.488578796386719, 7.199568271636963, 20.595396041870117, 19.995590209960938], [9.941701889038086, 8.684192657470703, 23.892370223999023, 22.775699615478516]]
     overlay=artifacts/04-localization.png; no held-out detection claim
     ```
 

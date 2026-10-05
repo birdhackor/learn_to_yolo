@@ -77,7 +77,7 @@ validation 共有 17 個 GT。先做 GT 覆蓋診斷（coverage）：對每個 G
 - 4 個在 0.1 到 0.5 之間：有同類框碰到，但不夠準。本節把這種 GT 叫做近失敗（near miss）。
 - 4 個低於 0.1，或根本沒有同類候選：多半是沒有同類框碰到它（IoU 低於 0.1 不保證完全沒碰到，見下方背景 FP 那一條）。
 
-覆蓋數不能直接當 recall。覆蓋診斷替每個 GT 找最好的同類框時，不管那個框是不是已經配給別的 GT；正式評估卻規定一個預測只能配對一個 GT。所以覆蓋數一定大於或等於 TP 數，覆蓋數除以 17 只是 recall 的上限。如果兩個 GT 都只靠同一個框覆蓋（物件互相重疊的資料，例如擁擠的人群，就可能發生），覆蓋數就會比 TP 多。本課資料遇不到這種情況：同一張圖的 GT 互不重疊，而 IoU 超過 0.5 表示交集占了框面積的一半以上，一個框不可能和兩個不重疊的 GT 都做到。所以在本課資料上，覆蓋數實際上就等於 TP 數：baseline 的 TP 也是 9，9/17 正好等於 recall 0.5294。
+覆蓋數不能直接當 recall。覆蓋診斷替每個 GT 找最好的同類框時，不管那個框是不是已經配給別的 GT；正式評估卻規定一個預測只能配對一個 GT。所以覆蓋數一定大於或等於 TP 數，覆蓋數除以 17 只是 recall 的上限。如果兩個 GT 都只靠同一個框覆蓋（物件互相重疊的資料，例如擁擠的人群，就可能發生），覆蓋數就會比 TP 多。本次實際配對結果裡，這 9 個 GT 各有一個成功配上的同類預測，baseline 的 TP 也是 9；因此這次的覆蓋數等於 TP 數，9/17 正好等於 recall 0.5294。
 
 覆蓋只從 GT 端看。為了分清失敗是框不準、類別錯，還是框落在空地上，程式另外輸出錯誤診斷：baseline 的放在 report 的 `baseline_errors`，改動版的放在 `changed_errors`。每份都從兩端檢查。
 
@@ -148,7 +148,7 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 | 同類最佳 IoU 在 0.1 到 0.5 之間（近失敗） | 4（共 17） | 2（共 17） |
 | 同類最佳 IoU 低於 0.1（含沒有同類候選） | 4（共 17） | 3（共 17） |
 
-表中的個數可以驗算 precision 與 recall。兩次訓練的錯類 FP 和重複 FP 都是 0，所以 FP 只有定位與背景兩種：改動版的 precision=12/(12+2+1)=0.8，recall=12/17≈0.7059。兩次的錯類覆蓋也都是 0。改動版的覆蓋數 12 也等於 TP 數，理由同前：本課的 GT 互不重疊。
+表中的個數可以驗算 precision 與 recall。兩次訓練的錯類 FP 和重複 FP 都是 0，所以 FP 只有定位與背景兩種：改動版的 precision=12/(12+2+1)=0.8，recall=12/17≈0.7059。兩次的錯類覆蓋也都是 0。本次改動版的這 12 個覆蓋 GT，也各有一個成功配上的同類預測；因此這次的覆蓋數 12 等於 TP 數。
 
 這張表只能比較同一組資料上的兩次訓練。對照[第 7 章 held-out 那一節](07-heldout.md)末段的 160 步實驗：它的訓練設定和本節 baseline 相同，只是資料 seed 不同（7／700／7000），validation mAP50 是 0.80；換成本節的 1100／2200／3300，baseline 只有 0.44。這示範了小資料切分的波動有多大，所以本節只比較同一組資料上的 baseline 與改動版，不拿別頁的數字比高低。
 
@@ -166,9 +166,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 選定模型接著在獨立的 test 上評估一次：mAP50 0.4452、precision 0.6364、recall 0.5385，都比它在 validation 上低。0.4452 是另外 16 張圖的分數，不能拿來和 baseline 在 validation 的 0.4444 比。test 只用來回報選定模型的成績一次，所以刻意不測 baseline，免得看了 test 又想回頭改選擇。test 也只有 13 個物件：recall 0.5385=7/13，多找到或漏掉一個物件，recall 就差 1/13≈0.077。這麼小的切分波動很大，不能把 0.7014 宣稱為穩定的效果，也不能由這一次斷定改動版在新圖片上一定比較好。
 
-兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.51 秒（baseline）與 0.45 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
+兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.78 秒（baseline）與 0.87 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
 
-選定模型的端到端時間（從輸入到畫好框的整段）中位數約 1.05 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
+選定模型的端到端時間（從輸入到畫好框的整段）中位數約 2.90 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
 
 計時路徑留下的候選數記在 `timed_image_candidates`，程式用斷言要求它大於 0。它不一定等於挑圖時數到的候選數：挑圖用的是前面 16 張 validation 圖一起評估的結果，像素值是 0～1 之間的小數；計時的路徑則一次只算一張，而且圖先轉成 0～255 的整數再轉回來，像素值會有極小的差異。score 剛好在 0.05 附近的候選，可能因此在一條路徑上留下、在另一條路徑上被刪掉。
 
@@ -218,7 +218,7 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/17-capstone.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/17-capstone.json)
 
 ??? example "展開本次實際輸出"
 
@@ -288,8 +288,8 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "kind": "localization",
             "class": 0,
             "score": 1.0,
-            "best_any_iou": 0.49179601669311523,
-            "best_same_class_iou": 0.49179601669311523
+            "best_any_iou": 0.4917936623096466,
+            "best_same_class_iou": 0.4917936623096466
           },
           {
             "image": 4,
@@ -297,24 +297,24 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "kind": "localization",
             "class": 0,
             "score": 0.9999768733978271,
-            "best_any_iou": 0.3034302294254303,
-            "best_same_class_iou": 0.3034302294254303
+            "best_any_iou": 0.30342045426368713,
+            "best_same_class_iou": 0.30342045426368713
           },
           {
             "image": 5,
             "prediction": 0,
             "kind": "localization",
             "class": 1,
-            "score": 0.2382209151983261,
-            "best_any_iou": 0.2817534804344177,
-            "best_same_class_iou": 0.2817534804344177
+            "score": 0.2380521446466446,
+            "best_any_iou": 0.2817327380180359,
+            "best_same_class_iou": 0.2817327380180359
           },
           {
             "image": 10,
             "prediction": 1,
             "kind": "background",
             "class": 1,
-            "score": 0.06800812482833862,
+            "score": 0.0679774135351181,
             "best_any_iou": 0.0,
             "best_same_class_iou": 0.0
           },
@@ -323,9 +323,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "prediction": 0,
             "kind": "localization",
             "class": 0,
-            "score": 0.9869535565376282,
-            "best_any_iou": 0.22750438749790192,
-            "best_same_class_iou": 0.22750438749790192
+            "score": 0.986950695514679,
+            "best_any_iou": 0.22750937938690186,
+            "best_same_class_iou": 0.22750937938690186
           }
         ]
       },
@@ -348,16 +348,16 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "prediction": 1,
             "kind": "localization",
             "class": 0,
-            "score": 0.9965824484825134,
-            "best_any_iou": 0.25703832507133484,
-            "best_same_class_iou": 0.25703832507133484
+            "score": 0.9965797066688538,
+            "best_any_iou": 0.2567991614341736,
+            "best_same_class_iou": 0.2567991614341736
           },
           {
             "image": 10,
             "prediction": 1,
             "kind": "background",
             "class": 1,
-            "score": 0.0727023109793663,
+            "score": 0.0718860924243927,
             "best_any_iou": 0.0,
             "best_same_class_iou": 0.0
           },
@@ -366,9 +366,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "prediction": 0,
             "kind": "localization",
             "class": 0,
-            "score": 0.9985516667366028,
-            "best_any_iou": 0.49281632900238037,
-            "best_same_class_iou": 0.49281632900238037
+            "score": 0.9985275268554688,
+            "best_any_iou": 0.4916878342628479,
+            "best_same_class_iou": 0.4916878342628479
           }
         ]
       },
@@ -384,14 +384,17 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
       },
       "parameters": 15511,
       "train_seconds": [
-        0.5060329449999585,
-        0.4532946130000255
+        0.7786893089942168,
+        0.8680864610068966
       ],
-      "chosen_end_to_end_median_ms": 1.0529329776763916,
-      "timing_scope": "uint8 RGB -> tensor -> model -> decode/NMS -> drawing; CPU, batch1, threads2; no file I/O",
+      "train_timing_scope": "only the training loop of each run, after one untimed 10-step warm-up fit; CPU, 2 threads",
+      "chosen_end_to_end_median_ms": 2.9047044954495504,
+      "timed_validation_image": 2,
+      "timed_image_candidates": 2,
+      "timing_scope": "uint8 RGB -> tensor -> model -> decode/NMS at score .05 -> drawing, on the validation image with the most candidates; CPU, batch 1, 2 threads; median of 12 runs after 3 warm-up runs; no file I/O",
       "limits": "single initialization, tiny synthetic rectangles; no real-image or multi-seed evidence"
     }
-    actual validation panel: docs/assets/diagrams/17-capstone.svg
+    actual validation panel: artifacts/lesson-17/validation.svg
     ```
 
 <!-- curriculum-evidence:end -->

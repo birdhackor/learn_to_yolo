@@ -1,14 +1,27 @@
 {
   "id": "12-anchor-free",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:40:56.753880+00:00",
+  "executed_at_utc": "2026-10-05T07:18:45.579362+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "2bfd2f09e240134309695d96c59b794383d6192b00bf12a22b2653cc31b08fc6",
-  "process_wall_seconds": 1.8866,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c",
+  "dependencies_sha256": {
+    "lesson_cases/12-anchor-free.py": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c"
+  },
+  "process_wall_seconds": 2.3555,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "target ltrb in feature cells: [[1.5, 1.0, 2.0, 1.5]]\ndecoded target pixels: [[12.0, 16.0, 40.0, 36.0]]\ndistance loss 0.376236 -> 0.000012\nlearned box pixels: [[12.029999732971191, 16.059999465942383, 39.9900016784668, 35.970001220703125]]\noutside point requires a negative distance: assignment is still necessary\n",
+  "stdout": "target ltrb in feature cells: [[2.0, 1.5, 1.5, 1.0]]\ndecoded target pixels: [[12.0, 16.0, 40.0, 36.0]]\ndistance loss 0.376236 -> 0.000012\nlearned box pixels: [[12.01, 16.03, 39.97, 35.94]]\noutside point requires a negative distance: assignment is still necessary\n",
   "stderr": "",
   "exit_code": 0
 }

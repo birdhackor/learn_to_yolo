@@ -92,3 +92,69 @@
 ### 第 4 輪：上一輪的處理：通過
 
 第 3 輪沒有發現，沒有處理說明需要核對。
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 在 `/tmp/lessons-v0.4.0-reviews/review-14/` 的獨立副本重新審查 `docs/lessons/14-feature-module.md`。依 `docs/preparation/publish.md` 第 7 步，先完整閱讀正文、既有審查、case、實際執行 JSON、SVG 與 notebook，再自行執行、手算、查來源及看瀏覽器畫面；舊審查的結論沒有代替這次查核。
+
+結論：通過。必要問題（required）0 件，建議事項（optional）0 件；沒有需要修改正文、圖或程式的發現。本次未改動根目錄、作者的執行紀錄或 coverage，未執行 git、GPU 或資料下載。
+
+### 實際執行與紀錄核對
+
+- 使用既有 Python 3.12.14／PyTorch 2.9.1+cpu，cwd 與 `PYTHONPATH=.` 都指向獨立副本。預設 `lesson_cases/14-feature-module.py` exit 0：輸入輸出 `(2,8,8,8)`、四份 4 channel 串接為 16、fuse 16→8、參數 plain/split＝1168/800、MSE 1.0722→1.0049、直接梯度 L1 `[0.2967, 0.3349, 0.3481, 0.2779]`，所有 assert 通過。整份 stdout 與目前 JSON、notebook 保存的輸出逐字相同；stderr 為空。
+- 依自主練習只把 `module = SplitAggregate()` 改為 `SplitAggregate(blocks=3)`，exit 0：五份 4 channel、concat＝20、fuse 20→8、參數 1168/1128、MSE 1.1248→1.0141，所有 assert 通過。這與第 149–162 行的預測、參考答案及「MSE 會變」說明一致。
+- 依第 115 行加入 `print(target.square().mean())`，印出 `tensor(0.9730)`；預設 30 步後的 1.0049 確實還高於這個零輸出基準，正文沒有把下降的 loss 解釋成學會通用位移或提高 AP。
+- 完整讀過 notebook 四格，最後一格與 case 逐字相同；另執行抽出的最後一格，exit 0，輸出與 JSON 相同。環境格與 metadata 都固定在 `lessons-v0.4.0`，練習指向的「本節可修改的完整實驗」存在。未執行會 clone／安裝的環境格，也未測 Google Colab 託管 runtime。
+- case 只 import PyTorch，沒有其他 repo 程式依賴。以 `miniyolo.provenance.repo_dependencies` 重查，依賴清單與 JSON 的 `dependencies_sha256` 一致，僅列本節 case。已閱讀補充紀錄清單，本節沒有指定需重跑的補充實驗。
+
+### 機制、手算與讀者理解
+
+- 沿實際 forward 追出投影 8→8、chunk 的連續前／後四個 channel、a/b/b1/b2 的 `[2,4,8,8]`、concat `[2,16,8,8]`、融合 `[2,8,8,8]`。正文摘錄明說最後一行是合併改寫；核對其計算與預設 forward 相同，並執行既有摘錄檢查函式，本頁 `excerpt_problems=[]`。
+- 獨立手算含 bias 參數：plain＝2×(8×8×9+8)＝1168；split＝72+4×148+136＝800。每筆卷積乘加：split＝64×(64+4×144+128)＝49152，plain＝64×(2×576)＝73728，不計 bias／ReLU／殘差加法／concat，符合正文限定為卷積乘加的口徑。blocks＝3 為 1128；一般式 144+328×blocks，blocks＝4 為 1456。亦從各 Conv2d 的 weight／bias 元素數核對上述結果。
+- 理論感受野 1×1、5×5、9×9 正確；四層 stride-1 的 3×3 增加邊長 8。把 9×9 視窗與 8×8 真實輸入範圍取交集，中央 2×2 可看全圖、角落只涵蓋 5×5。roll 的 `[1,2,3,4]→[4,1,2,3]` 實測一致；左端循環值超過本模組可達範圍、且跨位置資訊經 4 channel 的 b 分支，正文有充分解釋為何不能據此宣稱通用右移規則。
+- 串接暫存＝2×16×8×8＝2048 個 float32＝8192 bytes＝8 KiB。參數較少不代表 latency 較短、沒有圖片／GT／AP、不等於完整 YOLO11 的限制均有明示。
+- 補做梯度探查：a、b2 的直接／總梯度逐元素相同，b、b1 不同；四段數值都與對應 path 完全相同。保留 b1 的下游路徑，但在 fuse 前把第 8–11 channel 乘 0：該段直接梯度 L1＝0，b1 總梯度 L1 約 0.2897，正好驗證進階摺疊區的反例。只串 a、b、b2 時，第 8–11 channel 與 b1 的數值核對不成立。這些是獨立副本中的檢查，沒有修改作者程式或保存的證據。
+- 完整讀過 `miniyolo/models.py`，確認 GridDetector 的 adaptive pool 後確實是 32→32 的 3×3／ReLU 模組。於暫時模型以 `SplitAggregate(channels=32, hidden=16)` 替換最後一個 backbone 模組，forward 仍輸出 `[2,4,4,7]`，支持第 139 行建議的 shape 相容性；沒有據此宣稱偵測效果相同。
+- 以數學好、程式初學的高中讀者角度逐段閱讀：plain、project、fuse、hidden、bottleneck、concat segment、直接／總梯度、activation 的用法均有說明，前置章節與進階可跳過的範圍清楚。舊建議「兩個 64 容易混淆」已在第 122 行標為 H×W 位置數與投影 8→8 的乘加數，查核後維持原處理，不新增建議。
+
+### 重新開啟官方來源
+
+頁面兩個 GitHub 引用連結均重新請求，回 HTTP 200；並下載同一固定 commit 的官方 raw source 逐段閱讀，不用最新分支或記憶替代。
+
+- [Ultralytics YOLO11 配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/11/yolo11.yaml)，commit `441632cdfd19e22e60a4b1b1999d46326ca51ec4`：確認 backbone／head 的 C3k2、SPPF、C2PSA、上取樣與串接，支持整版還有其他設定的說明。
+- [同版 block.py](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py)：閱讀 C2f（291–322 行）、C3（325–348）、Bottleneck（460–482）、C3k2（1069–1106）、C3k（1109–1127）。確認 C3k2 繼承 C2f 的切分／保留／串接 forward；C2f 的內部 Bottleneck 明傳 e=1.0，C3k2 在 `c3k=False`、attention 預設關閉時換回預設 e=0.5 的 Bottleneck；C3k 可自訂 kernel。頁面對其他選項的省略有明示。
+- [同版 conv.py](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/conv.py) 的 Conv（48–98 行）：確認 bias=False、BatchNorm2d、預設 SiLU 及卷積→BN→activation 順序。
+- [同版 tasks.py](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/tasks.py) 的 parse_model（2172 行附近）：確認 m/l/x 可強制 c3k=True，沒有把配置的個別 False 誤解為所有 YOLO11 尺度都用 Bottleneck。
+- [同版 YOLOv8 配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/v8/yolov8.yaml) 與 [YOLOv5 v7.0 配置](https://github.com/ultralytics/yolov5/blob/v7.0/models/yolov5s.yaml)：重新取得 HTTP 200，確認 C2f／C3 的版本歸屬。
+- [He 等人 CVPR 2016 原文 PDF](https://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)，§4.1「Deeper Bottleneck Architectures」及 Figure 5：原文為 1×1→3×3→1×1 三層、先縮再還原維度，與本頁提醒各種 bottleneck 的層數／channel 不同一致。
+- PyTorch 2.9 的 retain_grad 官方 HTML 請求回 HTTP 403，沒有宣稱看過該 HTML。改讀 [PyTorch v2.9.1 官方 `_tensor_docs.py`](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/_tensor_docs.py)，raw 請求 HTTP 200；核對 `.grad`、`is_leaf`、`retain_grad` 文件，與本頁保留中間 tensor 梯度的說明一致。
+
+以上來源沒有查出與正文不符之處。raw source／請求結果留在獨立副本的 `artifacts/runs/review-14/sources/`。
+
+### 圖與實際網頁
+
+使用既有 Zensical 0.0.67 在獨立副本執行 `zensical build --clean --strict`，exit 0；`scripts/validate_site.py` 亦 exit 0，連結／錨點、Markdown 轉換與 Colab 配對等現有檢查通過。另以本節專用 HTTP 8814 與 Chromium／Playwright 看實際頁面，沒有使用根目錄 HTTP 8794。
+
+完整讀 SVG 的 viewBox、title、desc 與全部線段／標籤，再看桌面 1440×1100 和手機 390×844 的實際像素：a/b/b1/b2 的路徑、兩個殘差公式、四段 channel 0–3／4–7／8–11／12–15、16ch→8ch 均與正文／程式相符，無裁切或箭頭錯接。此圖是結構示意，沒有資料曲線可對照。頁面 HTTP 200、SVG 正常載入、5 個摺疊區存在；已展開檢查梯度說明、參考答案與執行紀錄，表格、編號清單及 code block 顯示正常，pageerror 為空，手機 body 沒有超出 viewport。畫面留在 `artifacts/runs/review-14/` 的 `diagram-desktop.png`、`gradient-detail.png`、`exercise-answer.png`、`mobile-viewport.png`。專用伺服器於查核後停止。
+
+### 快照與發現處理
+
+本次覆蓋的頁面正文依 `review_coverage.digest` 排除 Colab tag 與自動 footer 後，SHA-256 是 `c70b8c7dc8e2c67eb46e77f6c92f100b8a11e2f133a4482e95587cefefb15a1d`。補回尾端兩個換行後會精確得到舊 covered 摘要 `900440826d70c71ce0146c3e13d837809eabc745b269d1e96e5a48daa2a20a21`；圖與 case 摘要原本就相同。這確認 stale 的直接原因是 generator 刪除正文尾兩個換行，沒有拿這點取代實際逐頁審查。
+
+| 檔案 | 本次快照 SHA-256 |
+| --- | --- |
+| docs/lessons/14-feature-module.md（完整檔案） | d0bf6a60c3ff7f877e5806bf116cf9c89487871ecb12ad857df4d9bc7f5c6ea7 |
+| docs/assets/diagrams/14-split-paths.svg | 3dcd7a8b95cd422632559f86b3b91d573a3cf6fd19a944e291c12130c44ca299 |
+| lesson_cases/14-feature-module.py | 5fceb84d094061f30744f2ac138702d55f24e746fe5780e3ca653e56843fac6c |
+| notebooks/14-feature-module.ipynb | 03a3c0a86271d6202c97dabcb213ca0dffdf38ad1c69c631da542cebaac4c0cd |
+| artifacts/checks/curriculum/14-feature-module.json | 05bc8b0e823bac904f8d18ce9f7ab30ccd2079fb306138a6ffe3c3a3b99843c4 |
+| reviews/14-feature-module.md（既有紀錄） | fd06d92977f4d717dc9b530a407f92b17f8ea54d1243f7d8ebb584b8d6e68de2 |
+
+| 項目 | 結果與處理 |
+| --- | --- |
+| 本次必要問題 | 0 件；無修正需求。 |
+| 本次建議事項 | 0 件；不為產生發現而添加修改。 |
+| 舊審查的兩個 64 建議 | 第 122 行已分別標明 H×W 與投影 8→8，核對數字及畫面後維持已修正的結論。 |
+| stale／尾端換行 | 本次已對當前文字、圖、程式、紀錄與來源真正重新查核；本報告可附加到既有審查，由發布主流程處理 coverage。 |
+
+限制：這是 AI 獨立審查，沒有真人學生試讀；未測發布後網站、新 tag 的公開取得、Colab 託管環境、GPU、真實偵測 AP 或 latency。本次 CPU 檢查不覆寫原紀錄的日期、機器、計時或數值，也不構成上述未執行項目的驗證。

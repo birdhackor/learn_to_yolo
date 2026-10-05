@@ -1,14 +1,27 @@
 {
   "id": "13-nms-free",
   "passed": true,
-  "executed_at_utc": "2026-10-02T17:08:08.382146+00:00",
+  "executed_at_utc": "2026-10-05T07:19:00.357753+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "d7d9a059d00c1aa71225d74875e562231949a5a03a3adc0e47ad08aa5c4f6a61",
-  "process_wall_seconds": 1.9666,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "7697044f6ea966ef1bbf1200a39a6d65d2d160ee186810a1f479e433a551c8be",
+  "dependencies_sha256": {
+    "lesson_cases/13-nms-free.py": "7697044f6ea966ef1bbf1200a39a6d65d2d160ee186810a1f479e433a551c8be"
+  },
+  "process_wall_seconds": 2.625,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "many-head scores: [0.9589999914169312, 0.9589999914169312, 0.9589999914169312, 0.04100000113248825]\none-head scores: [0.9589999914169312, 0.04100000113248825, 0.9589999914169312, 0.04100000113248825]\nmany/no NMS: [0, 1, 2] many/NMS: [0, 2] one/no NMS: [0, 2]\ntop-2 on duplicate-heavy scores: [0, 1] (misses object at candidate 2)\nduplicate IoU=0.8182\n",
+  "stdout": "many-head scores: [0.959, 0.959, 0.959, 0.041]\none-head scores: [0.959, 0.041, 0.959, 0.041]\nmany/no NMS: [0, 1, 2] many/NMS: [0, 2] one/no NMS: [0, 2]\ntop-2 on duplicate-heavy scores: [0, 1] (misses object at candidate 2)\nduplicate IoU=0.8182\n",
   "stderr": "",
   "exit_code": 0
 }

@@ -5,504 +5,1148 @@
     {
       "id": "00-warmup",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:10.012647+00:00",
+      "executed_at_utc": "2026-10-05T07:17:39.993709+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "188068e6a03af06a2c37b7d2d7690ba49c8742fb0147bdad8a1217675c783dd9",
-      "process_wall_seconds": 1.8581,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b",
+      "dependencies_sha256": {
+        "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
+      },
+      "process_wall_seconds": 2.7173,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "01-small-cnn",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:13.817630+00:00",
+      "executed_at_utc": "2026-10-05T07:17:45.539743+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "d01007e4b35a7b1c514b67c1230f76a90d8a853e1912e22352fd8c89e16ea07a",
-      "process_wall_seconds": 3.8041,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16",
+      "dependencies_sha256": {
+        "lesson_cases/01-small-cnn.py": "f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16"
+      },
+      "process_wall_seconds": 5.5431,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "02-diagnostics",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:15.602768+00:00",
+      "executed_at_utc": "2026-10-05T07:17:48.211171+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "37675b437fe818c4c4e56b87bb5dcf76a5defb649fa8d37a30acbcc1d651ead2",
-      "process_wall_seconds": 1.7844,
+      "dependencies_sha256": {
+        "lesson_cases/02-diagnostics.py": "37675b437fe818c4c4e56b87bb5dcf76a5defb649fa8d37a30acbcc1d651ead2"
+      },
+      "process_wall_seconds": 2.6694,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "03-identity",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:17.399870+00:00",
+      "executed_at_utc": "2026-10-05T07:17:51.303127+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "9d9753c44c73fec08d5335a048433f8d932cba3009abfd3cd894b78de2ff0dc2",
-      "process_wall_seconds": 1.796,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "5b90ff32f504ebb96a831727e2dcd10b98640398148146f301a5e51bab0fc26d",
+      "dependencies_sha256": {
+        "lesson_cases/03-identity.py": "5b90ff32f504ebb96a831727e2dcd10b98640398148146f301a5e51bab0fc26d"
+      },
+      "process_wall_seconds": 3.0967,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "03-projection",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:19.322105+00:00",
+      "executed_at_utc": "2026-10-05T07:17:54.410648+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "9cdad8572ad96b9741fcac42659f3ca4b73d1654fabc7c50603eddf605cd622e",
-      "process_wall_seconds": 1.9214,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "7239239d4f1f464ea44e865d83129d0551830ed3bab84c20d0c18839754be2a1",
+      "dependencies_sha256": {
+        "lesson_cases/03-projection.py": "7239239d4f1f464ea44e865d83129d0551830ed3bab84c20d0c18839754be2a1"
+      },
+      "process_wall_seconds": 3.0984,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "03-comparison",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:21.273704+00:00",
+      "executed_at_utc": "2026-10-05T07:17:57.201153+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "1b0f9a84c1bac6ac9254429cdf5122d8af378c377236e12b7be6c6b027b4568c",
-      "process_wall_seconds": 1.9509,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b",
+      "dependencies_sha256": {
+        "lesson_cases/03-comparison.py": "8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b"
+      },
+      "process_wall_seconds": 2.7926,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "04-localization",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:23.683655+00:00",
+      "executed_at_utc": "2026-10-05T07:18:00.774806+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "08848d3095ceb88d3c487caccb31672901bb8d45b20fcea720155473dc06b0f7",
-      "process_wall_seconds": 2.4092,
+      "dependencies_sha256": {
+        "lesson_cases/04-localization.py": "08848d3095ceb88d3c487caccb31672901bb8d45b20fcea720155473dc06b0f7"
+      },
+      "process_wall_seconds": 3.5677,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "04-coordinates",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:28:53.351080+00:00",
+      "executed_at_utc": "2026-10-05T07:18:04.048924+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "028f44fe462b589165a2e8b3609051eae9ea924a51a4c2c3c1ed881dad245137",
-      "process_wall_seconds": 1.6939,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "17ff0de7342281381fa8610313a40bf00e6cb927dc0eb82ace04ff3f750c968b",
+      "dependencies_sha256": {
+        "lesson_cases/04-coordinates.py": "17ff0de7342281381fa8610313a40bf00e6cb927dc0eb82ace04ff3f750c968b"
+      },
+      "process_wall_seconds": 3.2717,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "05-assignment",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:27.686129+00:00",
+      "executed_at_utc": "2026-10-05T07:18:07.254518+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "124b48fc55944326481d9373e4498bb25bda984a1642d8dd256458b7e9c620f7",
-      "process_wall_seconds": 2.073,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "2045c2e8c7e0bf6dc5ad2522790892bbf92d84ff364615fa7e6efc8bffcb33a1",
+      "dependencies_sha256": {
+        "lesson_cases/05-assignment.py": "2045c2e8c7e0bf6dc5ad2522790892bbf92d84ff364615fa7e6efc8bffcb33a1"
+      },
+      "process_wall_seconds": 3.2037,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "06-decode-nms",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:29.012366+00:00",
+      "executed_at_utc": "2026-10-05T07:18:08.818203+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "f0887ae525e77f26f8df74cafcc932fb8572f30ba9fb66d4da1f3c74696998e2",
-      "process_wall_seconds": 1.3255,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "a3bc11cbfa0ab9435b9184c6c309fcc10eb39509bbdd81f47a7fea3d104fb307",
+      "dependencies_sha256": {
+        "lesson_cases/06-decode-nms.py": "a3bc11cbfa0ab9435b9184c6c309fcc10eb39509bbdd81f47a7fea3d104fb307"
+      },
+      "process_wall_seconds": 1.563,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "06-evaluation",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:30.349044+00:00",
+      "executed_at_utc": "2026-10-05T07:18:10.547733+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "eda4e3a09a411737f3a2faf198e3794f49d42966f12549f45a0065ca5f4e5946",
-      "process_wall_seconds": 1.3358,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "a6e079570ea20361b802aef294d045641e8052ce4b6cbfe1a0cad4f2d893f0f1",
+      "dependencies_sha256": {
+        "lesson_cases/06-evaluation.py": "a6e079570ea20361b802aef294d045641e8052ce4b6cbfe1a0cad4f2d893f0f1"
+      },
+      "process_wall_seconds": 1.7261,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "07-data",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:31.705020+00:00",
+      "executed_at_utc": "2026-10-05T07:18:12.208589+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "3e82d40e0dafb7c07813e8521472bc6dc220eefae4ebd576353fa3daa3a24215",
-      "process_wall_seconds": 1.3551,
+      "dependencies_sha256": {
+        "lesson_cases/07-data.py": "3e82d40e0dafb7c07813e8521472bc6dc220eefae4ebd576353fa3daa3a24215",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 1.6709,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "07-targets",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:32.903117+00:00",
+      "executed_at_utc": "2026-10-05T07:18:13.804033+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "95804f80642c0f83830c7f88de9e3a4aa540582e67698af1cc8edab3bf2cd9c0",
-      "process_wall_seconds": 1.1974,
+      "dependencies_sha256": {
+        "lesson_cases/07-targets.py": "95804f80642c0f83830c7f88de9e3a4aa540582e67698af1cc8edab3bf2cd9c0",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 1.5988,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "07-loss",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:34.066960+00:00",
+      "executed_at_utc": "2026-10-05T07:18:15.485644+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "de8c656623b4a39089f143983b202f9ff255935ee8d086fbf2023899a1af4136",
-      "process_wall_seconds": 1.1632,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "1fa1c9ace4eb1399130d340267059a00d204cf682bb56f33ca2f0a11a3ad84d0",
+      "dependencies_sha256": {
+        "lesson_cases/07-loss.py": "1fa1c9ace4eb1399130d340267059a00d204cf682bb56f33ca2f0a11a3ad84d0",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 1.6728,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "07-training",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:27:01.568433+00:00",
+      "executed_at_utc": "2026-10-05T07:18:17.942219+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "fe1037df4ece00bef8810d5d3a31184c1a862b926306688759bcb5cb748afc99",
-      "process_wall_seconds": 1.8978,
+      "dependencies_sha256": {
+        "lesson_cases/07-training.py": "fe1037df4ece00bef8810d5d3a31184c1a862b926306688759bcb5cb748afc99",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 2.4548,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "07-inference",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:37.127169+00:00",
+      "executed_at_utc": "2026-10-05T07:18:19.514202+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "75011612e6f4c8aee853cdcaec7e7d64d44499e70464cdbb108d98e06c937c10",
-      "process_wall_seconds": 1.1136,
+      "dependencies_sha256": {
+        "lesson_cases/07-inference.py": "75011612e6f4c8aee853cdcaec7e7d64d44499e70464cdbb108d98e06c937c10",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 1.5799,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "07-heldout",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:39.041829+00:00",
+      "executed_at_utc": "2026-10-05T07:18:22.253151+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "ada566e4f1c294156116f7771c2bf31dfc7d23770a7e76a56331a595cf888568",
-      "process_wall_seconds": 1.9139,
+      "dependencies_sha256": {
+        "lesson_cases/07-heldout.py": "ada566e4f1c294156116f7771c2bf31dfc7d23770a7e76a56331a595cf888568",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 2.7306,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "08-own-images",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:08:06.414624+00:00",
+      "executed_at_utc": "2026-10-05T07:18:24.819703+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "5440e8a50de3f2cfd7680fdfb4153eae5ca44123b073334a0311af2decc29fb2",
-      "process_wall_seconds": 2.2531,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "d812cdb29d585e4c6ea6be4a3e1e502259be7bd48547cda749378a89a8aff65a",
+      "dependencies_sha256": {
+        "lesson_cases/08-own-images.py": "d812cdb29d585e4c6ea6be4a3e1e502259be7bd48547cda749378a89a8aff65a",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+        "scripts/detect_image.py": "69738c487cfad24bea2009384712ca0ba958ac1fd394e2226ae33d7de9682c6a"
+      },
+      "process_wall_seconds": 2.5721,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "08-own-data",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:43.164087+00:00",
+      "executed_at_utc": "2026-10-05T07:18:27.515776+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "b5d494ee84e92ab3d62a77544bfd6185bb07e1ad02b28d4c6af281ba54ef911a",
-      "process_wall_seconds": 1.9934,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "d3be8a09b62a77c542ba48a93e10c36f5a8a2f34e587b2e207c4d7e41c8f300a",
+      "dependencies_sha256": {
+        "lesson_cases/08-own-data.py": "d3be8a09b62a77c542ba48a93e10c36f5a8a2f34e587b2e207c4d7e41c8f300a",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/custom_data.py": "7dd9999f03dbc32ce1ec951c58121c8f746d381b0244e4c2a82cca59e7ca7e55",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 2.6887,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "09-anchors",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:45.016579+00:00",
+      "executed_at_utc": "2026-10-05T07:18:30.480833+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "7a7e8c431340e33f55fc8afc90136b225d18387940d6677eab9e8aecacd31469",
-      "process_wall_seconds": 1.8517,
+      "dependencies_sha256": {
+        "lesson_cases/09-anchors.py": "7a7e8c431340e33f55fc8afc90136b225d18387940d6677eab9e8aecacd31469"
+      },
+      "process_wall_seconds": 2.9543,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "09-anchor-clustering",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:46.156722+00:00",
+      "executed_at_utc": "2026-10-05T07:18:32.157987+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "1262a5b3c925d9eb2e9c03cbe70279355a0575d3e0c8d7f28522883e692221a4",
-      "process_wall_seconds": 1.1394,
+      "dependencies_sha256": {
+        "lesson_cases/09-anchor-clustering.py": "1262a5b3c925d9eb2e9c03cbe70279355a0575d3e0c8d7f28522883e692221a4"
+      },
+      "process_wall_seconds": 1.6688,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "10-multiscale",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:48.024836+00:00",
+      "executed_at_utc": "2026-10-05T07:18:34.537477+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "add9aefa8efec7180d06ab255807ac4fa6847c490c8447774191f0a6566ed6a6",
-      "process_wall_seconds": 1.8666,
+      "dependencies_sha256": {
+        "lesson_cases/10-multiscale.py": "add9aefa8efec7180d06ab255807ac4fa6847c490c8447774191f0a6566ed6a6",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 2.3969,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "11-csp",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:49.983316+00:00",
+      "executed_at_utc": "2026-10-05T07:18:36.986756+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "5df5c03af5f53a47c036050c9fb49393868694068e758e10c6736ea15660251e",
-      "process_wall_seconds": 1.9577,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "9710906769f4d757331a7c99d2ba89d8d45c40d52c76f1d2a32a510e13a4f556",
+      "dependencies_sha256": {
+        "lesson_cases/11-csp.py": "9710906769f4d757331a7c99d2ba89d8d45c40d52c76f1d2a32a510e13a4f556"
+      },
+      "process_wall_seconds": 2.4284,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "11-fusion",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:51.853032+00:00",
+      "executed_at_utc": "2026-10-05T07:18:39.311278+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "1da3ebf9cc6f604affd281dc5e0e91d12955fbd389f3f39e0c7998e655dc5977",
-      "process_wall_seconds": 1.8689,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "4de6c1260d6f76f55013b4d17d935dbff46f4c1ec21975cbae5b065cd887af63",
+      "dependencies_sha256": {
+        "lesson_cases/11-fusion.py": "4de6c1260d6f76f55013b4d17d935dbff46f4c1ec21975cbae5b065cd887af63"
+      },
+      "process_wall_seconds": 2.3239,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "11-augmentation",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:53.047069+00:00",
+      "executed_at_utc": "2026-10-05T07:18:40.831462+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "62189e54bd2cf6b2fb2632d9195a3058ce47a93d9021408ec0a3b706314c5330",
-      "process_wall_seconds": 1.1931,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "5665b9ddc7a920ec45041987096e49c931515a3f62c76e5e774c7d8031b1ddde",
+      "dependencies_sha256": {
+        "lesson_cases/11-augmentation.py": "5665b9ddc7a920ec45041987096e49c931515a3f62c76e5e774c7d8031b1ddde"
+      },
+      "process_wall_seconds": 1.5184,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "11-iou-loss",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:20:00.575866+00:00",
+      "executed_at_utc": "2026-10-05T07:18:43.221116+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "ce2b65ec6ac63cc78cf79cf7e73fbb33edef067817c760e6050b9baf9df82949",
-      "process_wall_seconds": 1.8892,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "ddce126434321bddf95543a02f21b082602024b3ba0ef6992cf8b2be70647325",
+      "dependencies_sha256": {
+        "lesson_cases/11-iou-loss.py": "ddce126434321bddf95543a02f21b082602024b3ba0ef6992cf8b2be70647325"
+      },
+      "process_wall_seconds": 2.3891,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "12-anchor-free",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:56.753880+00:00",
+      "executed_at_utc": "2026-10-05T07:18:45.579362+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "2bfd2f09e240134309695d96c59b794383d6192b00bf12a22b2653cc31b08fc6",
-      "process_wall_seconds": 1.8866,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c",
+      "dependencies_sha256": {
+        "lesson_cases/12-anchor-free.py": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c"
+      },
+      "process_wall_seconds": 2.3555,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "12-decoupled-head",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:40:58.762101+00:00",
+      "executed_at_utc": "2026-10-05T07:18:47.983621+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
       "case_sha256": "38f6e64626db6a0324a23bc3d05e3c0d892df9e7a54423f98ff343abd6b5dbfc",
-      "process_wall_seconds": 2.0075,
+      "dependencies_sha256": {
+        "lesson_cases/12-decoupled-head.py": "38f6e64626db6a0324a23bc3d05e3c0d892df9e7a54423f98ff343abd6b5dbfc"
+      },
+      "process_wall_seconds": 2.402,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "12-assignment",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:00.630059+00:00",
+      "executed_at_utc": "2026-10-05T07:18:51.076518+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "0dfd33f0a6c412070e09ebbe9528118a45b49d5e81f354560f0475cc2a59075e",
-      "process_wall_seconds": 1.867,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "c5a878e08249a513b5a5f5432615f714522f5fbaec92c4484e05bfb75b9249bb",
+      "dependencies_sha256": {
+        "lesson_cases/12-assignment.py": "c5a878e08249a513b5a5f5432615f714522f5fbaec92c4484e05bfb75b9249bb"
+      },
+      "process_wall_seconds": 3.0922,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "12-dfl",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:02.551501+00:00",
+      "executed_at_utc": "2026-10-05T07:18:54.603451+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "d100d38f34ea1dfef147fc1948cb97e131c8f67bfaf974620bc8441f7187362b",
-      "process_wall_seconds": 1.9207,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "2f3ec8899cb25eb7df5d1118f57a715de935de9cc7569152e542d4563fa1e1c1",
+      "dependencies_sha256": {
+        "lesson_cases/12-dfl.py": "2f3ec8899cb25eb7df5d1118f57a715de935de9cc7569152e542d4563fa1e1c1"
+      },
+      "process_wall_seconds": 3.5226,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "13-dual-assignment",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:20:02.411994+00:00",
+      "executed_at_utc": "2026-10-05T07:18:57.728772+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "b535b08c8ff2e9ed3ad6678f4089f7ebc6e21f977ce9a331a8602d79f9ebe96f",
-      "process_wall_seconds": 1.8353,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "5ba8cda913f25bde1c82d93d91330b7db4a57f497e8305663aa3c0b3f62fa4d5",
+      "dependencies_sha256": {
+        "lesson_cases/13-dual-assignment.py": "5ba8cda913f25bde1c82d93d91330b7db4a57f497e8305663aa3c0b3f62fa4d5"
+      },
+      "process_wall_seconds": 3.1277,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "13-nms-free",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:08:08.382146+00:00",
+      "executed_at_utc": "2026-10-05T07:19:00.357753+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "d7d9a059d00c1aa71225d74875e562231949a5a03a3adc0e47ad08aa5c4f6a61",
-      "process_wall_seconds": 1.9666,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "7697044f6ea966ef1bbf1200a39a6d65d2d160ee186810a1f479e433a551c8be",
+      "dependencies_sha256": {
+        "lesson_cases/13-nms-free.py": "7697044f6ea966ef1bbf1200a39a6d65d2d160ee186810a1f479e433a551c8be"
+      },
+      "process_wall_seconds": 2.625,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "14-feature-module",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:08.261896+00:00",
+      "executed_at_utc": "2026-10-05T07:19:02.948311+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "0cfef79e32c0713a0b436d18f36bbeee354a41d7f1211d2302390fbbe5557e25",
-      "process_wall_seconds": 1.9069,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "5fceb84d094061f30744f2ac138702d55f24e746fe5780e3ca653e56843fac6c",
+      "dependencies_sha256": {
+        "lesson_cases/14-feature-module.py": "5fceb84d094061f30744f2ac138702d55f24e746fe5780e3ca653e56843fac6c"
+      },
+      "process_wall_seconds": 2.5902,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "15-attention-bridge",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:10.083783+00:00",
+      "executed_at_utc": "2026-10-05T07:19:05.868062+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "4a667fecb935c6a194bc787d19143e942468825fdfe659335adf4c14fa3aec9d",
-      "process_wall_seconds": 1.821,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "9823e1f3b30b6feb92d96fe5a9dd74a315500eaa31987f89c2cdea4b686aed06",
+      "dependencies_sha256": {
+        "lesson_cases/15-attention-bridge.py": "9823e1f3b30b6feb92d96fe5a9dd74a315500eaa31987f89c2cdea4b686aed06"
+      },
+      "process_wall_seconds": 2.9171,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "15-area-attention",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:08:10.288497+00:00",
+      "executed_at_utc": "2026-10-05T07:19:08.272718+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "d50234ad372f98f5bbdb784e7bb38afae26055ff8eedf762872f317a8edee71a",
-      "process_wall_seconds": 1.9057,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "eb26ab33ea5718820880820062c1664945a8bb591fc3a7d80e04a71860854041",
+      "dependencies_sha256": {
+        "lesson_cases/15-area-attention.py": "eb26ab33ea5718820880820062c1664945a8bb591fc3a7d80e04a71860854041"
+      },
+      "process_wall_seconds": 2.4034,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "16-dfl-free",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:13.809517+00:00",
+      "executed_at_utc": "2026-10-05T07:19:10.891429+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "1c0ef4db6cc5b97bfb5ce96a5251e53c8ca5f90baedeb72a8a04eb72aeea9d75",
-      "process_wall_seconds": 1.9094,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "fc9aeedfab08771310905ea48dd78ea64f0b5cd76569b956e8a09c01de4c3a04",
+      "dependencies_sha256": {
+        "lesson_cases/16-dfl-free.py": "fc9aeedfab08771310905ea48dd78ea64f0b5cd76569b956e8a09c01de4c3a04"
+      },
+      "process_wall_seconds": 2.6165,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "16-inference-head",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:15.665842+00:00",
+      "executed_at_utc": "2026-10-05T07:19:13.443100+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "854149ee2d7bb0b107984c898b149b6044ee640d1a650daf44b5795ec13f7023",
-      "process_wall_seconds": 1.8556,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d",
+      "dependencies_sha256": {
+        "lesson_cases/16-inference-head.py": "e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d"
+      },
+      "process_wall_seconds": 2.551,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "16-training",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:17.620928+00:00",
+      "executed_at_utc": "2026-10-05T07:19:15.846730+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "896bb0cc20ff0a4420bf4d2489dfaf817ca728f53fe3c81b85ae3a7a484df1ef",
-      "process_wall_seconds": 1.9541,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "b50fb995486aa0ff042edb1486de27605fc0c3ec28f201ecb290b97a733fe31e",
+      "dependencies_sha256": {
+        "lesson_cases/16-training.py": "b50fb995486aa0ff042edb1486de27605fc0c3ec28f201ecb290b97a733fe31e"
+      },
+      "process_wall_seconds": 2.4021,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "17-capstone",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:20.976648+00:00",
+      "executed_at_utc": "2026-10-05T07:19:20.174978+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "241eebc642382a4307b573d969f10bc71bd5792a1b056a8088d3d9359c0f6fa3",
-      "process_wall_seconds": 3.3507,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "a5969a35c9409bae299c070229defef69a40e340d53c3aecd563f087fea12cf8",
+      "dependencies_sha256": {
+        "lesson_cases/17-capstone.py": "a5969a35c9409bae299c070229defef69a40e340d53c3aecd563f087fea12cf8",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 4.3486,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "18-video",
       "passed": true,
-      "executed_at_utc": "2026-10-02T18:02:47.962004+00:00",
+      "executed_at_utc": "2026-10-05T07:19:23.513739+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "2d7c5acafb068d819c740fd41c6b30e1d2ca798e94ab0ced29806fb732139f25",
-      "process_wall_seconds": 2.4652,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+      "dependencies_sha256": {
+        "lesson_cases/18-video.py": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 3.3289,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "19-tracking",
       "passed": true,
-      "executed_at_utc": "2026-10-02T16:41:24.642124+00:00",
+      "executed_at_utc": "2026-10-05T07:19:25.104444+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "adf6924a818b9d10e912a08d7aa1437abc27a2ec285a2d094b5834a5f1050895",
-      "process_wall_seconds": 1.1865,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa",
+      "dependencies_sha256": {
+        "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa"
+      },
+      "process_wall_seconds": 1.5758,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "20-deployment",
       "passed": true,
-      "executed_at_utc": "2026-10-02T17:08:12.380897+00:00",
+      "executed_at_utc": "2026-10-05T07:19:28.337189+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
-      "case_sha256": "af61839e8af678ab18d115b0a1b56745d6095a6122b3d40ebfd356f3e7854a64",
-      "process_wall_seconds": 2.0914,
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_sha256": "bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3",
+      "dependencies_sha256": {
+        "lesson_cases/20-deployment.py": "bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "process_wall_seconds": 3.2441,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     }

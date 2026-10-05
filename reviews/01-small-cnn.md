@@ -322,3 +322,53 @@
 ### 第 4 輪：上一輪的處理：通過
 
 第 3 輪第 1 項：查核者的必要問題／should 已改成「查核者的必要問題／建議」（第 61 行起）；分類標籤改成中文（第 64 行「版本標籤過期」）；第 144 行「頁面組」改成「部分」；repair: 字樣已不在。處理說明屬實。
+
+## 紀錄重產後的檢查
+
+2026-10-05，另一位 AI 在獨立 rsync 副本（排除 `.git`、`site`、`.venv*`）重新檢查本節的全文、兩張 SVG、完整程式及直接／間接 repo 依賴；只借用既有的 Python 3.12.14／PyTorch 2.9.1+cpu 執行器，cwd 與 `PYTHONPATH` 均為副本。既有審查紀錄全文讀過，以下結果由本次執行、手算與一手來源獨立核對。
+
+在副本執行 `PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/01-small-cnn.py` 與同執行器的 `scripts/run_learning_extensions.py --section 01-small-cnn`，兩項 exit 0。預設 stdout 與重產的 `01-small-cnn.json` 逐字相同：三步 loss 0.6942／0.6941／0.6940，預測全 1、錯誤索引 0／2／4／6。40 步重跑的 `report.json` 與紀錄全欄位相同：初始 loss 0.6941587328910828（六位小數 0.694159、四位小數 0.6942）、第 30 點仍為 5.9604641222676946e-8、第 31 點首次精確為 0，最小梯度 L2 1.4261925521200407e-18（約 1.4e-18）、最大 0.7967736124992371（約 0.80）；最末點是第 40 次更新前的 loss，正確率與預測則在第 40 次更新後評估，8 張訓練圖全對，`validation_accuracy` 仍是 `null`。正文更新後的數字、點號、四捨五入與訓練／獨立驗證範圍都相符。
+
+照頁面把模型寬度改成 8，先在舊斷言得到預期的 AssertionError，再按參考答案改為 4330／1695776 後完成三步；逐層參數與 MAC、3.74 倍、記憶體、輸出 shape、感受野 16×16 與邊界 10×10 均重算一致。模型摘錄 AST 與完整程式一致，示意訓練格執行成功；圖片軸序、float64 輸入、long 標籤、標籤越界、permute／reshape、二次 softmax 與零 loss／非零梯度例子都實測符合敘述。另分開測量梯度及參數差：這次 40 個 Adam 步驟的參數差都大於 0；一般非零梯度本身不保證 float32 權重改變，腳本另比較訓練前後全部參數確認整體改變，未把梯度大小當成學習品質或泛化證據。
+
+兩張 SVG 經 XML／座標檢查與 Chromium 截圖實看；三步圖與 default PNG 的前四張位置、GT／pred／紅色錯誤標題一致，40 步圖與本次重畫結果逐 byte 相同。嚴格 Zensical 建置與 `validate_site.py` 均 exit 0，Playwright／Chromium 的桌面與手機版面、兩個表格、六個摺疊區、MathJax、圖片與 `#forty-steps` 正常。notebook 最後程式格及可選 40 步命令也與程式／正文一致；本次未使用 Google Colab 託管 runtime。
+
+本次重新打開 [VGG 論文 v6](https://arxiv.org/pdf/1409.1556v6) 的作者單位、§2.1～2.3／Table 1，及 [Network in Network 論文 v3](https://arxiv.org/pdf/1312.4400v3) §3.2，核對架構、GAP 與感受野說法；另讀 PyTorch 官方固定 tag [v2.9.1 的 Conv2d docstring](https://raw.githubusercontent.com/pytorch/pytorch/v2.9.1/torch/nn/modules/conv.py)、[pooling](https://raw.githubusercontent.com/pytorch/pytorch/v2.9.1/torch/nn/modules/pooling.py)、[loss](https://raw.githubusercontent.com/pytorch/pytorch/v2.9.1/torch/nn/modules/loss.py)、[Adam](https://raw.githubusercontent.com/pytorch/pytorch/v2.9.1/torch/optim/adam.py) 及 [CPU log-softmax 實作](https://raw.githubusercontent.com/pytorch/pytorch/v2.9.1/aten/src/ATen/native/cpu/LogSoftmaxKernelImpl.h)，確認公式與有限精度說明。初學讀者的術語、說明順序、練習步驟與數據／圖的銜接未發現必要問題。
+
+| 嚴重度 | 位置 | 發現與處理狀態 |
+|---|---|---|
+| 建議 | 40 步梯度段落「它只確認有在更新」 | 可把梯度與實際參數差的檢查分成兩句，避免將非零梯度本身讀成權重已更新的保證。現行上下文已提到權重改變，程式另有整體參數差檢查，不列為必要錯誤；由編輯者決定是否採用。 |
+
+結論：重產後的本頁與兩份紀錄一致，沒有必要問題。完整程式 hash 為 `f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16`，40 步腳本 hash 為 `b84e3317f95374df87d759e562db9b100ee14628b9cf5bb111238cd4a2e8e6cf`；本次沒有修改原 repo 或 review coverage。
+
+### 修正後的獨立複查
+
+2026-10-05 UTC，由與原審查者不同的 AI，在新建的 `/tmp/lessons-v0.4.0-reviews/fix-01/` 副本複查。已讀 `AGENTS.md`、`docs/preparation/publish.md` 第 7 步、原審查 `/tmp/lessons-v0.4.0-reviews/review-01.md`，並完整閱讀第 01 節正文至自動執行紀錄之前。另將原審查快照與修正後頁面逐行比較：差異只有第 174 行將「它只確認有在更新」改為明確區分梯度與實際參數差的三句。新副本頁面與作者工作目錄頁面逐 byte 相同。
+
+**結論：修正通過；原建議已採納，沒有新增的必要問題或建議。** 新句「L2 長度只表示收到梯度；程式另外比較訓練前後的參數，確認 40 步整體有改變。梯度大小不代表學得好不好。」明確指出兩種檢查各自能證明什麼。整段中的「權重確實改變」有另外的參數差檢查支持，並未宣稱非零梯度能保證每一步的每個 float32 參數改變；「40 步整體」也準確保留程式的檢查範圍。前後仍清楚區分更新前 loss、40 次更新後的預測，以及同批訓練圖和獨立驗證；初學讀者不需先懂浮點數更新細節即可理解新句。
+
+查核方法與實際結果：
+
+- 閱讀 `scripts/run_learning_extensions.py:72`～109 的訓練與紀錄邏輯。程式先複製各參數為 `before`；每步在 `loss.backward()` 後檢查每個參數的梯度存在且全部有限，再算所有梯度平方和的平方根並斷言 `norm > 0`，然後才呼叫 `optimizer.step()`。第 40 步後另算 `changed = sqrt(sum((parameter_after - parameter_before)^2))` 並斷言 `changed > 0`，保存為 `weight_delta_l2`。這是訓練起點和終點的整體差，不是逐步差。原句的含混指代已解除，修正文字符合實作。
+- 對照 `artifacts/checks/curriculum/01-small-cnn-learning.json`：`min_gradient_l2 = 1.4261925521200407e-18`、`max_gradient_l2 = 0.7967736124992371`，正文的約 `1.4×10^-18`／`0.80` 四捨五入正確；`weight_delta_l2 = 5.17251308976495 > 0` 支持 40 步整體參數有變。手算參數 `112+148+296+584+18=1158`，亦由建立模型後的 `numel()` 合計確認，故 L2 說明的 1158 維正確。另重算 `[3,4]` 的 L2 為 5，對照正文向量長度公式。
+- 自行編寫並實際執行 `artifacts/runs/fix-review-01/check01.py`，最後 exit 0、`passed: true`。float32 參數 1、梯度 `1e-18`、SGD `lr=0.1` 的梯度 L2 實測為 `1.000000045813705e-18 > 0`，更新前後參數仍都是 1、參數差為 0；SGD 和 Adam 的 `lr=0`／梯度 1 也各得到非零梯度而參數差 0。手算理想 SGD 更新量約 `1e-19`，小於 float32 在 1 下方相鄰可表示數間距的一半；`torch.nextafter` 實測間距為 `2^-24 = 5.960464477539063e-8`，因此捨入後保持 1，反例符合預期。
+- 重新讀取本環境官方 PyTorch **2.9.1+cpu** 套件中的 `torch/optim/sgd.py`，核對無 momentum、無 weight decay 時的 `_single_tensor_sgd` 使用 `param.add_(grad, alpha=-lr)`。本次執行的是固定版本套件本身；讀取的實作保存為 `torch-v2.9.1-installed-sgd-single-tensor.txt`。這也支持上述手算和小反例，而非沿用原審查者的測試結論。
+- 核對學習紀錄列出的全部 12 個 repo 程式／依賴 SHA-256，以及兩張 SVG、notebook 和 40 步 JSON，均與原審查快照和作者目前檔案一致。程式未改，所以依本次修正範圍不重新訓練 40 步；本次的梯度極值與 40 步整體參數差是對現有原始 JSON 和實作獨立核對的結果。另實際執行預設 `lesson_cases/01-small-cnn.py`，exit 0，三步 loss 為 0.6942／0.6941／0.6940，參數 1158、MAC 479248，原斷言通過。
+- 在副本實際執行 `zensical build --clean --strict` 與 `scripts/validate_site.py`，均 exit 0。使用 Playwright／`/usr/bin/chromium`，在自己啟動的 HTTP server 8841 上查看修正段落，1365 px 桌面與 390 px 手機寬度都各有兩個正常渲染的 MathJax 公式，文字沒有裁切，沒有 pageerror；兩張段落截圖均已用 `view_image` 實看。測試結束已停止自己的 server。沒有重做全站 MathJax／CSS 審查。
+
+| 原發現 | 修正與複查處理狀態 |
+|---|---|
+| 建議：40 步段落的「它只確認有在更新」容易被讀成非零梯度即保證 float32 權重更新 | 已採納。新句明示非零梯度與訓練前後參數差各自的作用；查實作、JSON、手算與實際反例後通過，這項建議可結案。 |
+
+新正文 coverage digest（使用既有 `review_coverage.digest()`，排除頁尾自動紀錄並正規化 Colab tag）為 **`d8d1c64d63712cc55709056bb08dc3881e6e6ea5a377f93fa8e05bb7a84e8430`**。本次檢查的快照：
+
+| 檔案／範圍 | SHA-256 |
+|---|---|
+| 修正後完整 `docs/lessons/01-small-cnn.md` | `b4f2517768bd0883b0ce94a54a5abbb00123819021e5513540b0574ac5968fdb` |
+| `lesson_cases/01-small-cnn.py` | `f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16` |
+| `scripts/run_learning_extensions.py` | `b84e3317f95374df87d759e562db9b100ee14628b9cf5bb111238cd4a2e8e6cf` |
+| `artifacts/checks/curriculum/01-small-cnn-learning.json` | `624d4ad4237dedf2740064013234cbcc141d63b959bd808f18536599892bde7b` |
+| `docs/assets/diagrams/01-small-cnn.svg` | `9d90438ef2d783ee3fec6e793b86cece537b928ae13bc33a8db91c65c8ed3bfb` |
+| `docs/assets/diagrams/01-small-cnn-learning.svg` | `24cabd164475a801489559113fed68c510cd24e49eca80ee9cc65933cf9675b6` |
+
+本次探針、完整 coverage digest、三個反例數值、瀏覽器檢查摘要與兩張截圖保存在 `/tmp/lessons-v0.4.0-reviews/fix-01/artifacts/runs/fix-review-01/`。這是針對文字修正的獨立複查，沒有重新執行未改的全部練習／40 步訓練，也沒有重查未改的 VGG／NIN 論文說法；沒有將舊審查的 pass 當成本次結論。全程未修改作者 repo、review coverage、Git 或 remote，未執行 GPU 工作。

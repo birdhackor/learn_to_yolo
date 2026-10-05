@@ -13,6 +13,7 @@ extra_javascript = [
   "assets/javascripts/mathjax.js",
   "assets/vendor/mathjax/es5/tex-mml-chtml.js",
 ]
+extra_css = ["assets/stylesheets/extra.css"]
 
 nav = [
   { "開始閱讀" = [

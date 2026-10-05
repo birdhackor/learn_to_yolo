@@ -1,14 +1,27 @@
 {
   "id": "19-tracking",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:41:24.642124+00:00",
+  "executed_at_utc": "2026-10-05T07:19:25.104444+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "adf6924a818b9d10e912a08d7aa1437abc27a2ec285a2d094b5834a5f1050895",
-  "process_wall_seconds": 1.1865,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa",
+  "dependencies_sha256": {
+    "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa"
+  },
+  "process_wall_seconds": 1.5758,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "max_age: 2\nper-frame IDs in detection order A,B (frame4 has only A):\nlast-box IoU: [[1, 2], [1, 2], [2, 1], [2, 1], [2], [2, 3]] ; switches: 3\nvelocity IoU: [[1, 2], [1, 2], [1, 2], [1, 2], [1], [1, 2]] ; switches: 0\ndetector recall=11/12 for both; no false positives in this artificial sequence\nexact small matching passes non-greedy counterexample and empty detections\nactual ID panel: docs/assets/diagrams/19-tracking.svg\n",
+  "stdout": "max_age: 2\nper-frame IDs in detection order A,B (frame4 has only A):\nlast-box IoU: [[1, 2], [1, 2], [2, 1], [2, 1], [2], [2, 3]] ; switches: 3\nvelocity IoU: [[1, 2], [1, 2], [1, 2], [1, 2], [1], [1, 2]] ; switches: 0\ndetector recall=11/12, false positives=0 (same detections feed both trackers)\nexact small matching passes non-greedy counterexample and empty detections\nactual ID panel: artifacts/lesson-19/ids.svg\n",
   "stderr": "",
   "exit_code": 0
 }

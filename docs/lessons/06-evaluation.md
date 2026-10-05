@@ -153,7 +153,7 @@ COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻�
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-evaluation.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-evaluation.json)
 
 ??? example "展開本次實際輸出"
 
@@ -162,9 +162,9 @@ COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻�
     rank=2, score=0.90, TP, precision=0.5000, recall=0.3333
     rank=3, score=0.80, FP, precision=0.3333, recall=0.3333
     rank=4, score=0.70, TP, precision=0.5000, recall=0.6667
-    TP=2, FP=2, FN=1, AP50=0.333333, ap_per_class=[0.3333333432674408, None]
-    candidate threshold .85: AP50=0.166667, recall=0.3333
-    remove known high-score FP: AP50=0.555556
+    TP=2, FP=2, FN=1, mAP50=0.333333, ap_per_class=[0.333333, None]
+    candidate threshold .85: mAP50=0.166667, recall=0.3333
+    remove known high-score FP: mAP50=0.555556
     no predictions => AP=0 when GT exists; no-GT class AP=None; background FP counted
     Artificial scoring exercise; not measured detector performance.
     ```

@@ -157,3 +157,59 @@
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 建議 | 第 4 輪第 1 項處理欄（第 150 行） | 發現點名的是「執行的程式與指令：」底下的清單從「2.」開始。處理欄只寫「點名的 1 處文字仍在紀錄裡：「執行的程式與指令：」」，略過了真正的問題：編號從 2. 起。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 在獨立 rsync 副本 `/tmp/lessons-v0.4.0-reviews/review-04/` 查核 `docs/lessons/04-localization.md` 全文、兩張頁面 SVG、三步案例及 40 步補充實驗。已讀 `AGENTS.md`、發布步驟第 7 項及原審查紀錄。結論：通過，沒有必要問題，也沒有新增建議；正文目前的六位小數 loss、兩位小數框座標與四位小數 IoU 都正確，不需要修改。
+
+### 實際執行與對照
+
+- 使用原工作區 `.venv-model/bin/python`，但 cwd 與 `PYTHONPATH=.` 都在獨立副本。執行 `lesson_cases/04-localization.py` 與 `scripts/run_learning_extensions.py --section 04-localization`，均 exit 0；案例的每一行 stdout 與現行 `04-localization.json` 相同，補充實驗完整 `report.json` 與現行 `04-localization-learning.json` 完全相同，包括四串各 40 點的歷史值。沒有使用 `--record`。補充實驗重畫的 `learning.svg` 和網站 SVG 逐 byte 相同，三步疊圖也和副本建立前的 PNG 逐 byte 相同。
+- 逐句對照頁面、案例、補充腳本與其紀錄所綁定的 12 個 repo 檔案；全部 SHA-256 與紀錄相符。兩個程式摘錄去掉中文註解後，都是案例原文的連續行。notebook 四格已讀，最後一格程式與案例相同、stdout 與現行紀錄相同；環境格固定 `lessons-v0.4.0`，可選實驗的三行及 `artifacts/runs/learning/04-localization/learning.svg` 路徑與正文相同。本次不執行會下載遠端程式的環境格。
+- 使用原工作區 `.venv-docs/bin/zensical build --clean --strict` 建置獨立副本，exit 0、`No issues found`；在副本執行 `python3 scripts/validate_site.py`，exit 0，60 頁及 42 課的本地連結、錨點、Colab 配對、Markdown 轉換與資產檢查通過。
+- Playwright 使用 `/usr/bin/chromium`（151.0.7922.173）及 `--no-sandbox --disable-gpu --disable-dev-shm-usage`，只讀副本網站。實際打開本頁並展開四個摺疊說明：26 個公式全部轉換成 MathJax、未轉換公式 0，兩張圖載入、兩個摘錄、一個表格及 `#forty-steps` 正常，browser page error 0。桌面 1440 px、手機 375／320 px 都沒有整頁橫向溢出，寬公式、程式與表格可在自身容器內橫向捲動；SVG 依閱讀欄縮放。
+
+### 手算、圖與結論
+
+- 半開區間、x／y 方向、xyxy→cxcywh→正規化與反向還原都正確：紅框 `[4,6,16,18]` 得 `[10,12,12,12]` px 與 `[0.3125,0.375,0.375,0.375]`；藍框得 `[0.6875,0.5,0.375,0.375]`；人工預測的還原是 `[6,8,18,20]`。越界例的左界為 −0.10，即 −3.2 px。
+- 人工大框的交集 100、聯集 188、IoU＝25/47≈0.532；4×4 小框為 4/28＝1/7≈0.14，兩者正規化 MSE 都是 1/512＝0.001953125。已照自主練習獨立計算右移 6 px：交集 72、聯集 216、IoU＝1/3；中心為 `[16,12]`，MSE＝9/1024＝0.0087890625，與答案一致。
+- 初始估算 MSE＝19/1024＝0.0185546875，ln 2＝0.693147、sigmoid(2)＝0.880797；GAP 手例均為 1/16，展平索引為 4 與 7。手算並用參數 tensor 數覆核：分類 head 10、框 head 4100、平均後框 head 20、backbone 112、整個模型 4222。實際輸入 64×64 出現 `1x4096 and 1024x4` 形狀錯誤；33×33 輸出 `[1,4]`，與文中例外相符。
+- 重算三步精確 loss，前兩次更新的總降幅為 0.0523132086，其中分類降 0.0050376654，5×框項降 0.0472755823；step=0 框項為 0.0925453473，約占總 loss 11%。正文的量尺、39 倍、梯度權重、更新前量測及近似數字均成立。
+- 40 步的第 1 點與三步 step=0 相同；第 40 點是在第 40 次更新之前。六位小數確實是 `0.809883 → 0.430213`。前 3 次更新總降 0.0995911956，分類降 0.0186439753，框項降 0.0809472124；全段總降 0.3796699047，分類降 0.2929784656，框項降 0.0866914558。起始框項即使全降到 0，也只能解釋全段降幅的 24.38%，所以「全段大部分來自分類」成立。總 loss 嚴格下降、框 MSE 有上下起伏，每點的 `total ≈ classification + 5×box` 都成立。
+- 從模型預測 xyxy 以獨立的純算術交集／聯集公式計算兩個 IoU，得 0.6944893537、0.7752413204，與 float32 紀錄相符，四位小數為 `[0.6945,0.7752]`。兩位小數的框仍是 `[4.48,4.77,18.13,18.93]`、`[16.33,10.58,29.18,23.12]`。兩張圖的類別都正確，所以 accuracy 1.00 成立；validation 為 null，沒有獨立評估。
+- 已實際檢視 Chromium 畫出的兩張 SVG 與三步疊圖。人工 IoU 圖按 1 px＝10 SVG 單位繪製，GT、pred、100 px² 交集的原始 rect 座標與手算精確一致。學習圖的左圖確實是藍虛線 total、紫色 classification、紅色 5×box；右圖是未加權框 MSE、獨立刻度。由 SVG 刻度反推出資料轉換，逐點核對四條路徑的 160 個點，最大誤差僅 3.1×10⁻⁶ SVG 單位。圖中文字（計入旋轉變換後）全部在 viewBox 內，沒有裁切。
+- 初學閱讀順序與首次術語說明足夠。原審查指出的 `to_xyxy`、shape tuple、33×33 例外及「不同顏色可讓 GAP 記住兩個框」都仍有正確處理。頁面區分人工固定框、三步 smoke test 與 40 步訓練圖結果；明說步數與 optimizer 同時變動、沒有驗證圖、不能證明展平比 GAP 好、不能推論真實圖片或更深架構，沒有超出實驗支持範圍的結論。
+
+### 本次查閱的原始來源與版本
+
+本頁沒有引用原始論文或特定 YOLO 官方程式。函式庫說法以已安裝的 PyTorch `2.9.1+cpu` 官方原始碼隨附文件核對，git version `5811a8d7da873dd699ff6687092c225caffcf1bb`：`torch/nn/functional.py` 的 `cross_entropy`（3375）與 `mse_loss`（3815）、`torch/nn/modules/loss.py` 的 `MSELoss`（568，明說 mean 對全部元素平均）、`linear.py` 的 `Linear`（53）、`conv.py` 的 `Conv2d`、`pooling.py` 的 `MaxPool2d`（157，預設 floor 與 stride）、`activation.py` 的 `Sigmoid`（335），以及 `torch/optim/adam.py` 的 `Adam`（34，逐參數的一／二階梯度矩估計與更新式）。括號是此固定安裝版本的起始行，沒有用先前審查代替本次開啟來源。
+
+另對照本 repo 的 `miniyolo/inference.py` 預測框 clamp、`miniyolo/targets.py` 不合法 GT 報錯及 `lesson_cases/11-augmentation.py` 裁切後的可見比例規則，並查閱連結頁 `05-assignment.md`、`07-data.md`、`07-inference.md`、`11-augmentation.md`、`11-iou-loss.md` 的相關段落，與本頁延伸閱讀敘述相符。
+
+### 本次檢查的 SHA-256
+
+以下是實際查核的副本原始檔 bytes；不以它們取代 `reviews/coverage.json` 的涵蓋寫入。逐點計算與瀏覽器結果另存在副本的 `artifacts/runs/review-04/numeric-report.json`、`render-report.json`；截圖同目錄。原審查與 coverage 沒有改寫。
+
+```text
+lesson_cases/04-localization.py  08848d3095ceb88d3c487caccb31672901bb8d45b20fcea720155473dc06b0f7
+miniyolo/__init__.py  785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9
+miniyolo/data.py  cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d
+miniyolo/figures.py  155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15
+miniyolo/geometry.py  6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483
+miniyolo/inference.py  995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313
+miniyolo/losses.py  81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4
+miniyolo/metrics.py  53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0
+miniyolo/models.py  49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6
+miniyolo/provenance.py  21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3
+miniyolo/targets.py  2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16
+scripts/run_learning_extensions.py  b84e3317f95374df87d759e562db9b100ee14628b9cf5bb111238cd4a2e8e6cf
+docs/lessons/04-localization.md  a9c3bb8e94cb38cb079e0f0e2bae3884b688187ed5f1566c0652c268fa09aace
+docs/assets/diagrams/04-localization.svg  a4d35a3b11a2cae489f45a232a0343c73bfbb09aabbd1be4acacca9f567b700e
+docs/assets/diagrams/04-localization-learning.svg  dc8c7a1d69ef0a22a6e8a399bed8349ddd5eacd7cef1f57a45c00cd2de388baf
+artifacts/checks/curriculum/04-localization.json  c8b66584a63a8d37b47bcad567442c62a8d21b7c8730fe859af4cab42d734157
+artifacts/checks/curriculum/04-localization-learning.json  2896307a4c01b6701d4ddd264562d2a329fe77c2d1bcad8b347d9481a8ab5a39
+notebooks/04-localization.ipynb  f0cf213fe6db7c238a75c57449e77468d6508e28c4899dcc2b2d89ee4214dd02
+reviews/04-localization.md  7963071cf8430fffa58965168dcc1d5026d86316881de784f4342c4573e97a91
+docs/assets/stylesheets/extra.css  bd285e60fca6236ecca730a05c9ebe0320645bd2d6261a973a97dcf8f123aca6
+docs/assets/javascripts/mathjax.js  d52c29c2d786580e820ccad837cf1d6fecbbc4ce89610a0704095f96caf998c6
+```

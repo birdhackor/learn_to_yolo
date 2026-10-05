@@ -164,15 +164,15 @@ assert after < before / 100
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-anchor-free.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-anchor-free.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
-    target ltrb in feature cells: [[1.5, 1.0, 2.0, 1.5]]
+    target ltrb in feature cells: [[2.0, 1.5, 1.5, 1.0]]
     decoded target pixels: [[12.0, 16.0, 40.0, 36.0]]
     distance loss 0.376236 -> 0.000012
-    learned box pixels: [[12.029999732971191, 16.059999465942383, 39.9900016784668, 35.970001220703125]]
+    learned box pixels: [[12.01, 16.03, 39.97, 35.94]]
     outside point requires a negative distance: assignment is still necessary
     ```
 

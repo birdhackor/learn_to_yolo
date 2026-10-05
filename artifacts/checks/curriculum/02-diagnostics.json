@@ -1,14 +1,27 @@
 {
   "id": "02-diagnostics",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:40:15.602768+00:00",
+  "executed_at_utc": "2026-10-05T07:17:48.211171+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
   "case_sha256": "37675b437fe818c4c4e56b87bb5dcf76a5defb649fa8d37a30acbcc1d651ead2",
-  "process_wall_seconds": 1.7844,
+  "dependencies_sha256": {
+    "lesson_cases/02-diagnostics.py": "37675b437fe818c4c4e56b87bb5dcf76a5defb649fa8d37a30acbcc1d651ead2"
+  },
+  "process_wall_seconds": 2.6694,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "broken graph: body.weight.grad=None, head.weight.grad exists\nrepaired graph: body gradient nonzero and body parameter changed\nlabel preflight: [0, 2] invalid for two classes; expected IDs 0 or 1\nstep=0: train_loss=0.5945, validation_loss=0.7937\nstep=9: train_loss=0.2244, validation_loss=1.5204\nstep=19: train_loss=0.1236, validation_loss=2.0153\ntrain_accuracy=1.00; validation_accuracy=0.00\nlearned weights=[[-0.19503173232078552, -0.9751587510108948], [0.19503173232078552, 0.9751587510108948]]\nSynthetic distribution shift demonstrates: tiny-set overfit is not generalization.\n",
+  "stdout": "broken graph: body.weight.grad=None, head.weight.grad exists\nrepaired graph: body gradient nonzero and body parameter changed\nlabel preflight: [0, 2] invalid for two classes; expected IDs 0 or 1\nstep=0: train_loss=0.5945, validation_loss=0.7937\nstep=9: train_loss=0.2244, validation_loss=1.5204\nstep=19: train_loss=0.1236, validation_loss=2.0153\ntrain_accuracy=1.00; validation_accuracy=0.00\nlearned weights=[[-0.19503174722194672, -0.9751587510108948], [0.19503173232078552, 0.9751587510108948]]\nSynthetic distribution shift demonstrates: tiny-set overfit is not generalization.\n",
   "stderr": "",
   "exit_code": 0
 }

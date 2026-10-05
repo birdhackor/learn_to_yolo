@@ -1,0 +1,16 @@
+/* Keep wide formulas and tables scrollable within the reading column. */
+.md-typeset div.arithmatex,
+.md-typeset span.arithmatex {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.md-typeset span.arithmatex {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.md-typeset .md-typeset__scrollwrap {
+  max-width: 100%;
+  overflow-x: auto;
+}

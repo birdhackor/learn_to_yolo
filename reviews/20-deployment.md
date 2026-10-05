@@ -216,3 +216,145 @@ should：第 118 行建議放入空圖，但第 114–116 行的框數斷言要�
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 建議 | reviews/20-deployment.md 第 45 行與第 3 輪第 1 項處理欄 | 第 45 行仍以「must：」標籤開頭；處理欄「「查核者的必要問題／should」改成…」是替換造成的病句（原字樣是 checker must／should）。 | 已處理：第 3 輪的處理說明改成統一的說明。未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |
+
+## 紀錄重產後的檢查
+
+本次由另一位 AI 在自己的隔離副本完整檢查第 20 課。範圍包含全文、目前與先前的審查紀錄、CPU JSON、沿用的 L4 JSON、完整程式與直接／間接 import 的 repo 模組、notebook 最後一格，以及頁面顯示的 SVG。依 `AGENTS.md` 與 `docs/preparation/publish.md` 第 6 節第 7 步逐句對照，從高中程度、數學好、程式新手的角度檢查名詞、閱讀順序、假設例子和練習答案。以下記的是查核時的快照；主審已回覆採用文字意見，修正版交由另一位 AI 檢查，這份紀錄不代替該次複查。
+
+### 隔離方式、實際命令與涵蓋版本
+
+用 `/tmp/lessons-v0.4.0-tools/extracted/usr/bin/rsync` 複製 `/tmp/lessons-v0.4.0-reviews/base/` 到 `/tmp/lessons-v0.4.0-reviews/review-20/`，設定 `LD_LIBRARY_PATH=/tmp/lessons-v0.4.0-tools/extracted/usr/lib/x86_64-linux-gnu`，排除 `.git`、`site`、`.venv*`。後續所有程式、練習變體、ONNX 與網站建置都在此副本執行。沒有修改 `/workspace/learn_to_yolo`，沒有 git、認證、推送、遠端 workflow 或 GPU 操作。
+
+模型使用既有 Python 3.12.14、PyTorch 2.9.1+cpu、ONNX 1.19.1、ORT 1.23.2；模型命令前均設 `PYTHONPATH=.`。實際執行：
+
+```bash
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/20-deployment.py
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python artifacts/review20-exercises.py
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python artifacts/review20-proof.py
+/workspace/learn_to_yolo/.venv-docs/bin/zensical build --clean --strict
+/workspace/learn_to_yolo/.venv-model/bin/python scripts/validate_site.py
+```
+
+最後兩項皆 exit 0，Zensical 0.0.67，網站驗證包含 60 頁、42 課、連結／錨點／Colab 配對與 Markdown 轉換。另從 `scripts/validate_lessons.py` 載入實際的摘錄檢查函式，這一頁結果 `[]`；逐塊確認兩段標記摘錄的行序與相鄰關係。沒有重寫 coverage，也沒有把全站尚未完成的審查涵蓋宣稱為通過。
+
+快照 SHA-256：
+
+| 檔案 | SHA-256 |
+|---|---|
+| `docs/lessons/20-deployment.md` | `f53296bd7caef2e4318ca1270d7a19e650925bd1a4c291e8bd070588f2883f51` |
+| `lesson_cases/20-deployment.py` | `bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3` |
+| `docs/assets/diagrams/20-deployment.svg` | `45f53f5c670301be885cbc89767ee1195e8fbe908741eeec467b7f49ea6efda4` |
+| `artifacts/checks/curriculum/20-deployment.json` | `48b1cd9f50e8e6df94bf6acb1fc49beed817e55da1f94ea40dd297f99f981145` |
+| `artifacts/checks/curriculum/deployment-gpu.json` | `460c7ac5fd8ff28f4b867584d362e7172f4ed3b45a3b3ae5387af18de42383df` |
+| `notebooks/20-deployment.ipynb` | `2898170995e7f67b17d34e29a90bd97cef611554a9cdbb61bd4bf5d448f3fec1` |
+
+結束前核對這六個檔案和起始 base 逐 byte 相同。CPU 紀錄綁定的 9 個檔案、L4 紀錄綁定的 12 個檔案全部與副本 SHA-256 相符。`miniyolo/__init__.py` 引入的 data、models、targets、losses、inference、metrics 與它們引用的 geometry 都已讀過；另讀 `miniyolo/deployment_gpu.py` 對照 L4 行為。
+
+### 程式、練習與防護的實際結果
+
+預設案例 exit 0，真的產生 ONNX，checker 通過，ORT 使用 CPUExecutionProvider 執行 B=1、2、3；raw shape 分別為 `[1,4,4,7]`、`[2,4,4,7]`、`[3,4,4,7]`，最大 raw 差分別是 `1.1920928955078125e-7`、`4.76837158203125e-7`、`4.76837158203125e-7`。raw allclose、還原框／分數／類別比較以及每圈每張圖有框的斷言均通過；B=3 框數 `[16,16,16]`，80×80 被拒絕。notebook 最後一格與完整程式逐字相同，已存 stdout 與 CPU JSON 相同。
+
+獨立重建相同 seed、一次 SGD 更新的模型後，再讀實際匯出的 ONNX 比對。三張圖各解出 16 框，分數約 0.059981～0.060949，類別都是 0；96×64 那張縮成 64×43、上補 10／下補 11；80×48 有 8 個框高為零，48×80 有 8 個框寬為零，96×64 沒有退化框。頁面對雜訊圖、模型品質、NMS 沒刪候選、框落在補邊及退化框限制的說明與實跑一致。
+
+| 練習／反例 | 實際結果 |
+|---|---|
+| 練習 1 | 印出 `3 3 torch.Size([3, 3, 64, 64])`；B=3 輸入 `[3,3,64,64]`、raw `[3,4,4,7]`。 |
+| 練習 2：刪第三張來源 | B=1、2 通過；B=3 的輸入 shape 是 `[2,3,64,64]`，shape 斷言失敗，exit 1。 |
+| 練習 3：前處理改 80 | B=1 在輸入 shape 斷言失敗，exit 1；再單獨移除該斷言，ORT 報 InvalidArgument，index 2、3 為 Got 80／Expected 64。 |
+| 練習 4 | `1e-5 + 1e-5 × 3.2 = 0.000042`。 |
+| 練習 5：門檻改 0.07 | B=1 兩個 assert_close 與 labels 比較先通過，之後報 `B=1: a source has no restored box [0]`，exit 1。 |
+| 移除練習 5 的框數防護 | B=1、2、3 都是空對空，程式 exit 0 並印 completed，證實防護的用途。 |
+| 移除 B 迴圈外的 no_grad | `.numpy()` 報 `RuntimeError: Can't call numpy() on Tensor that requires grad`。 |
+
+另外直接檢查匯出圖：恰有一個 AveragePool，`kernel_shape=[2,2]`、`strides=[2,2]`。移除它的必填 kernel_shape，checker 報 `Required attribute 'kernel_shape' is missing`；把模型輸入型別故意改 int64，預設 checker 通過，`full_check=True` 則指出 Conv 不支援 tensor(int64)。這證實頁面分清結構檢查與型別／shape 檢查。原圖的普通與 full checker 都通過。
+
+PyTorch 輸入 80×80 得 `[1,4,4,7]`；在暫存記憶體副本中只把 ONNX 輸入高寬放寬到 80，並把輸出宣告改成 5×5 避免干擾性 shape 警告，實跑得 `[1,5,5,7]`。沒有更動教材 ONNX，這個反例核實「不能只替空間軸取名」和固定池化的說明。參數數量實算為 15,511。
+
+練習 helper 首次檢查錯誤地只搜尋 stderr 最後一行；ORT 在錯誤尺寸資訊後還印一句提示，所以 helper 的檢查失敗。改為搜尋完整 stderr 後重跑通過。這是暫存檢查程式的問題，原案例與練習的預期結果沒有因此變動。
+
+### 新紀錄數值與沿用的 L4 證據
+
+從目前 CPU JSON 的完整位數重算，沒有以表格的四捨五入值代入：
+
+| 計算 | 結果 |
+|---|---|
+| raw PyTorch／ORT | 2.2670967023，約 2.27／2.3 倍 |
+| raw／PyTorch 端到端 | 7.7685201461%，約 7.8%；這是不同計時範圍中位數的估算 |
+| PyTorch 端到端減 raw | 3.0238809995 ms，約 3.02 ms；未逐階段量測 |
+| raw PyTorch減 ORT | 0.1423519861 ms，約 0.142 ms |
+| 同一輪差的中位數 | 0.2490429906 ms |
+| 上項／PyTorch 端到端中位數 | 7.5960672974%，約 7.6% |
+| ORT B=1：1000／中位數毫秒 | 8,901.152254 張／秒 |
+| ORT B=2：2000／中位數毫秒 | 20,217.539301 張／秒 |
+| 上述兩個速率的比例 | 2.2713395663，約 2.3 倍 |
+| 分開跑兩次 B=1減一次 B=2 | 0.1257660042 ms，約 0.13 ms |
+
+三輪中位數例子、allclose 的 3e-5／4.2e-5，以及 float32 加總順序例子都重算正確。正文更新的表格與以上衍生數字沒有舊值殘留。
+
+獨立預設執行的時間較原紀錄波動：raw PyTorch 0.421177 ms、ORT 0.0996225 ms，端到端中位數 4.740484／4.528337 ms，成對差中位數 0.686093 ms；只保存於暫存 stdout，沒有替換教材紀錄，也沒有把差異當作已證明的效能提升。原紀錄與重跑都沒有逐階段計時或量到長時間持續吞吐；數值一致性通過與效能估計的限制分開記錄。
+
+L4 沒有重跑。既有 `deployment-gpu.json` 的 12 個依賴仍相符，數字與頁面一致：PyTorch 2.9.1+cu128／CUDA build 12.8／TensorRT 10.13.3.9、Adam 40 步、loss 0.984767→0.071048、15,511 個參數；FP32 與允許 FP16 的 B=1～4 最大 raw 差都 7.6293945e-6，框差 3.8146973e-6；B=1 中位數分別 0.146921／0.146962 ms，兩列四捨五入成 0.147 正確。候選總數各為 `[2,4,6,7]`，沒有空對空。run key、39.200435761 秒與 storage SHA-256 核對欄都相符。GPU Python 程式的計時範圍、同步、profile、TF32 關閉、FP16 允許混合精度，與正文相符。這次只核對既有證據與原碼，沒有查遠端 run 的新狀態。
+
+### 原始來源與版本
+
+引用函式庫與 TensorRT 的說法均重新查來源，沒有沿用舊審查結論。官方下載檔與 HTTP 結果保存在副本 `artifacts/runs/review20/sources/`。
+
+- [PyTorch v2.9.1 torch/onnx/__init__.py](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/onnx/__init__.py)：第 72 行 `dynamo=True`、第 137～140／176～183 行 dynamic_shapes／dynamic_axes、2.9 預設變更與第 326 行起的 legacy 警告；下載 SHA-256 `22128fd9193ccca5e6146280304a5f236349d52c0881dbf7dc7e1a9cc8a0f673`，與已安裝 2.9.1 原碼相同。
+- [PyTorch v2.9.1 torchscript_exporter/utils.py](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/onnx/_internal/torchscript_exporter/utils.py)：第 243～250 行說明非 ScriptModule 情況跑一次、相當於 jit.trace。[symbolic_opset9.py](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/onnx/_internal/torchscript_exporter/symbolic_opset9.py) 第 1662～1712 行核對 adaptive pool 轉成固定 AveragePool 的 kernel／stride。
+- [PyTorch v2.9.1 CUDA semantics 原文](https://github.com/pytorch/pytorch/blob/v2.9.1/docs/source/notes/cuda.rst)：第 277～310 行 asynchronous execution，event 計時前仍等事件完成。頁面固定到 2.9 的 ONNX 與 CUDA HTML 在此次環境回 403，改用這些同版本官方原碼與官方文件原文；沒有聲稱這次 HTML 回 200。
+- ONNX 1.19.1 已安裝的 `onnx/checker.py`（SHA-256 `d02da350cacfd9378996bedb0e043a9306ebdf9f51f7c98c49d43f12d0eb86f7`）：check_model 的 full_check 預設 False；opset 17 schema 顯示 Conv 的 kernel_shape 非必填、AveragePool 必填，並以上述實跑驗證。
+- [ONNX Runtime Python 官方入門](https://onnxruntime.ai/docs/get-started/with-python.html)：重新取得 HTTP 200，核對 ONNX checker、InferenceSession、NumPy 輸入的 run 與 CPUExecutionProvider。這是沒有固定版本的官方入門頁，實驗行為則以已安裝的 ORT 1.23.2 實跑核對。
+- TensorRT 使用頁面指定的固定 commit [`b8db91e15be2cae4465ac17fab19e0f969e45407`](https://github.com/NVIDIA/TensorRT/tree/b8db91e15be2cae4465ac17fab19e0f969e45407)。`include/NvInferVersion.h` 明列 10.13.0 build 35。`include/NvInfer.h` 第 8848～8850 行 kFP16 的 FP32 fallback／10.12 棄用、第 8868～8871 行 TF32 的 10 位輸入捨入／23 位累加／預設允許、第 8905 行起版本相容旗標、第 9318 行起硬體相容與第 10478 行起 strong typing 的型別推導；與正文對照。
+- 同 commit 的 `samples/common/sampleOptions.cpp` 第 1268～1282 行 stronglyTyped 禁止 kFP16、第 2526～2545 行 min／opt／max shape、第 2604～2611 行 noTF32／fp16／stronglyTyped、第 2651～2652 行 save／load engine、第 2750 行 shapes；`samples/trtexec/README.md` 第 105～126 行 Example 3。逐條核對三條未實跑的 trtexec 命令及它們的說明，沒有把查原碼記成執行成功。
+- 同 commit 的 `include/NvInferRuntime.h` 第 2634～2636 行 MIN／OPT／MAX、enqueueV3 的 stream 與記憶體同步要求；`python/src/infer/pyCore.cpp` 第 113～120、1332～1356 行把 set_input_shape／set_tensor_address／execute_async_v3 綁定到相應介面，核對 L4 段的 Python API。後者 SHA-256 `f6ead811b83ba5867565b6de720eef9bf83edc5e2514c094a97dc39afda1739c`。
+- 同 commit 的 `tools/pytorch-quantization/README.md` 第 5 行說明模擬量化訓練、可匯出 ONNX 並由 TensorRT 8.0 以後匯入；SHA-256 `e351ba65fc4e7f68d1c7de2ade99dc5d49dc17af5ba32c79cb0fd7d5bdb9e325`。另讀 [TensorRT 官方量化入門](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-quantized-types.html)，明列 PTQ／QAT；來源用於下表 INT8 意見，沒有測 INT8。
+- [TensorRT 官方 How TensorRT Works](https://docs.nvidia.com/deeplearning/tensorrt/latest/architecture/how-trt-works.html)：build 階段替各層選最快 available kernel、輸出 serialized engine；這是未固定版本的官方補充說明。嘗試的 `/10.13.3/` 文件路徑回 404，旗標與 API 的版本核對仍用前述固定 commit。
+
+### 呈現與發現的處理
+
+Chromium 透過 HTTP 讀取建置頁面，4 個表格、10 個 details 正常；計時表格與頁中 SVG 的 locator 截圖成功。SVG 原檔以 Playwright 直接嵌入 HTML 渲染（720×764），另用 `/usr/bin/inkscape` 匯成 PNG；目視中文字、箭頭、三種 backend、metadata 繞行與三層比較皆清楚，39 個 SVG text 的 getBBox 沒有互相重疊。圖有 viewBox／title／desc，與模型只含 raw 的邊界一致。file:// 受瀏覽器政策拒絕、第一次直接開 SVG 截圖逾時，改用 HTTP 與嵌入渲染後成功，沒有修改政策。
+
+| # | 嚴重度 | 位置／發現與具體修正 | 處理 |
+|---|---|---|---|
+| 1 | 必要 | 第 165～166 行：「同一輪的差，主要就是模型那一步在管線裡的差距」「整條流程只少掉模型那一小段的差距」。兩條管線使用同一套前後處理，但沒有逐階段計時；成對設計仍包含條件與計時波動，不能把觀察到的全差歸因為模型。新紀錄成對差 0.249043 ms 與獨立 raw 差 0.142352 ms 也不同。改成報告成對觀察值，明示未逐階段量測，不分配全差的因果來源。 | 主審回覆已採用，修正版待另一 AI 檢查。 |
+| 2 | 建議 | 第 164 行「模型只占…7.8%；其餘約3.02毫秒花在…」。算式正確，但分子是獨立 raw benchmark 的中位數，不是管線中的模型階段時間。改為「以獨立量到的 raw 時间粗估…；相減約3.02 ms」，並明示沒有逐階段量測。 | 主審回覆已採用，修正版待另一 AI 檢查。 |
+| 3 | 建議 | 第 147／165 行仍只列成對欄位名稱與算法，沒有填入 0.249043 ms 與約 7.6%；舊審查已寫明紀錄重產後要補。補實值並與約0.142 ms raw 差對照，避免讀者自行以兩個端到端中位數相減。 | 主審回覆已採用，修正版待另一 AI 檢查。 |
+| 4 | 建議 | 第 170～175 行把 `B／單批中位數` 稱為實測吞吐量；8,901／20,218 及2.3倍算術正確，但這是按單批中位數換算的速率估計，沒有連續服務計時。標為估計；持續吞吐量應以總張數／總耗時量測，保留未含等 batch 與前後處理的限制。 | 主審回覆已採用，修正版待另一 AI 檢查。 |
+| 5 | 建議 | 第 234 行 INT8 表格「要先用一批有代表性的圖片校準」過於概括。固定 commit 的官方量化訓練工具及官方指南提供 QAT；後面的第7點已經比較準確寫「校準或量化流程」。表格改為「需先經校準或量化感知訓練等流程決定縮放」，保持代表性資料的要求，不暗示所有INT8都必須走獨立校準。 | 主審回覆將改成校準或量化感知訓練；修正版待另一 AI 檢查。 |
+| 6 | 必要（網站共用呈現） | 第20頁所有摺疊區展開後，實際 DOM 有26個 mjx-container，其中13個套在另一個 mjx-container 中。這是共用 MathJax 處理的重複 typeset，屬程式與靜態 HTML 驗證沒有涵蓋的瀏覽器問題，需修共用初始化並重新在瀏覽器查公式。 | 已回報主審，主審另行處理共用 MathJax 整合，後續由另一 AI 複查。 |
+
+390px 的這次頁面檢查 document scrollWidth 為375，沒有整頁水平溢出；程式碼有超過視窗的 span 位於可捲動程式區塊內，沒有把它誤報為整頁問題。這一項不代替主審對其餘手機情況的檢查。
+
+以上之外，沒有發現必要的程式、練習答案、更新數值、L4 引用或 SVG 問題。暫存證據包含 `artifacts/review20-default.stdout`／stderr、`artifacts/runs/review20/exercises.json`、`proof.json`、`render-details.json`、來源快照及 PNG。未實跑 TensorRT CLI／GPU／INT8、Colab 託管環境、遠端 tag／workflow；沒有真人學生測試。文字修正與共用公式修正的最終通過狀態，以之後另一位 AI 的修正複查為準。
+
+### 修正後的獨立複查
+
+2026-10-05，由與原第 20 節及原 UI 審查者不同的 AI，依 `AGENTS.md`、發布流程第 6 節第 7 步及指定規範，在自己的 `/tmp/lessons-v0.4.0-reviews/fix-20-ui/` 副本查核。副本以指定 rsync 方法建立；root 只讀，沒有修改 coverage、Git、遠端或 GPU。
+
+**原五項文字發現均已採納，沒有剩餘必要問題。** 逐句讀取現行全文與修正前後文，對照原副本 diff、完整案例、CPU JSON stdout 與 notebook 最後一格，結果如下：
+
+| 原發現 | 獨立複查結果 |
+|---|---|
+| 1：把整段成對差歸因於模型 | 第 165～166 行明說執行條件與波動會影響各階段，不能把全差歸到模型，也沒有逐項量測。與只量整段函式的原碼一致，通過。 |
+| 2：7.8%／3.02 ms 像分段測量 | 第 164 行改成以獨立 raw 中位數粗估，3.02 ms 只說兩者相減，不分配到具體階段，通過。 |
+| 3：漏成對差實值與百分比 | 第 147、165 行補入 0.249043 ms、raw 差約 0.142 ms 與觀察差約 7.6%；沒有改用兩個端到端中位數相減，通過。 |
+| 4：把 B／單批中位數當持續吞吐 | 第 170 行明確標為粗估，實際持續吞吐需總張數／總耗時；仍保留等待 batch 與前後處理未包含的限制，通過。 |
+| 5：INT8 暗示必須獨立校準 | 第 239 行改為有號 INT8、校準或量化感知訓練等流程，並解釋 QAT，與後文一致，通過。 |
+
+從 JSON 完整位數重新計算：raw 加速比 2.2670967023；raw／PyTorch 端到端為 7.7685201461%；兩者相減 3.0238809995 ms；raw 差 0.1423519861 ms；成對差 0.2490429906 ms，除以 PyTorch 端到端中位數為 7.5960672974%。估計速率為 8,901.152254／20,217.539301 張／秒，比例 2.2713395663，兩次 B=1 減一次 B=2 為 0.1257660042 ms。正文的四捨五入均正確。三輪示例也手算得到兩個中位數差 −1、成對差中位數 1。
+
+`paired_median_ms` 確實先各暖機 3 次，40 輪交替先後順序，取每輪差的中位數；raw 是各自連續 20 次的中位數。沒有逐階段或長時間持續吞吐紀錄。重新開啟固定 TensorRT commit 的[量化工具 README](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/tools/pytorch-quantization/README.md)，HTTP 200，核對 simulated quantization training 與 ONNX／TensorRT 匯入，支持 QAT 修正；來源 SHA-256 `e351ba65fc4e7f68d1c7de2ade99dc5d49dc17af5ba32c79cb0fd7d5bdb9e325`。
+
+CPU 紀錄綁定的 9 個檔案全部相符。模型案例、CPU JSON、notebook 與 SVG 均與原第 20 節副本逐 byte 相同；notebook 最後一格與案例逐字相同，已存輸出與 JSON stdout 相同。本次依修正範圍沒有重跑未變更的 ONNX 案例、練習或 GPU，不把原審查的執行算成這次新執行。
+
+獨立副本的嚴格 Zensical 建置與 `scripts/validate_site.py` 均 exit 0（0.0.67，60 頁／42 課）。Chromium 從 03 以 sidebar 真正點擊 04→07 loss→11 IoU loss→16 inference head→20；第 20 頁展開 details 後為 13 公式／13 容器／13 MathItems，nested、缺字、舊頁 MathItems 與 MathJax 警告皆 0。390px 下文件寬度 390，三輪與 L4 表格的內部 scrollLeft 可移動。原發現 6 的共用公式問題已通過同次 `fix-ui.md` 的獨立複查。
+
+| 快照檔案 | SHA-256 |
+|---|---|
+| `docs/lessons/20-deployment.md` | `57dbd7dfffe7159a0fd91fc906e300291c586312f3c38776368346441035ddeb` |
+| `lesson_cases/20-deployment.py` | `bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3` |
+| CPU JSON | `48b1cd9f50e8e6df94bf6acb1fc49beed817e55da1f94ea40dd297f99f981145` |
+| notebook | `2898170995e7f67b17d34e29a90bd97cef611554a9cdbb61bd4bf5d448f3fec1` |
+| SVG | `45f53f5c670301be885cbc89767ee1195e8fbe908741eeec467b7f49ea6efda4` |
+
+新證據在副本 `artifacts/runs/fix20ui/` 的 `arithmetic.json`、`browser.json`、來源及截圖。結束前頁面、JS、CSS 再次與 root 相同，自有 server 已停止。限制：只複查本次文字與共用呈現修正；未重掃全站，未測 GPU／TensorRT CLI／INT8、Colab 託管或遠端發布，也沒有真人學生測試。

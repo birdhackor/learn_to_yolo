@@ -1,14 +1,27 @@
 {
   "id": "00-warmup",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:40:10.012647+00:00",
+  "executed_at_utc": "2026-10-05T07:17:39.993709+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "188068e6a03af06a2c37b7d2d7690ba49c8742fb0147bdad8a1217675c783dd9",
-  "process_wall_seconds": 1.8581,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b",
+  "dependencies_sha256": {
+    "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
+  },
+  "process_wall_seconds": 2.7173,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "x_shape=(1, 1), weight_shape=(1, 1)\nprediction=2.00, loss=4.00, gradient=-8.00\nweight: 1.00 -> 1.80; new_loss=0.16\neval still tracks gradients; replacement optimizer points to replacement model\n",
+  "stdout": "x_shape=(1, 1), weight_shape=(1, 1)\nprediction=2.00, loss=4.00, gradient=-8.00\nweight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16\neval still tracks gradients; replacement optimizer points to replacement model\n",
   "stderr": "",
   "exit_code": 0
 }

@@ -216,23 +216,21 @@ top-3 一定輸出三個候選，即使它們都是背景。實際使用時，�
 
 參考來源：[YOLO26 配置的 end2end 與 reg_max](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[Detect forward、postprocess、get_topk_index 及 fuse](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[整個模型的 fuse（BaseModel.fuse：卷積／BN 融合，再呼叫 Detect 的 fuse）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/tasks.py)。
 
-
-
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-inference-head.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-inference-head.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
     manual ltrb decode box: [[8.0, 32.0, 56.0, 64.0]]
-    manual class probabilities: [[0.5, 0.7500000596046448]] ; winner label=1, score=.75
+    manual class probabilities: [[0.5, 0.75]] ; winner label=1, score=0.75
     training output keys: ['many', 'one']
     deploy boxes / scores / labels: (2, 3, 4) (2, 3) (2, 3)
     parameters training / deploy: 332 278
-    retained one-head raw output equals reference: verified
+    retained one-head raw output vs reference, max abs difference: 0.0
     top-k has no pairwise IoU/NMS; random toy predictions are not accuracy evidence
     ```
 

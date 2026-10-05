@@ -1,14 +1,27 @@
 {
   "id": "11-iou-loss",
   "passed": true,
-  "executed_at_utc": "2026-10-02T17:20:00.575866+00:00",
+  "executed_at_utc": "2026-10-05T07:18:43.221116+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "ce2b65ec6ac63cc78cf79cf7e73fbb33edef067817c760e6050b9baf9df82949",
-  "process_wall_seconds": 1.8892,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "ddce126434321bddf95543a02f21b082602024b3ba0ef6992cf8b2be70647325",
+  "dependencies_sha256": {
+    "lesson_cases/11-iou-loss.py": "ddce126434321bddf95543a02f21b082602024b3ba0ef6992cf8b2be70647325"
+  },
+  "process_wall_seconds": 2.3891,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "GIoU gradient [0.019999999552965164, 0.0] after 1-pixel real SGD move 1.179487\ninitial losses {'iou': 1.0, 'giou': 1.2, 'diou': 1.310345, 'ciou': 1.310345}\nnon-overlap plain IoU center gradient [0.0, 0.0]\nDIoU center after one real step [38.751487731933594, 20.0] loss 1.294497\nexact boxes: all four losses zero\n",
+  "stdout": "GIoU gradient [0.02, 0.0] after 1-pixel real SGD move 1.179487\ninitial losses {'iou': 1.0, 'giou': 1.2, 'diou': 1.310345, 'ciou': 1.310345}\nnon-overlap plain IoU center gradient [0.0, 0.0]\nDIoU center after one real step [38.7515, 20.0] loss 1.294497\nexact boxes: all four losses zero\n",
   "stderr": "",
   "exit_code": 0
 }

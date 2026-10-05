@@ -227,14 +227,14 @@ assert abs(new_prediction.item() - 3.6) < 1e-5
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/00-warmup.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/00-warmup.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
     x_shape=(1, 1), weight_shape=(1, 1)
     prediction=2.00, loss=4.00, gradient=-8.00
-    weight: 1.00 -> 1.80; new_loss=0.16
+    weight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16
     eval still tracks gradients; replacement optimizer points to replacement model
     ```
 

@@ -1,0 +1,64 @@
+{
+  "scope": "Local pre-release validation, before creating lessons-v0.4.0",
+  "completed_at_utc": "2026-10-05T08:03:07.451916+00:00",
+  "base_commit": "3f72bb5eeb4ee417898bcee24c93d52c92085e2c",
+  "passed": true,
+  "checks": [
+    {
+      "command": "python3 scripts/validate_preparation.py",
+      "exit_code": 0,
+      "log_sha256": "e18f6cd342789f4d66b9d8139ab58b7634425dbf59eb4a97c191486afbf50ecc",
+      "stdout_and_stderr": "Dataset manifest, section pairing, notebook code and website publication boundaries: OK\n"
+    },
+    {
+      "command": "python3 scripts/validate_lessons.py",
+      "exit_code": 0,
+      "log_sha256": "55863f8499d250b032b629405a5800e471245891957175150bfa74264a1326b0",
+      "stdout_and_stderr": "42 lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK\n"
+    },
+    {
+      "command": "python3 scripts/validate_curriculum_evidence.py",
+      "exit_code": 0,
+      "log_sha256": "30b7469b5c4ee32a0c1449fad94e8216060652f297b7498a2d6984cbbf9d1f91",
+      "stdout_and_stderr": "42 lesson records and 11 supplementary records match the current code\n"
+    },
+    {
+      "command": ".venv-model/bin/python -m pytest tests/",
+      "exit_code": 0,
+      "log_sha256": "b3d1d9362aa4ce4314e18bd3327cf0e87088722d0e47a1bdbcbfcb42b6b98fc9",
+      "stdout_and_stderr": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /workspace/learn_to_yolo\ncollected 68 items\n\ntests/test_checkpoint.py ..                                              [  2%]\ntests/test_core.py .......................                               [ 36%]\ntests/test_custom_data_report.py .....................................   [ 91%]\ntests/test_notebook_bootstrap.py ......                                  [100%]\n\n============================== 68 passed in 4.35s ==============================\n"
+    },
+    {
+      "command": ".venv-docs/bin/zensical build --clean --strict",
+      "exit_code": 0,
+      "log_sha256": "b46b62e557635c4d03d30ab980f75892290464132070610de97a939d6ee83f0c",
+      "stdout_and_stderr": "Build started\nNo issues found\nBuild finished in 6.02s\n"
+    },
+    {
+      "command": "python3 scripts/validate_site.py",
+      "exit_code": 0,
+      "log_sha256": "48d06ffcef2ee39b84591bf17aa4c40005ce531cc12cba97e6c9ba7895c1620b",
+      "stdout_and_stderr": "{\"builder\": \"zensical\", \"version\": \"0.0.67\", \"html_pages\": 60, \"lesson_pages\": 42, \"all_local_links_and_anchors\": \"passed\", \"colab_pairs\": \"passed\", \"markdown_rendering\": \"passed: tables, numbered lists, admonitions, math, links and no text parsed as tags\", \"search_language\": [\"zh-TW\"], \"all_lessons_indexed\": true, \"artifact_files\": 137, \"artifact_bytes\": 8441358, \"artifact_boundaries\": \"passed\"}\n"
+    }
+  ],
+  "evidence": {
+    "regenerated_cpu_records": 51,
+    "unchanged_prior_gpu_records": 2,
+    "gpu_jobs_launched": 0,
+    "test_count": 68,
+    "reviewed_pages": 59,
+    "independently_rereviewed_changed_pages": 15
+  },
+  "browser_evidence": "artifacts/checks/site-rendering-v0.4.0.json",
+  "numeric_audit": "reviews/release-v0.4.0-numbers.md",
+  "limitations": [
+    "This local validation does not establish hosted Colab execution or deployed-site correctness; separate post-publication verification is required."
+  ],
+  "source_sha256": {
+    "docs/assets/javascripts/mathjax.js": "8bfec822da079692e1dcf9ffe5369dad43fbfedcc77eacf983f94beac3cc5f05",
+    "docs/assets/stylesheets/extra.css": "bd285e60fca6236ecca730a05c9ebe0320645bd2d6261a973a97dcf8f123aca6",
+    "zensical.toml": "43607d3f13b9e47f3accb3b6e7f3d16c7a8c55e849e0080ea93361f178fb7d68",
+    "reviews/coverage.json": "1033ddfceb7fbfce0075d4218685e31691384fe7da0befcafb1dafea781241a9",
+    "artifacts/checks/curriculum/index.json": "02e3effeac4063979466fd9300f5d050bad44c8c419d9bf6cd80db67c3eefd51"
+  }
+}

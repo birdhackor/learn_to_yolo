@@ -108,3 +108,51 @@
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 必要 | 第 4 輪第 2 項處理欄（第 102 行） | 點名的是第 3 輪第 1 項處理欄的同語反覆「程式問題清單改成「程式問題清單」」。那一格已重寫，同語反覆已經不在，處理欄卻寫「未改：…「程式問題清單」」；這個字串只出現在正文第 25 行。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 在獨立暫存副本重新查核 `16-inference-head`。結論：通過；沒有必要修正，也沒有新增建議。完整讀過本頁正文、頁尾紀錄、舊審查、case、SVG、JSON 與 notebook，沒有沿用舊審查的「通過」作為本輪證據。
+
+本輪在 `/tmp/lessons-v0.4.0-reviews/review-16/` 執行，使用 Python 3.12.14、PyTorch 2.9.1+cpu、程式指定的兩個執行緒，以及 Zensical 0.0.67。沒有改主工作區、coverage 或既有紀錄，沒有使用 Git、GPU、遠端 workflow 或下載資料集。原 case 只 import `copy`、`math` 與 PyTorch，沒有 repo 模組依賴；逐項核對的 dependency hash 因此只有 case 本身。本節沒有綁定它的補充實驗。
+
+查核方法與結果：
+
+- **預設、摘錄與紀錄**：從副本執行 `PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/16-inference-head.py`，exit 0。七行實際 stdout 與 JSON、notebook 最後一格、頁尾區塊逐字相同；另外在本機獨立執行 notebook 最後一格，也得到相同 stdout。五份 `data-excerpt` 摘錄除翻譯註解外，都是 case 內連續、完整的程式段。檢查 section-map 的 `ready`／`lessons-v0.4.0`、notebook 的版本與最後一格 source、JSON/index 的 case/dependency SHA-256、UTC 時間、CPU、版本、passed、exit_code 與空 stderr，全部一致。2.551 秒是作者原紀錄的整個子程序時間，本輪沒有把重跑時間當成模型效能證據。
+- **練習 1**：只改成 top-5 時，實際停在 case 第 77 行原 shape 斷言。照答案更新斷言後跑完，三個 shape 為 `(2,5,4)`、`(2,5)`、`(2,5)`，參數數仍為 332／278。
+- **練習 2**：只把輸入改成 128×128，原程式仍全部通過；照答案把中心點倍率與 `decode_ltrb` stride 兩處改成 32，也能跑完。用同一份模型、同一個 128×128 輸入逐值比較，正確框等於錯誤框乘 2，scores／labels 相同；中心點各軸為 16、48、80、112。答案沒有漏改處。
+- **手算與排列**：卷積輸出長度為 `floor((64+2−3)/2)+1=32`，pool 後為 4；16 個中心點按列攤平，第 9 個為 `(24,40)`。距離 `[1,0.5,2,1.5]×16=[16,8,32,24]`，解框 `[8,32,56,64]`；sigmoid 分數 `[0.5,0.75]`，label 1。逆 softplus 的 raw 約為 `[0.541325,−0.432752,1.854587,1.247518]`，float32 的 `sigmoid(ln3)` 實得 `0.7500000596046448`，與正文對容差／四捨五入的說明相符。用人工序號框驗證 `gather` 確實依 `[9,2,5]` 取完整四座標。逐個核對 16 個中心點和 `flatten` 順序。
+- **權重、梯度與錯誤變體**：實跑刪除 step、lr=0、漏掉 one loss，均在 one 權重更新斷言失敗；複製 many、換回更新前 one 權重，均在 raw 完全相等斷言失敗。單獨反傳兩種 loss，one 不把梯度送回 backbone，many 則會；修改原模型 one 權重不影響 deepcopy 的部署副本。參數手算 224＋54＋54＝332、224＋54＝278，少 54/332≈16.265%；四個部署參數名稱與正文相同，`.eval()` 後原模型仍帶 many。把 meshgrid 改成 `indexing='xy'` 時完整程式仍會通過，與正文第 167 行明說人工例子不檢查排列順序一致，本輪沒有將其誤報成已受斷言保障。
+- **教學與官方模型邊界**：逐句核對 softplus、單尺度／兩類／16 候選、平方 loss、沒有 assignment、每候選只留一類、top-3 不過門檻、沒有偵測品質證據等限定。本例只示範部署流程，沒有把 332／278 或約 16% 的比例套給完整 YOLO26；第 20 章匯出的 GridDetector 與本例不同，正文已明說。抽出固定版本官方 head 的原始 `postprocess`、`get_topk_index`、輔助方法及 `fuse`，在 CPU 真正執行：候選分數 `[0.8,0.7]` 會以兩個類別佔據官方 top-2，本例則挑兩個不同候選；`end2end=True` 移除 cv2/cv3，False 移除 one2one 分支。這是執行原始方法的局部核對，沒有宣稱跑過完整官方 YOLO26。
+- **陌生讀者理解**：以高中數學程度、程式新手閱讀順序重讀，核對前置與相關章節連結。many／one、部署、raw、stride、label、容差、deepcopy、gather 的意思與用途在需要時交代；先說「只讀 one 仍白算 many」，再說實際移除、raw 比對與解碼，理由連得起來。候選排列式、逆 softplus 推導與兩題可直接照改的答案沒有省掉必要步驟；教學模型、官方 head 和第 20 章模型也有明確區別，沒有新增理解障礙。
+- **圖與實際網頁**：副本 `zensical build --clean --strict` 通過；`scripts/validate_site.py` 通過。以自己的 HTTP server（8816）和 Chromium 實際看本頁，檢視 1280×900 桌面與 390×844 手機截圖，確認正文、表格、四個摺疊區、練習答案與 SVG 確實呈現。SVG 的前向實線、反向虛線、one 梯度停止於 detach、部署沒有 many／detach、兩個 raw 輸出間的紫色點線均與課文／程式一致，文字沒有裁切或箭頭歧義；本頁沒有水平頁面溢出與 JavaScript pageerror。自己的 server 已停止，未接觸 8794。
+
+本輪重新開啟的來源與版本（官方程式以 raw GitHub 讀取相同固定 commit，均回 HTTP 200）：
+
+- [YOLO26 原論文 v1](https://arxiv.org/html/2606.03748v1)，並開啟 [abs 頁](https://arxiv.org/abs/2606.03748)：閱讀 §3.2.1 的「One-to-One Head (default)」與雙 head 說明，以及 §3.2.2 DFL 距離期望。論文的預設 head 與 Python predict 預設值確實需要分開。
+- Ultralytics commit `441632cdfd19e22e60a4b1b1999d46326ca51ec4`：[yolo26.yaml](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[head.py](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[tasks.py](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/tasks.py)、[training recipe](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/docs/en/guides/yolo26-training-recipe.md)。核對 end2end=True、reg_max=1／Identity、兩支訓練、detach、sigmoid 與直接帶符號距離、雙階段 top-k、Detect 分支移除、BaseModel 的卷積／BN 融合與 Detect.fuse 呼叫。
+- 同 commit 的 `engine/predictor.py`、`nn/autobackend.py`、`nn/backends/pytorch.py`、`cfg/default.yaml`、`utils/nms.py`、`utils/loss.py` 與 `utils/tal.py`：沿著 `nms=None` → `self.args.nms is False` → backend 在 fuse 前設定 end2end 的路徑讀過原始程式，核對預設 many＋NMS、明確 `nms=False` 改走 one；E2ELoss 算兩支 loss，dist2bbox 是中心點減左上／加右下。正文沒有把設定檔的 `end2end: True` 誤當成 predict 預設。
+- PyTorch 2.9 的 equal／gather／expand 官方 HTML 三頁均回 HTTP 403；改讀官方 [v2.9.1 `_torch_docs.py`](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/_torch_docs.py) 與 [v2.9.1 `_tensor_docs.py`](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/_tensor_docs.py)，並讀本機 2.9.1 的 eval、detach、clone、softplus、AdaptiveAvgPool2d docstring。核對 torch.equal 的 size／elements（沒有聲稱它檢查 dtype）、gather 的 dim=1 索引式與 expand 共用儲存／先 clone 再寫的說明。
+
+必要問題：無。建議事項：無新增；沒有為了產生發現而要求改寫正確的正文。
+
+既有意見與本輪觀察的處理：
+
+| 位置／項目 | 本輪核對與處理 |
+| --- | --- |
+| 舊〈來源對照〉要求補 BaseModel.fuse 的出處 | 已確認正文第 217 行有固定 commit 的 tasks.py 連結，來源的 BaseModel.fuse 確實融合 BN 並呼叫 Detect.fuse；原建議已處理，不需再改。 |
+| 舊〈獨立查核〉說當時頁尾還是舊輸出 | 本輪當作歷史描述；目前 JSON、最後一格與頁尾七行已同步，預設重跑也相同，不需修正。 |
+| 332／278、labels shape 沒有斷言；人工例子不檢查候選排列 | 重新讀 case、實跑變體後仍屬實，正文已交代限制，維持原文。 |
+| stale 僅由自動產生器移除正文尾兩空行 | 不因此略過審查。按 coverage 的規則排除頁尾／正規化 Colab tag，現行正文 hash 是 `fb40f2f41649570b2c14c488efbbc34680516554aeee1e2e88dc4edba6422161`；只加回兩個換行就得到原 coverage 的 `b88b6b823d30693cb7a40ffd7d05408294f843b9b3c3e7506a934a1b4900e421`。圖與 case hash 沒變。本輪僅交付審查紀錄，由主流程另行更新 coverage。 |
+
+查核快照 SHA-256（整個檔案的 bytes；正文 coverage hash 另列於上）：
+
+| 檔案 | SHA-256 |
+| --- | --- |
+| `docs/lessons/16-inference-head.md` | `5bf4085ba440e4e2dcd53731e216b300dc599a3103c2e6ea4af2fb76f91f5519` |
+| `docs/assets/diagrams/16-head-paths.svg` | `1acac44ac36b5b847e55a22e24d2a97fc2095a25800e3ed0df71e75dbcebf2c4` |
+| `lesson_cases/16-inference-head.py` | `e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d` |
+| `notebooks/16-inference-head.ipynb` | `b134a8a6854eb1cc22862ba878a9b20d2ca56eab0b67a13d4ca5225a957e740c` |
+| `artifacts/checks/curriculum/16-inference-head.json` | `95b2f301b0b45e22ba7ec1b1aff8f4a21d7d2f5aae8e8706f00fb571c8ccb4cb` |
+| 本輪讀取的 `reviews/16-inference-head.md` | `687e7b03aeb48f8c2d959df54d94abbfb8906d9ee463b7e8a3b701f3b90f3b77` |
+
+限制：本輪沒有登入 Colab、執行 notebook 的 clone／安裝環境格、下載預訓練權重或驗證偵測準確度；最後一格是在指定的本機 CPU 環境真正執行。沒有真人學生測試。本頁瀏覽器檢查已做，整站 MathJax／CSS 不在本輪範圍。原始來源、下載狀態／hash、重跑輸出、練習與錯誤變體結果及截圖保留在暫存副本的 `artifacts/review-16/`，沒有寫回作者證據。

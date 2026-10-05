@@ -223,7 +223,7 @@ Assignment 在**訓練時、算 loss 之前**（生成 target 時）決定誰負
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
 
 ??? example "展開本次實際輸出"
 
@@ -231,6 +231,7 @@ Assignment 在**訓練時、算 loss 之前**（生成 target 時）決定誰負
     box_shape=(2, 4, 4, 4), objectness_shape=(2, 4, 4), class_shape=(2, 4, 4)
     positive_cells(row,col)=[[0, 0], [2, 2]], first_target=[0.75, 0.75, 0.25, 0.25], first_image_negative=14
     batch positives=2, negatives=30, ignores=0
+    asymmetric boxes: positive_cells(row,col)=[[0, 0], [1, 2]], targets=[[0.75, 0.625, 0.3125, 0.1875], [0.75, 0.25, 0.25, 0.25]], classes=[0, 1]
     capacity limit correctly raised: same-cell collision at image=0, row=0, col=0
     step=0, box=0.0871, obj=0.7031, cls=0.5235
     step=1, box=0.0861, obj=0.6839, cls=0.4744

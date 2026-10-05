@@ -197,7 +197,7 @@ test 只在訓練結束後評一次，沒有拿來修改模型或設定。不過
 
 這四張圖只是圖板，mAP 使用全部 16 張。多數框接近真值、mAP 從接近 0 升到約 0.8，支持「這條管線在受控任務學得動」；但這只是紅／藍矩形上的結果，還不能回答模型是否認得照片裡的行人。
 
-原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)，其中的 `loss_history` 存著每一步的各項 loss，上面的曲線就是用它畫的。這次實測只計訓練迴圈本身，在 AMD EPYC 9V74 80-Core Processor、PyTorch 2.9.1+cpu、2 threads 上約 0.74 秒；程式啟動、資料建立、畫圖和評估都不算在內。不同機器要自己量，也不能用這個時間預估真實資料的訓練。
+原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)，其中的 `loss_history` 存著每一步的各項 loss，上面的曲線就是用它畫的。這次實測只計訓練迴圈本身，在 Intel Xeon Platinum 8573C、PyTorch 2.9.1+cpu、2 threads 上約 1.18 秒；程式啟動、資料建立、畫圖和評估都不算在內。不同機器要自己量，也不能用這個時間預估真實資料的訓練。
 
 想在本節 Colab 重跑這個 160 步實驗：先執行 notebook 最上面的環境格（下載本書程式、安裝套件的那一格），再另開一個 code cell，貼上下面的程式。它等同 notebook 說明裡的 `!python -m miniyolo.train --steps 160 --samples 32 --device cpu`，只是改用 Python 寫，並用 `--output` 明寫輸出資料夾（寫的就是預設值）。
 
@@ -231,13 +231,13 @@ display(Image.open('artifacts/runs/grid-learning/loss.png'))
 - 真實照片上的效果：這些圖都是合成矩形，不能回答模型是否認得照片裡的行人。
 - 和其他架構或較新設計的比較：本節只訓練了一種模型，沒有證明哪個較新的機制比較好。
 - 穩定的好壞：只有一個 seed，測試集也只有 16 張，小差距可能只是波動。
-- 速度：0.74 秒只描述那一台機器上、那一次的訓練迴圈，不能拿來預估別的機器或真實資料的訓練。
+- 速度：1.18 秒只描述那一台機器上、那一次的訓練迴圈，不能拿來預估別的機器或真實資料的訓練。
 
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-training.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-training.json)
 
 ??? example "展開本次實際輸出"
 

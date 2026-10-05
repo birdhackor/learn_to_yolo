@@ -103,3 +103,17 @@ GridDetector 連結 https://github.com/birdhackor/learn_to_yolo/blob/main/miniyo
 |---|---|---|---|---|
 | 1 | 必要 | 第 4 輪第 1 項處理欄（第 96 行） | 發現另外點名第 3 輪第 1 項處理欄的同語反覆「「先前審查意見」整組換成「先前審查意見」」。該格已重寫，同語反覆已經不在，處理欄卻把兩個「先前審查意見」也列為「未改、仍在紀錄裡」；這個字串只出現在正文第 23 行。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |
 | 2 | 建議 | 第 3 輪第 1 項處理欄（第 88 行） | 「點名的文字已不在紀錄裡」也涵蓋了引用的第 2 輪處理說法「已修正：內部用語換成白話」，但它仍在第 80 行。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 在獨立 rsync 副本查核 CPU 重產後的完整頁面、程式與 import 模組、新逐節紀錄、`grid-learning.json`、兩張實測 SVG 與既有審查紀錄。結論：通過，沒有必要問題或需修改的建議。原審查所列的「重錄後再對數字與圖」已完成。
+
+- 使用 Python 3.12.14、PyTorch 2.9.1+cpu，實跑 `lesson_cases/07-training.py`：全部 assertion 通過，stdout 與新紀錄逐字相同；正文 step 0–2 的四位小數、total 手算、正負格平均與 box 微升／total 下降皆仍正確。shape hooks、資料／target／mask 及 loss 逐項手算都相符；正格 4、負格 60、4 個物件都是 class 0。梯度方向、共用 objectness bias 約 +0.058 的解釋與 Adam 更新相符。
+- 照頁面移除唯一的 `optimizer.step()` 後重新執行：三行數字完全相同，最後檢查參數改變的 assertion 失敗；後面的正格 assertion 與成功行沒有執行，符合參考答案。三步後重新 forward 的正格 score 為 0.0774～0.0875，0.25 顯示門檻下沒有框；正文的診斷順序與「三步不宣稱泛化」說明成立。
+- 實跑 `python -m miniyolo.train --steps 160 --samples 32 --device cpu`，160 筆 loss、四張 validation 圖的真值／預測及全部評估結果與新作者紀錄完全相同。validation mAP50 0.803571428571、test 0.774891774892；validation 為 18 GT／16 預測／15 TP，test 為 19 GT／17 預測／15 TP。初始 256 預測、3 TP、mAP50 0.001750700280 也重新核對。正文表格、計數、固定規則、overfit 與獨立資料評估的區分，以及單一 seed／小資料／合成任務的限制均成立。
+- 用現行 `scripts/render_learning_evidence.py` 只讀新作者 JSON 重畫兩圖，與網站 SVG 逐位元相同；曲線的 160 點、未乘 5 的 box、更新前 loss 與配色正確。classification 首次 <0.01 在第 16 點；objectness 第 50 點約 0.0147，符合讀圖說明。圖板的 PNG 與 seed 700 對應圖片一致；圖片 0 的 #0 是 TP、IoU 0.6238→0.62，#1 是 class 0、score 0.9804→0.980、FP、IoU 0.4734→0.47，紅色 GT 是 FN，和正文完全相符。
+- 新作者紀錄是 Intel Xeon Platinum 8573C、2 threads、PyTorch 2.9.1+cpu，訓練迴圈 1.184570304 秒，正文顯示 1.18 秒正確。此次獨立重跑為 6.290244746 秒，另行記錄，未替換作者紀錄；正文對計時範圍與不同機器不可外推的說明正確。
+- strict Zensical build 與 `validate_site.py` 通過；本頁摘錄與 notebook code／output 皆相符。以 Chromium `--no-sandbox --disable-gpu --disable-dev-shm-usage` 在副本 HTTP server 渲染並實看兩張 SVG 與頁面，中文、標籤、框、曲線及程式區塊正常。從指定初學者角度逐段看過，沒有發現理解上的必要問題。
+- 原始來源重新核對：YOLOv1 arXiv v5 原文；PyTorch v2.9.1 `torch/optim/adam.py` 的官方 API docstring／更新式與 `torch/nn/modules/pooling.py` 的 `AdaptiveAvgPool2d` docstring；COCO `cocoeval.py` 固定 commit `8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9` 的十個 IoU 門檻、101 recall 位置與平均規則。PyTorch 2.9 網頁文件在此環境回 403，因此改讀同版本官方原始碼內的 API 文件。沒有發現正文與來源不符的說法。
+
+查核與執行都在獨立副本，主要 checkout 只讀；本次沒有修改教材、程式、作者紀錄、圖或 review coverage。

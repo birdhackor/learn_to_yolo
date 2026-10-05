@@ -174,14 +174,14 @@ Ultralytics 的偵測 head 預設每條邊 K=16 個 bin，它的程式把每邊�
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-dfl.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-dfl.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
     uniform expectation=1.50; DFL=1.386294
     initial logit gradient: [[0.25, -0.5, 0.0, 0.25]]
-    learned bin probabilities: [[0.0024999999441206455, 0.7475000023841858, 0.24740000069141388, 0.0024999999441206455]]
+    learned bin probabilities: [[0.0025, 0.7475, 0.2474, 0.0025]]
     learned expectation=1.2500 cells = 9.9999 pixels at stride 8
     different distributions can share expectation=1.25
     ```

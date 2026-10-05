@@ -1,4 +1,36 @@
 {
+  "executed_at_utc": "2026-10-05T07:20:19+00:00",
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "torch": "2.9.1+cpu",
+  "dependencies_sha256": {
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/classification.py": "a20d4d98294bc8cad2f1cc0b69aac80fae127f218d37589b15294afaa9d02ad1",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "scripts/download_data.py": "5d2d5239fa7fe7ac5a025851c332440477894b57ed9e6afd4c3b4f267f73c8ed",
+    "scripts/run_fashion_cnn.py": "ebd68d2c0a6f41245582e6a12331e7a16b25515f3dcb642f144a42dac6e4f852"
+  },
+  "data_sha256": {
+    "train-images-idx3-ubyte.gz": "3aede38d61863908ad78613f6a32ed271626dd12800ba2636569512369268a84",
+    "train-labels-idx1-ubyte.gz": "a04f17134ac03560a47e3764e11b92fc97de4d1bfaf8ba1a3aa29af54cc90845",
+    "t10k-images-idx3-ubyte.gz": "346e55b948d973a97e58d2351dde16a484bd415d4595297633bb08f03db6a073",
+    "t10k-labels-idx1-ubyte.gz": "67da17c76eaffca5446c3361aaab5c3cd6d1c2608764d35dfb1850b086bf8dd5"
+  },
   "steps": 40,
   "train_samples": 64,
   "validation_samples": 128,
@@ -74,7 +106,7 @@
     },
     {
       "step": 13,
-      "loss": 2.279428720474243
+      "loss": 2.2794289588928223
     },
     {
       "step": 14,
@@ -150,7 +182,7 @@
     },
     {
       "step": 32,
-      "loss": 2.2722275257110596
+      "loss": 2.2722277641296387
     },
     {
       "step": 33,

@@ -204,18 +204,18 @@ print(json.loads(Path('artifacts/lesson-08-own-images/prediction.json').read_tex
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-images.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-images.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
-    original CHW (3, 80, 120) input box [[10.666666984558105, 15.375, 32.0, 26.125]]
-    metadata {'original_size': (80, 120), 'scale': 0.5333333333333333, 'scale_xy': (0.5333333333333333, 0.5375), 'padding': (0, 10), 'resized_size': (43, 64)} roundtrip [[20.0, 10.0, 59.999996185302734, 29.999998092651367]]
-    3-step checkpoint safely reloaded: exact logits; original-space box count 16
-    annotated PNG and JSON saved: artifacts/lesson-08-own-images/prediction.png artifacts/lesson-08-own-images/prediction.json
+    original CHW (3, 80, 120) input box [[10.6667, 15.375, 32.0, 26.125]]
+    metadata {'original_size': (80, 120), 'scale': 0.5333333333333333, 'scale_xy': (0.5333333333333333, 0.5375), 'padding': (0, 10), 'resized_size': (43, 64)} roundtrip [[20.0, 10.0, 60.0, 30.0]]
+    3-step checkpoint safely reloaded: exact logits; original-space box count 0 at score threshold 0.25
+    prediction PNG and JSON saved: artifacts/lesson-08-own-images/prediction.png artifacts/lesson-08-own-images/prediction.json
     pipeline evidence only, not photo detection quality
     class/config mismatch rejected
-    artificial known box restored [[20.000001907348633, 10.0, 59.999996185302734, 29.999998092651367]]
+    artificial known box restored [[20.0, 10.0, 60.0, 30.0]]
     ```
 
 <!-- curriculum-evidence:end -->

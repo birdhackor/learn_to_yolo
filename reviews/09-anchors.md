@@ -113,3 +113,39 @@
 |---|---|---|---|---|
 | 1 | 建議 | 第 3 輪第 1 項處理欄（第 96 行） | 「7 處中 5 處已改寫或刪除」把發現引用的第 2 輪處理說法「已修正：內部用語換成白話」也算成已改寫，但它仍在第 2 輪第 3 項處理欄（第 88 行）。實際改寫的紀錄文字是 4 處：紀錄檔清單、code-issues.md、查核範圍清單、「沒有 must 問題」。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |
 | 2 | 建議 | 第 4 輪第 2 項處理欄（第 106 行） | 發現點名兩處：第 31 行孤立的「紀錄檔」與第 11 行的「只有一個 should」，兩處都還在。處理欄只寫「點名的 1 處文字仍在紀錄裡：「只有一個 should」」，漏了「紀錄檔」，原因是產生器略過 4 個字以下的引文。「未改」這個判斷本身正確。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 依 `AGENTS.md` 與〈發布新版教材〉第 7 步，在 rsync 建立的獨立副本完整重審本頁；副本排除 `.git`、`site` 與 `.venv*`，執行時工作目錄與 `PYTHONPATH` 都指向副本，借用既有 Python 3.12.14／PyTorch 2.9.1+cpu 環境。讀完本頁全文、既有審查紀錄、現行 JSON、完整案例與頁面 SVG，另對照第 7 章的 targets、loss 與 inference 程式。案例只 import PyTorch，沒有 repo 模組依賴。所有執行、暫存測試與網站建置均在副本進行，沒有改動原始頁面、程式、審查紀錄或涵蓋清單。
+
+結論：通過。沒有新的必要問題或建議事項。這次正文涵蓋摘要改變的原因已獨立確認：對目前正文末尾補回兩個換行，SHA-256 就精確等於既有涵蓋清單的 `a2d6e2ab325ceea0721e35ddd7d5fdc08cfe37e2781bbf3bd5a32ffabaceb2b6`。因此差異只有重產紀錄時去掉的末尾空白行；本次仍完整查核，沒有僅依這個判斷略過正文。
+
+查核方法與結果：
+
+- **主案例、notebook 與現行紀錄**：實跑 `lesson_cases/09-anchors.py`，exit 0，七項 assert 全部通過，四行 stdout 與現行 `artifacts/checks/curriculum/09-anchors.json` 逐字相同；notebook 最後一格程式與案例逐字相同，保存的 stdout 與 JSON 也相同。頁尾顯示的日期、CPU、兩個執行緒、PyTorch 版本與四行輸出均對得上 JSON。
+- **框編碼與責任分配的獨立手算**：真值 `[8,12,24,28]` 的中心 `(16,20)`、寬高 `(16,16)`；格座標 `(1,1)`、格內比例 `(0,.25)`；兩個尺寸 IoU 為 `1`、`.25`，best=0，log wh=`[0,0]`。`ln(.0001/.9999)=-9.21024036698`、`ln(.25/.75)=-1.09861228867`，decode 得 `[8.0016,12,24.0016,28]`，最大座標誤差 `.0016` pixel。best 槽 positive，同格另一槽因 `.25>.2` 而 ignore，其他 30 槽 negative；BCE 平均分母是 31。
+- **loss、梯度與 SGD**：另外手算初值的中心 MSE=`(.5²+.25²)/2=.15625`、寬高 MSE=0、objectness BCE=`ln2`、類別 CE=`ln2`，總 loss=`1.5425443611198906`；實測 `1.5425443649291992`。positive 槽七個梯度為 `[.125,.0625,0,0,-.5/31,-.5,.5]`，negative 的 obj 梯度為 `+.5/31`，ignore 全為 0。一步 SGD 後只有 35 個數值、31 個槽改變：positive 的 tx、ty、obj、class0、class1，以及 30 個 negative 的 obj。這支持頁面對固定輸出字樣 `one slot update completed` 的解釋。
+- **頁面上的程式與全部練習**：照指示把 print 加在 `loss.backward()` 下一行後另跑，第一行確為 `[-0.016129031777381897, 0.0] [0.016129031777381897, 0.016129031777381897]`，後面才是原本四行。把簡化摘錄連同文字說明的變數綁定實際執行，best、log wh、wh loss、obj loss 皆正確。兩題自主練習先手算再用案例的 `size_iou` 核對：32×16 配 16×16 得 `[ln2,0]`、配 8×8 得 `[ln4,ln2]`；尺寸 IoU=`[.5,.125]`，計數=`1／0／31`。格單位例子的 1、.5、誤填 16 分別 decode 為 16、8、256 pixel；`16×exp(5)=2374.61054564`，符合約 2375 pixel。另實跑第 7 章同格兩個物件，確認拋出 `same-cell collision` 的 ValueError。
+- **SVG 與初學者閱讀**：依圖面映射 `(72+6x,120+6y)` 核對紅框、兩個 anchor、中心與淡藍格；紅框對應 `[8,12,24,28]`，anchor 疊上後對應 `[8,12,24,28]` 和 `[12,16,20,24]`，中心正好壓在 x=16 格線，floor 歸欄 1。虛線畫在真正邊界外側的做法和圖說相符；title、desc、alt 與 visible 文字一致。按高中程度、數學好而程式新手的讀者視角逐段檢查，log／exp／logit、clamp、mask、槽與類別、編碼驗算和訓練 target 的區別均有就地說明，順序合理；自訂 ignore 規則與官方規則區分清楚。
+- **網站轉換與瀏覽器**：Zensical 0.0.67 的 `build --clean --strict` 成功，`validate_site.py` 成功。Chromium 151.0.7922.173 用 `--no-sandbox --disable-gpu --disable-dev-shm-usage`，在 1280 與 390 pixel 視窗檢查本頁；HTTP 200、19 個數學區塊全部轉成 MathJax CHTML、1 個表格、3 個編號清單、4 個摺疊區、3 個程式區塊及圖片均正常，Colab 連結固定在 `lessons-v0.4.0`。窄螢幕長公式、表格和程式可在各自區域水平捲動，整頁沒有水平溢出；SVG 所有文字的 bounding box 均在 viewBox 內。沒有 JavaScript page error。單獨開 SVG 時瀏覽器另要 `/favicon.ico` 得 404，屬於本地伺服器的額外圖示請求；本頁及其圖片、樣式、腳本和數學字型均載入成功。
+- **驗證限制的辨識**：`validate_lessons.py` 通過程式摘錄與 notebook 檢查後，停在本次發布尚未更新的全站審查涵蓋檢查，本頁列出的變更只有正文；沒有把這個預期中的失敗記成全套通過。這次沒有寫入涵蓋清單，也沒有在 Google Colab 託管 runtime 執行。
+
+另外重新開啟原始來源核對歷史及函式庫說法：
+
+- [YOLO9000: Better, Faster, Stronger，arXiv v1](https://arxiv.org/pdf/1612.08242v1)：Abstract 核對 YOLOv2／YOLO9000 及超過 9000 類；第 2 節 Convolutional With Anchor Boxes、Dimension Clusters、Direct location prediction 核對尺寸先驗、每個 anchor 自己的類別與 objectness、限制格內中心及 sigmoid／exp 公式；第 3 節 Darknet-19 核對 19 個卷積層。搜尋全文並讀對應段落，沒有 YOLOv2 的 ignore 訓練規則；`ignores`／`threshold` 的相關敘述屬於 WordTree／分類推論。
+- [Darknet `region_layer.c`，固定 commit `f6afaabcdf85f77e7aff2ec55c020c0e297c77f9`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/region_layer.c#L236-L306)：第 236–252 行每格每槽先 decode 預測框，再對圖中 GT 算含位置的 IoU，`best_iou > l.thresh` 時 obj delta=0；第 265–306 行在 GT 中心格、以 `bias_match` 尺寸 IoU 選負責槽，重設其 obj delta。因而負責某個 GT 的槽仍計 objectness，頁面例外敘述正確。
+- [同一 commit 的 `yolov2-voc.cfg`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/yolov2-voc.cfg#L257)：核對 `bias_match=1`、`rescore=1`、`thresh=.6`。頁面把 `.2` 明定為教學值，沒有拿它代表官方門檻或官方尺寸 ignore 規則。
+- PyTorch 2.9 官方文件：[MSELoss](https://docs.pytorch.org/docs/2.9/generated/torch.nn.MSELoss.html)、[BCEWithLogitsLoss](https://docs.pytorch.org/docs/2.9/generated/torch.nn.BCEWithLogitsLoss.html)、[torch.logit](https://docs.pytorch.org/docs/2.9/generated/torch.logit.html)、[torch.special.logit](https://docs.pytorch.org/docs/2.9/special.html#torch.special.logit)：核對預設 mean、逐元素 BCE 公式、`torch.logit` 的別名及自然對數反解公式，與手算及實跑相符。
+
+本次涵蓋內容的 SHA-256（正文摘要依 `review_coverage.py` 排除 Colab tag 與自動紀錄區塊）：
+
+| 檔案／內容 | SHA-256 |
+| --- | --- |
+| `docs/lessons/09-anchors.md` 正文涵蓋摘要 | `97f7ee6d8915e40a0ccfe04e7090682ac2c6ffa1c97696e2e9463d2f47368a75` |
+| `docs/lessons/09-anchors.md` 完整檔案 | `dc08c1dfdac7ad57ef6adc14b6e88f89f5ecc7fef2a6758b1568e668cb9c4d4b` |
+| `docs/assets/diagrams/09-anchors.svg` | `f161b7a31f424183494b2da33f6623501d2dcd84bd3eaae63d1f3acf2ce41e7c` |
+| `lesson_cases/09-anchors.py`（全部 repo 依賴） | `7a7e8c431340e33f55fc8afc90136b225d18387940d6677eab9e8aecacd31469` |
+| `artifacts/checks/curriculum/09-anchors.json` | `e90acb5505cb838008d0dc8d5a1e0c09c8f8c8d1977fc4c63b62e38c19332c54` |
+| `notebooks/09-anchors.ipynb` | `0a0d5247762b70125332275f676c821a0a1f115a26b1f3dcd87e7ff74cdd22e2` |
+
+重新查閱來源的 SHA-256：YOLO9000 v1 PDF `6c5e99e00874eeebb58de6a6676c98a6e650b80e4a867a64ea1e7cd748ac738a`；`region_layer.c` `9cdcf276a19510a660b41a188eab615ea4f24dd45ef428f6ef7fada87b359f4f`；`yolov2-voc.cfg` `ecf8b24ca01bdedc5c569300a6e99120ca5e251108eaa973b9cb19e28ed93352`。

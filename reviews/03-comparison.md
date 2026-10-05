@@ -232,3 +232,96 @@
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 必要 | 第 3 輪 #1 的處理欄（第 210 行）；〈定稿修正〉#15 的來源欄（第 177 行） | 處理欄寫「來源欄改成中文」，但 #15 的來源仍是「技術查核＋leftover」。原始的來源標籤是 tech+leftover：產生器的 origin 對照表只認單一來源，組合來源直接交給 cell()；而 leftover 的替換規則只在緊鄰中文時才生效，「＋」後面的 leftover 因此沒被換掉。第 3 輪發現點名的正是這一欄，當時顯示為「tech+先前查核留下的項目」。 | 已修正：組合來源裡的 leftover 也換成中文（技術查核＋先前查核留下的項目）。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05，另一位 AI 依 `AGENTS.md` 與 `docs/preparation/publish.md` 第 7 步，在自行建立的獨立副本查核 `docs/lessons/03-comparison.md`。結論：通過；沒有必要問題，也沒有新增建議事項。審查者是 AI，沒有真人學生測試。
+
+### 範圍與方法
+
+以提供的 base 建立 `/tmp/lessons-v0.4.0-reviews/review-03/` 副本，使用指定的 rsync 與動態函式庫路徑，排除 `.git`、`site`、`.venv*`。所有執行、探針、練習變體、網站建置及截圖都在這份副本完成；使用 `/workspace/learn_to_yolo/.venv-model/bin/python`（Python 3.12.14、PyTorch 2.9.1+cpu、CPU、2 個執行緒）。沒有執行 git、遠端寫入或 GPU 工作，沒有寫入原 repository 的頁面、審查紀錄或 coverage。
+
+完整閱讀本頁、既有 `reviews/03-comparison.md`、`lesson_cases/03-comparison.py`、`scripts/run_learning_extensions.py`、`miniyolo/figures.py`、`miniyolo/provenance.py` 及補充腳本記錄的 repository 相依模組；對照目前的 `03-comparison.json`、`03-comparison-learning.json`、notebook 和頁面正文。預設實驗沒有 import repository 模組。補充實驗透過 `miniyolo/__init__.py` 匯入的其他模組只提供定義，不參與本節的訓練計算；相依 SHA-256 全部與新紀錄相符。
+
+本頁正文只引用一張 SVG：`03-comparison-learning.svg`。另依重跑指令產生 `artifacts/runs/learning/03-comparison/learning.svg`；兩份 SVG 都實際用 Chromium 開啟、截圖並檢視。頁尾自動產生的執行區塊與 Colab 連結中的 tag 不列入審查涵蓋雜湊，但有對照目前 JSON，確認正文引用的數字和更新前／更新後時間點一致。
+
+### 執行與數字查核
+
+- `PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/03-comparison.py`：exit 0，stderr 為空；所有斷言通過。plain 三次 loss 為 0.6938、0.6937、0.6936，stem 梯度為 0.000984、0.001001、0.001011；residual loss 為 0.6921、0.6888、0.6855，梯度為 0.146701、0.147590、0.146128。兩者參數 986、MAC/image 248840，shortcut 加法為 0／3072，validation 都為 0.50。除單次計時外，印出的數字與新紀錄相同。實際計時 0.0120／0.0101 秒的次序與新紀錄不同，符合頁面「單次量測可能顛倒、不拿來比較」的說明。
+- `PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python scripts/run_learning_extensions.py --section 03-comparison`：exit 0；生成的 `report.json` 與目前 `03-comparison-learning.json` 完整相同。plain 第 1 次更新前為 0.6937928199768066，第 40 次更新前為 0.6929482817649841；residual 為 0.6921380162239075 → 0.030957741662859917。四捨五入至六位小數就是正文表格的 0.693793 → 0.692948 與 0.692138 → 0.030958。前 3 次 loss 與預設實驗相同。
+- 40 次更新後，plain 的訓練／validation accuracy 都為 0.50，8 張訓練圖全部猜 1；residual 兩組都是 1.00，訓練猜測 `[0,1,0,1,0,1,0,1]`，validation 猜測 `[0,1,0,1]`。全部梯度有限、L2 不為零，兩模型權重確實改變。本頁沒有把第 40 次更新前的 loss 誤寫成 40 次更新後的 loss。
+- 手算重新核對：stem 112、每個 F 288、head 10，合計 986；stem MAC 27648、每個 block 卷積 36864、head 8，合計 248840；residual 加法 3072。1 個 block 是 410、101384、1024。L2 範例 `sqrt(3²+4²)=5`、交叉熵基準 `−ln(0.5)=ln(2)=0.693147…` 也正確。
+- 初始化推導重新核對：fan-in = 4×3×3 = 36，預設範圍 ±1/6，均勻分布平方平均 1/108；兩個卷積加一個 ReLU 的平方平均比例約為 `(1/3)×(1/2)×(1/3)=1/18`，RMS 比例 `sqrt(1/18)=0.235702…`。He 初始化平方平均為 2/36，搭配 ReLU 的尺度解釋符合原始來源。這是初始化下的近似推導，正文有用「約」，沒有寫成每一層的精確等式。
+
+### 控制條件、機制與結論
+
+另寫探針查核參數與資料的隔離，全部通過：建立第二模型後原始權重確實不同；`load_state_dict` 後對應參數數值相同，但每個參數的 `data_ptr` 都不同。兩個 SGD 引用的參數物件集合互斥；更新 plain 不會改變 residual 任何一個參數。`deepcopy` 暖機的所有參數都另有儲存空間，暖機前後真正模型的全部 state_dict 完全相同。訓練與 validation 儲存空間分開，探針更新後資料也未被改動；程式僅以訓練圖算梯度，validation 只在 `no_grad` 的評分段使用。
+
+資料逐張從像素讀回確認：訓練為 top=3、left=2/3/4/5 各一紅一藍；validation 為 top=5、left=4/5 各一紅一藍；每張都有 64 個非零畫素、方塊為 8×8，所有訓練與 validation 圖互不相同。兩類的位置清單相同，所以本資料與這 4 張 validation 的顏色歸因成立；正文也明確限制其泛化範圍。
+
+初始 plain 每過一個 block 的輸出 RMS 比例為 0.1870、0.2025、0.2684；residual 為 0.9811、0.9480、1.0481。block 權重都在 ±1/6 內，實際平方平均約 0.009467，接近理論 1/108。plain 40 步後 head 特徵對 logit 的貢獻最大只有約 0.001117，head bias 為 `[-0.37538,-0.36455]`，偏向類別 1；實際 8 張也全猜 1。把所有 F 權重設零後，plain 的每張 logits 完全等於 head bias；residual 的紅／藍 logits 不同。這些觀察支持本頁的局部訊號與梯度縮小機制。
+
+重新查閱 ResNet 原論文：§3.2 的第二個 ReLU 放在相加之後；§3.4 的 plain／residual 都用 BN、He 初始化與 momentum、weight decay；§4.1 明說 BN 使前向訊號變異數非零，作者檢查反向梯度大小正常，並推測深層 plain 收斂率可能極低。Table 2 的 18 層 plain／ResNet 為 27.94／27.88，34 層為 28.54／25.03。本頁已明確說明此實驗的梯度消失不能解釋論文的 degradation，也沒有把較大梯度當成較佳泛化。範例結論與限制完整列出 seed 7、8 張人工資料、相同初始權重、3 個 block、沒有 BN、預設初始化、SGD lr=0.1、40 次更新等條件。
+
+### 練習與初學讀者檢查
+
+依正文另存 1 個 block 的完整程式，不改原 lesson case，逐步執行四種變體：
+
+| 階段 | 執行結果 |
+|---|---|
+| 只改 `range(1)` | 在 `assert params == 986` 出現預期的 AssertionError；尚未印出結果 |
+| 再改參數斷言成 410 | 在 `assert macs == 248840` 出現預期的 AssertionError |
+| 再改 MAC 斷言成 101384 | plain 完成 3 步並印出摘要，輪到 residual 才在加法斷言出現預期的 AssertionError |
+| 加法斷言也改成 1024 | exit 0，兩模型都印出 410／101384，加法 0／1024，validation 都是 0.50 |
+
+1 個 block 的 plain stem 梯度為 0.036030、0.037604、0.038848，較 3 個 block 大超過一個數量級；residual 為 0.160922、0.157635、0.153132，量級相近，符合參考答案。另確認 1／3 個 block 以相同 seed 建立時，stem 與第一個 block 相同、head 不同；在每個同結構模型建立前重設同 seed，兩模型全部初始參數相同。
+
+從高中數學好、程式新手的角度，完整讀過 Markdown 與建出的 HTML：控制變因→資料與 seed→成本→暖機→三步輸出→40 步→機制與限制→練習的順序清楚。三段摘錄有明示中文註解是頁面添加；省略位置有說明，`if/elif`、條件運算式、hook、L2、seed、deepcopy 都有具體解釋。練習提醒不要改訓練次數、先另存副本、`print` 的八格縮排與斷言失敗順序；40 步指令也區分 Colab `!` 和本機命令，指出 JSON 欄位及正確量測時間點。舊審查中技術與初學讀者問題的修正仍然有效；沒有發現重產數字或中文新圖帶來的新問題。
+
+### 圖與網站轉換
+
+`/workspace/learn_to_yolo/.venv-docs/bin/zensical build --clean --strict` exit 0，`No issues found`；`scripts/validate_site.py` exit 0。本頁三段程式摘錄檢查回傳 `[]`，notebook 最後一格逐字等於 lesson case。
+
+用 Playwright、`/usr/bin/chromium` 與 `--no-sandbox --disable-gpu --disable-dev-shm-usage` 實際瀏覽建置頁面，檢視 1280px 桌面和 390px 手機截圖；正文、數學、表格、程式區塊、暖機目錄項目、參考答案展開均可閱讀，無整頁水平溢出或 pageerror。沒有在 Colab 服務實際執行，這次是獨立副本的 CPU 執行與瀏覽器渲染檢查。
+
+網站 SVG 與獨立重跑 SVG 逐 byte 相同，也分別截圖檢視。藍色為 plain、橘色為 residual，圖例、訓練交叉熵縱軸、更新次數橫軸、8 張資料／seed 7 標題，以及「每點在該次更新前量」標籤，都與圖說一致。每條曲線各有 40 個點；另外解析 SVG 兩條 path，全部橫座標符合第 1～40 次更新、全部縱座標與相應的新 JSON loss_history 成線性尺度一致，誤差小於 2×10⁻⁶ SVG 座標單位。plain 幾乎水平，residual 前 15 次緩降、第 20～30 次急降、末點約 0.031；`viewBox`、`role=img`、`title` 與 `aria-label` 俱在。
+
+### 本次查閱的一手來源
+
+- ResNet：arXiv **1512.03385v1**，原始 PDF <https://arxiv.org/pdf/1512.03385v1>，核對 §3.2、§3.3／Table 1、§3.4、§4.1／Table 2；包括 ReLU 位置、stem／下採樣、BN、初始化、SGD、ImageNet 規模與退化說法。
+- He 初始化：arXiv **1502.01852v1**，PDF <https://arxiv.org/pdf/1502.01852>（下載內容首頁標明 v1），核對 §2.2 式 (7)～(10)、(12)～(14) 的平方平均與 ReLU 推導。
+- 官方 Caffe 定義：固定 commit **a7026cb6d478e131b765b898c312e25f9f6dc031**，<https://github.com/KaimingHe/deep-residual-networks/blob/a7026cb6d478e131b765b898c312e25f9f6dc031/prototxt/ResNet-50-deploy.prototxt>，確認 `res2a` 的 Eltwise 之後接 ReLU。
+- PyTorch 官方 **v2.9.1** 原始碼：<https://github.com/pytorch/pytorch/blob/v2.9.1/torch/nn/modules/conv.py> 的 `reset_parameters`、<https://github.com/pytorch/pytorch/blob/v2.9.1/torch/nn/init.py> 的 `calculate_gain`／`kaiming_uniform_`、<https://github.com/pytorch/pytorch/blob/v2.9.1/torch/nn/modules/linear.py> 的初始化、<https://github.com/pytorch/pytorch/blob/v2.9.1/torch/nn/modules/module.py> 的 `register_forward_hook` docstring。
+- Python 官方 **3.12** Language Reference §6.13／§6.17：<https://docs.python.org/3.12/reference/expressions.html>，核對條件運算式、加法優先順序。
+
+來源均在這次重新開啟／下載並閱讀內容，未以先前審查紀錄或記憶代替查證。下載原文、探針與其結果、四個練習變體的 stdout／stderr、曲線座標檢查、網站與兩份 SVG 截圖留在獨立副本的 `artifacts/runs/review03/`。
+
+### SHA-256
+
+以下三個值採 repository 的審查涵蓋規則：頁面略去 Colab tag 與頁尾自動執行區塊，SVG 與程式是原始 bytes。這次沒有寫入 coverage。
+
+| 檔案 | 審查涵蓋 SHA-256 |
+|---|---|
+| `docs/lessons/03-comparison.md` | `599c83443b76ec0b6ef42945c5f79e023ceb0cb169b5f923994aa53a6d29ae97` |
+| `docs/assets/diagrams/03-comparison-learning.svg` | `c9a6051209f25ca5a2485eb85cc9bd83341292429f6e75b6988b8c00bf510552` |
+| `lesson_cases/03-comparison.py` | `8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b` |
+
+另外核對的原始檔案 SHA-256：
+
+| 檔案 | SHA-256 |
+|---|---|
+| `docs/lessons/03-comparison.md`（完整原文） | `05b512c1962cfb47c956596b8a66b0fe83ae5eb5a60e7fb1f0048fc827a1fc2d` |
+| `artifacts/checks/curriculum/03-comparison.json` | `a23c410af6a1034fb78a3c3cd3b3c15e59290d908f912f242e07da02d883c51e` |
+| `artifacts/checks/curriculum/03-comparison-learning.json` | `06b1a3ed98a77af00a528dec9a240e42325bdea32ff6efc8ab6db38f5524533c` |
+| `notebooks/03-comparison.ipynb` | `0cafbb8abadb35a3a4ab1840dfed7b69bc39ce38a7eef32bf0cc6cb3ebb0cfd7` |
+| `scripts/run_learning_extensions.py` | `b84e3317f95374df87d759e562db9b100ee14628b9cf5bb111238cd4a2e8e6cf` |
+| `miniyolo/figures.py` | `155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15` |
+| `miniyolo/provenance.py` | `21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3` |
+| `miniyolo/__init__.py` | `785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9` |
+| `miniyolo/data.py` | `cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d` |
+| `miniyolo/geometry.py` | `6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483` |
+| `miniyolo/inference.py` | `995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313` |
+| `miniyolo/losses.py` | `81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4` |
+| `miniyolo/metrics.py` | `53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0` |
+| `miniyolo/models.py` | `49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6` |
+| `miniyolo/targets.py` | `2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16` |

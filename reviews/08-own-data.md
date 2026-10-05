@@ -99,3 +99,117 @@
 ### 第 4 輪：上一輪的處理：通過
 
 第 3 輪第 1 項：第 13 行與第 50 行點名的殘句都已清理，處理說明屬實。
+
+## 紀錄重產後的檢查
+
+2026-10-05，由另一位 AI 在自己的隔離副本 `/tmp/lessons-v0.4.0-reviews/review-08/` 查核。副本由發布審查快照 `/tmp/lessons-v0.4.0-reviews/base/` 複製，未含 `.git`、`site` 或虛擬環境；執行 Python 使用既有 `/workspace/learn_to_yolo/.venv-model/bin/python`，但 cwd 與 PYTHONPATH 都指向本人的副本。沒有修改 `/workspace/learn_to_yolo/` 的檔案、審查紀錄或涵蓋清單，也沒有執行 Git、使用認證或啟動 GPU。
+
+結論：**通過；沒有必要修正，也沒有另外留下的建議修正。** 逐句讀完 `docs/lessons/08-own-data.md`，並讀完既有 `reviews/08-own-data.md`；正文、程式摘錄、兩個練習、引用的主例與補充 JSON 紀錄、顯示的 SVG、網站轉換與初學讀者的說明順序，均符合目前內容。先前紀錄的舊數字和「圖待重產」屬歷史查核狀態；本次以下列已重產紀錄與圖為準。
+
+### 實際執行與比對
+
+隔離複製使用指定的工具與排除項：
+
+```bash
+LD_LIBRARY_PATH=/tmp/lessons-v0.4.0-tools/extracted/usr/lib/x86_64-linux-gnu /tmp/lessons-v0.4.0-tools/extracted/usr/bin/rsync -a --exclude='.git' --exclude='site' --exclude='.venv*' /tmp/lessons-v0.4.0-reviews/base/ /tmp/lessons-v0.4.0-reviews/review-08/
+```
+
+以下三條命令均在上述副本根目錄實際執行，全部 exit 0；不是只列出指令或重畫舊資料。環境為 Python 3.12.14、PyTorch 2.9.1+cpu、NumPy 2.3.5、Pillow 12.0.0；訓練腳本固定 CPU 2 threads。
+
+```bash
+PYTHONPATH=/tmp/lessons-v0.4.0-reviews/review-08 CUDA_VISIBLE_DEVICES= /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/08-own-data.py
+PYTHONPATH=/tmp/lessons-v0.4.0-reviews/review-08 CUDA_VISIBLE_DEVICES= /workspace/learn_to_yolo/.venv-model/bin/python scripts/run_custom_data_learning.py --fixture --steps 160
+PYTHONPATH=/tmp/lessons-v0.4.0-reviews/review-08 CUDA_VISIBLE_DEVICES= /workspace/learn_to_yolo/.venv-model/bin/python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001 --output artifacts/runs/custom-data-learning-1600 --prior-diagnostic artifacts/runs/custom-data-learning/report.json
+```
+
+- 主例的七種拒絕訊息、train／validation／test 各 2 筆、letterbox 框 `[10.666666984558105,15.375,32.0,26.125]`、head `(2,4,4,8)` 與一步 loss `1.4407`，和目前主例 JSON／頁尾輸出相符。另核對 notebook 最後一格逐字等於主例程式，保存的 stdout 等於 JSON stdout。
+- 練習 1：在 `artifacts/runs/review-exercises/exercise1.py` 把 source leakage 的 `'test'` 改成 `'validation'`，實跑 exit 0，仍印 `rejected source leakage : source leakage`。
+- 練習 2：在隔離副本產生 `exercise2_expected_failure.py`，只增列 `'green_rectangle'`，實跑因原 `(2,4,4,8)` assert 失敗（exit 1，這是預期失敗）；`exercise2_fixed.py` 同時改成 `(2,4,4,9)`，實跑 exit 0，head `(2,4,4,9)`，loss `1.7942`。沒有新增綠色標註，所以這只能證明新 head／target 接起來，不能證明已學會綠色；參考答案有說清楚。
+- 兩份實跑 report 的 initial／final full-train loss、全部 loss_history、梯度範圍、參數差、三個 split 的 AP／precision／recall／TP／FP／FN、training_box_diagnosis、reload_checks，與對應新紀錄逐值相同。四張 validation 範例的標註、框、類別、分數、配對與嵌入 PNG 指紋也逐值相同。
+- `--prior-diagnostic` 的實跑結果確認：重建 seed 7／700／7000 的標註與 RGB 指紋對得上 160 步 report；train／validation PNG 和標註相同，test seed 7001 是新圖；模型、Adam、learning rate 及 0.1／0.5／0.5 門檻沒有變；前 160 步所有 loss 分項逐值相同，first_differing_step 為 None。程式是在這些資料與設定核對通過後才建立模型、開始訓練；test 僅在最後一次評估迴圈使用，沒有用分數選 checkpoint。
+- 兩份實跑 `learning.svg` 分別和 `08-custom-160-step.svg`、`08-custom-learning.svg` 逐 byte 相同。160 步圖沒有診斷紅線；1600 步圖有第 160 步紅線與「前 160 步的 loss 與該紀錄逐值相同」。前者沒有顯示在本頁，仍順便核對其來源；本頁顯示／連結的 SVG 只有 `08-custom-learning.svg`。
+- 重新載入的 raw／decoded predictions、Adam state、RNG state 均精確相同；raw 最大誤差 0。checkpoint 格式 2、scheduler None 與 Python／NumPy／PyTorch RNG 的說明對得上 `miniyolo/checkpoint.py`。原圖推論的程式內呼叫與獨立 `scripts/detect_image.py` 程序均由實跑確實執行，JSON 的非路徑欄位精確相同，路徑指向同一檔案；letterbox 還原的框用 1e-4、分數用 1e-6 容差核對，均通過。
+
+### 新數字、手算與 SVG
+
+160 步 full-train loss 為 `1.5501668453216553 → 0.16977311670780182`。第 144–153 步有 8/10 步 total loss 落在約 0.01–0.04；第 150、153 步為 0.10549、0.05455，所以正文的「大多」正確。第 158 步 total `1.865554690361023`、classification `1.776458978652954`；box 約 0.02 出現在 157／159／160 步（0.0178213／0.0195062／0.0224943），而 158 步 box 是 0.00607728。160 步正格最小預測高度 `0.0545400679` pixel，正文「約 0.05」正確。全部 24 張 train PNG 的前景與 JSON 框相同，21 個物件／21 正格、非零寬高 target、負格 box 梯度和為 0，四項診斷全部通過。
+
+1600 步 full-train loss 為 `1.5501668453216553 → 0.00011704797361744568`；梯度 L2 範圍 `0.024197157472372055–32.54474639892578`，每步有限且非零；參數變化 L2 `17.216838217570434`；15,544 個參數。正文四捨五入與新紀錄吻合。曲線第一步是 8 張 minibatch 的 loss `1.5648255348205566`，不等於 24 張一起算的初始 loss，正文也已區分。
+
+以獨立 Python 手算（未呼叫 repo 的 `evaluate_ap`、`match_image` 或 `box_iou`）：從實跑 `predictions.json` 與 fixture JSON 取得所有框，按照原圖 W／H 手算整數 letterbox 縮放與 padding，IoU 用交集面積／聯集面積，每類跨圖依分數降冪、與同圖未配對的同類 GT 比較；用 `fractions.Fraction` 計算 precision envelope 與各次 recall 增量。1600 步手算結果：
+
+| split | 紅／藍／黃 AP50 | mAP50 | TP／FP／FN | precision／recall |
+|---|---|---|---|---|
+| train | 1／1／1 | 1 | 21／0／0 | 1／1 |
+| validation | 5/9／0／1/3 | 8/27 = 0.2962962963 | 3／8／6 | 3/11／1/3 |
+| test | 1／2/3／2/3 | 7/9 = 0.7777777778 | 7／2／2 | 7/9／7/9 |
+
+validation 各類的 TP／FP 排序是紅 `T,F,T`、藍 `F,F`、黃 `T,F,F,F,F,F`；紅 AP＝(1/3)×1＋(1/3)×(2/3)＝5/9，黃 AP＝1/3，所以 mAP＝(5/9＋0＋1/3)/3＝8/27。test 為紅 `T,T,T`、藍 `T,T`、黃 `T,T,F,F`。160 步也重算：train 藍 `F,F,F,F,F,F,T`，AP＝1/49，三類平均 1/147＝0.0068027211，TP／FP／FN＝1／20／20；validation AP 0、0／10／9；test 藍 `F,T,F`，AP＝1/6，三類平均 1/18，1／8／8。都與紀錄相同。
+
+SVG 範例逐框用原始 float64 算 IoU，得到：
+
+| validation 圖 | 預測分數 | 判定與 IoU |
+|---|---|---|
+| #1 紅圖、紅預測 | 0.9999966621 | TP，IoU 0.5845538703 |
+| #1 紅圖、黃預測 | 0.1581750810 | FP，沒有同類 GT；和紅 GT 最大 IoU 0.2411930556 |
+| #2 藍圖、藍預測 | 0.4621165991 | FP，IoU 0.4058014689；藍 GT 為 FN |
+| #3 黃圖、黃預測 | 0.9946288466 | FP，IoU 0.4206645747；黃 GT 為 FN |
+| #0 空圖 | 無預測 | 無 GT／無預測 |
+
+用 XML 核對：所有 7 個 GT／預測 rect 的 x／y／寬／高都是紀錄框按 224/64 縮放後的值，綠虛線／橘實線的顏色與分組正確；四個 SVG 嵌入 PNG 的 SHA-256 等於紀錄的 letterbox_png_sha256；藍線全部 1600 個點與 loss_history、縱軸 0–2、橫軸 1–1600 一致。caption_lines 的 TP、低 IoU FP、沒有同類 GT、類別錯、GT 已用完、空圖與超過四行的分支均對照正文查核；這次紅圖確實新增黃 FP，所以「紅矩形圖中額外的黃色框」也成立。
+
+以 Playwright＋`/usr/bin/chromium` 實際渲染 1120×840 SVG，並用 view_image 看截圖 `/tmp/lessons-v0.4.0-reviews/review-08-figure.png`；四個 panel、框、文字與紅線可辨認，沒有遮擋或截斷。紅圖最長說明寬 258.34375，小於兩個 panel 文字起點間距 274，下一張圖的 FN 文字沒有重疊。Chrome 的 file:// 導覽被環境政策擋下，改把原 SVG 原文置入 HTML 渲染，未改 SVG；這不影響框或字型排版的查核。
+
+### 程式、來源與閱讀順序
+
+JSON 的 class 順序／索引、有限數字／正整數／半開區間 xyxy、bool 排除、空框 `[0,4]`、先檢查全部紀錄再挑 split、圖片實際尺寸、來源與 path 的拒絕條件、setdefault 的尺寸 key、RGB 完全重複檢查、HWC→CHW、DataLoader／collate、同步 letterbox、head 的 5+C 與 1×1 權重 shape、target 的格中心、同格衝突在訓練前停止，逐句對照主例與 repo 模組，沒有發現誤述。120×80 的 `[20,10,60,30]` 手算結果為 `[10.6666667,15.375,32,26.125]`；半開右下角加 1 的例子與程式 `[10:30,20:60]` 相符。YOLO normalized cxcywh→pixel xyxy 的四個公式正確。
+
+AP 是本書的單 IoU all-points 定義，三類都有 GT；提高候選截斷門檻移除排序末端候選，不會增加 precision envelope 面積；因 NMS 也按分數從高到低，刪除低分尾端不會改高分候選的抑制。正文有分開候選門檻 0.1 與畫框門檻 0.25，也說清楚三類／小樣本／合成圖、test seed 7000 已看過所以換 7001、真實 test 無法任意重生、checkpoint reload 不等於已驗證續訓。沒有把單次的 validation 與 test 差異說成穩定排名。
+
+對初學讀者逐句檢查：JSON、索引、來源、split、batch／target、head／logit、TP／FP／FN、RNG、scheduler 的說明在使用處或前置課中有交代；自主練習指出要改的 assert，自己的 JSON 指令說清 root 與 annotations 路徑、覆蓋輸出及門檻差異；兩個完整實驗與 Colab 主例沒有混用。未發現需要本次發布前處理的閱讀障礙。
+
+查閱的官方來源（固定版本；本頁沒有引用某篇原始論文的主張）：
+
+- CPython **v3.12.14** `Doc/library/stdtypes.rst`：[bool 是 int 子類別、dict.setdefault](https://github.com/python/cpython/blob/v3.12.14/Doc/library/stdtypes.rst)。原始來源分別在第 837、4622–4626 行；與 runtime 的版本相同。
+- PyTorch **v2.9.1**：[DataLoader](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/utils/data/dataloader.py) 的 batch_size、shuffle 與 collate_fn 官方說明（148–164 行）；[Adam](https://github.com/pytorch/pytorch/blob/v2.9.1/torch/optim/adam.py) 的 state step／exp_avg／exp_avg_sq（167–183 行）及更新公式。確認正文說的 Adam 移動平均與保存狀態。
+- Pillow **12.0.0**：[PIL.Image](https://github.com/python-pillow/Pillow/blob/12.0.0/src/PIL/Image.py) 的 convert 與 verify：convert 回傳轉換副本；verify 檢查圖檔而不解碼，Dataset 讀取時重新開檔，與程式一致。
+- Ultralytics YOLOv5 **v7.0**：[utils/dataloaders.py](https://github.com/ultralytics/yolov5/blob/v7.0/utils/dataloaders.py)（676–677、1019–1021 行），normalized xywh、五欄與範圍檢查，確認正文轉換格式的前提。半開區間是本書的定義，沒有宣稱所有標註工具都使用它。
+
+官方 PyTorch／Pillow 文件站此次回 HTTP 403；改查以上與安裝版本相同的官方 tag 原始程式與 docstring，來源可讀且內容吻合。YOLOv5 v7.0 不含先嘗試的 `docs/tutorials/train_custom_data.md`（404），改讀固定 tag 的實際 loader。這些初次取來源的失敗沒有被當成通過證據；成功來源已存在隔離副本的 `artifacts/runs/review-sources/`。
+
+### 網頁與範圍限制
+
+在隔離副本實際執行 `/workspace/learn_to_yolo/.venv-docs/bin/zensical build --clean --strict`（Zensical 0.0.67），exit 0、No issues found；再執行 `/workspace/learn_to_yolo/.venv-docs/bin/python scripts/validate_site.py`，exit 0，Markdown 表格／編號清單／摺疊區／公式／連結及 artifact 邊界檢查全部通過。另以 `scripts/validate_lessons.py` 的原 excerpt_problems 函式檢查本頁，回傳 `[]`；沒有替副本或 root 寫入 review coverage。
+
+本頁的原紀錄訓練時間 `10.877128770982381` 秒、完整流程 `14.00242607301334` 秒，正文 10.877／14.002 秒正確。對照 perf_counter 的開始、結束點與 JSON scope：訓練時間只有迴圈；完整流程還含 fixture／prior 重建、檢查、評估、存載、兩種原圖推論（包括另一 Python 的啟動和 import）、輸出與 SVG；不含本程序啟動／import、安裝或最後 report 寫出。本人重跑 160 步是迴圈 1.2086235810 秒／完整流程 4.2814818970 秒；1600 步是 11.5001596420 秒／15.6183919680 秒。重跑耗時沒有被拿來替換作者紀錄，也沒有用作效能測試。
+
+本次沒有 GPU 執行、真實照片測試、真人學生測試或 Colab 託管 runtime 測試。正文引用的 GPU 續訓主張僅對照既有 `artifacts/checks/gpu-smoke.json`：L4、共 40 步／midpoint 20、另一個 container 的 resume、model／optimizer／history 最大誤差皆為 0、loss_and_rng_trace_matches True；這是查核已有紀錄，不是本次重新驗證 GPU。程式碼中的評估次數、固定設定與資料指紋可查核，無法獨立證明歷史上人的全部選擇過程；紀錄與正文沒有超出這個證據範圍。
+
+### 涵蓋內容 SHA-256
+
+下表正文 hash 使用 `scripts/review_coverage.py::digest` 的規則：Colab tag 正規化為 `<tag>`，排除頁尾自動執行紀錄。另保留未正規化、仍排除頁尾的正文 hash：`5f567e98647adc12807e512227161114bc4713c690a785b3452b2894e82d4038`。圖、程式與 JSON 是完整檔案 SHA-256。
+
+| 檔案／內容 | SHA-256 |
+|---|---|
+| `docs/lessons/08-own-data.md` | `1c444c9bae61d4f41022a1ce1ea9292066f3878bfd88d9c597c4a5bb6471d245` |
+| `docs/assets/diagrams/08-custom-learning.svg` | `83036ad187af44e64bf54200e47b47b414dfab96ef03b4e5db79321d187f09a7` |
+| `lesson_cases/08-own-data.py` | `d3be8a09b62a77c542ba48a93e10c36f5a8a2f34e587b2e207c4d7e41c8f300a` |
+| `miniyolo/__init__.py` | `785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9` |
+| `miniyolo/custom_data.py` | `7dd9999f03dbc32ce1ec951c58121c8f746d381b0244e4c2a82cca59e7ca7e55` |
+| `miniyolo/data.py` | `cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d` |
+| `miniyolo/geometry.py` | `6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483` |
+| `miniyolo/inference.py` | `995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313` |
+| `miniyolo/losses.py` | `81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4` |
+| `miniyolo/metrics.py` | `53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0` |
+| `miniyolo/models.py` | `49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6` |
+| `miniyolo/targets.py` | `2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16` |
+| `scripts/run_custom_data_learning.py` | `b8b3b442e4e2349173a2eb8198b33f966d1e75d80c8b1edb07d1af4d3b5e99e5` |
+| `scripts/detect_image.py` | `69738c487cfad24bea2009384712ca0ba958ac1fd394e2226ae33d7de9682c6a` |
+| `scripts/record_evidence.py` | `8fd91178fb6927861ffa1dd1ee20ab80f0438ad151ef1f09da02a2799399c035` |
+| `miniyolo/checkpoint.py` | `2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b` |
+| `miniyolo/train.py` | `aa5567f11be6ca7aee97bd082b9d5964414b12b73453763c915c7ffb409c4276` |
+| `miniyolo/provenance.py` | `21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3` |
+| `miniyolo/figures.py` | `155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15` |
+| `artifacts/checks/curriculum/custom-data-160-step.json` | `d1b5582921555b93338f26088ceb2d4e3a84b8a4b04266965df86a4ea37b0f96` |
+| `artifacts/checks/curriculum/custom-data-learning.json` | `fb22ce8356fbd747f967c3b82df53bd55de840d826d44fc73abfdba315f8e584` |
+| `artifacts/checks/curriculum/08-own-data.json` | `861a54eeaae0573b1ecbef7b5cbcd92157bab333b6fb5d85f6b6ba3a10e3b6ff` |

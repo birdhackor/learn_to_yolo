@@ -255,3 +255,76 @@
 ### 第 4 輪：上一輪的處理：通過
 
 〈留下的意見〉只剩本頁第 9 行「見下一節」一列，由本紀錄〈後續編輯的檢查〉第 1 輪核對（31×31 交叉引用）；09-anchors 的 Darknet 列已移走。第 208、209、211 行已改成「技術查核那條」，第 2 輪摘要也不再有 lean／修正清單。第 3 輪處理屬實。
+
+## 紀錄重產後的檢查
+
+2026-10-05，另一位 AI 依 `AGENTS.md` 與 `docs/preparation/publish.md` 第 7 步，獨立審查 `docs/lessons/10-multiscale.md` 的全文、兩張 SVG、程式與其 import 的 repo 模組、兩份新版 JSON、練習與答案、notebook 與兩段程式摘錄。原有 `reviews/10-multiscale.md` 僅用來列出待重新查證的來源與項目，沒有沿用其通過結論。**本輪沒有必要問題；有一項可選的手機閱讀改善。**
+
+### 工作副本與實跑範圍
+
+副本在 `/tmp/lessons-v0.4.0-reviews/review-10/`，用發布審查提供的 `rsync -a --exclude=.git --exclude=site --exclude='.venv*'` 從 `/tmp/lessons-v0.4.0-reviews/base/` 建立。模型命令一律以副本為 cwd，`PYTHONPATH=.`，使用 `/workspace/learn_to_yolo/.venv-model/bin/python`（Python 3.12.14、PyTorch 2.9.1+cpu、2 執行緒）；文件命令使用原 repo 現有 `.venv-docs` 的工具。沒有執行 git、GPU 或遠端 workflow，也沒有改 root 的 tracked files 或 coverage。副本中只新增實跑／瀏覽器輸出，未修改課文、程式、notebook 或網站紀錄。
+
+實際執行：
+
+- `PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/10-multiscale.py`：exit 0；assert 全通過；五行 stdout 與新版 `10-multiscale.json`、頁尾及 notebook 保存的 stdout 完全一致。沒有拿最後一行固定字樣當成量測結果。
+- `scripts/run_learning_extensions.py --help` 與 `scripts/run_multiscale_learning.py --help`：一般 learning runner 只接受 01、03、04 三節，沒有本節或 `--steps`；本節使用專用腳本，40 步寫在程式裡。
+- `PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python scripts/run_multiscale_learning.py --output artifacts/runs/release-review-10`：exit 0，真的做了 40 次 CPU 更新並重產 SVG，未用 `--record` 覆寫紀錄。新 `report.json` 的所有欄位（含 machine、dependency hashes、40 個 loss、AP、框、score）與發布副本的新 `10-multiscale-learning.json` 完全一致；SVG 逐 byte 相同。
+- 讀取 notebook 最後一格原始 source，確認與 lesson case 逐字相同，再以 `__name__='__main__'` 在獨立 Python namespace 執行該格；stdout 再次與保存輸出及 JSON 一致。讀過 bootstrap 與可選 40 步指令，確認 `os.chdir(repository)` 讓後續相對路徑成立；未執行會 clone/install 的 bootstrap，也未實測 Google Colab 託管 runtime。
+- `.venv-docs/bin/zensical build --clean --strict`：通過。`python3 scripts/validate_site.py`：60 頁、42 課、所有站內連結／錨點、Colab 配對、Markdown 轉換與 artifact 邊界通過。
+- `python3 scripts/validate_lessons.py`：全課程 notebook／摘錄比對先通過，之後在舊 coverage 的過期清單停止；清單包含本節重產的 learning SVG 與其他待重審頁面。這是本輪尚未追加審查／更新 coverage 的預期結果，不能聲稱整支 validator 已通過。本輪沒有自行更新 coverage。
+
+### 程式、手算與學習紀錄
+
+逐句對照了 `lesson_cases/10-multiscale.py`、`scripts/run_multiscale_learning.py`、`scripts/run_learning_extensions.py`，以及 import map 中的 `miniyolo/__init__.py`、`data.py`、`models.py`、`targets.py`、`losses.py`、`inference.py`、`geometry.py`、`metrics.py`、`figures.py`、`provenance.py`。另用 `repo_dependencies(...)` 重新計算兩份紀錄的全部相依檔案 SHA-256，均與 JSON 相符。未將讀過但本節沒有呼叫的模組功能當成實測。
+
+核對結果如下：
+
+- 小框中心 `(9,9)`：coarse `(gx,gy)=(0,0)`、xy `.5625,.5625`；fine `(1,1)`、xy `.125,.125`；兩邊 wh 都是 `.125,.125`，decode 都回到 `[5,5,13,13]`。大框中心 `(44,44)`：coarse `(2,2)`、xy `.75,.75`、wh `.375,.375`，fine 中心所在負格 `(5,5)` 正確。大框覆蓋的 9 個 fine 格都沒有被分配 positive。
+- 卷積 shape `64→32→16→8→4`、stride 8/16、感受野 `1→3→7→15→31`、head 的 `[1,8,8,7]`／`[1,4,4,7]`、80 候選與 560 logits 元素均正確；fine head 參數為 `16×7+7=119`，全部參數 8702。
+- 額外以 `torch.autograd.grad` 分別對兩項 loss 求梯度：fine loss 到 `early`、`fine_head`；coarse loss 到 `early`、`deep`、`coarse_head`，與課文的連線分工一致。
+- 練習以 `[20,12,36,28]` 建 target 實跑：fine 正格索引 `[0,2,3]`，值 `[.5,.5,.25,.25]`；coarse 索引 `[0,1,1]`，值 `[.75,.25,.25,.25]`。答案與先 gy 再 gx 的說明正確。
+- 40 步紀錄：initial loss `3.6593661308288574`、最後更新前 `0.07033687829971313`、權重變化 L2 `6.503562899854255`。每步有限 loss／所有參數有限梯度／兩個 head 的非零 weight gradient，都是實跑 assert，而不是僅從已存 JSON 推斷。
+- 依紀錄框手算及以 `box_iou` 交叉檢查：小框與 GT IoU `0.4410430693`，大框與 GT `0.8629898026`，低分 class 1 框與 GT `0.2991216887`；兩個 class 1 預測框之間 IoU `0.2788788844`。AP50 為 class 0=0、class 1=1、mAP50=.5，低分 FP 排在 TP 後，不降低 interpolated AP 的解釋正確。
+- 小框實際 wh `[5.0285931,13.4116001]`，中心誤差 `[-.1609917,-.8991833]` pixel。wh 正規化平方誤差 `[.00215558,.00714976]` 與課文約 .002/.007 一致；「偏 1 pixel 的 fine xy 平方約 .016」是示例值 `(1/8)^2=.015625`，沒有誤稱為紀錄中實際中心誤差。
+- 用另造的 A/B/C 連鎖重疊框實跑 NMS：合併一次留下 A/C；fine 先刪 C 再合併只剩 A，證明折疊區所述兩種流程可能不同。人工 duplicate 框的 2→1 與實際模型預測／AP 有清楚區分，沒有誤稱多尺度提升小物件品質。
+- 對照第 11 章頁面與 `lesson_cases/11-fusion.py`：該節確實只用隨機 shallow/deep 張量確認融合接法，沒有接回本節 TwoScale 訓練。
+
+### 重新查閱原始來源
+
+重新透過 HTTPS 取得並閱讀以下來源；下載清單、URL 與每個來源 SHA-256 保存在 `/tmp/lessons-v0.4.0-reviews/review-10-sources/downloads.json`。本輪沒有依賴先前 review 摘錄代替原文。
+
+- [YOLOv3 原論文 v1 PDF](https://arxiv.org/pdf/1804.02767v1)，SHA-256 `37049049b5e06f67c6cd22b72f7b9352914b0eb3a03e99abf54594c1005a8468`；用 `pdftotext -layout` 抽出原文重新閱讀第 2.1–2.5 節。單一最佳 prior、論文 ignore=.5、獨立 logistic 類別與 BCE／Woman+Person、三尺度／每尺度 3 框、9 clusters 平均分組、upsample+concat、Darknet-53 與 multi-scale training 的敘述均對上。
+- 官方 pjreddie/darknet 固定 commit [`f6afaabcdf85f77e7aff2ec55c020c0e297c77f9`](https://github.com/pjreddie/darknet/tree/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9)。重新閱讀 [`src/yolo_layer.c`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/yolo_layer.c#L93)：第 100–106 行 log-width/height target 與 scale，第 164–180 行解碼框／GT 一般 IoU 的 ignore，第 203–228 行中心重疊的尺寸 IoU best anchor 與 mask assignment；`2-truth.w*truth.h` 確實縮放框 delta。
+- 同 commit 的 [`cfg/yolov3.cfg`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/yolov3.cfg#L606)：三個 mask 依序 6,7,8／3,4,5／0,1,2，ignore=.7、truth_thresh=1；三個預測尺度以及兩次 upsample stride=2／route concat 與課文一致。程式計數前 75 層得到 52 conv＋23 shortcut；[`cfg/darknet53.cfg`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/darknet53.cfg) 有 53 conv，最後一層 filters=1000，因此 53/52 的補充正確。
+- 同 commit 的 [`src/network.c`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/network.c#L542)、[`src/box.c`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/box.c#L58)、[`examples/detector.c`](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/examples/detector.c#L599)：先收齊所有 YOLO 層的框，再呼叫一次逐類別 `do_nms_sort`；第 63–79 行 random resize 也確認 multi-scale training 是變更輸入尺寸，和本節多尺度 head 不同。
+
+### SVG 逐點查核與實際網頁
+
+獨立查核腳本 `/tmp/lessons-v0.4.0-reviews/review-10-svg-audit.py` 直接讀發布 SVG 的 XML 與 JSON，以圖上 tick／plot bounds 反推座標，而非只確認檔案存在：40 個 loss 頂點逐點符合，最大 SVG 座標誤差 `2.70×10^-6`（SVG 小數取整）；2 個 GT、3 個預測框的各頂點與紀錄相符；3 個預測標籤對上 class/兩位小數 score；GT 綠虛線與 prediction 橙實線、圖例對上。
+
+靜態 `10-multiscale.svg` 另逐項核對 `88+6x,150+6y`：14 條內部粗／細格線、6 個物件框／正負格矩形、兩個中心 `(142,204)`／`(352,414)`、所有格號及表內值均符合，斜線疊在 fine 正格／coarse 正格上的圖說與畫法相符。
+
+只啟動自己的副本 site HTTP server（port 8804），用 Playwright 的 Chromium `/usr/bin/chromium`，args `--no-sandbox --disable-gpu --disable-dev-shm-usage` 檢查桌機 1440×1000 和手機 390×844。實際看過兩張 SVG、桌機及手機兩張表、三個展開區塊和答案；瀏覽器核對兩段 Python 摘錄與 stdout code block 文字仍完整。兩張 SVG 的 53／35 個 text 經 transform 後的螢幕 bounds 均在畫布內；無 page error、頁面沒有水平溢出，兩圖載入成功。截圖與文字 bounds 輸出在副本 `artifacts/runs/release-review-10/browser/`。本輪結束已停止自己啟動的 server；未碰其他 server。
+
+| 檔案 | SHA-256 |
+| --- | --- |
+| docs/lessons/10-multiscale.md | `e00dba88187fff50bc74c7d76ed0ddec22d3233089e38fd949b97eafd246c290` |
+| lesson_cases/10-multiscale.py | `add9aefa8efec7180d06ab255807ac4fa6847c490c8447774191f0a6566ed6a6` |
+| scripts/run_multiscale_learning.py | `db5480b8b226793092a6c59b4c79197ad0d33e7327a384f5b9a46eb573413e89` |
+| notebooks/10-multiscale.ipynb | `8573fc65e52c9970c0157dc1742370e50688f1f30d4b10b3ec8cb26d344b6feb` |
+| artifacts/checks/curriculum/10-multiscale.json | `c9ec68945d9d8c6b76f633e3fc169e92bc45c3d4e9f5c86058546dfe39c324f5` |
+| artifacts/checks/curriculum/10-multiscale-learning.json（與重跑 report 相同） | `b825d38aa28ad98d0c84fe38f8be79431fae3f13d18f2690e5028da6f122ec09` |
+| docs/assets/diagrams/10-multiscale.svg | `b66a8a3d3f6b177bdfb3e865fb8be72b1b4fe8b083e4cdef69d43af26df8ef31` |
+| docs/assets/diagrams/10-multiscale-learning.svg（與重產 SVG 相同） | `4c985b8824c35b49b6ca1a88df45d7980e60176906c51dff86feab779aaabd17` |
+
+### 本輪發現與處理
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+| --- | --- | --- | --- | --- |
+| 1 | 可選 | `docs/assets/diagrams/10-multiscale-learning.svg` 在本節 390 px 手機版面 | 實際圖片寬約 343 px，左右兩圖並排縮小，8pt 的「類別 c score s」標籤約只剩 4.8 px，閱讀吃力；正文第 177 行會請讀者辨識低分框標籤。桌機完整可讀，座標與標籤均正確。 | 保留為可選改善，沒有改圖或腳本。可在未來修改繪圖腳本，提供手機可讀的上下排圖／較大標籤，再重產紀錄與重審；這不影響本輪機制與數值正確性。 |
+
+從不熟悉本專案、但懂基本 Python／神經網路的讀者角度逐句閱讀：fine/coarse 命名、格子與感受野、人工尺度責任、互斥類別、尺度內與跨尺度 NMS、AP 與低 loss 的落差，以及固定訓練圖的限制已有足夠說明；未發現需阻擋發布的理解問題。
+
+### 編輯處理
+
+保留手機雙欄學習圖的閱讀建議，供之後調整圖板版型時一併處理。正文已列出三個預測的類別、score 與 IoU，這次維持目前圖版及其逐點核對結果，沒有修改正文或繪圖程式。

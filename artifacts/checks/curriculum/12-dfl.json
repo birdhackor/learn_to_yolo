@@ -1,14 +1,27 @@
 {
   "id": "12-dfl",
   "passed": true,
-  "executed_at_utc": "2026-10-02T16:41:02.551501+00:00",
+  "executed_at_utc": "2026-10-05T07:18:54.603451+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
-  "case_sha256": "d100d38f34ea1dfef147fc1948cb97e131c8f67bfaf974620bc8441f7187362b",
-  "process_wall_seconds": 1.9207,
+  "machine": {
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logical_cpus": 5,
+    "threads": 2,
+    "python": "3.12.14",
+    "torch": "2.9.1+cpu",
+    "torch_cpu_capability": "AVX512"
+  },
+  "case_sha256": "2f3ec8899cb25eb7df5d1118f57a715de935de9cc7569152e542d4563fa1e1c1",
+  "dependencies_sha256": {
+    "lesson_cases/12-dfl.py": "2f3ec8899cb25eb7df5d1118f57a715de935de9cc7569152e542d4563fa1e1c1"
+  },
+  "process_wall_seconds": 3.5226,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "uniform expectation=1.50; DFL=1.386294\ninitial logit gradient: [[0.25, -0.5, 0.0, 0.25]]\nlearned bin probabilities: [[0.0024999999441206455, 0.7475000023841858, 0.24740000069141388, 0.0024999999441206455]]\nlearned expectation=1.2500 cells = 9.9999 pixels at stride 8\ndifferent distributions can share expectation=1.25\n",
+  "stdout": "uniform expectation=1.50; DFL=1.386294\ninitial logit gradient: [[0.25, -0.5, 0.0, 0.25]]\nlearned bin probabilities: [[0.0025, 0.7475, 0.2474, 0.0025]]\nlearned expectation=1.2500 cells = 9.9999 pixels at stride 8\ndifferent distributions can share expectation=1.25\n",
   "stderr": "",
   "exit_code": 0
 }

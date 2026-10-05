@@ -145,3 +145,99 @@
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 必要 | 第二個〈第 5 輪：上一輪的處理：有必要問題〉表格 #1（第 139 行）的處理欄 | 這項必要發現講的是第 4 輪第 2 項處理欄「點名的文字已不在紀錄裡」不實（第 73、77 行的文字仍在），處理欄顯示的卻是同一輪頁面那一節的處理「未改：括號是補充說明…；第 4 輪的兩處改動照原樣保留。」，和這項無關。成因和 08-own-images 相同：delta-handling.json 的 delta:fifth 對這一頁有 2 筆處理，紀錄那一節又從第 0 筆開始取。讀者會以為這項必要問題被以「未改」駁回了。 | 已修正：產生器依各節的發現順序對應處理，不再錯開。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05 由另一位 AI 在獨立副本 `/tmp/lessons-v0.4.0-reviews/review-19/` 完整查核。結論：通過，**必要問題 0 項、建議問題 0 項**。全文（含摺疊區、練習、真實模型接線與頁尾輸出）、既有 `reviews/19-tracking.md`、主程式、顯示的 SVG、notebook 和兩份現行 JSON 都實際讀過；舊審查只用來定位待核事項，沒有沿用其結論。沒有修改作者的頁面、程式、圖、notebook、紀錄或 coverage。
+
+### 執行與資料核對
+
+模型命令皆以副本為 cwd、`PYTHONPATH=.`，使用 `/workspace/learn_to_yolo/.venv-model/bin/python`（Python 3.12.14、PyTorch 2.9.1+cpu、NumPy 2.3.5、Pillow 12.0.0、opencv-python-headless 4.13.0.92），2 個 PyTorch 執行緒。第 19 課沒有 import repo 模組；真實預測接線的第 18 課與影片驗證則逐一讀了 `miniyolo/__init__.py`、`data.py`、`geometry.py`、`inference.py`、`losses.py`、`metrics.py`、`models.py`、`targets.py`、`provenance.py`，確認訓練、letterbox 還原、class 0 篩選與 score 排序的資料流。
+
+| 實際檢查 | 結果 |
+| --- | --- |
+| `lesson_cases/19-tracking.py` 預設執行 | exit 0；兩串 IDs、switch 3／0、TP=11、GT=12、FP=0 皆與正文、現行 JSON、notebook 輸出相同，所有內建 assert 通過。 |
+| 正文練習，僅將 `def main(max_age=2):` 改成 `def main(max_age=1):` | 用該一行改動後的完整程式實際執行。速度法最後 IDs `[1,3]`、switch 1；上一框法仍 switch 3；recall 11/12 不變。練習圖的兩列標題、`title`／`desc` 和最後 B 的紫色 ID3 都跟著更新。 |
+| 額外邊界 | `main(max_age=3)` 確實在第一個 assert 拒絕。空偵測框 `[0,4]` 回傳 `[]`，track 在間隔 1、2 保留，間隔 3 刪除；`[0,2]`、`[2,0]` IoU 矩陣的 matching 均回傳空清單。 |
+| 正文「接上真正的逐幀預測」Python 區塊 | 直接從 Markdown 擷取第二個 Python 區塊原樣執行，模型只訓練一次；12 幀 IDs 為 `[[1],[1],[],[],[],[],[2],[2],[],[],[],[]]`。 |
+| `scripts/verify_video_file.py` 真實 FFV1 AVI 管線 | 實際編碼、OpenCV 讀檔、訓練、推論及 tracker，exit 0。12 幀框數 `[1,1,0,0,0,0,1,1,0,0,0,0]` 與 IDs 均重現現行 `video-file.json`；RGB、預測 boxes／scores／labels、overlay 的逐項相等檢查，以及 EOF、提早 close、開檔失敗時的 capture release 全通過。產生的 AVI 9,232 bytes、SHA-256 `1c124d4aae1e30c4eed7f6c2e5cb98613ad1e059bce7f657c78be00c83fd64dc`，與原紀錄相同。 |
+| 動態排除 GT 灌入 | 另實跑一次影片驗證，將 tracking 模組的 `truth_boxes`、`frames`、`evaluate_detections`、`run` 全換成一被呼叫就拋錯的函式，仍通過。觀察到 12 次 `Tracker.update`，輸入逐項等於 class 0 的真實 `prediction['boxes']`；沒有 GT helper 被呼叫。 |
+| 現行影片預測重播 | 使用原 JSON 的 `tracking.original_pixel_boxes` 逐幀送入未改的 tracker，所得 IDs 與原 JSON 完全相同。第 1 幀最後配到的 ID1 在第 2、3 幀仍保留，第 4 幀刪除；第 6 幀建立 ID2，符合正文。 |
+| notebook／摘錄 | 最後一格 source 逐字等於 `lesson_cases/19-tracking.py`，保存的 stdout 逐字等於現行課程 JSON。`source_ref` 與 Colab 按鈕都是 `lessons-v0.4.0`；環境格有 `os.chdir(repository)`，可選影片格與實測腳本相符。使用 repo 的 `excerpt_problems()` 查本頁，結果 `[]`；示意區塊有明說變數名不同，接線區塊已實跑。 |
+| 依賴測試與建置 | `pytest tests/test_core.py -q`：23 passed；固定文件環境的 `zensical build --clean --strict`：exit 0，無警告。 |
+
+影片腳本原本會用 `git rev-parse` 取得額外 metadata；為遵守此次「不跑 git」的限制，兩次影片驗證都只攔截這一個 subprocess 呼叫，讓 `code_commit=None`，其他程式、I/O、模型與斷言照常執行。原始腳本沒有改，依賴 hash 也沒有改。重新執行的計時、日期留在副本，未覆蓋作者紀錄，也未將計時相等當成重現要求。
+
+本機顯示練習另用既有系統 Python 的 IPython 9.16.1 執行頁面的 `SVG(filename=...)` 顯示命令，實際 formatter 回傳 `image/svg+xml`；模型環境沒有 IPython，沒有為此改動共享環境。
+
+### 逐幀手算與 tracker 狀態
+
+用獨立的純量交集／聯集公式及 `Fraction` 算每一對框，再與程式的 tensor IoU 和逐幀 state 比對。以下列依目前 track 清單的順序，欄依 A、B 的偵測順序；第 4 幀只有 A，`∅` 表示尚無 track。
+
+| f | 上一框法 IoU | 上一框法 IDs | 速度預測法 IoU | 速度預測法 IDs |
+| --- | --- | --- | --- | --- |
+| 0 | ∅（0×2） | `[1,2]` | ∅（0×2） | `[1,2]` |
+| 1 | `[[1/5,0],[0,1/5]]` | `[1,2]` | `[[1/5,0],[0,1/5]]` | `[1,2]` |
+| 2 | `[[1/5,1],[1,1/5]]` | `[2,1]` | `[[1,1/5],[1/5,1]]` | `[1,2]` |
+| 3 | `[[0,1/5],[1/5,0]]` | `[2,1]` | `[[1,0],[0,1]]` | `[1,2]` |
+| 4 | `[[0],[1/5]]` | `[2]` | `[[1],[0]]` | `[1]` |
+| 5 | `[[0,0],[1/5,0]]` | `[2,3]` | `[[1,0],[0,1]]` | `[1,2]` |
+
+每次 update 後也核對所有 track 的 `id`、四個 box 座標、四個 velocity 座標和 `last_frame`，不是只看回傳 IDs。例如上一框法在第 2 幀交叉後，ID1／ID2 的 x1 仍分別是 24／32，估得速度都變 0；第 3 幀再估為 −8／+8。第 5 幀舊 ID1 仍在，狀態為 x1=16、velocity=−8、last_frame=3，卻和 B 的 x1=0 沒重疊，因此新建 ID3；這次換號確實不是舊 track 過期。速度法第 4 幀後 ID2 保留 x1=16、velocity=−8、last_frame=3，第 5 幀用間隔 2 預測到 x1=0，接回原 ID2。
+
+重算相鄰框的交集 4×12=48、聯集 144+144−48=240，IoU=1/5。第 2 幀上一框法交叉總和 2，大於正確身份總和 2/5。逐個真實身份計數且跳過漏檢幀，上一框法 A 換 1 次、B 換 2 次，合計 3；速度法 0。11 個人工偵測各自與真值框 IoU=1、跨身份 IoU 最多 1/5，所以不論逐筆順序，IoU≥0.5 評估都得 TP=11、FP=0、recall=11/12；人工案例的 GT 只用來生成可控框與評分，tracker 的 API 只收 boxes、frame。
+
+貪心反例由真框獨立重算為 `[[9/11,2/3],[7/13,1/4]]`，直配總和 47/44≈1.0682，交叉總和 47/39≈1.2051。配法數以 `Σ C(n,k)^2·k!` 重算，2 對 2 是 7，10 對 10 是 234,662,231，符合約 2.3 億。正文假想連漏兩幀的例子也核對：max_age=3 才能留到第 6 幀；速度×3 得 x1=−8，只加一次得 8，差 16 畫素、IoU=0。沒有把這個假想例子冒稱成主程式原本有的情境。
+
+### 圖與網頁實際渲染
+
+預設程式重畫 `artifacts/lesson-19/ids.svg`，與展示用 `docs/assets/diagrams/19-tracking.svg` **逐 byte 相同**。另逐項解析兩張圖的 22 個物件矩形：水平座標均等於該幀 panel 起點加 `6+1.9*x1`，顏色均依 ID1 紅、ID2 藍、ID3 紫，A／B 分排的 y 位置與正文說明一致。沒有拿圖上的分排位置當成真正配對用的 y=20–32。
+
+在副本建置網站後自行開 HTTP server 8819，使用 `/usr/bin/chromium` 與指定 `--no-sandbox --disable-gpu --disable-dev-shm-usage`，實際查看本頁、主 SVG 和練習 SVG。頁面及圖皆 HTTP 200、圖成功載入，兩張表、四個摺疊區、程式區塊轉換正常，沒有 pageerror。已實際看 `default-svg.png`、`exercise-svg.png`、`page-figure-context.png`：六格框內標籤無重疊或截字；第 2 幀上列互換顏色、第 4 幀漏檢、第 5 幀 B 紫色，以及練習速度法末幀 ID3，都與結果相同；`viewBox`、`title`、`desc` 也核對。伺服器已停止，未碰 root 的 8794。
+
+### 重新開啟的原始來源
+
+來源皆重新從下列 URL 取得並讀相關段落，不使用舊審查摘錄代替原文。此次來源請求全成功，沒有未交代的 HTML 讀取失敗；檔案與 SHA-256 保存在副本 `artifacts/runs/review19/sources/fetch-log.json`。Python 官方 `/3.12/` HTML 現在標示 3.12.15，因此涉及此次 3.12.14 執行環境的細節另以固定 `v3.12.14` 官方原始碼／文件來源核對。
+
+- SORT：[arXiv 1602.00763v2](https://arxiv.org/pdf/1602.00763v2)，§3.2–3.4；[官方 sort.py，2236dff5019565958b84df7d871d41cc1db58ac7](https://raw.githubusercontent.com/abewley/sort/2236dff5019565958b84df7d871d41cc1db58ac7/sort.py)。Kalman 等速預測、IoU 一對一指派、一般情況先解指派再剔除低 IoU；官方另有唯一可配情形的捷徑。頁面沒有把本節列舉叫成 Hungarian，也沒有把本節 max_age 的配對前刪除規則叫成 SORT 的規則。
+- DeepSORT：[arXiv 1703.07402v1](https://arxiv.org/pdf/1703.07402v1)，§2.1–2.4；[官方 tracker.py，f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab](https://raw.githubusercontent.com/nwojke/deep_sort/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/tracker.py)，同 commit 的 `linear_assignment.py`、`kalman_filter.py`、`track.py`。外觀距離加 Mahalanobis gate、time_since_update 小的先配，以及最後 IoU 輪的 unconfirmed 和未配到 age=1 track，均符合正文；Kalman 不確定性及運動／量測雜訊的說明也成立。
+- ByteTrack：[arXiv 2110.06864v3](https://arxiv.org/pdf/2110.06864v3)，§3、Algorithm 1；[官方 byte_tracker.py，d1bf0191adff59bc8fcfeaa0b33d3d1642552a99](https://raw.githubusercontent.com/FoundationVision/ByteTrack/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/byte_tracker.py)，同 commit 的 `matching.py`。正文的兩輪核心對應原論文；官方首輪 tracked＋lost，次輪只取未配的 Tracked，另處理 unconfirmed；低分框不建新 track，且 `lapjv(..., extend_cost=True, cost_limit=thresh)` 把不配放入指派問題。正文沒有宣稱此簡化 tracker 完整實作了這些處理。
+- IDF1：[arXiv 1609.01775v2](https://arxiv.org/pdf/1609.01775v2)，§3.3–3.4。全序列一對一 truth-to-result matching 後計 ID precision／recall／F1，著重身份，符合正文。
+- HOTA：[arXiv 2009.07736v2](https://arxiv.org/pdf/2009.07736v2)，摘要、§1、§5 的式 18–21 與 §9.2。偵測 DetA、關聯 AssA 的幾何平均及跨定位門檻平均，支持正文的簡短介紹；本節實際沒有計 HOTA。
+- ID switch：[TrackEval CLEAR，12c8791b303e0a0b50f753af204249e622d0281a](https://raw.githubusercontent.com/JonathonLuiten/TrackEval/12c8791b303e0a0b50f753af204249e622d0281a/trackeval/metrics/clear.py)，保留最近一次配到的 tracker ID 跨漏檢比較，符合本例簡化計數定義；沒有以本例直接相連的 A／B 當成完整 CLEAR 評估實作。
+- 匈牙利演算法：[Kuhn 1955，DOI 10.1002/nav.3800020109 的 Crossref 原摘要](https://api.crossref.org/works/10.1002/nav.3800020109)，確認 assignment 是一對一配置、最大化總分；只查摘要，沒有宣稱讀完整付費論文。
+- Python：[固定 CPython v3.12.14 runpy.py](https://raw.githubusercontent.com/python/cpython/v3.12.14/Lib/runpy.py)、[固定 functions.rst 的 zip](https://raw.githubusercontent.com/python/cpython/v3.12.14/Doc/library/functions.rst)。`run_path` 未指定 run_name 時用 `<run_path>`，兩課 main 守衛不會執行；`zip` 預設在最短 iterable 結束，與正文篩選後 boxes 的警告相符。
+- IPython：[8.18.1 官方 display.py](https://raw.githubusercontent.com/ipython/ipython/8.18.1/IPython/core/display.py) 用來重新核對舊審查所用版本；[此次實測 9.16.1 官方 display.py](https://raw.githubusercontent.com/ipython/ipython/9.16.1/IPython/core/display.py) 的 SVG 與 `_repr_svg_` 行為相同，且 MIME 已實際測到。
+
+### 發現與處理
+
+此次新增必要／建議發現皆為 0，沒有待修項目。既有 review 的待重錄提醒與修正說明重新核對如下。
+
+| 核對項目 | 此次處理／結果 |
+| --- | --- |
+| 舊紀錄提到展示圖仍是舊英文圖、待重產複製 | 現在展示圖已是中文重畫圖，與預設程式重畫逐 byte 相同；該歷史提醒已由實際重產解決。 |
+| 舊紀錄要求重錄後確認影片第 6、7 幀 `[2]` | 現行 JSON 有這兩幀，正文與 JSON 相同；此次兩次實際影片驗證及原 boxes 重播也都得到 `[2]`。 |
+| 舊來源修正：SORT 不配處理、DeepSORT cascade、ByteTrack 低分限制、IDF1／HOTA 定位 | 固定版本原文／官方程式逐一重查，目前正文均已處理，無新增矛盾。 |
+| 舊 review 最後一輪指出必要項處理欄錯位 | 目前第二個「第 5 輪」必要項的處理欄已改成用詞處理說明，第 6 輪處理寫明產生器按發現順序對應，沒有再顯示無關的「括號補充」理由；歷史殘句沒有被冒稱逐句清除。 |
+| 初學讀者理解 | frame、track／ID、association、GT、IoU、索引與 ID 的差別、max_age 的「間隔」語意、圖的分排 y 與真實 y、人工框與真實模型輸出都有先交代；練習只要求一行改動且參考答案解釋原因。未發現會阻礙無專案背景讀者照做的必要問題。 |
+
+### 覆核快照與限制
+
+覆核時的原始檔案 SHA-256：
+
+| 檔案 | SHA-256 |
+| --- | --- |
+| `docs/lessons/19-tracking.md`（含頁尾） | `f19a6ed8a16b9217fb2eafa2b7e22d067a2523c4aaccaca110dabc8b1dc7f1d7` |
+| 本頁正文（依 repo coverage 規則排除頁尾、正規化 Colab tag） | `6ef6eee6fbce7df290afb1b688a3caa627848489022a32ac240ddf6874fe054a` |
+| `docs/assets/diagrams/19-tracking.svg` | `b49961cef2c248e1b163e652d77c89ff9e7670c5ce0a5f164ffeae36740bafe3` |
+| `lesson_cases/19-tracking.py` | `e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa` |
+| `notebooks/19-tracking.ipynb` | `93ae820348223376140b3523d8ee9c4ff47aa314943de41b2ad7e55299ad3d91` |
+| `reviews/19-tracking.md`（附加本節前） | `89272d833e7af3b1407a0f0e79b97b52bb74750195e55f7397573e2b498a2e2c` |
+| `artifacts/checks/curriculum/19-tracking.json` | `9c741b58ab6511e8a09fe69ddaa33d2d588d4bc164595065645f585f0831e6fc` |
+| `artifacts/checks/curriculum/video-file.json` | `e03980d47e7e4f87c0c4243f63754ad56a905cfacc4cf2ebc30bfd07b1394d58` |
+| `lesson_cases/18-video.py` | `0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0` |
+| `scripts/verify_video_file.py` | `ec77505526972a57b74cf757e303ccfea7459dfba2ffd9857b7634129070dcec` |
+
+兩份作者紀錄的全部 `dependencies_sha256` 已逐檔比對現行副本；課程紀錄 1 檔、影片紀錄 12 檔均相符。查核輸出在副本 `artifacts/runs/review19/`：`probe.stdout`、`manual-trace.json`、`exercise.stdout`、`exercise-ids.svg`、`video-file/result.json`、`no-gt-proof.json`、`no-gt-video-file/result.json`、`browser.json`、PNG、來源下載清單、hash 清單與建置／測試 log。
+
+限制：這是 AI 查核，沒有真人初學者測試；沒啟動 GPU、遠端 workflow、資料下載或 Colab 託管 runtime，沒有實體相機、有損 MP4、可變幀率 PTS 或完整 MOT 指標驗證。notebook 的 clone／套件安裝環境格只讀碼核對，沒有在本次執行；最後一格以相同完整程式在固定 CPU 環境實跑。全站 MathJax／CSS 另有專人檢查，本次只檢查本頁轉換與實際圖像。影片的 tracking IDs 是真實偵測輸入的接線結果，沒有 GT 身份評分，不能報成新增的 ID switch、IDF1 或 HOTA 成績。

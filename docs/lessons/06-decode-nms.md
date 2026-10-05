@@ -254,12 +254,12 @@ NMS 本身不讀取真值、不修正框，也不知道紅框是錯的。它還�
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-decode-nms.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-decode-nms.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
-    candidate_boxes=[[23.200000762939453, 24.0, 39.20000076293945, 32.0], [28.0, 24.0, 44.0, 32.0], [3.999999523162842, 52.0, 12.0, 60.0]]
+    candidate_boxes=[[23.2, 24.0, 39.2, 32.0], [28.0, 24.0, 44.0, 32.0], [4.0, 52.0, 12.0, 60.0]]
     scores=[0.64, 0.72, 0.855], duplicate_IoU=0.5385
     NMS keep_indices=[2, 1], kept_scores=[0.855, 0.72]
     threshold .75 keeps only artificial false positive, score=0.855

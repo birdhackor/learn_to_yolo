@@ -390,3 +390,127 @@
 ### 第 6 輪：上一輪的處理：通過
 
 逐列對照〈後續編輯的檢查〉第 3、4、5 輪處理欄與紀錄內容。先用暫存副本從工作流程 journal 重產全部 59 份紀錄，結果和 repo 逐位元相同；再列出這份紀錄從原文到紀錄的每一處替換，只有路徑、內部名稱（審查用的事實與寫作規範清單、查核者、先前審查意見、部分等）與 A：／B：標籤。第 3 輪 #1：第 1 次查核的表格確實有處理欄，#1 寫了改法，也寫了由第 2 次複查確認。第 3 輪 #2 是統一說明：點名的第 14、21、47、79、98、119 行與第 182 行有的已經改變，有的仍在，和「可能改變，也可能仍在」相符。第 4 輪 #1：第 30 行的處理欄就是「拿掉「完整的」…」，docs/status.md 也確實沒有「完整的」了；#2、#3：第 3 輪 #2 確實是統一說明。第 5 輪 #1、#2：第 3、4 輪的處理欄已經沒有任何計數，也沒有「已清理」這類說法。沒有和紀錄矛盾的處理說明。附記，不列為問題：統一說明寫「保留查核者的原文」，但點名的第 47、98 行其實是修正者寫的處理項目；讀者不會因此做錯事，不建議為此改寫。範圍外的第 2 輪：#3 的處理寫「工作流程用語換成白話」，但發現點名的「editor 的待重錄數值清單沒有列這一句」仍在第 94 行，第 86 行也還有 editor，因為產生器沒有替換 editor 的規則。
+
+## 紀錄重產後的檢查
+
+本次由 AI 在獨立副本 `/tmp/lessons-v0.4.0-reviews/review-status/` 審查整份 `docs/status.md`，不是只檢查改過的數字。先完整讀正文及既有 `reviews/status.md`，再逐句對照程式、重產前後的 JSON、相關頁面與官方來源；既有紀錄的「通過」不直接當成本次結論。初始快照沒有必要問題，有一項 INT8 說明的建議，編輯者已採納；修改後由另一位 AI 檢查的結果須另外記錄，本段不代表那項複查已完成。
+
+### 方法與實際執行
+
+使用 rsync 從此次共同快照建立副本，排除 `.git`、`site`、`.venv*`。模型指令都在該副本根目錄、以 `PYTHONPATH=.` 與 `/workspace/learn_to_yolo/.venv-model/bin/python` 執行；Python 3.12.14、PyTorch 2.9.1+cpu、Intel Xeon Platinum 8573C。沒有改主工作區的頁面、審查紀錄、coverage 或證據，也沒有執行 Git、遠端 workflow、認證操作或 GPU 工作。
+
+| 執行項目 | 本次結果與支持範圍 |
+| --- | --- |
+| `lesson_cases/00-warmup.py` | exit 0；實際一次更新為 1.00→1.80，梯度 −8，新預測 3.60、loss 0.16。和手算 `2(2w−4)×2=−8`、`w=1−0.1×(−8)=1.8` 相符。 |
+| `python -m pytest tests/test_core.py tests/test_checkpoint.py tests/test_notebook_bootstrap.py -p no:cacheprovider` | 31 passed：核心 23、checkpoint 2、bootstrap 6；checkpoint 測試真的在 CPU 執行 40 步及 20＋20 步，bootstrap 用模擬替身，沒有真的安裝套件或開 Colab。 |
+| `scripts/check_lesson_runtime.py --section 00-warmup --section 07-training --section 20-deployment --report artifacts/runs/status-lesson-runtime.json` | 3／3 PASS；00、07 stdout 與紀錄逐字相同，20 因計時而不同。只執行這三節，不把本次寫成重跑全部 42 節。程式碼確認 PASS 是 120 秒內 exit 0，stdout 不同本身不算失敗，括號提示是固定文字。 |
+| `scripts/validate_curriculum_evidence.py --report artifacts/runs/status-evidence-binding.json` | exit 0；42 節與 11 份補充紀錄（9 CPU＋2 GPU）都符合現行綁定及一致性檢查。這是保存紀錄的一致性驗證，不是重做 53 次實驗。 |
+| `scripts/record_evidence.py`，不加 `--run`、`--gpu`、`--push` | exit 0；印出本機規格及 `Every CPU record matches the current code; nothing to run on this machine.`。此模式只讀取證據並在暫存目錄重畫 Grid 圖檢查差異，不重新訓練。 |
+| `scripts/run_custom_data_learning.py --fixture --steps 160 --output artifacts/runs/status-custom160` | exit 0；重新產生獨立的診斷輸出，loss、三組指標與 160 個 loss_history 項目皆和新保存紀錄逐值相同。 |
+| `scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001 --prior-diagnostic artifacts/runs/status-custom160/report.json --output artifacts/runs/status-custom1600` | exit 0；以本次診斷為 prior，重新執行固定設定的 follow-up；loss、三組指標與 1600 個 loss_history 項目皆和新保存紀錄逐值相同，前 160 步也和本次診斷逐值相同。檢查成功只支持這批合成資料的 CPU 流程。 |
+| `/workspace/learn_to_yolo/.venv-docs/bin/zensical build --clean --strict`，接著 `scripts/validate_site.py` | 皆 exit 0；Zensical 0.0.67，局部連結、錨點、Colab 配對與 Markdown 轉換通過。本次未執行 `validate_lessons.py`、未寫 coverage。 |
+
+實際重跑的 custom 輸出、checkpoint、圖片與 SVG 都在副本 `artifacts/runs/status-custom160/`、`status-custom1600/`，沒有覆寫 `artifacts/checks/` 或網站圖；這次計時與日期不替代作者紀錄。執行紀錄另存 `/tmp/lessons-v0.4.0-reviews/review-status-custom160.log`、`review-status-custom1600.log`，建置紀錄為 `review-status-build.log`。
+
+### 正文、數值及「通過」的界線
+
+1. 第 42 行的電腦描述逐一對照全部 42 節與 9 份 CPU 補充紀錄：CPU 都為 `INTEL(R) XEON(R) PLATINUM 8573C`，Python 3.12.14、PyTorch 2.9.1+cpu、2 執行緒；有完整 OS 欄位的紀錄為 Linux 6.18.44、x86_64、glibc 2.41。舊 Grid 紀錄的 AMD EPYC 9V74 不再用來描述這批新紀錄，部分舊逐節／custom 紀錄沒有 machine 欄位，不據此推定它們的機器。
+2. 第 78 行的 160 步 loss 是同一批全部 24 張訓練圖的評估：`1.5501668453216553→0.16977311670780182`，正文五位小數 `1.55017→0.16977` 正確；舊值為 `0.16920891404151917`。train mAP50 是 `0.006802721088435374`，validation 為 0。第 154–158 步 minibatch total loss 分別為 0.36800、0.04687、0.24401、0.77799、1.86555，支持正文所說這一帶的尖峰，不能把完整訓練集 loss 和每步 minibatch loss 混作同一數列。
+3. 1600 步 train mAP50、precision、recall 都為 1，因此「已背熟訓練圖」有這份紀錄支持；沒有把 validation／test 寫成真實資料或穩定的泛化成績。這兩組都是 12 張合成圖、9 個 GT，每類 3 個，train 為 24 張、21 個 GT，總共 48 張。
+4. 直接讀本次重跑的 `predictions.json`、原尺寸 JSON 標註，以獨立的 Python 算術計算 letterbox 座標、IoU、同類別一對一配對、跨圖片 score 排序和 all-points precision envelope，沒有呼叫 `miniyolo.metrics.evaluate_ap`。validation 紅類的 TP／FP 序列為 `[1,0,1]`，AP=`1/3×1＋1/3×2/3=5/9`；藍類 `[0,0]`，AP=0；黃類 `[1,0,0,0,0,0]`，AP=1/3。故 mAP50=`(5/9＋0＋1/3)/3=8/27≈0.296296`。test 三類 AP 分別是 1、2/3、2/3，平均 `7/9≈0.777778`。正文六位小數與分數正確；舊 1600 步 validation=`7/18≈0.388889`、test=`2/3≈0.666667`，沒有再引用為本次值。
+5. `predeclared_protocol`、`evaluation_policy` 與 `run_custom_data_learning.py` 相符：160 步使用 test seed 7000，曾評估 test 一次；1600 步明訂 seed 7001，仍保留模型 seed、train seed 7、validation seed 700、資料、模型、optimizer、learning rate、score/NMS/IoU 門檻，只改步數及 test。程式在訓練前寫 protocol、逐項比對原診斷 fixture、拒絕同 test seed 或重複 test RGB，最後一步才評估新 test；沒有 AP 接受門檻、最佳 validation checkpoint 或搜尋 seed 的回圈。紀錄可以證明程式採用這個流程，不能獨立證明作者在程式以外從未看過其他 test；正文沒有把這個小實驗宣稱為正式泛化證據。
+6. custom 兩次 CPU 重跑都通過 raw／decoded、optimizer、RNG reload 核對，以及 callable 與另一個程序執行的原尺寸 CLI 推論核對。這些 assert 不要求 validation／test 高分，因此「通過」確實指流程與數值契約，不是偵測品質。
+7. 第 15–19、74–79 行的分類正確：人工答案只驗證小例子；00、07 的少數更新只驗證有限 loss／gradient 及參數更新；01、04、10 的 40 步實驗只有訓練圖，03 plain 的 train／shifted-validation accuracy 都是 0.5，residual 為 1。對照 `run_learning_extensions.py`、`run_multiscale_learning.py` 和各新 JSON，沒有把這些數字外推至真實照片。Fashion-MNIST 的保存紀錄為 40 步、64 張 train、128／128 張評估、四個資料 SHA-256；程式用分類 loss／accuracy，沒有 bounding boxes，也不屬於 42 節。
+8. 第 79 行對照 `verify_video_file.py`、`18-video.py` 和新 `video-file.json`：12 幀、FFV1 AVI，RGB、模型 predictions、overlay exact；EOF、generator.close 與開檔失敗三項 capture release 均為 true，adapter 有 `finally: capture.release()`。Tracker 接的是 class 0 模型預測，沒有 GT identity 品質指標；正文沒有聲稱實體攝影機或追蹤品質已驗證。本次只核對程式與紀錄，沒有再執行影片驗證腳本。
+
+### 既有 L4、儲存與發布流程的核對
+
+兩份 GPU JSON 與 `/tmp/lessons-v0.4.0-reviews/old-records/` 的備份逐位元相同；dependencies 綁定都仍現行。這次保留的是既有 L4 證據，不是重新租 GPU 或重新執行的證據。
+
+- `gpu-smoke.json` 與 `gpu_smoke.py`／`modal_gpu_smoke.py`：8 張合成圖、baseline 40 次＋interrupted 20 次＋resume 20 次＝80 次更新；模型與 optimizer 最大絕對差皆 0，scheduler、RNG、loss/RNG trace 相同。producer 與 resume 的 container_task_id 不同，resume 使用 `hf-downloaded.pt`。紀錄的 Volume 在另一個 container 讀回且所有 SHA-256 相符；HF 狀態 passed、private=true、下載 SHA-256 和 midpoint 相符，resume 再核對 checkpoint SHA-256。這支持這一次的儲存與續訓，不保證目前 Modal／HF 遠端仍可用。正文第 77 行只描述此次保存結果，沒有用 StepLR/RNG 的存在推論「少存它們一定使本固定資料的權重不同」。
+- `deployment-gpu.json` 與 `deployment_gpu.py`：另一份同型模型訓練 40 次、torch 2.9.1+cu128、NVIDIA L4、TensorRT 10.13.3.9、ORT 1.23.2；FP32 與允許 FP16 兩 engine 的 B=1–4 紀錄都有非空 decoded candidates，raw／box／score 誤差與標籤順序在程式 assert 容許範圍內。`CPUExecutionProvider` 證實 ORT 用雲端 CPU，PyTorch 與 TensorRT 用 L4。FP16 builder flag 只允許選層精度，沒有逐層精度稽核；正文沒有強制 FP16、INT8 或正式速度比較的主張。
+- `.github/workflows/pages.yml` 先執行 evidence validator 和 lesson validator，deploy 依賴 build；`validate_curriculum_evidence.py` 逐節比對 notebook stdout、日期／CPU／PyTorch 等欄位，對補充紀錄檢查綁定及部分內部一致性，沒有守住所有頁面正文引用的數字。第 45 行只寫實際存在的檢查，沒有重犯既有審查點名的守衛範圍過寬。
+- `record_evidence.py` 的 `out_of_date()`／`is_current()` 與第 38–40 行一致：綁定未變就保留紀錄；custom 160／1600 必須成對重產、Grid renderer 改動可以只重畫圖。`check_lesson_runtime.py` 只寫 report 與各課暫存產物，`verify_curriculum.py` 才把第 17–19 章結果圖複製到網站；本次 runtime 和 custom 重跑未改作者紀錄或網站圖。
+- `build_lesson_notebooks.py` 的 bootstrap 與第 51 行一致：metadata 判斷去除 `+cpu`／`+cu...` 後的版本，已是 2.9.1 就保留；不同版本改裝 CPU，若 torch 已 import 就要求重啟。全部 42 節 `section-map.json`、notebook metadata、環境格 `REF` 和頁面 Colab URL 都固定 `lessons-v0.4.0`，最後一格與程式的配對亦經 evidence validator。這是本地配對核對，沒有查詢公開 tag 或開 Colab。
+- `verify_release.py` 與 `verify-release.yml` 確有 00 的 no/other/same/imported-torch 四種新 venv 與 20 的流程，README bash 區塊略過 `zensical serve`；workflow 用 `ubuntu-latest`。第 29 行是在說發布後驗證的做法，不能當成本次已完成公開 tag／README／Colab 驗證；本次沒有呼叫該 workflow，沒有確認公開 main 上的 bootstrap JSON 已產生。
+- 讀 `review_coverage.py` 的 digest／stale、`validate_lessons.py` 所呼叫的 coverage 檢查及 `zensical.toml`：59 個導覽頁＝42 節＋17 其他頁，59 頁各有對應 review；digest 涵蓋本文、引用 SVG、lesson imports，排除自動 evidence block 與 Colab URL 的 tag。抽查既有 00-warmup、index 的定稿修正核對段落，並讀完 status 各輪處理；本次不是重新審查其餘 58 份報告的每一項主張。
+
+### 來源、讀者與渲染
+
+原始來源重新開啟，不繼承舊審查結論：
+
+- NVIDIA TensorRT 10.13 固定 commit `b8db91e15be2cae4465ac17fab19e0f969e45407` 的 [include/NvInfer.h](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/include/NvInfer.h)，HTTP 200；BuilderFlag 定義為 `Enable FP16 layer selection, with FP32 fallback`，支持「允許 FP16」而非強制每層 FP16。IInt8Calibrator 標示由 explicit quantization 取代，校準是其中一條縮放決定流程。
+- 同一固定 commit 的 [tools/pytorch-quantization/README.md](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/tools/pytorch-quantization/README.md)，HTTP 200；寫明模擬量化的訓練／評估模型可匯出 ONNX、交給 TensorRT 8.0 以上，支持不能把校準寫成所有 INT8 唯一的前置流程。原文 snapshot 保留在副本 `artifacts/runs/status-sources/`。
+- 嘗試官方 TensorRT 10.13.3 `inference-library/advanced.html` 與 `work-quantized-types.html`，兩個 URL 都回 HTTP 404。沒有把失敗寫成已讀；改讀上述同版固定 commit 官方原始碼及 README。
+- [GitHub Docs〈GitHub-hosted runners reference〉](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)，HTTP 200：公開 repository 的 standard Ubuntu runner 列 CPU／RAM，GPU 列在 larger runners；和本專案 `ubuntu-latest` workflow 的描述相符。這份文件沒有固定版本，僅記本次讀取內容，不能當成將來硬體永遠不變的保證。
+
+從第一次看專案的讀者角度逐句閱讀：開頭與表格末欄先區分算式／更新／合成學習／工程流程／真實分類，Colab 操作不必等第 20 章讀完；checkpoint、RNG、engine、FP16 及 mAP50 都有短註，第 8 章另明說換 test 的原因、少量 GT 與跨電腦分數差異。沒有必要的說明缺口。各種「通過」都落在對應已執行 assert 的範圍，不支持真實偵測 AP、正式泛化、相同預算的 YOLO 版本比較、正式 GPU 效率或真人學習效果。
+
+在副本 build 的網站啟動自己的 HTTP server（8813），用 Playwright＋`/usr/bin/chromium` 實際開 `/status/`；HTTP 200、標題正確、8 個 h1/h2、1 張表格（表頭＋5 列）、本文沒有 img／SVG。檢查桌面 1440×1100 與手機 375×950 的 screenshot，本文和數字正常顯示；手機 document/body 寬為 360、viewport 375，沒有整頁橫向溢出。`#fashion-mnist`、`#l4-results` 等連結轉換正確，瀏覽器本文含 CPU 型號與四個新數字，沒有把文字誤轉成 HTML。本頁無科學圖，沒有聲稱檢查其他頁所有 SVG。檢查完已停止自己的 HTTP server，未操作別人的 8794 server。
+
+### 發現與處理
+
+| # | 嚴重度 | 位置 | 發現與理由 | 處理 |
+| --- | --- | --- | --- | --- |
+| 1 | 建議 | `docs/status.md` 第 30 行，〈沒有驗證的事〉的 INT8 短註 | 初始快照寫「要先用一批有代表性的圖片校準」，容易讀成所有 INT8 都必須走 calibration；第 20 章及 NVIDIA 固定版本來源也容許量化感知訓練／explicit quantization 等流程。這不影響「INT8 沒有驗證」的範圍結論，但兩頁用詞可一致。 | 編輯者已把共同快照改為「要先經校準或量化感知訓練等流程決定縮放」，其餘正文逐位元不變。這是採納狀態，不是不同 AI 複查完成；該項後續檢查另外記錄。 |
+
+必要問題：沒有。既有審查曾引用的 AMD／0.16921／7/18／2/3 屬於重產前快照，本段以新紀錄更正其適用範圍，不改寫舊輪次的歷史觀察。
+
+### 快照 SHA-256 與限制
+
+| 檔案 | SHA-256 |
+| --- | --- |
+| 本次全文審查及瀏覽器初始 `docs/status.md` | `f2b49468633b19e13ca09443a230c42d490723185cf22b0a1a586a0767fe7d51` |
+| 編輯者採納 INT8 建議後的共同快照 `docs/status.md` | `ea64ffc3672d9d9c25d64a7db3868ed178b90acf7e39b7c9c00e3aed3dec053c` |
+| 本次讀取的既有 `reviews/status.md` | `a397b92a1e5675b8581bea7ab04c3e7e536b9f10d3692f4aa012612715f38a9c` |
+| 作者新 `custom-data-160-step.json` | `d1b5582921555b93338f26088ceb2d4e3a84b8a4b04266965df86a4ea37b0f96` |
+| 作者新 `custom-data-learning.json` | `fb22ce8356fbd747f967c3b82df53bd55de840d826d44fc73abfdba315f8e584` |
+| 重產前備份 `custom-data-160-step.json` | `59e0b9fb8a1af599d28a882f83e4a80a155a2ca76425d42372e9e531039dc488` |
+| 重產前備份 `custom-data-learning.json` | `fb4bf08300a24615d755c90a44f5585e7e1023836c750b1795d328d5450d1cb8` |
+| 保留 `gpu-smoke.json`（和舊備份相同） | `8a12cb801f0b6e8e8180fa03464fa8caf47980038be82f6c9e63a610d0d439d0` |
+| 保留 `deployment-gpu.json`（和舊備份相同） | `460c7ac5fd8ff28f4b867584d362e7172f4ed3b45a3b3ae5387af18de42383df` |
+| 作者新 `grid-learning.json` | `c66887b113691433f4f8787cb55fbbb6f4dacf26d635565dd259b5988417a298` |
+| 作者新 `video-file.json` | `e03980d47e7e4f87c0c4243f63754ad56a905cfacc4cf2ebc30bfd07b1394d58` |
+| 作者新 curriculum `index.json` | `02e3effeac4063979466fd9300f5d050bad44c8c419d9bf6cd80db67c3eefd51` |
+| `section-map.json` | `dbf9b1c3cd582123574f537199df98ace7a4a0db941e85dbddd82d2eef950550` |
+| `scripts/run_custom_data_learning.py` | `b8b3b442e4e2349173a2eb8198b33f966d1e75d80c8b1edb07d1af4d3b5e99e5` |
+| `scripts/validate_curriculum_evidence.py` | `ed6bc8abfc50f22df97fc7645e6430d3d6e1488e07dafc5b1ca4abe923c94a6c` |
+| 本次 CPU 診斷 `status-custom160/report.json` | `88d25c21cef9e11f56578ef721176a6deff34045bf0612cc543dde04c1dec9a9` |
+| 本次 CPU follow-up `status-custom1600/report.json` | `a7f8ccb4bab14e4ab5ee8716b24f7aecd1e2830ed79be11086b65c9ea3cd503c` |
+| 本次局部 runtime report | `f95b30d4ec88bc50b33df43ddfe1186133671557a4e82fdcc798c85a598bf5dd` |
+| 本次 evidence binding report | `3ce93989ffb61be21551fcf369fbabd06a650681dd4c1ab5c1029ac028c2f24b` |
+| NVIDIA 固定來源 `NvInfer.h` | `1bfa6bd2e8638f7ad78c40a0eafcd9b34f75b281ee56ee90bd9b14ed0914e388` |
+| NVIDIA 固定來源 quantization README | `e351ba65fc4e7f68d1c7de2ade99dc5d49dc17af5ba32c79cb0fd7d5bdb9e325` |
+| 本次 GitHub-hosted-runners HTML | `3bc316dccc23d87ff9a236d53e006b003e6b5242b37f3b169ee767d27e3b1fb7` |
+
+沒有重跑全部 42 節、Fashion-MNIST、影片或任何 GPU／Modal／HF 操作；沒有下載 dataset、開 Colab、驗證公開 tag／發布後 bootstrap JSON 或發布網站。完整 42／42 的說法以保存紀錄和 validator 為證據，只有上述 3 節及 custom CPU 補充實驗屬於本次重新執行。沒有把建置成功、local tag 配對或 source HTTP 200 寫成遠端部署成功。此報告保留初始全文快照與採納後快照，INT8 修正後的不同 AI 檢查尚須另外補記。
+
+### 修正後的獨立複查
+
+2026-10-05，由與原 status、第 17 章及第一次第 17 章修正複查者不同的 AI，在自己的副本 `/tmp/lessons-v0.4.0-reviews/fix-17-status-final/` 讀完 `docs/status.md`，核對第 30 行 INT8 短註的修正與第 20 章的定稿表格，重新開啟官方原始來源，並對照新 JSON 的主要數字。
+
+判定：原 status 建議 #1 已修正；剩餘必要問題 0，新增建議 0。新句「INT8（8 位元整數，要先經校準或量化感知訓練等流程決定縮放）」容許不同量化流程，與第 20 章第 239 行完全一致；第 20 章也分別解釋代表性圖片校準與訓練中模擬量化誤差。status 的短註仍在「沒有驗證的事」中，第 104 行仍要求其他數值精度分別驗證，沒有把 INT8 說成已執行。
+
+實際方法與結果：
+
+1. **全文比對。** 與原 status 審查者保存的頁面逐字比對，唯一變更是把「要先用一批有代表性的圖片校準」換成現句；全文所有數字序列完全相同。逐段讀完前後文，開頭的證據類型、未驗證範圍、執行方式及結論限制仍一致。第一次讀者可從已解釋的「8 位元整數」理解主旨，詳細校準／量化感知訓練的區別留給前置閱讀提示所列的第 20 章，沒有需要先操作 INT8 才能讀懂本頁的缺口。
+2. **固定版本官方工具。** 重新取得 NVIDIA TensorRT commit `b8db91e15be2cae4465ac17fab19e0f969e45407` 的 [tools/pytorch-quantization/README.md](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/tools/pytorch-quantization/README.md)，HTTP 200。原文說明工具用 simulated quantization 訓練與評估模型，量化模型可匯出 ONNX、由 TensorRT 8.0 以上匯入；支持不把獨立圖片校準寫成所有 INT8 唯一的前置流程。這裡查核的是該固定 commit，沒有執行其中的安裝命令。
+3. **官方量化指南。** 原 review-20 的 [work-quantized-types.html](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-quantized-types.html) 本次回 HTTP 200，重新導向 `work-with-quantized-types.html`；已讀其 PTQ／QAT 導覽，並繼續開啟官方 [Quantization Workflows](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/quantized-types-workflows.html) 與 [Quantization Schemes](https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/quantized-types-schemes.html)，皆 HTTP 200。前者明列 PTQ 用代表性 calibration data 決定量化參數、QAT 在訓練中模擬量化並補償誤差，縮放可嵌入 Q/DQ；後者的 INT8 式為 `round(clip(x/s,-128,127))`，明示縮放 `s` 與有號整數範圍。兩種工作流程與「等流程決定縮放」相符。`latest` 指南沒有固定版本，只作本次概念核對，不把它當成 TensorRT 10.13.3 API 的版本證明。
+4. **新 JSON 數字核對，僅讀保存紀錄。** 索引仍是 42／42；160 步紀錄的 full-train loss 為 1.550166845→0.169773117，正文 1.55017→0.16977 正確；train mAP50=0.006802721、validation=0，正文 0.00680／0 正確。1600 步紀錄的 train=1、validation=0.296296296＝8/27、test=0.777777777＝7/9，各評估集 9 GT；新 test seed 7001、train／validation 圖片與標註不變的記錄相符。影片紀錄仍是 12 幀，RGB、預測與釋放檢查為真。本次沒有重跑這些實驗，或將讀取保存紀錄寫成重新執行通過。
+5. **實際渲染。** 副本嚴格建置通過，以自己的 HTTP server 與 Chromium 開啟 `/status/`，HTTP 200。檢查全文的瀏覽器文字、1440 px 寬全頁截圖及 INT8 段落桌面／375 px 手機截圖；現句與四個更新數字正常顯示，手機 document／body 寬 360、viewport 375，沒有整頁橫向溢出。新句仍顯示在未驗證清單中。檢查後已停止自己的 server；本頁沒有 SVG 圖。
+
+現正文 digest 依 `review_coverage.digest()` 的規則計算：
+
+| 快照／來源 | SHA-256 |
+| --- | --- |
+| 現 status 全文及正文 digest | `ea64ffc3672d9d9c25d64a7db3868ed178b90acf7e39b7c9c00e3aed3dec053c` |
+| 原 status 頁面 | `f2b49468633b19e13ca09443a230c42d490723185cf22b0a1a586a0767fe7d51` |
+| `custom-data-160-step.json` | `d1b5582921555b93338f26088ceb2d4e3a84b8a4b04266965df86a4ea37b0f96` |
+| `custom-data-learning.json` | `fb22ce8356fbd747f967c3b82df53bd55de840d826d44fc73abfdba315f8e584` |
+| 固定 commit 的 quantization README | `e351ba65fc4e7f68d1c7de2ade99dc5d49dc17af5ba32c79cb0fd7d5bdb9e325` |
+| 本次官方量化指南 HTML | `d0f19fdab5d3dce61cdbd4fdc9e65895412758b21aa5a15bbd00197737f88707` |
+| 本次官方 Quantization Workflows HTML | `d25a1c3cc9e90763df5aed2e16a8e4b44d2d1390c1fc173b54879ff35fa3998b` |
+| 本次官方 Quantization Schemes HTML | `f67ea6278a3e7269177e569d0a523acf325baaf3b41b94e03748dfc521c0dbfa` |
+| 本次 `checks.json` | `0e97169a83d8aca94b0e32461ce8911018e2e7cf858089f15513298332039297` |
+
+本次是 INT8 用詞修正與其全文一致性的獨立確認，沒有執行 INT8 或重做其餘保存實驗。HTTP 結果、官方來源原文、數值探針、完整 digest、瀏覽器文字檢查結果及截圖保存於副本 `artifacts/runs/fix17-status-final/`。

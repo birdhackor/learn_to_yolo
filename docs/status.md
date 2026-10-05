@@ -27,7 +27,7 @@
 - 在真實資料上，用相同資料與訓練預算（例如訓練步數）比較各機制的效果。合成資料上只有少數小型對照，例如 3.3 節的 plain 與 residual。
 - 正式的 GPU 速度與效能測試。
 - 在 Google Colab 上執行 notebook，包括 Colab 可能分配給你的 GPU：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出。代替的檢查有兩項。第一，環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。第二，網站發布後，在 GitHub 提供的 Linux 電腦上，從公開的 `lessons-v0.4.0` 重新下載教材，在全新的 Python 環境裡照原樣執行 notebook 的環境格和實驗格（notebook 最後一格，內容和 `lesson_cases/` 裡該節的程式相同）：第 0 章試沒裝 PyTorch、裝了別的版本、已是 2.9.1、已經 import 過別的版本四種情況，以及第 20 章（它的環境格還要另裝 ONNX 套件）；也依序執行 README 列出的指令（預覽網站用的 `zensical serve` 除外）。結果記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)。這台電腦不是 Colab，也沒有 GPU。
-- 用 TensorRT 跑更大的模型，或改用其他數值精度時的結果，例如強制每一層都用 FP16（16 位元浮點數），或用 INT8（8 位元整數，要先用一批有代表性的圖片校準）。
+- 用 TensorRT 跑更大的模型，或改用其他數值精度時的結果，例如強制每一層都用 FP16（16 位元浮點數），或用 INT8（8 位元整數，要先經校準或量化感知訓練等流程決定縮放）。
 - 接上實體攝影機當影片來源。
 - 真人學生的學習效果。
 
@@ -39,7 +39,7 @@
 
 綁定的檔案都沒變，紀錄就一直有效；只要其中一個改了，那份紀錄就過期。發布新版時只重跑過期的紀錄（`scripts/record_evidence.py` 會列出並重新產生），其餘沿用，紀錄裡的日期與電腦也不變，所以各節紀錄的日期不一定相同。
 
-- **CPU 紀錄的電腦：**Linux x86_64（kernel 6.18、glibc 2.41）、AMD EPYC 9V74 80-Core Processor，Python 3.12.14、PyTorch 2.9.1+cpu，用 2 個執行緒。
+- **CPU 紀錄的電腦：**Linux x86_64（kernel 6.18、glibc 2.41）、Intel Xeon Platinum 8573C，Python 3.12.14、PyTorch 2.9.1+cpu，用 2 個執行緒。
 - **GPU 紀錄：**GPU 上的實測只有兩項：第 20 章的 ONNX／TensorRT 核對，以及 GPU 上的存檔續訓（見下方〈已完成的檢查〉）。兩項都由手動啟動的 GitHub Actions（GitHub 提供的自動執行程式服務）工作流程，在 Modal 雲端的一張 NVIDIA L4 上執行（PyTorch 2.9.1+cu128），紀錄同樣綁定所執行的程式。
 
 網站建置前，`scripts/validate_curriculum_evidence.py` 會確認以上每份 CPU 與 GPU 紀錄綁定的程式都沒有改過；42 節的紀錄另外要和該節 notebook 存的輸出一字不差，該節頁面也要寫著這份紀錄的日期、CPU 型號與 PyTorch 版本。任何一項不符，網站就無法發布。
@@ -75,7 +75,7 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 - **核心與 checkpoint 測試：**`tests/test_core.py` 與 `tests/test_checkpoint.py` 的測試全部通過；測試內容見上方〈執行方式〉。
 - **匯出與部署：**第 20 章把模型匯出成 ONNX（一種通用的模型檔格式），在 batch 大小 B=1、2、3 時，比對 ONNX Runtime（執行 ONNX 檔的程式）與 PyTorch 的輸出。另在 NVIDIA L4（資料中心 GPU，透過 Modal 雲端租用）上，把另一份練了 40 步的模型，用 TensorRT 的 Python 介面（Python API）建成兩個 engine（為這張 GPU 最佳化後的模型檔，要由 TensorRT 載入才能執行）：一個用 FP32（32 位元浮點數），一個允許 FP16（16 位元浮點數；由 TensorRT 決定哪些層改用 FP16，不保證每一層都是）。兩個 engine 都在 B=1～4 時和同一張 L4 上的 PyTorch 比對輸出（在同一台雲端機器的 CPU 上，ONNX Runtime 也先和這份 PyTorch 輸出比對過）。以上比對的差異都在容許範圍內，詳見[第 20 章〈L4 GPU 上的 TensorRT 實測〉](lessons/20-deployment.md#l4-results)。
 - **雲端 GPU 存檔續訓：**也在 L4 上，用第 7 章的 GridDetector 和 8 張合成圖練兩次：一次連續練 40 步；另一次練 20 步後存檔，在另一個全新開啟的雲端 GPU 環境讀回存檔，再練 20 步（兩次合計 80 次更新）。最後兩者的模型與 optimizer 逐一相減，最大差異為 0；學習率排程（StepLR，每隔固定步數把學習率乘上固定比例）與亂數產生器（RNG）的狀態也相同。存檔時也存了這兩種狀態，所以續訓後它們也和不中斷時相同；訓練若用到亂數（例如隨機打亂資料或隨機增強），少存 RNG 狀態，續訓的結果就可能不同。紀錄見 [GPU／checkpoint 實測](validation/gpu-smoke.md)。
-- **第 8 章自己的資料：**第 8 章「JSON 標註＋PNG 圖片」的[完整訓練流程](lessons/08-own-data.md)，用的是 48 張程式畫的三類矩形合成圖，不是真實照片。這個實驗有兩份紀錄。第一份是 160 步的診斷：用全部 24 張訓練圖算的 loss 從 1.55017 降到 0.16921，但 train mAP50（在訓練圖上算的偵測評分：紅、藍、黃三類各自 AP50 的平均，最高 1.0）只有 0.00680，validation 是 0；每一步的 loss 紀錄顯示，第 154–158 步出現 loss 尖峰，160 步的評估正好落在這次不穩之後。第二份沿用同一批 train／validation 與全部設定，只把步數改成開跑前就定好的 1600 步（在 CPU 上）；160 步那次已經評過 test，所以這次改用新 seed 畫的 test，也沒有用 test 挑設定。1600 步後，train mAP50 達到 1.0（已背熟訓練圖）；沒參與訓練的 validation 是 0.388889（等於 7/18），換新 seed 畫的 test 是 0.666667（等於 2/3）。這兩組各只有 9 個物件，換一台電腦重跑，分數也可能不同，所以兩者的差距不代表穩定的泛化高低。存檔重新載入，以及在原尺寸圖片上推論，也都通過檢查。
+- **第 8 章自己的資料：**第 8 章「JSON 標註＋PNG 圖片」的[完整訓練流程](lessons/08-own-data.md)，用的是 48 張程式畫的三類矩形合成圖，不是真實照片。這個實驗有兩份紀錄。第一份是 160 步的診斷：用全部 24 張訓練圖算的 loss 從 1.55017 降到 0.16977，但 train mAP50（在訓練圖上算的偵測評分：紅、藍、黃三類各自 AP50 的平均，最高 1.0）只有 0.00680，validation 是 0；每一步的 loss 紀錄顯示，第 154–158 步出現 loss 尖峰，160 步的評估正好落在這次不穩之後。第二份沿用同一批 train／validation 與全部設定，只把步數改成開跑前就定好的 1600 步（在 CPU 上）；160 步那次已經評過 test，所以這次改用新 seed 畫的 test，也沒有用 test 挑設定。1600 步後，train mAP50 達到 1.0（已背熟訓練圖）；沒參與訓練的 validation 是 0.296296（等於 8/27），換新 seed 畫的 test 是 0.777778（等於 7/9）。這兩組各只有 9 個物件，換一台電腦重跑，分數也可能不同，所以兩者的差距不代表穩定的泛化高低。存檔重新載入，以及在原尺寸圖片上推論，也都通過檢查。
 - **第 18、19 章影片檔與追蹤：**把 12 幀畫面（影片中連續的 12 張圖）寫成無損 AVI 影片檔再讀回：讀回的 RGB 畫素和模型預測，都和直接用記憶體裡的畫面時相同；讀到檔尾、提前停止或開檔失敗時，程式都會關閉影片（`capture.release()`）。最後把模型的實際預測接上[第 19 章的追蹤器（tracker）](lessons/19-tracking.md)。沒有測實體攝影機。
 
 ## 誰檢查過內容

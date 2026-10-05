@@ -159,3 +159,121 @@ lesson_cases/18-video.py 第 136–151 行把 summary 寫進 artifacts/lesson-18
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 必要 | 第 4 輪 #2 的處理欄（第 134 行）；第二個第 5 輪 #1 的處理欄（第 153 行）；第 3 輪 #1 的處理欄（第 93 行） | 第 4 輪 #2 寫「第 3 輪的處理說明改成統一的說明」，但第 3 輪唯一一列（第 93 行）仍是人工寫的「…見〈補做的來源對照〉；殘句已清理。」。第 5 輪 #1 指出了這點，它的處理「用詞類的處理說明改成統一的說明…」同樣不成立。第 93 行的「殘句已清理」本身也和紀錄不完全相符：journal 原文是兩個清單項目「- 暫存副本：<路徑>」和「- 紀錄：同一層的暫存副本（run.out…）」，紀錄第 52 行卻把它們黏成「- 暫存副本紀錄（run.out…）」，第 4 輪 #2 也把它列為黏字。 | 已修正：第 3 輪那一列改成統一的說明；路徑規則不再吃掉換行，兩個清單項目不再黏在一起。 |
+
+## 紀錄重產後的檢查
+
+2026-10-05，另一位 AI 依 `AGENTS.md` 與 `docs/preparation/publish.md` 第 7 步，在自己的獨立副本逐句閱讀本頁、既有審查、`lesson_cases/18-video.py`、其全部 repo 相依模組，以及補充的 `scripts/verify_video_file.py` 與它使用的第 19 課 tracker。既有審查只作為待核對的證據。本次檢查的是 CPU 紀錄重產、中文面板帶回及計時正文更新後的頁面，沒有啟動 GPU、實體相機或下載資料集。
+
+查核使用 Python 3.12.14、PyTorch 2.9.1+cpu、NumPy 2.3.5、Pillow 12.0.0、opencv-python-headless 4.13.0.92；cwd 和 `PYTHONPATH=.` 都指向自己的副本。模型 Python 使用原 checkout 既有的 `.venv-model/bin/python`，文件工具使用既有的 `.venv-docs`，不變更環境依賴。實際執行的主要命令如下，輸出、練習副本與畫面證據保存在自己的副本 `artifacts/runs/review18-*`：
+
+```bash
+LD_LIBRARY_PATH=/tmp/lessons-v0.4.0-tools/extracted/usr/lib/x86_64-linux-gnu \
+  /tmp/lessons-v0.4.0-tools/extracted/usr/bin/rsync -a \
+  --exclude=.git --exclude=site --exclude='.venv*' \
+  /tmp/lessons-v0.4.0-reviews/base/ /tmp/lessons-v0.4.0-reviews/review-18/
+cd /tmp/lessons-v0.4.0-reviews/review-18
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python lesson_cases/18-video.py
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python scripts/verify_video_file.py --output artifacts/runs/review18-file
+PYTHONPATH=. /workspace/learn_to_yolo/.venv-model/bin/python artifacts/runs/review18-audit.py
+/workspace/learn_to_yolo/.venv-docs/bin/zensical build --clean --strict
+/workspace/learn_to_yolo/.venv-model/bin/python scripts/validate_site.py
+```
+
+三項執行都以 exit 0 完成，完整課程與檔案腳本的 stderr 為空。查核輔助程式最後印出 `AUDIT_PASS`；它讀取最高 score 的一行產生一則將帶梯度 tensor 轉為純量的 PyTorch 警告，屬輔助程式，沒有造成教材程式或斷言失敗。這次實跑的計時因系統負載而與保存紀錄不同，沒有拿查核時的計時替換教材數字。
+
+**數字與結論。** 直接解析 `18-video.json` 的 stdout，原始中位數依序為 0.2764804958133027、0.30956500268075615、0.43933201231993735、0.06989399844314903、1.1000390077242628 ms；三位小數正好是正文的 0.276／0.310／0.439／0.070／1.100。四項未取整中位數合計 1.0952715092571452 ms，與 total 的方向一致；表上取整值合計 1.095 ms。實跑逐幀四段計時相加與該幀 total 相同，差異來自中位數不能分配到加法。以未取整 total 計算 `1000/total` 得 909.0586724454241，正文「約 909」正確；將它稱為 FPS「上限」的問題見下表。
+
+正式來源仍為 12 幀、20 FPS、96×64 RGB；來源間隔 50 ms，最後時間戳 0.55 s、播放時間 0.6 s、GIF 每幀 50 ms。暖機是一份另外產生的第 0 幀，得到框後丟棄，不進 12 幀統計。實跑的 index 0～11 與圖大小都通過斷言。letterbox 實際內容 43×64、上下補 10／11，水平比例 2/3、垂直比例 43/64；raw shape `[1,4,4,7]`。來源是立即產生下一幀的合成 generator，沒有睡眠或相機佇列；`run_stream` 的計時開始於取得 `Frame` 之後、結束於疊圖完成，並不含影片開啟／解碼、訓練、GIF 輸出、顯示、網路與排隊。
+
+完整程式、簡化片段、FFV1 檔案與保存紀錄的框數均為 `[1,1,0,0,0,0,1,1,0,0,0,0]`。12 幀都有物件且全部處理，8 幀沒有框是偵測漏檢，沒有把它誤算為串流掉幀。以 `video-file.json` 存的來源座標框，獨立用半開 xyxy 的長寬計算交集及聯集，沒有直接拿 repo 的 `box_iou` 當唯一依據：
+
+| 幀 | GT 框 | 交集面積 | 聯集面積 | IoU | 正文取整 |
+| --- | --- | --- | --- | --- | --- |
+| 0 | `[4,20,18,34]` | 134.9128594930662 | 267.5997388069927 | 0.5041591598501992 | 0.50 |
+| 1 | `[8,20,22,34]` | 130.747676403269 | 276.52069891266865 | 0.47283142606464335 | 0.47 |
+| 6 | `[28,20,42,34]` | 85.4353223174403 | 280.95689208601834 | 0.3040869426021528 | 0.30 |
+| 7 | `[32,20,46,34]` | 116.88559948009788 | 253.5415713355469 | 0.46101157638329404 | 0.46 |
+
+最高 score 實跑為約 `[.930,.894,.090,.012,.006,.052,.263,.114,.001,.0003,.004,.025]`；9／12 幀低於 .25，支持降低顯示門檻的理由。以控制 raw 值另外測試 score 恰為 .1 時留下、門檻改成 .100001 時捨棄，確認比較是 `>=`。程式仍由真正的 forward、objectness×最大 class probability、score 篩選、按類別 NMS 及座標還原產生框，沒有注入 GT；低門檻框數也不是準確率。訓練資料仍是每個框完整落於 16×16 格內的 64×64 圖，框寬高 8～15。來源物件縮放成約 9.33×9.41，y 約 23.44～32.84；x 跨格幀重新算得 `[2,3,4,8,9,10]`，和正文一致。第 5、11 幀不跨 x 格線仍漏檢，因此原文把跨格列為未證實的部分原因，保留了合理限制。
+
+**程式摘錄、練習與資源。** 執行頁面的 `count_up`、簡化 `run_stream` 及〈換成自己的影片〉片段。簡化片段與完整函式逐幀 index、timestamp、boxes、scores、labels 全相同；三個標記摘錄交給 `validate_lessons.py` 的 `excerpt_problems()` 得到 `[]`，notebook 最後一格仍逐字等於 lesson case。`@torch.no_grad()` generator 暫停時呼叫端梯度恢復，函式內用 `with` 則在暫停時仍關閉，兩者實测符合正文。
+
+練習 1、2 都複製完整 case，只改最後一行 `main(count=24)`／`main(fps=10)` 再用子程序實跑，不修改斷言。24 幀的最後時間戳 1.15 s、播放 1.2 s，圖取 0／11／23 幀；第 19～23 幀可見紅色寬度為 14／12／8／4／0，第 20 幀開始裁切，第 23 幀可見欄位 false 且沒有框。10 FPS 的最後時間戳 1.1 s、播放 1.2 s、GIF 100 ms；實際 boxes／scores／labels 與 20 FPS 相同，位移由每秒 80 改為 40 畫素。逐幀讀回 GIF，50／100 ms 正確；另用 Pillow 存 33 ms 再讀回，確為 30 ms。排隊練習用 `Fraction` 重算，第 90 幀完成 4550 ms、延遲 1550 ms；只取最新幀依序處理 0／1／3／4／6／7…，延遲交替為 50 與 200/3 ms，沒有浮點時間剛好到達的判斷誤差。
+
+FFV1 fixture 是 9232 bytes，SHA-256 `1c124d4aae1e30c4eed7f6c2e5cb98613ad1e059bce7f657c78be00c83fd64dc`，與保存紀錄相同。檔案腳本比較全部 12 幀，RGB、boxes、scores、labels、疊圖逐值／逐 tensor 完全相同，時間戳為 0 至 .55 s，EOF／提前 close／開啟失敗都已 release。另包住真實 `VideoCapture` 觀察控制代碼：`closing` 中提前 break、forward 拋錯且保留 traceback、adapter 的 cvtColor 拋錯均關閉；單純 break 且仍保留來源 generator 時控制代碼仍開啟，顯式 close 後才關閉。這支持正文要求用 `closing`，沒有把 generator 暫停誤認成已釋放。自己的影片片段以同一份 AVI fixture 暫時命名為 `clip.mp4` 原樣執行，印出 0～11 與正確框數；OpenCV 依內容識別容器，此項只驗證片段，不能聲稱已測有損 H.264／MP4。影片腳本的檔案管線計時確實包含 capture/open/read/decode 與收集結果，訓練、編碼、磁碟寫出在其外；全驗證計時則包含那些前置工作。實體相機、可變幀率 PTS、現場／網路延遲及正式 throughput benchmark 都未測。
+
+**SVG 與網頁。** 網站圖與原始重產留存的 `artifacts/lesson-18/panel.svg` SHA-256 完全相同。解碼 SVG 內三張 PNG，都是 96×64；第 0 幀圖像與重跑檔案的第一張疊圖逐值相同，含黃框與 score .93；第 5、11 幀與其合成原圖逐值相同、沒有黃框。標籤為第 0／5／11 幀、0.00／0.25／0.55 s、單次總處理 2.28／.91／.91 ms、框 1／0／0，正文將單次時間與中位數區分，沒有舊英文標籤。
+
+嚴格建置與 `validate_site.py` 通過。用 `.venv-docs` 的 Playwright 與 `/usr/bin/chromium`，對獨立副本建出的網站作 1440×1000 與 390×844 檢查並實際查看截圖：SVG 正常載入，標籤未裁切；8 個 code block、3 個 excerpt、7 個折疊區及表格都正確轉換；頁面沒有水平溢位。手機圖中文字縮得很小，列為可選改善，見下表。
+
+**重新打開的原始來源。** 固定版本原始碼均由 HTTPS 原址取得並實際讀取相關段落；PyTorch 的 docs.pytorch.org 2.9 HTML 與 NumPy 網頁回 403，改讀同版官方原始碼／已安裝固定版官方函式原碼，不把抓取失敗當成完成核對。
+
+- PyTorch v2.9.1，commit `d38164a545b4a4e4e0cf73ce67173f70574890b6`：[torch/utils/_contextlib.py](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/torch/utils/_contextlib.py) 的 `_wrap_generator`／`context_decorator`；[docs/source/notes/cuda.rst](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/docs/source/notes/cuda.rst) 的 Asynchronous execution；[torch/_torch_docs.py](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/torch/_torch_docs.py) 的 from_numpy 與 set_num_threads；`torch/autograd/grad_mode.py` 的 no_grad。對照 generator 梯度範圍、GPU 同步計時、共用 NumPy 記憶體、只控制 PyTorch intra-op 執行緒。
+- OpenCV 4.13.0，commit `fe38fc608f6acb8b68953438a62305d8318f4fcd`：[videoio.hpp](https://github.com/opencv/opencv/blob/fe38fc608f6acb8b68953438a62305d8318f4fcd/modules/videoio/include/opencv2/videoio.hpp) 的相機編號、isOpened、release／解構、read／get；[cap_ffmpeg_impl.hpp](https://github.com/opencv/opencv/blob/fe38fc608f6acb8b68953438a62305d8318f4fcd/modules/videoio/src/cap_ffmpeg_impl.hpp) 的解碼 thread_count、BGR24 讀回與 FFV1 的 BGR0／BGRA 分支；[imgproc.hpp](https://github.com/opencv/opencv/blob/fe38fc608f6acb8b68953438a62305d8318f4fcd/modules/imgproc/include/opencv2/imgproc.hpp) 的 cvtColor BGR 說明。
+- opencv-python tag 92（4.13.0.92），commit `4ddfc013fd1f13d9b9e379dbebf2cdbeb052e7f8`：[README](https://github.com/opencv/opencv-python/blob/4ddfc013fd1f13d9b9e379dbebf2cdbeb052e7f8/README.md) 的四種套件擇一、共用 cv2、混裝全部移除、headless 無 GUI。
+- Colab 官方 backend-info，commit `92a2364a31cd9b686f88075e52d0ff5e5c098a40`：[pip-freeze.txt](https://github.com/googlecolab/backend-info/blob/92a2364a31cd9b686f88075e52d0ff5e5c098a40/pip-freeze.txt) 列出 opencv-contrib-python 4.14.0.94、opencv-python 5.0.0.93、opencv-python-headless 5.0.0.93，支持「Colab 通常已經預裝」與避免共用 cv2 混裝的提醒；本次沒有登入或執行託管 Colab 工作階段。
+- Python 3.12 官方文件：[dataclasses](https://docs.python.org/3.12/library/dataclasses.html)、[runpy.run_path](https://docs.python.org/3.12/library/runpy.html#runpy.run_path)、[contextlib.closing](https://docs.python.org/3.12/library/contextlib.html#contextlib.closing)、[generator／close](https://docs.python.org/3.12/reference/expressions.html#generator.close)、[time.perf_counter](https://docs.python.org/3.12/library/time.html#time.perf_counter)。本機另查 `get_clock_info('perf_counter')`：CLOCK_MONOTONIC、monotonic=True、adjustable=False。
+- NumPy 2.3.5 安裝版官方 `numpy.median` 原碼／docstring，明寫偶數個值取排序後中間兩值平均；Pillow 12.0.0，commit `693df7b42c666f88c719f9973be0ad71607328e0`：[GifImagePlugin.py](https://github.com/python-pillow/Pillow/blob/693df7b42c666f88c719f9973be0ad71607328e0/src/PIL/GifImagePlugin.py) 的 `duration = int(duration / 10)`；[GIF89a](https://www.w3.org/Graphics/GIF/spec-gif89a.txt) 的 Delay Time 以 1/100 秒記錄。
+- [RFC 9043](https://www.rfc-editor.org/rfc/rfc9043.txt) 摘要及 §3.7.2，FFV1 無損與可逆 RGB 色彩轉換；FFmpeg n7.1，commit `b08d7969c550a804a59511c7b83f2dd8cc0499b8`：[libavutil/frame.h](https://github.com/FFmpeg/FFmpeg/blob/b08d7969c550a804a59511c7b83f2dd8cc0499b8/libavutil/frame.h) 的 PTS 定義。確認無損的前提是交給編碼器前沒有先損失色度，PTS 是呈現時間，不能拿 i/fps 當實際相機擷取時間。
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+| --- | --- | --- | --- | --- |
+| 1 | 必要 | 〈處理速率與延遲是兩回事〉，原查核版本第 124 行 | 把中位數 total 的倒數約 909 FPS 稱為四段計算的「上限」不成立。中位數不決定整段平均速度；1／100／100 ms 反例得到 median 倒數 10 FPS、實際 14.93 FPS。 | 建議改為典型單幀時間的粗略換算，持續 FPS 用完成幀數／總經過時間。主代理回報已修正；本次只審查原快照，修改後版本交另一位 AI 複查。 |
+| 2 | 建議 | 三欄 `18-video.svg`，手機 390 px 檢查 | 圖中文字縮至約 7.50／6.79 px，未裁切但較難讀。 | 可加上連到同一 SVG 的圖片連結，供讀者點開放大；不影響紀錄數字正確性。是否採用由編者記錄。 |
+
+**本次已核對的 SHA-256。** 下列是本次舊快照的涵蓋內容，頁面文字已在查核後另行修正，不能用這一組頁面 hash 宣稱涵蓋修改後版本。全部 `dependencies_sha256` 欄位都逐檔重算相符，完整清單另存於副本 `artifacts/runs/review18-audit/checked-hashes.json`。
+
+```text
+docs/lessons/18-video.md 0ceaef138f82b9c43c26c12b03b42c039279bcb17cfa1c7994825e6944ad4a20
+docs/assets/diagrams/18-video.svg 9c2bf9984e04e64f5a1f788ea774a74ad74799cb2732b0ce353369ae1d8f3040
+artifacts/checks/curriculum/18-video.json f7d0eb05bad4a736b561c75463049d794d829a09397b19b526782e0e838bb609
+artifacts/checks/curriculum/video-file.json e03980d47e7e4f87c0c4243f63754ad56a905cfacc4cf2ebc30bfd07b1394d58
+lesson_cases/18-video.py 0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0
+scripts/verify_video_file.py ec77505526972a57b74cf757e303ccfea7459dfba2ffd9857b7634129070dcec
+miniyolo/__init__.py 785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9
+miniyolo/data.py cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d
+miniyolo/geometry.py 6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483
+miniyolo/inference.py 995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313
+miniyolo/losses.py 81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4
+miniyolo/metrics.py 53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0
+miniyolo/models.py 49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6
+miniyolo/targets.py 2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16
+miniyolo/provenance.py 21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3
+lesson_cases/19-tracking.py e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa
+```
+
+### 修正後的獨立複查
+
+2026-10-05，由不同於原第 18 課查核者的另一位 AI，在自己的 `/tmp/lessons-v0.4.0-reviews/fix-18/` 副本複查兩項修正。副本依指定 rsync 從修正後的 `base/` 建立，排除 `.git`、`site`、`.venv*`。先讀 `AGENTS.md`、發布流程第 7 步與原查核發現，再閱讀本頁全部正文，逐段比對原 `review-18/` 快照。差異只有第 125 行的 FPS 解釋、第 152 行的 SVG 自連結與第 154 行的點圖說明；lesson case、全部 repository 相依模組、notebook、保存紀錄與 SVG 本體沒有改動。沒有改 root 的追蹤檔案或 coverage，也沒有使用 Git、remote、GPU、實體相機或下載資料集。
+
+**數值與計時範圍。** 直接解析當前 `artifacts/checks/curriculum/18-video.json` 的原始 stdout：全流程中位數是 `1.1000390077242628 ms`，`1000 / 1.1000390077242628 = 909.0586724454241`，正文約 909 的算術正確。另獨立手算原反例：三幀分別花 1、100、100 ms，中位數為 100 ms，所以中位數倒數是 10 FPS；但持續完成速率為 `3 / 0.201 = 1000/67 = 14.925373134328359 FPS`，大於 10 FPS。新文字將 909 稱為「典型單幀計算時間粗略換算的數字」，並明說持續速率以處理完的幀數除以總耗時、未必等於中位數倒數，已解除把它當上限的錯誤。
+
+對照 `run_stream` 第 76–98 行與 `main` 第 122–147 行：計時起點在來源交出 `Frame` 之後，終點在 PIL 疊圖完成、`yield` 交出結果之前；各段取同一幀的相鄰時間差，全流程取該幀的頭尾差，再各自對正式 12 幀取中位數；1 幀暖機不納入統計。本次另外用受控 CPU 輸出與假時鐘做範圍探針：來源每次先推進 2 秒、消費結果後再推進 3 秒，四個量測區間各推進 1 ms；兩幀的 total 仍各為 4 ms，逐段相加亦為 4 ms。這直接確認來源取得與下游消費不在該計時內。正文相鄰段落仍保留解碼、網路、磁碟、顯示及相機佇列未量測，合成 generator 沒有按 20 FPS 實際等待的限制，沒有把這份單幀統計擴大成端到端 FPS 或現場效能證據。
+
+重新打開 PyTorch v2.9.1 官方固定 commit `d38164a545b4a4e4e0cf73ce67173f70574890b6` 的 [CUDA notes 原始碼](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/docs/source/notes/cuda.rst)，閱讀 `Asynchronous execution`：GPU 工作預設排隊執行，未同步的時間量測不準，應同步或用 CUDA Event。這與正文保留的 CPU／GPU 計時區別相符；本次實跑是 CPU，沒有把 CPU 的計時方法宣稱已在 GPU 驗證。沒有新增論文或函式庫用法，因此未重做與兩項修正無關的外部來源查核。
+
+**執行與手機連結。** 使用既有 Python 3.12.14、PyTorch 2.9.1+cpu，cwd 與 `PYTHONPATH=.` 指向自己的副本，重跑 `lesson_cases/18-video.py` 的預設示範一次；exit 0，stderr 為空，暖機 1 幀、正式 12 幀、20 FPS、末時間戳 0.55 s、框數 `[1,1,0,0,0,0,1,1,0,0,0,0]` 與保存紀錄一致。本次測到 total 中位數約 2.074 ms，未替換作者的 1.100 ms 紀錄。範圍探針修正裝飾器包裝層的注入位置後以 `FIX18_AUDIT_PASS` 完成，notebook 最後一格與 case 逐字相同；沒有重跑未受影響的練習 1、2、FFV1 檔案實驗或額外訓練套件。
+
+自己的 `zensical build --clean --strict` 與 `validate_site.py` 都 exit 0。用 Playwright、`/usr/bin/chromium`，依指定 `--no-sandbox --disable-gpu --disable-dev-shm-usage` 啟動，在自有 HTTP server 的 390×844 手機／觸控 viewport 檢查建置頁面，實際看過正文圖與開啟 SVG 的截圖。圖片載入完整，顯示寬約 357.97 px；文件寬與 viewport 同為 390 px，沒有水平溢位。圖片的 `src` 與外層 `<a>` 的目的地均是同一個 `18-video.svg`，點圖說明已顯示；實際 `tap()` 後的文件導覽回 200、Content-Type 為 `image/svg+xml`，導向同一張 SVG。瀏覽器收到的圖、建置 site 的圖、正文來源圖和舊快照圖的 bytes／SHA-256 全相同。三格仍為第 0、5、11 幀，來源時間 0.00／0.25／0.55 s，處理時間 2.28／0.91／0.91 ms，框數 1／0／0，沒有更換圖碼或數據。
+
+手機頁內標籤仍小；這次採納的是提供原 SVG 的入口。額外嘗試的 headless CDP pinch 沒有改變 `visualViewport.scale`，另以瀏覽器比例模擬可改變 scale，但這兩項不作為實體手機手勢縮放成功的證據。手機原生瀏覽器的縮放操作仍未實測，不影響「可點到同一個 SVG」已完成的複查結論。最終瀏覽器查核以 `FIX18_BROWSER_PASS` 完成；自有 port 8818 server 已停止，root 的 8794 server 沒有操作。
+
+| 原發現 | 修正與獨立複查結果 | 處理狀態 |
+| --- | --- | --- |
+| 必要：中位數倒數約 909 FPS 被稱為上限 | 已改成典型單幀時間粗估，持續 FPS 明定為完成幀數／總耗時；手算反例、實際紀錄與計時範圍探針相符，限制未超出證據。 | 已修正並通過獨立複查。 |
+| 可選：390 px 手機三欄 SVG 標籤較小 | 已採納圖片自連結及可點的正文說明；手機 tap 實際導向原 SVG，回傳圖檔完全相同。 | 建議已採納；實體手機手勢縮放未測。 |
+
+剩餘必要問題：**0**。本次只複查上述兩項修正與其直接相鄰語境，沒有把原查核未重跑的項目重新宣稱為本次實測。
+
+**修正後涵蓋指紋。** 以現行 `scripts/review_coverage.py` 的 `digest()` 只讀計算，已排除頁尾執行紀錄、將 Colab tag 正規化；沒有寫入 coverage。完整逐檔 hash 與結果保存在自己副本的 `artifacts/runs/fix18/audit.json`，頁面差異是 `page.diff`，手機結果是 `browser.json` 與 `mobile-section.png`／`mobile-open-svg.png`；預設程式輸出與建置 log 分別是 `artifacts/runs/fix18-default.stdout`／`.stderr`、`artifacts/runs/fix18-build.log`。
+
+```text
+docs/lessons/18-video.md（新正文 coverage hash）
+b162e4b4a24c92d58d342ac496f2aca9abeb6a3f14a25efd59e4f93de5c79a7d
+docs/assets/diagrams/18-video.svg
+9c2bf9984e04e64f5a1f788ea774a74ad74799cb2732b0ce353369ae1d8f3040
+lesson_cases/18-video.py
+0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0
+artifacts/checks/curriculum/18-video.json
+f7d0eb05bad4a736b561c75463049d794d829a09397b19b526782e0e838bb609
+```

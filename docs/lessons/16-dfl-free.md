@@ -147,7 +147,7 @@ PyTorch 的 Smooth L1 預設 beta=1；beta 是平方段與線性段的分界，�
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-dfl-free.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-dfl-free.json)
 
 ??? example "展開本次實際輸出"
 
@@ -156,8 +156,8 @@ PyTorch 的 Smooth L1 預設 beta=1；beta 是平方段與線性段的分界，�
     first SGD distance: [[0.125, 0.125, 0.125, 0.125]]
     direct learned distances: [[1.25, 2.5, 18.0, 3.0]]
     Smooth L1 5.687500 -> 0.000000
-    decoded direct box pixels: [[70.0, 60.0, 224.0, 104.0]]
-    signed-distance example box pixels: [[88.0, 64.0, 104.0, 112.0]]
+    decoded direct box pixels: [[74.0, 64.0, 228.0, 108.0]]
+    signed-distance example box pixels: [[92.0, 68.0, 108.0, 116.0]]
     untrained DFL probability per bin: [0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625, 0.0625]
     untrained DFL expected distances: [[7.5, 7.5, 7.5, 7.5]]
     DFL target for 1.25: bins 1/2 weights .75/.25; direct target is the value 1.25

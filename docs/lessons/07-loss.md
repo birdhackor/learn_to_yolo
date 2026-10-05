@@ -304,13 +304,14 @@ class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母
 
 ## 實際執行紀錄
 
-本節的完整程式已於 2026-10-02 用 PyTorch 2.9.1+cpu 在 CPU 上執行過，程式裡的 assert 檢查全部通過。下面是那次印出的原始輸出；每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-loss.json)
+本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-loss.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
     {'total': 1.933169, 'box': 0.109375, 'objectness': 0.693147, 'classification': 0.693147}
     positive/background objectness gradients -0.03125 0.03125
+    positive-cell class gradients [-0.5, 0.5]
     empty image: finite backward, box/class=0
     ```
 

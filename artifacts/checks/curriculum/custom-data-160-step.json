@@ -1,5 +1,5 @@
 {
-  "created_at_utc": "2026-10-02T18:04:14.983826+00:00",
+  "created_at_utc": "2026-10-05T07:19:37.973243+00:00",
   "fixture": true,
   "config": {
     "seed": 7,
@@ -16,8 +16,8 @@
     "score_threshold": 0.1,
     "nms_iou": 0.5,
     "eval_iou": 0.5,
-    "annotations": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/fixture/annotations.json",
-    "root": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/fixture"
+    "annotations": "artifacts/runs/custom-data-learning/fixture/annotations.json",
+    "root": "artifacts/runs/custom-data-learning/fixture"
   },
   "class_names": [
     "red_rectangle",
@@ -25,6 +25,83 @@
     "yellow_rectangle"
   ],
   "steps_completed": 160,
+  "predeclared_protocol": {
+    "declared_at_utc": "2026-10-05T07:19:38.153527+00:00",
+    "config": {
+      "seed": 7,
+      "device": "cpu",
+      "threads": 2,
+      "batch_size": 8,
+      "optimizer": "Adam",
+      "learning_rate": 0.01,
+      "width": 8,
+      "grid_size": 4,
+      "image_size": 64,
+      "num_classes": 3,
+      "steps": 160,
+      "score_threshold": 0.1,
+      "nms_iou": 0.5,
+      "eval_iou": 0.5,
+      "annotations": "artifacts/runs/custom-data-learning/fixture/annotations.json",
+      "root": "artifacts/runs/custom-data-learning/fixture"
+    },
+    "fixture_test_seed": 7000,
+    "test_evaluations_at_declaration": 0,
+    "selection": "Final fixed step; no parameter search"
+  },
+  "image_cli_compatibility": {
+    "callable": "scripts.detect_image.detect_image",
+    "validation_index": 1,
+    "detect_image_script_sha256": "69738c487cfad24bea2009384712ca0ba958ac1fd394e2226ae33d7de9682c6a",
+    "original_size": {
+      "width": 80,
+      "height": 120
+    },
+    "output_png": "artifacts/runs/custom-data-learning/validation-001-original-inference.png",
+    "output_json": "artifacts/runs/custom-data-learning/validation-001-original-inference.json",
+    "output_json_sha256": "e6407b71dd343f5426f299a941d6394eea0659c8eb54ac2e8e51999871fd3cef",
+    "output_json_sha256_scope": "Computed after rewriting output_json's image_path and checkpoint_path, which this call writes as absolute paths, relative to the repository (paths outside it stay absolute), so the value does not depend on where the checkout is",
+    "checks": {
+      "original_size_correct": true,
+      "class_names_correct": true,
+      "class_ids_in_range": true,
+      "same_labels_as_letterbox": true,
+      "same_scores_as_letterbox_within_1e_minus_6": true,
+      "inverse_letterbox_boxes_within_1e_minus_4": true,
+      "output_png_original_size": true
+    },
+    "standalone_cli": {
+      "command": "python scripts/detect_image.py --image artifacts/runs/custom-data-learning/fixture/validation/scene-001.png --checkpoint artifacts/runs/custom-data-learning/checkpoint.pt --output artifacts/runs/custom-data-learning/validation-001-cli-inference.png --score-threshold 0.1 --nms-iou 0.5",
+      "working_directory": "repository root",
+      "output_json": "artifacts/runs/custom-data-learning/validation-001-cli-inference.json",
+      "output_json_sha256": "e6407b71dd343f5426f299a941d6394eea0659c8eb54ac2e8e51999871fd3cef",
+      "scope": "Separate process run from the repository root; its JSON must equal the in-process call's JSON exactly, except image_path and checkpoint_path, which may be spelled differently but must name the same files",
+      "path_fields_equivalent": true,
+      "prediction_fields_exact": true
+    },
+    "coordinate_note": "Inference boxes use original-image pixel coordinates after undo_letterbox; AP50 evaluation and SVG use 64x64 letterboxed coordinates. This is validation-image inference, not another test evaluation.",
+    "prediction": {
+      "class_names": [
+        "red_rectangle",
+        "blue_rectangle",
+        "yellow_rectangle"
+      ],
+      "boxes": [
+        [
+          33.25985336303711,
+          99.23307800292969,
+          48.694393157958984,
+          100.04398345947266
+        ]
+      ],
+      "scores": [
+        0.6608767509460449
+      ],
+      "labels": [
+        0
+      ]
+    }
+  },
   "dependencies": {
     "python": "3.12.14",
     "torch": "2.9.1+cpu",
@@ -33,7 +110,8 @@
   },
   "data": {
     "manifest_sha256": "b8dd1ab0fbb3ecfa2c4e0a8290e20571dbbee7f3116ac6403f893a216bee3927",
-    "image_inventory_sha256": "8707d33e36529db613c2c88076c89fe8e736791c5599b243707aad57a4da67c7",
+    "image_inventory_sha256": "71700e28550a9c303aa2fda28580691200b8f7db9607208f7eb0dee721008fff",
+    "decoded_rgb_inventory_sha256": "2e9bfc3f5d934bcf465c77edfb1df937368535fe072f550a8ac1cd216dc6fe5c",
     "split_counts": {
       "train": {
         "images": 24,
@@ -92,24 +170,30 @@
       "cross_split_png_duplicates": 0,
       "cross_split_decoded_rgb_duplicates": 0
     },
-    "inventory": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/image-inventory.json",
+    "inventory": "artifacts/runs/custom-data-learning/image-inventory.json",
     "provenance": "Seeded synthetic rectangles, not real video frames"
   },
   "code": {
-    "script_sha256": "5c3d9d89c3d59d8d9ed47d3fdc049476955dd41f494ff592da225a8ccc5c13a4",
-    "repository_commit": "c0463720b24c4d8a86c739f8c2784ad25164a6ee",
-    "commit_scope": "Checkout base commit; script SHA identifies the executed working-tree script",
-    "core_sha256": {
-      "custom_data.py": "7dd9999f03dbc32ce1ec951c58121c8f746d381b0244e4c2a82cca59e7ca7e55",
-      "models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
-      "targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
-      "train.py": "9bc4b4fef1e1a19f2da9e9f7f4a17cf4b50b4433f8cdb56e01d1049e8316f26b",
-      "losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
-      "inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
-      "metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
-      "checkpoint.py": "2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b"
-    },
-    "executed_script_snapshot": "artifacts/runs/custom-data-learning/executed-160-step-script.py"
+    "script_sha256": "b8b3b442e4e2349173a2eb8198b33f966d1e75d80c8b1edb07d1af4d3b5e99e5",
+    "repository_commit": "3f72bb5eeb4ee417898bcee24c93d52c92085e2c",
+    "commit_scope": "Checkout base commit; dependencies_sha256 identifies the executed working-tree files"
+  },
+  "dependencies_sha256": {
+    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+    "miniyolo/checkpoint.py": "2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b",
+    "miniyolo/custom_data.py": "7dd9999f03dbc32ce1ec951c58121c8f746d381b0244e4c2a82cca59e7ca7e55",
+    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+    "miniyolo/figures.py": "155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+    "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+    "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+    "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+    "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+    "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+    "miniyolo/train.py": "aa5567f11be6ca7aee97bd082b9d5964414b12b73453763c915c7ffb409c4276",
+    "scripts/detect_image.py": "69738c487cfad24bea2009384712ca0ba958ac1fd394e2226ae33d7de9682c6a",
+    "scripts/run_custom_data_learning.py": "b8b3b442e4e2349173a2eb8198b33f966d1e75d80c8b1edb07d1af4d3b5e99e5"
   },
   "initial_train_loss": {
     "total": 1.5501668453216553,
@@ -118,10 +202,10 @@
     "classification": 1.10483717918396
   },
   "final_train_loss": {
-    "total": 0.16920891404151917,
-    "box": 0.018895050510764122,
-    "objectness": 0.02833336591720581,
-    "classification": 0.046400286257267
+    "total": 0.16977311670780182,
+    "box": 0.018904205411672592,
+    "objectness": 0.028309650719165802,
+    "classification": 0.04694243147969246
   },
   "loss_decreased_on_same_full_train_set": true,
   "loss_history": [
@@ -163,7 +247,7 @@
     {
       "step": 6,
       "total": 1.4954335689544678,
-      "box": 0.03921165689826012,
+      "box": 0.03921164944767952,
       "objectness": 0.2252149134874344,
       "classification": 1.0741603374481201
     },
@@ -171,15 +255,15 @@
       "step": 7,
       "total": 1.4504098892211914,
       "box": 0.04276708886027336,
-      "objectness": 0.22282323241233826,
+      "objectness": 0.22282324731349945,
       "classification": 1.0137512683868408
     },
     {
       "step": 8,
       "total": 1.3415672779083252,
-      "box": 0.029224185273051262,
+      "box": 0.029224177822470665,
       "objectness": 0.22321629524230957,
-      "classification": 0.972230076789856
+      "classification": 0.9722301363945007
     },
     {
       "step": 9,
@@ -190,57 +274,57 @@
     },
     {
       "step": 10,
-      "total": 1.126338005065918,
-      "box": 0.035096436738967896,
-      "objectness": 0.22580640017986298,
-      "classification": 0.7250493764877319
+      "total": 1.1263378858566284,
+      "box": 0.035096440464258194,
+      "objectness": 0.2258063703775406,
+      "classification": 0.7250493168830872
     },
     {
       "step": 11,
       "total": 1.046179175376892,
-      "box": 0.038198165595531464,
-      "objectness": 0.23917733132839203,
+      "box": 0.03819817304611206,
+      "objectness": 0.23917731642723083,
       "classification": 0.6160110235214233
     },
     {
       "step": 12,
       "total": 0.8885749578475952,
-      "box": 0.01939399540424347,
+      "box": 0.01939399726688862,
       "objectness": 0.23419319093227386,
       "classification": 0.557411789894104
     },
     {
       "step": 13,
       "total": 0.8676397204399109,
-      "box": 0.027684230357408524,
-      "objectness": 0.23085975646972656,
-      "classification": 0.498358815908432
+      "box": 0.027684228494763374,
+      "objectness": 0.23085978627204895,
+      "classification": 0.4983587861061096
     },
     {
       "step": 14,
       "total": 0.8618881702423096,
-      "box": 0.034801188856363297,
+      "box": 0.034801192581653595,
       "objectness": 0.24648509919643402,
       "classification": 0.44139713048934937
     },
     {
       "step": 15,
-      "total": 0.7271544337272644,
-      "box": 0.010776127688586712,
+      "total": 0.7271544933319092,
+      "box": 0.010776126757264137,
       "objectness": 0.23690690100193024,
-      "classification": 0.43636688590049744
+      "classification": 0.4363669455051422
     },
     {
       "step": 16,
       "total": 0.8262783288955688,
-      "box": 0.02011282928287983,
+      "box": 0.02011282742023468,
       "objectness": 0.2262982726097107,
       "classification": 0.49941590428352356
     },
     {
       "step": 17,
-      "total": 0.7944592237472534,
-      "box": 0.028298692777752876,
+      "total": 0.794459342956543,
+      "box": 0.02829870395362377,
       "objectness": 0.23753510415554047,
       "classification": 0.4154306948184967
     },
@@ -248,22 +332,22 @@
       "step": 18,
       "total": 0.6502281427383423,
       "box": 0.01104379165917635,
-      "objectness": 0.21761859953403473,
-      "classification": 0.377390593290329
+      "objectness": 0.21761861443519592,
+      "classification": 0.3773905634880066
     },
     {
       "step": 19,
-      "total": 0.7559139728546143,
-      "box": 0.013657520525157452,
-      "objectness": 0.20311681926250458,
-      "classification": 0.48450955748558044
+      "total": 0.7559138536453247,
+      "box": 0.0136575223878026,
+      "objectness": 0.20311680436134338,
+      "classification": 0.4845094680786133
     },
     {
       "step": 20,
-      "total": 0.6767112016677856,
-      "box": 0.016370650380849838,
+      "total": 0.6767111420631409,
+      "box": 0.016370652243494987,
       "objectness": 0.2143576294183731,
-      "classification": 0.38050028681755066
+      "classification": 0.38050025701522827
     },
     {
       "step": 21,
@@ -275,983 +359,983 @@
     {
       "step": 22,
       "total": 0.6680147647857666,
-      "box": 0.0092731062322855,
-      "objectness": 0.18245382606983185,
+      "box": 0.009273110888898373,
+      "objectness": 0.18245384097099304,
       "classification": 0.4391953945159912
     },
     {
       "step": 23,
-      "total": 0.5759559869766235,
+      "total": 0.5759559273719788,
       "box": 0.011374873109161854,
       "objectness": 0.20308782160282135,
-      "classification": 0.3159937560558319
+      "classification": 0.3159937262535095
     },
     {
       "step": 24,
-      "total": 0.5311689972877502,
+      "total": 0.531169056892395,
       "box": 0.009600842371582985,
       "objectness": 0.17939570546150208,
-      "classification": 0.3037690818309784
+      "classification": 0.3037691116333008
     },
     {
       "step": 25,
       "total": 0.5378090143203735,
       "box": 0.012438373640179634,
-      "objectness": 0.16734550893306732,
-      "classification": 0.3082716166973114
+      "objectness": 0.16734552383422852,
+      "classification": 0.3082716464996338
     },
     {
       "step": 26,
       "total": 0.45247095823287964,
-      "box": 0.012271875515580177,
+      "box": 0.012271881103515625,
       "objectness": 0.20417827367782593,
       "classification": 0.18693329393863678
     },
     {
       "step": 27,
       "total": 0.46664923429489136,
-      "box": 0.010457019321620464,
+      "box": 0.010457022115588188,
       "objectness": 0.18132832646369934,
-      "classification": 0.23303580284118652
+      "classification": 0.23303578794002533
     },
     {
       "step": 28,
       "total": 0.44081825017929077,
-      "box": 0.020675381645560265,
+      "box": 0.020675385370850563,
       "objectness": 0.1615830510854721,
-      "classification": 0.175858274102211
+      "classification": 0.1758582442998886
     },
     {
       "step": 29,
-      "total": 0.36806824803352356,
-      "box": 0.013436860404908657,
-      "objectness": 0.19898001849651337,
-      "classification": 0.10190393775701523
+      "total": 0.36806827783584595,
+      "box": 0.013436869718134403,
+      "objectness": 0.19898000359535217,
+      "classification": 0.10190390795469284
     },
     {
       "step": 30,
-      "total": 0.4705158472061157,
-      "box": 0.011968043632805347,
-      "objectness": 0.17991283535957336,
-      "classification": 0.2307628095149994
+      "total": 0.4705156981945038,
+      "box": 0.011968044564127922,
+      "objectness": 0.17991286516189575,
+      "classification": 0.23076260089874268
     },
     {
       "step": 31,
-      "total": 0.3049653172492981,
-      "box": 0.01902466081082821,
-      "objectness": 0.13657830655574799,
-      "classification": 0.07326368987560272
+      "total": 0.3049652874469757,
+      "box": 0.019024668261408806,
+      "objectness": 0.1365782916545868,
+      "classification": 0.07326363772153854
     },
     {
       "step": 32,
       "total": 0.30644768476486206,
-      "box": 0.014893345534801483,
+      "box": 0.014893360435962677,
       "objectness": 0.18323709070682526,
-      "classification": 0.04874386265873909
+      "classification": 0.04874379187822342
     },
     {
       "step": 33,
-      "total": 0.3812404274940491,
-      "box": 0.007432412821799517,
-      "objectness": 0.1814497709274292,
-      "classification": 0.16262860596179962
+      "total": 0.3812403082847595,
+      "box": 0.0074324109591543674,
+      "objectness": 0.1814498007297516,
+      "classification": 0.16262845695018768
     },
     {
       "step": 34,
       "total": 0.2583766579627991,
-      "box": 0.018511386588215828,
+      "box": 0.018511390313506126,
       "objectness": 0.12870794534683228,
-      "classification": 0.037111785262823105
+      "classification": 0.03711175173521042
     },
     {
       "step": 35,
-      "total": 0.29174792766571045,
+      "total": 0.29174795746803284,
       "box": 0.02173738181591034,
       "objectness": 0.15693683922290802,
-      "classification": 0.026124194264411926
+      "classification": 0.026124197989702225
     },
     {
       "step": 36,
-      "total": 0.39441952109336853,
-      "box": 0.017531193792819977,
-      "objectness": 0.17421244084835052,
-      "classification": 0.13255110383033752
+      "total": 0.39441943168640137,
+      "box": 0.017531191930174828,
+      "objectness": 0.17421242594718933,
+      "classification": 0.13255104422569275
     },
     {
       "step": 37,
-      "total": 0.23442313075065613,
-      "box": 0.0157171543687582,
-      "objectness": 0.12110477685928345,
-      "classification": 0.034732572734355927
+      "total": 0.23442310094833374,
+      "box": 0.01571715623140335,
+      "objectness": 0.12110478430986404,
+      "classification": 0.03473254293203354
     },
     {
       "step": 38,
-      "total": 0.26256445050239563,
-      "box": 0.018313173204660416,
+      "total": 0.26256436109542847,
+      "box": 0.018313167616724968,
       "objectness": 0.14695872366428375,
-      "classification": 0.024039864540100098
+      "classification": 0.024039816111326218
     },
     {
       "step": 39,
-      "total": 0.2539908289909363,
-      "box": 0.01229031104594469,
-      "objectness": 0.16859138011932373,
-      "classification": 0.023947888985276222
+      "total": 0.2539907991886139,
+      "box": 0.012290304526686668,
+      "objectness": 0.16859139502048492,
+      "classification": 0.02394787408411503
     },
     {
       "step": 40,
-      "total": 0.23564228415489197,
-      "box": 0.02014027163386345,
-      "objectness": 0.12826131284236908,
-      "classification": 0.006679606158286333
+      "total": 0.2356422245502472,
+      "box": 0.020140256732702255,
+      "objectness": 0.12826134264469147,
+      "classification": 0.00667958939447999
     },
     {
       "step": 41,
-      "total": 0.2600744068622589,
+      "total": 0.2600743770599365,
       "box": 0.021964585408568382,
-      "objectness": 0.13506749272346497,
-      "classification": 0.015183999203145504
+      "objectness": 0.13506747782230377,
+      "classification": 0.015183983370661736
     },
     {
       "step": 42,
-      "total": 0.22439934313297272,
-      "box": 0.009335632435977459,
-      "objectness": 0.15962816774845123,
-      "classification": 0.018093004822731018
+      "total": 0.22439922392368317,
+      "box": 0.009335627779364586,
+      "objectness": 0.15962810814380646,
+      "classification": 0.018092971295118332
     },
     {
       "step": 43,
-      "total": 0.19735027849674225,
-      "box": 0.01636463776230812,
-      "objectness": 0.11227236688137054,
+      "total": 0.19735018908977509,
+      "box": 0.016364622861146927,
+      "objectness": 0.11227235198020935,
       "classification": 0.003254721174016595
     },
     {
       "step": 44,
-      "total": 0.2151551991701126,
-      "box": 0.01850157603621483,
-      "objectness": 0.1198916882276535,
+      "total": 0.21515513956546783,
+      "box": 0.018501566722989082,
+      "objectness": 0.1198916807770729,
       "classification": 0.00275562540628016
     },
     {
       "step": 45,
-      "total": 0.18883590400218964,
-      "box": 0.007703505456447601,
-      "objectness": 0.1368919163942337,
-      "classification": 0.013426467776298523
+      "total": 0.18883581459522247,
+      "box": 0.007703491020947695,
+      "objectness": 0.1368919014930725,
+      "classification": 0.01342645101249218
     },
     {
       "step": 46,
-      "total": 0.14413046836853027,
-      "box": 0.011716822162270546,
-      "objectness": 0.0800061821937561,
-      "classification": 0.0055401744320988655
+      "total": 0.14413043856620789,
+      "box": 0.011716818436980247,
+      "objectness": 0.0800061747431755,
+      "classification": 0.005540157668292522
     },
     {
       "step": 47,
-      "total": 0.17614737153053284,
+      "total": 0.17614735662937164,
       "box": 0.014189362525939941,
-      "objectness": 0.10287997126579285,
+      "objectness": 0.10287995636463165,
       "classification": 0.002320593921467662
     },
     {
       "step": 48,
-      "total": 0.2132902890443802,
-      "box": 0.011907546781003475,
-      "objectness": 0.12172567844390869,
-      "classification": 0.032026875764131546
+      "total": 0.21329018473625183,
+      "box": 0.011907531879842281,
+      "objectness": 0.1217256709933281,
+      "classification": 0.03202684968709946
     },
     {
       "step": 49,
-      "total": 0.10237565636634827,
-      "box": 0.0071347556076943874,
-      "objectness": 0.0598953478038311,
-      "classification": 0.0068065267987549305
+      "total": 0.10237559676170349,
+      "box": 0.007134753279387951,
+      "objectness": 0.05989532545208931,
+      "classification": 0.006806510500609875
     },
     {
       "step": 50,
-      "total": 0.1446988731622696,
-      "box": 0.010226068086922169,
+      "total": 0.14469879865646362,
+      "box": 0.010226053185760975,
       "objectness": 0.09241178631782532,
       "classification": 0.0011567447800189257
     },
     {
       "step": 51,
-      "total": 0.17696599662303925,
-      "box": 0.01083659939467907,
+      "total": 0.17696619033813477,
+      "box": 0.010836644098162651,
       "objectness": 0.11203795671463013,
-      "classification": 0.010745039209723473
+      "classification": 0.010745023377239704
     },
     {
       "step": 52,
-      "total": 0.09833966195583344,
-      "box": 0.008597352541983128,
-      "objectness": 0.053635433316230774,
-      "classification": 0.0017174629028886557
+      "total": 0.09833943843841553,
+      "box": 0.008597315289080143,
+      "objectness": 0.05363541841506958,
+      "classification": 0.001717445789836347
     },
     {
       "step": 53,
-      "total": 0.1276732087135315,
-      "box": 0.008144956082105637,
-      "objectness": 0.0855058878660202,
+      "total": 0.12767310440540314,
+      "box": 0.008144940249621868,
+      "objectness": 0.08550587296485901,
       "classification": 0.001442543463781476
     },
     {
       "step": 54,
-      "total": 0.14827293157577515,
-      "box": 0.007423606235533953,
-      "objectness": 0.10031749308109283,
-      "classification": 0.010837411507964134
+      "total": 0.14827287197113037,
+      "box": 0.007423597387969494,
+      "objectness": 0.10031744837760925,
+      "classification": 0.010837443172931671
     },
     {
       "step": 55,
-      "total": 0.06346160918474197,
-      "box": 0.003376672277227044,
-      "objectness": 0.044980328530073166,
+      "total": 0.06346163898706436,
+      "box": 0.003376679727807641,
+      "objectness": 0.04498032107949257,
       "classification": 0.0015979183372110128
     },
     {
       "step": 56,
-      "total": 0.1417250782251358,
-      "box": 0.013098415918648243,
+      "total": 0.14172489941120148,
+      "box": 0.013098380528390408,
       "objectness": 0.0746869295835495,
       "classification": 0.0015460631111636758
     },
     {
       "step": 57,
-      "total": 0.1205713301897049,
-      "box": 0.004925650078803301,
-      "objectness": 0.08712323009967804,
-      "classification": 0.00881984643638134
+      "total": 0.12057116627693176,
+      "box": 0.004925617016851902,
+      "objectness": 0.08712321519851685,
+      "classification": 0.008819862268865108
     },
     {
       "step": 58,
-      "total": 0.0809432715177536,
-      "box": 0.007955074310302734,
-      "objectness": 0.038352120667696,
+      "total": 0.08094334602355957,
+      "box": 0.007955089211463928,
+      "objectness": 0.0383521169424057,
       "classification": 0.00281577929854393
     },
     {
       "step": 59,
-      "total": 0.10322977602481842,
-      "box": 0.00791403092443943,
-      "objectness": 0.06250549107789993,
+      "total": 0.10322976112365723,
+      "box": 0.007914028130471706,
+      "objectness": 0.06250548362731934,
       "classification": 0.001154135912656784
     },
     {
       "step": 60,
-      "total": 0.11650536209344864,
-      "box": 0.006032691337168217,
-      "objectness": 0.07799171656370163,
-      "classification": 0.008350187912583351
+      "total": 0.11650518327951431,
+      "box": 0.0060326578095555305,
+      "objectness": 0.07799170911312103,
+      "classification": 0.008350188843905926
     },
     {
       "step": 61,
-      "total": 0.06419750303030014,
-      "box": 0.005119232926517725,
-      "objectness": 0.0357842743396759,
+      "total": 0.06419742107391357,
+      "box": 0.005119218956679106,
+      "objectness": 0.03578426316380501,
       "classification": 0.0028170659206807613
     },
     {
       "step": 62,
-      "total": 0.07304011285305023,
-      "box": 0.004789520055055618,
+      "total": 0.07304012775421143,
+      "box": 0.004789523780345917,
       "objectness": 0.04687089845538139,
       "classification": 0.002221614820882678
     },
     {
       "step": 63,
-      "total": 0.0993441790342331,
-      "box": 0.004836863838136196,
-      "objectness": 0.06934060156345367,
+      "total": 0.09934411942958832,
+      "box": 0.004836850333958864,
+      "objectness": 0.06934061646461487,
       "classification": 0.005819257348775864
     },
     {
       "step": 64,
       "total": 0.07793284952640533,
-      "box": 0.008472143672406673,
-      "objectness": 0.0335632786154747,
+      "box": 0.008472146466374397,
+      "objectness": 0.03356326371431351,
       "classification": 0.002008858136832714
     },
     {
       "step": 65,
-      "total": 0.06933023780584335,
-      "box": 0.005975027102977037,
-      "objectness": 0.03686022385954857,
-      "classification": 0.0025948777329176664
+      "total": 0.06933017820119858,
+      "box": 0.005975023843348026,
+      "objectness": 0.03686020150780678,
+      "classification": 0.0025948609691113234
     },
     {
       "step": 66,
-      "total": 0.08480619639158249,
-      "box": 0.00374361383728683,
-      "objectness": 0.062043726444244385,
-      "classification": 0.004044396337121725
+      "total": 0.08480621874332428,
+      "box": 0.003743619890883565,
+      "objectness": 0.06204374507069588,
+      "classification": 0.004044379573315382
     },
     {
       "step": 67,
-      "total": 0.047657620161771774,
-      "box": 0.0030664713121950626,
-      "objectness": 0.030862819403409958,
+      "total": 0.047657690942287445,
+      "box": 0.0030664864461869,
+      "objectness": 0.03086281381547451,
       "classification": 0.0014624444302171469
     },
     {
       "step": 68,
-      "total": 0.0587322972714901,
-      "box": 0.005064568016678095,
-      "objectness": 0.03288731724023819,
+      "total": 0.0587322823703289,
+      "box": 0.005064569879323244,
+      "objectness": 0.0328872948884964,
       "classification": 0.0005221398314461112
     },
     {
       "step": 69,
-      "total": 0.07895689457654953,
-      "box": 0.004077804274857044,
+      "total": 0.07895683497190475,
+      "box": 0.004077794961631298,
       "objectness": 0.05604212358593941,
-      "classification": 0.002525755437090993
+      "classification": 0.00252573867328465
     },
     {
       "step": 70,
-      "total": 0.04384374991059303,
-      "box": 0.0033423297572880983,
-      "objectness": 0.025098012760281563,
-      "classification": 0.002034087898209691
+      "total": 0.04384375736117363,
+      "box": 0.003342335345223546,
+      "objectness": 0.025098007172346115,
+      "classification": 0.0020340709015727043
     },
     {
       "step": 71,
-      "total": 0.04927707836031914,
+      "total": 0.04927708953619003,
       "box": 0.0032899915240705013,
-      "objectness": 0.03258233144879341,
+      "objectness": 0.03258234262466431,
       "classification": 0.00024478902923874557
     },
     {
       "step": 72,
-      "total": 0.06953946501016617,
-      "box": 0.003570570144802332,
-      "objectness": 0.04968594014644623,
+      "total": 0.0695393905043602,
+      "box": 0.0035705561749637127,
+      "objectness": 0.04968593269586563,
       "classification": 0.0020006720442324877
     },
     {
       "step": 73,
-      "total": 0.03910277038812637,
-      "box": 0.0033477286342531443,
-      "objectness": 0.021192369982600212,
+      "total": 0.03910267353057861,
+      "box": 0.0033477111719548702,
+      "objectness": 0.021192360669374466,
       "classification": 0.0011717554880306125
     },
     {
       "step": 74,
-      "total": 0.04725341126322746,
-      "box": 0.003760014194995165,
-      "objectness": 0.028287209570407867,
+      "total": 0.04725337401032448,
+      "box": 0.0037600058130919933,
+      "objectness": 0.028287215158343315,
       "classification": 0.00016612757463008165
     },
     {
       "step": 75,
-      "total": 0.061304498463869095,
-      "box": 0.0030360000673681498,
+      "total": 0.0613044798374176,
+      "box": 0.003035995876416564,
       "objectness": 0.04449502378702164,
       "classification": 0.0016294737579301
     },
     {
       "step": 76,
-      "total": 0.03328369930386543,
-      "box": 0.0029196671675890684,
-      "objectness": 0.017818937078118324,
+      "total": 0.03328368440270424,
+      "box": 0.00291966600343585,
+      "objectness": 0.017818931490182877,
       "classification": 0.0008664236520417035
     },
     {
       "step": 77,
-      "total": 0.04318174719810486,
-      "box": 0.0033200529869645834,
-      "objectness": 0.026451731100678444,
+      "total": 0.04318162798881531,
+      "box": 0.003320036455988884,
+      "objectness": 0.02645169198513031,
       "classification": 0.00012975337449461222
     },
     {
       "step": 78,
-      "total": 0.05577781796455383,
-      "box": 0.0027423950377851725,
-      "objectness": 0.040417131036520004,
+      "total": 0.05577785149216652,
+      "box": 0.002742397366091609,
+      "objectness": 0.040417153388261795,
       "classification": 0.001648714067414403
     },
     {
       "step": 79,
-      "total": 0.025642529129981995,
-      "box": 0.002029244787991047,
-      "objectness": 0.014741428196430206,
+      "total": 0.02564254403114319,
+      "box": 0.0020292496774345636,
+      "objectness": 0.01474141888320446,
       "classification": 0.0007548787398263812
     },
     {
       "step": 80,
-      "total": 0.04067571461200714,
-      "box": 0.003222485538572073,
-      "objectness": 0.024469908326864243,
+      "total": 0.04067561775445938,
+      "box": 0.0032224729657173157,
+      "objectness": 0.024469874799251556,
       "classification": 9.337696974398568e-05
     },
     {
       "step": 81,
-      "total": 0.0507563054561615,
-      "box": 0.0024781939573585987,
-      "objectness": 0.036947015672922134,
+      "total": 0.050756316632032394,
+      "box": 0.002478191861882806,
+      "objectness": 0.03694703429937363,
       "classification": 0.001418321393430233
     },
     {
       "step": 82,
-      "total": 0.02758914604783058,
-      "box": 0.0028513013385236263,
-      "objectness": 0.012460018508136272,
-      "classification": 0.0008726199739612639
+      "total": 0.02758909948170185,
+      "box": 0.002851290162652731,
+      "objectness": 0.01246001198887825,
+      "classification": 0.0008726368541829288
     },
     {
       "step": 83,
       "total": 0.03394950181245804,
-      "box": 0.002359556732699275,
-      "objectness": 0.022074615582823753,
+      "box": 0.0023595562670379877,
+      "objectness": 0.022074617445468903,
       "classification": 7.710120553383604e-05
     },
     {
       "step": 84,
-      "total": 0.05101656913757324,
-      "box": 0.003027811646461487,
+      "total": 0.05101650953292847,
+      "box": 0.0030278025660663843,
       "objectness": 0.034365616738796234,
-      "classification": 0.001511894864961505
+      "classification": 0.0015118781011551619
     },
     {
       "step": 85,
-      "total": 0.027070393785834312,
-      "box": 0.0028166412375867367,
-      "objectness": 0.012284726835787296,
+      "total": 0.02707032486796379,
+      "box": 0.0028166291303932667,
+      "objectness": 0.012284718453884125,
       "classification": 0.0007024618680588901
     },
     {
       "step": 86,
-      "total": 0.03400218114256859,
-      "box": 0.0029311419930309057,
-      "objectness": 0.019280845299363136,
+      "total": 0.03400218486785889,
+      "box": 0.002931145718321204,
+      "objectness": 0.01928083226084709,
       "classification": 6.562518683495e-05
     },
     {
       "step": 87,
-      "total": 0.04854409769177437,
-      "box": 0.0034861289896070957,
-      "objectness": 0.02964804321527481,
-      "classification": 0.0014654103433713317
+      "total": 0.04854414612054825,
+      "box": 0.0034861366730183363,
+      "objectness": 0.029648033902049065,
+      "classification": 0.0014654274564236403
     },
     {
       "step": 88,
-      "total": 0.026480920612812042,
-      "box": 0.002662683604285121,
-      "objectness": 0.01242812443524599,
+      "total": 0.026480872184038162,
+      "box": 0.0026626773178577423,
+      "objectness": 0.012428107671439648,
       "classification": 0.0007393771084025502
     },
     {
       "step": 89,
-      "total": 0.02530481107532978,
-      "box": 0.001450542127713561,
-      "objectness": 0.018003417178988457,
+      "total": 0.025304855778813362,
+      "box": 0.0014505541184917092,
+      "objectness": 0.018003402277827263,
       "classification": 4.8684629291528836e-05
     },
     {
       "step": 90,
-      "total": 0.045003920793533325,
-      "box": 0.0034017323050647974,
-      "objectness": 0.026485949754714966,
+      "total": 0.04500386491417885,
+      "box": 0.003401725087314844,
+      "objectness": 0.026485931128263474,
       "classification": 0.001509309746325016
     },
     {
       "step": 91,
-      "total": 0.019515186548233032,
-      "box": 0.0015583281638100743,
-      "objectness": 0.010944087989628315,
+      "total": 0.019515082240104675,
+      "box": 0.0015583118656650186,
+      "objectness": 0.01094406470656395,
       "classification": 0.0007794579723849893
     },
     {
       "step": 92,
-      "total": 0.02543386071920395,
-      "box": 0.0016838860465213656,
-      "objectness": 0.01698113977909088,
+      "total": 0.025434117764234543,
+      "box": 0.0016839358722791076,
+      "objectness": 0.01698114722967148,
       "classification": 3.329163882881403e-05
     },
     {
       "step": 93,
-      "total": 0.03906134516000748,
-      "box": 0.002800707472488284,
-      "objectness": 0.023909732699394226,
-      "classification": 0.0011480750981718302
+      "total": 0.0390612855553627,
+      "box": 0.002800700720399618,
+      "objectness": 0.02390971966087818,
+      "classification": 0.0011480582179501653
     },
     {
       "step": 94,
-      "total": 0.016313081607222557,
-      "box": 0.0013685853919014335,
-      "objectness": 0.009008511900901794,
+      "total": 0.016313007101416588,
+      "box": 0.0013685720041394234,
+      "objectness": 0.009008502587676048,
       "classification": 0.000461643940070644
     },
     {
       "step": 95,
-      "total": 0.020565971732139587,
-      "box": 0.0009067347855307162,
-      "objectness": 0.016004914417862892,
+      "total": 0.020565960556268692,
+      "box": 0.0009067307109944522,
+      "objectness": 0.01600492373108864,
       "classification": 2.7382704502088018e-05
     },
     {
       "step": 96,
-      "total": 0.03375595435500145,
-      "box": 0.0021976532880216837,
-      "objectness": 0.02140776440501213,
+      "total": 0.03375599905848503,
+      "box": 0.0021976681891828775,
+      "objectness": 0.021407732740044594,
       "classification": 0.0013599250232800841
     },
     {
       "step": 97,
-      "total": 0.016129912808537483,
-      "box": 0.001529421773739159,
-      "objectness": 0.008112763985991478,
+      "total": 0.01612989604473114,
+      "box": 0.0015294181648641825,
+      "objectness": 0.008112765848636627,
       "classification": 0.00037004027399234474
     },
     {
       "step": 98,
-      "total": 0.025618690997362137,
-      "box": 0.002212531864643097,
-      "objectness": 0.014538150280714035,
+      "total": 0.025618884712457657,
+      "box": 0.0022125686518847942,
+      "objectness": 0.014538158662617207,
       "classification": 1.7880853192764334e-05
     },
     {
       "step": 99,
-      "total": 0.03152025490999222,
-      "box": 0.0023458802606910467,
-      "objectness": 0.018913013860583305,
+      "total": 0.0315203033387661,
+      "box": 0.002345895627513528,
+      "objectness": 0.018912987783551216,
       "classification": 0.0008778368355706334
     },
     {
       "step": 100,
-      "total": 0.014731357805430889,
-      "box": 0.001235113712027669,
-      "objectness": 0.007751938421279192,
+      "total": 0.01473136618733406,
+      "box": 0.0012351155746728182,
+      "objectness": 0.00775193702429533,
       "classification": 0.0008038515807129443
     },
     {
       "step": 101,
-      "total": 0.022351451218128204,
-      "box": 0.0017670750385150313,
-      "objectness": 0.013500766828656197,
+      "total": 0.022351665422320366,
+      "box": 0.0017671181121841073,
+      "objectness": 0.013500765897333622,
       "classification": 1.5309484297176823e-05
     },
     {
       "step": 102,
-      "total": 0.028984064236283302,
-      "box": 0.002209543250501156,
-      "objectness": 0.01711374893784523,
+      "total": 0.028984075412154198,
+      "box": 0.0022095462772995234,
+      "objectness": 0.01711374707520008,
       "classification": 0.0008225979399867356
     },
     {
       "step": 103,
-      "total": 0.015052422881126404,
-      "box": 0.0014694664860144258,
-      "objectness": 0.0068984986282885075,
+      "total": 0.01505258958786726,
+      "box": 0.0014695067657157779,
+      "objectness": 0.006898463238030672,
       "classification": 0.0008065921138040721
     },
     {
       "step": 104,
-      "total": 0.024041397497057915,
-      "box": 0.0023373381700366735,
-      "objectness": 0.012343332171440125,
+      "total": 0.02404160238802433,
+      "box": 0.002337380778044462,
+      "objectness": 0.012343321926891804,
       "classification": 1.1375718713679817e-05
     },
     {
       "step": 105,
-      "total": 0.030056217685341835,
-      "box": 0.002912180731073022,
-      "objectness": 0.014921015128493309,
+      "total": 0.030056361109018326,
+      "box": 0.0029122023843228817,
+      "objectness": 0.014921048656105995,
       "classification": 0.0005743008223362267
     },
     {
       "step": 106,
-      "total": 0.014818970113992691,
-      "box": 0.0016029442194849253,
-      "objectness": 0.006365261971950531,
+      "total": 0.014819123782217503,
+      "box": 0.0016029763501137495,
+      "objectness": 0.006365254987031221,
       "classification": 0.0004389872192405164
     },
     {
       "step": 107,
-      "total": 0.02818222902715206,
-      "box": 0.0030576293356716633,
-      "objectness": 0.012881515547633171,
+      "total": 0.028182361274957657,
+      "box": 0.003057650523260236,
+      "objectness": 0.01288154162466526,
       "classification": 1.256770428881282e-05
     },
     {
       "step": 108,
-      "total": 0.01926734670996666,
-      "box": 0.0015886008040979505,
-      "objectness": 0.010689004324376583,
+      "total": 0.019267596304416656,
+      "box": 0.0015886493492871523,
+      "objectness": 0.010689012706279755,
       "classification": 0.0006353369681164622
     },
     {
       "step": 109,
-      "total": 0.013627495616674423,
-      "box": 0.0012766328873112798,
-      "objectness": 0.006966099143028259,
-      "classification": 0.00027823259006254375
+      "total": 0.013627570122480392,
+      "box": 0.001276645460166037,
+      "objectness": 0.006966094020754099,
+      "classification": 0.0002782495866995305
     },
     {
       "step": 110,
-      "total": 0.03661445528268814,
-      "box": 0.004382757004350424,
-      "objectness": 0.014693090692162514,
+      "total": 0.03661475330591202,
+      "box": 0.0043828124180436134,
+      "objectness": 0.014693115837872028,
       "classification": 7.5782086241815705e-06
     },
     {
       "step": 111,
-      "total": 0.02022615447640419,
-      "box": 0.002275600330904126,
-      "objectness": 0.008401688188314438,
+      "total": 0.020226355642080307,
+      "box": 0.002275634091347456,
+      "objectness": 0.008401719853281975,
       "classification": 0.00044646396418102086
     },
     {
       "step": 112,
-      "total": 0.0276124756783247,
-      "box": 0.004150005057454109,
-      "objectness": 0.006395740434527397,
+      "total": 0.027612268924713135,
+      "box": 0.004149963613599539,
+      "objectness": 0.00639573996886611,
       "classification": 0.0004667098692152649
     },
     {
       "step": 113,
-      "total": 0.023400388658046722,
-      "box": 0.00254174810834229,
-      "objectness": 0.010683320462703705,
+      "total": 0.02340063825249672,
+      "box": 0.002541791880503297,
+      "objectness": 0.010683351196348667,
       "classification": 8.327499926963355e-06
     },
     {
       "step": 114,
-      "total": 0.025553010404109955,
-      "box": 0.0032092088367789984,
-      "objectness": 0.009015209972858429,
+      "total": 0.02555307000875473,
+      "box": 0.0032092188484966755,
+      "objectness": 0.009015219286084175,
       "classification": 0.0004917564219795167
     },
     {
       "step": 115,
-      "total": 0.025348441675305367,
-      "box": 0.0036967634223401546,
-      "objectness": 0.0057084220461547375,
+      "total": 0.025348342955112457,
+      "box": 0.0036967445630580187,
+      "objectness": 0.005708418786525726,
       "classification": 0.001156201702542603
     },
     {
       "step": 116,
-      "total": 0.029295921325683594,
-      "box": 0.003922419156879187,
-      "objectness": 0.00966992974281311,
+      "total": 0.029295699670910835,
+      "box": 0.003922359552234411,
+      "objectness": 0.009670006111264229,
       "classification": 1.3895843949285336e-05
     },
     {
       "step": 117,
-      "total": 0.03470241278409958,
-      "box": 0.004646337125450373,
-      "objectness": 0.010840755887329578,
+      "total": 0.03470248728990555,
+      "box": 0.004646342247724533,
+      "objectness": 0.01084080245345831,
       "classification": 0.0006299720844253898
     },
     {
       "step": 118,
-      "total": 0.01545549463480711,
-      "box": 0.0018604344222694635,
-      "objectness": 0.005375463981181383,
-      "classification": 0.0007778584258630872
+      "total": 0.015455647371709347,
+      "box": 0.0018604638753458858,
+      "objectness": 0.005375453270971775,
+      "classification": 0.000777875364292413
     },
     {
       "step": 119,
-      "total": 0.01957787573337555,
-      "box": 0.002041418803855777,
-      "objectness": 0.009361243806779385,
+      "total": 0.019577376544475555,
+      "box": 0.0020413161255419254,
+      "objectness": 0.009361259639263153,
       "classification": 9.536566722090356e-06
     },
     {
       "step": 120,
-      "total": 0.03825273737311363,
-      "box": 0.005569465924054384,
-      "objectness": 0.009717777371406555,
-      "classification": 0.0006876340485177934
+      "total": 0.03825291618704796,
+      "box": 0.005569487810134888,
+      "objectness": 0.009717825800180435,
+      "classification": 0.0006876509869471192
     },
     {
       "step": 121,
-      "total": 0.02189674973487854,
-      "box": 0.003202336374670267,
-      "objectness": 0.005532376002520323,
-      "classification": 0.00035269188811071217
+      "total": 0.02189802937209606,
+      "box": 0.0032025889959186316,
+      "objectness": 0.005532410927116871,
+      "classification": 0.00035267489147372544
     },
     {
       "step": 122,
-      "total": 0.02083154208958149,
-      "box": 0.0023146478924900293,
-      "objectness": 0.009248631075024605,
+      "total": 0.020831001922488213,
+      "box": 0.0023145524319261312,
+      "objectness": 0.009248566813766956,
       "classification": 9.67276264418615e-06
     },
     {
       "step": 123,
-      "total": 0.032856203615665436,
-      "box": 0.004329889081418514,
-      "objectness": 0.010680342093110085,
-      "classification": 0.0005264116916805506
+      "total": 0.03285576403141022,
+      "box": 0.004329813178628683,
+      "objectness": 0.010680302046239376,
+      "classification": 0.0005263947532512248
     },
     {
       "step": 124,
-      "total": 0.028150098398327827,
-      "box": 0.004585489630699158,
-      "objectness": 0.004622419830411673,
+      "total": 0.028150685131549835,
+      "box": 0.004585600458085537,
+      "objectness": 0.004622451961040497,
       "classification": 0.0006002290756441653
     },
     {
       "step": 125,
-      "total": 0.016943493857979774,
-      "box": 0.0016335950931534171,
-      "objectness": 0.00876513123512268,
+      "total": 0.01694387011229992,
+      "box": 0.001633661799132824,
+      "objectness": 0.008765174075961113,
       "classification": 1.0388054761278909e-05
     },
     {
       "step": 126,
-      "total": 0.02890436165034771,
-      "box": 0.004029194824397564,
-      "objectness": 0.007400729693472385,
-      "classification": 0.001357657602056861
+      "total": 0.028902951627969742,
+      "box": 0.004028921481221914,
+      "objectness": 0.007400735281407833,
+      "classification": 0.0013576069613918662
     },
     {
       "step": 127,
-      "total": 0.04311106726527214,
-      "box": 0.0075738802552223206,
-      "objectness": 0.00496475026011467,
+      "total": 0.04310837760567665,
+      "box": 0.007573336362838745,
+      "objectness": 0.004964778665453196,
       "classification": 0.0002769171551335603
     },
     {
       "step": 128,
-      "total": 0.02455177716910839,
-      "box": 0.0029977881349623203,
-      "objectness": 0.00954482052475214,
+      "total": 0.024551497772336006,
+      "box": 0.0029977404046803713,
+      "objectness": 0.009544779546558857,
       "classification": 1.801688995328732e-05
     },
     {
       "step": 129,
-      "total": 0.018954141065478325,
-      "box": 0.0020253199618309736,
-      "objectness": 0.008303905837237835,
-      "classification": 0.0005236364668235183
+      "total": 0.01895374432206154,
+      "box": 0.0020252421963959932,
+      "objectness": 0.008303863927721977,
+      "classification": 0.0005236704600974917
     },
     {
       "step": 130,
-      "total": 0.028721164911985397,
-      "box": 0.0047658951953053474,
-      "objectness": 0.004410188179463148,
-      "classification": 0.00048150066868402064
+      "total": 0.028720049187541008,
+      "box": 0.004765678662806749,
+      "objectness": 0.004410190042108297,
+      "classification": 0.0004814666754100472
     },
     {
       "step": 131,
-      "total": 0.026701388880610466,
-      "box": 0.0038588468451052904,
-      "objectness": 0.007384642958641052,
+      "total": 0.026700055226683617,
+      "box": 0.0038586186710745096,
+      "objectness": 0.007384448777884245,
       "classification": 2.2512334908242337e-05
     },
     {
       "step": 132,
-      "total": 0.021839693188667297,
-      "box": 0.002284872578456998,
-      "objectness": 0.009859565645456314,
+      "total": 0.021838797256350517,
+      "box": 0.0022847179789096117,
+      "objectness": 0.009859442710876465,
       "classification": 0.0005557640106417239
     },
     {
       "step": 133,
-      "total": 0.013451501727104187,
-      "box": 0.0016491289716213942,
-      "objectness": 0.004853597842156887,
-      "classification": 0.00035225864849053323
+      "total": 0.013450645841658115,
+      "box": 0.0016489628469571471,
+      "objectness": 0.0048535894602537155,
+      "classification": 0.00035224162274971604
     },
     {
       "step": 134,
-      "total": 0.014410906471312046,
-      "box": 0.0013005919754505157,
-      "objectness": 0.007874246686697006,
+      "total": 0.014410285279154778,
+      "box": 0.001300505013205111,
+      "objectness": 0.007874060422182083,
       "classification": 3.369954720255919e-05
     },
     {
       "step": 135,
-      "total": 0.034063443541526794,
-      "box": 0.0047812024131417274,
-      "objectness": 0.0072531853802502155,
-      "classification": 0.0029042463283985853
+      "total": 0.03406183421611786,
+      "box": 0.004780923016369343,
+      "objectness": 0.007253092247992754,
+      "classification": 0.0029041296802461147
     },
     {
       "step": 136,
-      "total": 0.044458258897066116,
-      "box": 0.007828881032764912,
-      "objectness": 0.004891992546617985,
-      "classification": 0.0004218640679027885
+      "total": 0.04445621371269226,
+      "box": 0.007828504778444767,
+      "objectness": 0.004891843535006046,
+      "classification": 0.0004218470712658018
     },
     {
       "step": 137,
-      "total": 0.013715414330363274,
-      "box": 0.001680794870480895,
-      "objectness": 0.005282609723508358,
+      "total": 0.013714734464883804,
+      "box": 0.0016806648345664144,
+      "objectness": 0.00528257992118597,
       "classification": 2.8829916118411347e-05
     },
     {
       "step": 138,
-      "total": 0.018441788852214813,
-      "box": 0.0013679178664460778,
-      "objectness": 0.010613554157316685,
+      "total": 0.01844046078622341,
+      "box": 0.0013676612870767713,
+      "objectness": 0.010613508522510529,
       "classification": 0.000988645595498383
     },
     {
       "step": 139,
-      "total": 0.01635006070137024,
-      "box": 0.0014220468001440167,
-      "objectness": 0.004157964140176773,
-      "classification": 0.00508186174556613
+      "total": 0.016350770369172096,
+      "box": 0.0014222466852515936,
+      "objectness": 0.004157906398177147,
+      "classification": 0.005081630777567625
     },
     {
       "step": 140,
-      "total": 0.022358816117048264,
-      "box": 0.0032398265320807695,
-      "objectness": 0.006120195612311363,
-      "classification": 3.948816447518766e-05
+      "total": 0.022358302026987076,
+      "box": 0.0032397382892668247,
+      "objectness": 0.006120139732956886,
+      "classification": 3.947113873437047e-05
     },
     {
       "step": 141,
-      "total": 0.016591256484389305,
-      "box": 0.0018751340685412288,
-      "objectness": 0.006565362215042114,
-      "classification": 0.0006502247997559607
+      "total": 0.01658976450562477,
+      "box": 0.001874895766377449,
+      "objectness": 0.006565011106431484,
+      "classification": 0.0006502757896669209
     },
     {
       "step": 142,
-      "total": 0.008799978531897068,
-      "box": 0.000790781865362078,
-      "objectness": 0.004433798138052225,
+      "total": 0.008799289353191853,
+      "box": 0.0007906719692982733,
+      "objectness": 0.0044336579740047455,
       "classification": 0.00041227127076126635
     },
     {
       "step": 143,
-      "total": 0.019091809168457985,
-      "box": 0.0018294600304216146,
-      "objectness": 0.009800420142710209,
+      "total": 0.019091365858912468,
+      "box": 0.0018293687608093023,
+      "objectness": 0.009800432249903679,
       "classification": 0.00014408801507670432
     },
     {
       "step": 144,
-      "total": 0.02675654925405979,
-      "box": 0.0016939869383350015,
-      "objectness": 0.006178092211484909,
-      "classification": 0.012108522467315197
+      "total": 0.026753949001431465,
+      "box": 0.0016938113840296865,
+      "objectness": 0.00617779279127717,
+      "classification": 0.01210709847509861
     },
     {
       "step": 145,
-      "total": 0.013733315281569958,
-      "box": 0.0019056450109928846,
-      "objectness": 0.003959617577493191,
-      "classification": 0.000245472852839157
+      "total": 0.013731579296290874,
+      "box": 0.001905315788462758,
+      "objectness": 0.003959544934332371,
+      "classification": 0.0002454558270983398
     },
     {
       "step": 146,
-      "total": 0.010659248568117619,
-      "box": 0.0011994473170489073,
-      "objectness": 0.004535243846476078,
-      "classification": 0.00012676787446253002
+      "total": 0.01065954752266407,
+      "box": 0.0011995213571935892,
+      "objectness": 0.004535224288702011,
+      "classification": 0.0001267168263439089
     },
     {
       "step": 147,
-      "total": 0.03485199809074402,
-      "box": 0.001615663175471127,
-      "objectness": 0.019428681582212448,
-      "classification": 0.007344998884946108
+      "total": 0.03484693542122841,
+      "box": 0.0016155112534761429,
+      "objectness": 0.019427187740802765,
+      "classification": 0.007342192344367504
     },
     {
       "step": 148,
-      "total": 0.038624271750450134,
-      "box": 0.001412344048731029,
-      "objectness": 0.004307297524064779,
-      "classification": 0.027255255728960037
+      "total": 0.03862959146499634,
+      "box": 0.0014124192530289292,
+      "objectness": 0.004307114984840155,
+      "classification": 0.02726037986576557
     },
     {
       "step": 149,
-      "total": 0.013094502501189709,
-      "box": 0.0006463021272793412,
-      "objectness": 0.009856571443378925,
-      "classification": 6.420200861612102e-06
+      "total": 0.013095514848828316,
+      "box": 0.0006463375175371766,
+      "objectness": 0.009857390075922012,
+      "classification": 6.437230240408098e-06
     },
     {
       "step": 150,
-      "total": 0.10541457682847977,
-      "box": 0.0030820146203041077,
-      "objectness": 0.042182695120573044,
-      "classification": 0.047821808606386185
+      "total": 0.10549262911081314,
+      "box": 0.003082511480897665,
+      "objectness": 0.04218916594982147,
+      "classification": 0.047890905290842056
     },
     {
       "step": 151,
-      "total": 0.02134239301085472,
-      "box": 0.001732558012008667,
-      "objectness": 0.012590363621711731,
-      "classification": 8.923871064325795e-05
+      "total": 0.02132824808359146,
+      "box": 0.0017318612663075328,
+      "objectness": 0.012579838745296001,
+      "classification": 8.910250471672043e-05
     },
     {
       "step": 152,
-      "total": 0.0183920469135046,
-      "box": 0.0014767973916605115,
-      "objectness": 0.010947820730507374,
-      "classification": 6.0240654420340434e-05
+      "total": 0.018387816846370697,
+      "box": 0.0014788088155910373,
+      "objectness": 0.01093309000134468,
+      "classification": 6.068326183594763e-05
     },
     {
       "step": 153,
-      "total": 0.05447155609726906,
-      "box": 0.006585702300071716,
-      "objectness": 0.017158329486846924,
-      "classification": 0.00438471557572484
+      "total": 0.0545494481921196,
+      "box": 0.0065871733240783215,
+      "objectness": 0.017171790823340416,
+      "classification": 0.0044417912140488625
     },
     {
       "step": 154,
-      "total": 0.36671197414398193,
-      "box": 0.003752122400328517,
-      "objectness": 0.008513616397976875,
-      "classification": 0.3394377529621124
+      "total": 0.3680015802383423,
+      "box": 0.00375267188064754,
+      "objectness": 0.008517194539308548,
+      "classification": 0.3407210409641266
     },
     {
       "step": 155,
-      "total": 0.046848248690366745,
-      "box": 0.00421929731965065,
-      "objectness": 0.02571893110871315,
-      "classification": 3.283136538811959e-05
+      "total": 0.046867869794368744,
+      "box": 0.004221947863698006,
+      "objectness": 0.025725264102220535,
+      "classification": 3.28654314216692e-05
     },
     {
       "step": 156,
-      "total": 0.24293917417526245,
-      "box": 0.01278719212859869,
-      "objectness": 0.02874230220913887,
-      "classification": 0.15026091039180756
+      "total": 0.24400725960731506,
+      "box": 0.012795708142220974,
+      "objectness": 0.028748152777552605,
+      "classification": 0.15128056704998016
     },
     {
       "step": 157,
-      "total": 0.7760993838310242,
-      "box": 0.01780747063457966,
-      "objectness": 0.06924017518758774,
-      "classification": 0.6178218722343445
+      "total": 0.7779853940010071,
+      "box": 0.01782134547829628,
+      "objectness": 0.06931371986865997,
+      "classification": 0.619564950466156
     },
     {
       "step": 158,
-      "total": 1.8588035106658936,
-      "box": 0.006074243225157261,
-      "objectness": 0.05869612470269203,
-      "classification": 1.7697361707687378
+      "total": 1.865554690361023,
+      "box": 0.006077279802411795,
+      "objectness": 0.05870936065912247,
+      "classification": 1.776458978652954
     },
     {
       "step": 159,
-      "total": 0.14166659116744995,
-      "box": 0.0194967333227396,
-      "objectness": 0.04327281937003136,
-      "classification": 0.0009101054747588933
+      "total": 0.14170129597187042,
+      "box": 0.01950615458190441,
+      "objectness": 0.04326564446091652,
+      "classification": 0.0009048771462403238
     },
     {
       "step": 160,
-      "total": 0.161305770277977,
-      "box": 0.022500773891806602,
-      "objectness": 0.03845119848847389,
-      "classification": 0.010350698605179787
+      "total": 0.16108183562755585,
+      "box": 0.02249431237578392,
+      "objectness": 0.0383390337228775,
+      "classification": 0.01027123536914587
     }
   ],
   "gradient_l2_range": {
     "min": 0.19163118302822113,
-    "max": 27.71558952331543
+    "max": 27.799510955810547
   },
   "all_step_gradients_finite_nonzero": true,
-  "weight_delta_l2": 10.935328395297544,
+  "weight_delta_l2": 10.935342669262377,
   "parameters": 15544,
   "initial_validation": {
     "ap_per_class": {
@@ -1269,7 +1353,10 @@
     },
     "images": 12,
     "ground_truth_objects": 9,
-    "decoded_predictions": 0
+    "decoded_predictions": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 9
   },
   "final_train": {
     "ap_per_class": {
@@ -1287,7 +1374,10 @@
     },
     "images": 24,
     "ground_truth_objects": 21,
-    "decoded_predictions": 21
+    "decoded_predictions": 21,
+    "true_positives": 1,
+    "false_positives": 20,
+    "false_negatives": 20
   },
   "final_validation": {
     "ap_per_class": {
@@ -1305,7 +1395,10 @@
     },
     "images": 12,
     "ground_truth_objects": 9,
-    "decoded_predictions": 10
+    "decoded_predictions": 10,
+    "true_positives": 0,
+    "false_positives": 10,
+    "false_negatives": 9
   },
   "final_test": {
     "ap_per_class": {
@@ -1323,7 +1416,94 @@
     },
     "images": 12,
     "ground_truth_objects": 9,
-    "decoded_predictions": 9
+    "decoded_predictions": 9,
+    "true_positives": 1,
+    "false_positives": 8,
+    "false_negatives": 8
+  },
+  "short_run_outcome": "160 fixed steps: full-train loss 1.55017 -> 0.16977; train mAP50 0.00680, precision 0.04762, recall 0.04762 (training set not yet fitted); validation mAP50 0.00000. No seed, architecture, loss, optimizer or threshold tuning was applied.",
+  "training_box_diagnosis": {
+    "scope": "Full training set after the last update, model in eval mode. xywh are grid_loss box targets and sigmoid outputs (cell offsets, size / image); gradients are of the box term only",
+    "objects": 21,
+    "positive_cells": 21,
+    "train_png_foreground_boxes_matching_json": 24,
+    "positive_target_min_xywh": [
+      2.384185791015625e-07,
+      0.0,
+      0.1666666865348816,
+      0.15117186307907104
+    ],
+    "positive_target_max_xywh": [
+      0.9333335161209106,
+      0.9855468273162842,
+      0.28554683923721313,
+      0.25
+    ],
+    "positive_target_mean_xywh": [
+      0.5248636603355408,
+      0.47166433930397034,
+      0.2359561026096344,
+      0.19983261823654175
+    ],
+    "positive_prediction_min_xywh": [
+      0.005381455644965172,
+      0.00568850664421916,
+      0.11726074665784836,
+      0.0008521885611116886
+    ],
+    "positive_prediction_max_xywh": [
+      0.9233475923538208,
+      0.9953559637069702,
+      0.3755938708782196,
+      0.23424114286899567
+    ],
+    "positive_prediction_mean_xywh": [
+      0.41990965604782104,
+      0.5282547473907471,
+      0.17786850035190582,
+      0.10512299835681915
+    ],
+    "positive_raw_logits_min_xywh": [
+      -5.219400405883789,
+      -5.163602828979492,
+      -2.018629789352417,
+      -7.066850185394287
+    ],
+    "positive_raw_logits_max_xywh": [
+      2.4887242317199707,
+      5.367511749267578,
+      -0.508292555809021,
+      -1.184516191482544
+    ],
+    "positive_raw_logits_mean_xywh": [
+      -0.4888193905353546,
+      0.17840752005577087,
+      -1.587113380432129,
+      -3.0846946239471436
+    ],
+    "positive_prediction_min_wh_pixels": [
+      7.504687786102295,
+      0.05454006791114807
+    ],
+    "coordinate_mse_xywh": [
+      0.03607404977083206,
+      0.01758849248290062,
+      0.007793919183313847,
+      0.01416035182774067
+    ],
+    "box_loss_logit_abs_grad_mean_xywh": [
+      0.0007295184768736362,
+      0.0005044849822297692,
+      0.000257191393757239,
+      0.00010001802729675546
+    ],
+    "negative_cell_box_logit_abs_gradient_sum": 0.0,
+    "checks": {
+      "one_positive_cell_per_object": true,
+      "positive_target_wh_nonzero": true,
+      "negative_cells_zero_box_gradient": true,
+      "train_png_foreground_boxes_match_json": true
+    }
   },
   "evaluation_policy": {
     "test_evaluations": 1,
@@ -1331,7 +1511,7 @@
     "score_threshold": 0.1,
     "nms_iou": 0.5,
     "matching_iou": 0.5,
-    "ap_definition": "All-points interpolated AP at IoU .50, mean over classes with GT; not COCO AP .50:.95",
+    "ap_definition": "All-points interpolated AP at IoU .50 per class; 'map' is mAP50, their mean over classes with GT; not COCO AP .50:.95",
     "score_definition": "sigmoid(objectness) * max softmax(class logits)",
     "precision_recall_definition": "Micro counts after score filtering and per-class NMS; each same-image same-class GT matches once",
     "same_evaluation_for_all_splits": true,
@@ -1339,8 +1519,8 @@
     "selection": "Last fixed step; no AP acceptance threshold or best-validation checkpoint selection"
   },
   "checkpoint": {
-    "path": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/checkpoint.pt",
-    "sha256": "b3e641616c9591374424013a62ab3be80d5843d7c7512771b700cd2b0417edb7",
+    "path": "artifacts/runs/custom-data-learning/checkpoint.pt",
+    "sha256": "5ad263945f2a9c2b10cf2ef2a10d637b50aa18acc29683ae7c29dca64e1c9ad6",
     "format_version": 2,
     "contains_model_optimizer_rng": true
   },
@@ -1381,7 +1561,7 @@
           0
         ]
       },
-      "letterbox_png": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/validation-001-letterbox.png",
+      "letterbox_png": "artifacts/runs/custom-data-learning/validation-001-letterbox.png",
       "letterbox_png_sha256": "41f076b8cf60559bed6b225490935843f755683075900ec70402e1e047e83456",
       "target": {
         "boxes": [
@@ -1399,16 +1579,30 @@
       "prediction": {
         "boxes": [
           [
-            27.876968383789062,
-            52.92136001586914,
-            36.17357635498047,
-            53.35488510131836
+            27.877172470092773,
+            52.92431640625,
+            36.17323303222656,
+            53.35679626464844
           ]
         ],
         "scores": [
-          0.6598750948905945
+          0.6608766913414001
         ],
         "labels": [
+          0
+        ]
+      },
+      "matches": {
+        "predictions": [
+          {
+            "label": 0,
+            "score": 0.6608766913414001,
+            "match": "FP",
+            "iou_same_class_gt": 0.023976730089134046,
+            "iou_any_gt": 0.023976730089134046
+          }
+        ],
+        "missed_gt_labels": [
           0
         ]
       }
@@ -1433,7 +1627,7 @@
           1
         ]
       },
-      "letterbox_png": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/validation-002-letterbox.png",
+      "letterbox_png": "artifacts/runs/custom-data-learning/validation-002-letterbox.png",
       "letterbox_png_sha256": "2de27767bb69bb11e821952624f59a3e5b9261e66bfa8bb8d287ac037c192b2f",
       "target": {
         "boxes": [
@@ -1451,16 +1645,30 @@
       "prediction": {
         "boxes": [
           [
-            19.536588668823242,
-            18.860553741455078,
-            27.78318214416504,
-            29.80614471435547
+            19.5376033782959,
+            18.864091873168945,
+            27.77878761291504,
+            29.809812545776367
           ]
         ],
         "scores": [
-          0.1315813511610031
+          0.13065806031227112
         ],
         "labels": [
+          1
+        ]
+      },
+      "matches": {
+        "predictions": [
+          {
+            "label": 1,
+            "score": 0.13065806031227112,
+            "match": "FP",
+            "iou_same_class_gt": 0.12224117506708931,
+            "iou_any_gt": 0.12224117506708931
+          }
+        ],
+        "missed_gt_labels": [
           1
         ]
       }
@@ -1485,7 +1693,7 @@
           2
         ]
       },
-      "letterbox_png": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/validation-003-letterbox.png",
+      "letterbox_png": "artifacts/runs/custom-data-learning/validation-003-letterbox.png",
       "letterbox_png_sha256": "e25fc73b8d1740957b4c770c339613f3fc2ee39b5b61c985ca035a85fdb9d8e1",
       "target": {
         "boxes": [
@@ -1503,16 +1711,30 @@
       "prediction": {
         "boxes": [
           [
-            22.349992752075195,
-            35.2884635925293,
-            31.28825569152832,
-            42.4816780090332
+            22.348426818847656,
+            35.28907775878906,
+            31.28799819946289,
+            42.47412872314453
           ]
         ],
         "scores": [
-          0.29962313175201416
+          0.29806479811668396
         ],
         "labels": [
+          2
+        ]
+      },
+      "matches": {
+        "predictions": [
+          {
+            "label": 2,
+            "score": 0.29806479811668396,
+            "match": "FP",
+            "iou_same_class_gt": 0.27269212335679943,
+            "iou_any_gt": 0.27269212335679943
+          }
+        ],
+        "missed_gt_labels": [
           2
         ]
       }
@@ -1528,7 +1750,7 @@
         "boxes": [],
         "labels": []
       },
-      "letterbox_png": "/workspace/learn_to_yolo/artifacts/runs/custom-data-learning/validation-000-letterbox.png",
+      "letterbox_png": "artifacts/runs/custom-data-learning/validation-000-letterbox.png",
       "letterbox_png_sha256": "0bfe7c7ee219494ede0e70f6f8f0289d30742c3b1d3fc2d5342c61ee0f1e26f5",
       "target": {
         "boxes": [],
@@ -1538,18 +1760,33 @@
         "boxes": [],
         "scores": [],
         "labels": []
+      },
+      "matches": {
+        "predictions": [],
+        "missed_gt_labels": []
       }
     }
   ],
   "runtime": {
-    "training_seconds": 0.7300868689999334,
+    "training_seconds": 1.135431768023409,
+    "training_seconds_scope": "Optimizer loop only: for every step, minibatch indexing, target building, forward/backward, finite-gradient check, Adam step and loss logging",
+    "end_to_end_seconds": 4.027718274999643,
+    "end_to_end_seconds_scope": "run() up to the report write: fixture creation or annotation loading and data checks (for a follow-up, also recreating the diagnostic's fixture), training, evaluation and the training-box diagnosis, checkpoint save and reload, original-image inference in this process and in a separate scripts/detect_image.py process (including that process's start and imports), the other files under the output folder, and the SVG; excludes package installation, this process's start and imports, and writing the report",
     "torch_threads": 2,
     "device": "cpu",
     "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
-    "scope": "Observed wall time for this CPU run, including dataset preparation, training, evaluation and reload; excludes environment installation",
+    "machine": {
+      "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+      "architecture": "x86_64",
+      "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "logical_cpus": 5,
+      "threads": 2,
+      "python": "3.12.14",
+      "torch": "2.9.1+cpu",
+      "torch_cpu_capability": "AVX512"
+    },
     "gpu_runs": 0,
-    "network_requests": 0,
-    "end_to_end_seconds": 1.4894181549998393
+    "network_requests": 0
   },
   "limitations": [
     "Short overfit exercise on 24 training images for the fixture; no proof of broad generalization.",
@@ -1560,338 +1797,5 @@
     "AP and runtime describe one fixed run only; no YOLO-version ranking or benchmark claim."
   ],
   "diagram": "docs/assets/diagrams/08-custom-160-step.svg",
-  "completed_at_utc": "2026-10-02T18:04:16.473264+00:00",
-  "code_commit_scope": "Checkout base commit; script SHA identifies the executed working-tree script",
-  "image_cli_compatibility": {
-    "checked_at_utc": "2026-10-02T18:05:39.333723+00:00",
-    "command": "PYTHONPATH=. .venv-model/bin/python scripts/detect_image.py --image artifacts/runs/custom-data-learning/fixture/validation/scene-001.png --checkpoint artifacts/runs/custom-data-learning/checkpoint.pt --output artifacts/runs/custom-data-learning/validation-001-original-inference.png",
-    "detect_image_script_sha256": "1f3379f5fcccc0b7c17b38e7434b4f816d46b0ff9e834e8c5966d05c4875515f",
-    "output_json": "artifacts/runs/custom-data-learning/validation-001-original-inference.json",
-    "output_json_sha256": "edf14d41c93a795143f6412174a3d45733a362fc708d22607b791c3459f2d1d7",
-    "original_size": {
-      "width": 80,
-      "height": 120
-    },
-    "checks": {
-      "original_size_correct": true,
-      "class_names_correct": true,
-      "class_ids_in_range": true,
-      "same_labels_as_letterbox": true,
-      "output_png_original_size": true,
-      "same_scores_as_letterbox_within_1e_minus_6": true,
-      "inverse_letterbox_boxes_within_1e_minus_4": true
-    },
-    "coordinate_note": "CLI boxes are in original 80x120 image pixels after undo_letterbox; AP50 evaluation and SVG use 64x64 letterboxed coordinates. Original-image inference is not another test-split AP evaluation.",
-    "prediction": {
-      "class_names": [
-        "red_rectangle",
-        "blue_rectangle",
-        "yellow_rectangle"
-      ],
-      "boxes": [
-        [
-          33.25947570800781,
-          99.2275390625,
-          48.69502258300781,
-          100.04039764404297
-        ]
-      ],
-      "scores": [
-        0.6598747968673706
-      ],
-      "labels": [
-        0
-      ]
-    }
-  },
-  "training_box_diagnosis": {
-    "positive_cells": 21,
-    "objects": 21,
-    "box_loss_mean_over_positive_four_coordinates": 0.018895050510764122,
-    "coordinate_mse_xywh": [
-      0.03608519956469536,
-      0.017556602135300636,
-      0.0077849263325333595,
-      0.014153470285236835
-    ],
-    "positive_target_min_xywh": [
-      2.384185791015625e-07,
-      0.0,
-      0.1666666865348816,
-      0.15117186307907104
-    ],
-    "positive_target_max_xywh": [
-      0.9333335161209106,
-      0.9855468273162842,
-      0.28554683923721313,
-      0.25
-    ],
-    "positive_prediction_min_xywh": [
-      0.0053826067596673965,
-      0.0056849257089197636,
-      0.11736799776554108,
-      0.000856359489262104
-    ],
-    "positive_prediction_max_xywh": [
-      0.9234186410903931,
-      0.9953405857086182,
-      0.3757072985172272,
-      0.2343192845582962
-    ],
-    "positive_target_mean_xywh": [
-      0.5248636603355408,
-      0.47166433930397034,
-      0.2359561026096344,
-      0.19983261823654175
-    ],
-    "positive_prediction_mean_xywh": [
-      0.42004483938217163,
-      0.5281234979629517,
-      0.1779116541147232,
-      0.10516881942749023
-    ],
-    "positive_raw_logits_min_xywh": [
-      -5.2191853523254395,
-      -5.164236068725586,
-      -2.0175940990448,
-      -7.0619635581970215
-    ],
-    "positive_raw_logits_max_xywh": [
-      2.4897289276123047,
-      5.364189147949219,
-      -0.5078089833259583,
-      -1.1840806007385254
-    ],
-    "box_loss_logit_abs_grad_mean_xywh": [
-      0.0007295557297766209,
-      0.0005038495874032378,
-      0.0002571327204350382,
-      9.997287997975945e-05
-    ],
-    "negative_cell_box_logit_abs_gradient_sum": 0.0,
-    "loss_components": {
-      "total": 0.16920891404151917,
-      "box": 0.018895050510764122,
-      "objectness": 0.02833336591720581,
-      "classification": 0.046400286257267
-    },
-    "num_validated_objects": 21,
-    "contract_diagnosis": "All 24 training PNG foreground bounding boxes match JSON pixel coordinates, including empty images. There are 21 objects and 21 positive cells. Letterbox transforms boxes with images; target wh remains nonzero and normalized by 64. Negative cells have zero box gradient. Center errors remain substantial, while some height logits reach -7.062 and sigmoid suppresses recovery gradients. Objectness and classification learning lowers total loss without establishing box localization. These observations support incomplete optimization rather than annotation, scaling or mask corruption; a single predeclared 1600-step follow-up will test whether more fixed steps suffice.",
-    "train_examples": [
-      {
-        "image_index": 1,
-        "raw_pixel_box": [
-          [
-            13,
-            64,
-            39,
-            86
-          ]
-        ],
-        "letterbox_target": [
-          [
-            16.987499237060547,
-            34.13333511352539,
-            30.962501525878906,
-            45.866668701171875
-          ]
-        ],
-        "class_ids": [
-          0
-        ],
-        "decoded_boxes": [
-          [
-            12.983304977416992,
-            41.90728759765625,
-            27.843324661254883,
-            41.96209716796875
-          ]
-        ],
-        "decoded_scores": [
-          0.9996907711029053
-        ],
-        "decoded_labels": [
-          0
-        ],
-        "max_iou_any_class": 0.003623807104304433
-      },
-      {
-        "image_index": 2,
-        "raw_pixel_box": [
-          [
-            91,
-            8,
-            115,
-            32
-          ]
-        ],
-        "letterbox_target": [
-          [
-            48.5333366394043,
-            14.300000190734863,
-            61.333335876464844,
-            27.200000762939453
-          ]
-        ],
-        "class_ids": [
-          1
-        ],
-        "decoded_boxes": [
-          [
-            50.7314453125,
-            18.48907470703125,
-            58.24299621582031,
-            26.594379425048828
-          ]
-        ],
-        "decoded_scores": [
-          0.9998905658721924
-        ],
-        "decoded_labels": [
-          1
-        ],
-        "max_iou_any_class": 0.36872220039367676
-      },
-      {
-        "image_index": 3,
-        "raw_pixel_box": [
-          [
-            15,
-            76,
-            46,
-            103
-          ]
-        ],
-        "letterbox_target": [
-          [
-            18.0625,
-            40.5333366394043,
-            34.724998474121094,
-            54.93333435058594
-          ]
-        ],
-        "class_ids": [
-          2
-        ],
-        "decoded_boxes": [
-          [
-            19.132858276367188,
-            39.51300811767578,
-            28.93968963623047,
-            48.13201904296875
-          ]
-        ],
-        "decoded_scores": [
-          0.5662860870361328
-        ],
-        "decoded_labels": [
-          2
-        ],
-        "max_iou_any_class": 0.2981402277946472
-      },
-      {
-        "image_index": 4,
-        "raw_pixel_box": [
-          [
-            76,
-            14,
-            104,
-            32
-          ]
-        ],
-        "letterbox_target": [
-          [
-            40.5333366394043,
-            17.525001525878906,
-            55.466670989990234,
-            27.200000762939453
-          ]
-        ],
-        "class_ids": [
-          0
-        ],
-        "decoded_boxes": [
-          [
-            44.02605438232422,
-            27.611583709716797,
-            52.14618682861328,
-            27.91082763671875
-          ]
-        ],
-        "decoded_scores": [
-          0.9814462065696716
-        ],
-        "decoded_labels": [
-          0
-        ],
-        "max_iou_any_class": 0.0
-      },
-      {
-        "image_index": 5,
-        "raw_pixel_box": [
-          [
-            37,
-            58,
-            60,
-            88
-          ]
-        ],
-        "letterbox_target": [
-          [
-            29.887500762939453,
-            30.933334350585938,
-            42.25,
-            46.93333435058594
-          ]
-        ],
-        "class_ids": [
-          1
-        ],
-        "decoded_boxes": [
-          [
-            30.8768253326416,
-            34.364261627197266,
-            39.333194732666016,
-            45.169254302978516
-          ]
-        ],
-        "decoded_scores": [
-          0.9999326467514038
-        ],
-        "decoded_labels": [
-          1
-        ],
-        "max_iou_any_class": 0.4619363844394684
-      },
-      {
-        "image_index": 6,
-        "raw_pixel_box": [
-          [
-            22,
-            6,
-            51,
-            27
-          ]
-        ],
-        "letterbox_target": [
-          [
-            11.733333587646484,
-            13.225000381469727,
-            27.200000762939453,
-            24.512500762939453
-          ]
-        ],
-        "class_ids": [
-          2
-        ],
-        "decoded_boxes": [],
-        "decoded_scores": [],
-        "decoded_labels": [],
-        "max_iou_any_class": 0
-      }
-    ],
-    "actual_train_png_foreground_bboxes_match_raw_json": 24
-  },
-  "short_run_outcome": "Training loss decreases but localization has not overfit: train AP50 .00680, validation AP50 0. No seed, architecture, loss, optimizer or threshold tuning was applied.",
-  "followup_decision": "After train-only pixel/target/mask/coordinate diagnostics, predeclare one 1600-step run with the same training seed/model/optimizer/train/validation, plus a fresh independently seeded test split (7001); evaluate that new test only once after training. The previously viewed test cannot support the follow-up conclusion."
+  "completed_at_utc": "2026-10-05T07:19:42.000982+00:00"
 }
