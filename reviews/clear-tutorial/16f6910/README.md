@@ -55,3 +55,11 @@
 網站已實際開啟59頁、1280與390兩種視窗，核圖片、數學與整頁溢出；重要新圖另有可視檢查。MathJax也檢查換頁、返回、錨點、快速換頁與延遲工作佇列。最終實際結果見 [verification.json](verification.json)；公開網站與全新checkout的發布後結果沿用專案的 [curriculum-publication.json](../../../artifacts/checks/curriculum-publication.json)及 [curriculum-release-bootstrap.json](../../../artifacts/checks/curriculum-release-bootstrap.json)。
 
 沒有實際真人讀者、Colab服務上的逐節執行或真實相機測試；不把AI與本機／Actions CPU檢查當成那些驗證。
+
+## 新版發布後核回
+
+`lessons-v0.5.0`固定在`a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb`。Pages [部署](https://github.com/birdhackor/learn_to_yolo/actions/runs/37299823086)與[全新tag驗證](https://github.com/birdhackor/learn_to_yolo/actions/runs/37299900616)已完成。公開59篇文章／59張SVG逐位元符合strict build，42個教材notebook的pin及最後一格符合tag，4個先前tag保持原commit。
+
+乾淨Linux環境實際跑5種notebook環境情況、README16條指令、42個lesson cases及72個tests；42cases的assert皆通過，36份stdout逐字相同，6份stdout不同。後者在bootstrap摘要只保留case ID，沒有逐案完整差異，不能把它們全稱為已核實的純計時差。這與本機重產30cases和基線比較只變03/17計時是不同檢查；正文以指定機器的保存紀錄解讀，不把不同runner數字當新效能評測。
+
+公開頁面另實際開6頁的桌面／手機呈現，公開MathJax也完成換頁與捲動，詳browser目錄。發布後紀錄寫入main後不移tag；新tag中的前期verification狀態仍如實保留在git。

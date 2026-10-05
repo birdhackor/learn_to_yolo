@@ -9,3 +9,11 @@ Chromium 開啟本機 Zensical build 的全部59頁，1280×900與390×844，共
 `math-navigation.json`實際包含桌面9次／手機6次換頁、返回與錨點觀察，以及快速點擊和延遲typeset佇列；沒有缺字、巢狀或脱離當頁的公式，stress maxParallel=1。窄螢幕長公式及表格有原生水平捲動，並非把溢出截掉。測試用的documentMarker仍沿用舊腳本的字面名稱，實際BASE與Colab pin是本機v0.5預览，不拿marker名稱當發布證據。
 
 這些是AI與自動化檢查，沒有實際學生的學習成效資料。
+
+## 公開新版追加
+
+`public-pages/results.json`實開首頁、00、01、07-heldout、08-own-data、13-dual，共6頁×桌面/手機12組；圖載入、頁面溢出、公式、42節模式的Colab tag及每張出現的SVG bytes逐一核。首頁是獨立環境檢查notebook，刻意跟main，不是42節之一；最初的測試腳本把它錯套42節的pin斷言，修正測試範圍後重跑，沒有因測試假設改已發布tag。Playwright的APIRequest曾選到不可路由IPv6；改用頁面實際Chromium fetch核bytes，後續12組完成。
+
+協調者實際看公開首頁、01素材入口、08主例入口的390頁面截圖。公開MathJax完成9桌面、6手機加queue stress與原生長公式/表格捲動；沒有JS pageerror或缺字/巢狀/脱離當頁公式。console有桌面/手機各一次GitHub `releases/latest` 404（repo只有tags，沒有GitHub Release metadata）；不是教材頁、圖檔或MathJax404。原console保留，不寫成零console錯誤。
+
+公開全文、全部圖檔和42notebook的內容仍以發布後Actions逐檔比對為證；6頁browser只支持這個實際呈現範圍，不冒稱公開全部59頁又逐字目視一遍。

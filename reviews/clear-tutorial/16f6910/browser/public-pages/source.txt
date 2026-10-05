@@ -1,0 +1,35 @@
+import json,hashlib
+from datetime import datetime,timezone
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+root=Path('/workspace/learn_to_yolo');out=root/'reviews/clear-tutorial/16f6910/browser/public-pages';out.mkdir(parents=True,exist_ok=True)
+base='https://birdhackor.github.io/learn_to_yolo/';routes=['','lessons/00-warmup/','lessons/01-small-cnn/','lessons/07-heldout/','lessons/08-own-data/','lessons/13-dual-assignment/'];results=[];errors=[]
+with sync_playwright() as p:
+ b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-gpu','--disable-dev-shm-usage'])
+ for width,height in [(1280,900),(390,844)]:
+  page=b.new_page(viewport={'width':width,'height':height});page.on('pageerror',lambda e:errors.append(str(e)))
+  for route in routes:
+   response=page.goto(base+route);page.wait_for_selector('article')
+   if page.locator('article .arithmatex').count():page.evaluate('async()=>await MathJax.startup.promise')
+   page.evaluate('async()=>{await document.fonts.ready;await Promise.all([...document.querySelectorAll("article img")].map(i=>i.decode()))}')
+   page.locator('article details').evaluate_all('ns=>ns.forEach(n=>n.open=true)')
+   result=page.evaluate('''()=>({url:location.href,width:innerWidth,documentWidth:document.documentElement.scrollWidth,formulas:document.querySelectorAll('article .arithmatex').length,math:document.querySelectorAll('article mjx-container').length,nested:document.querySelectorAll('article mjx-container mjx-container').length,mathErrors:document.querySelectorAll('article mjx-merror').length,colab:[...document.querySelectorAll('article a[href*="colab.research.google.com/github/"]')].map(n=>n.href),images:[...document.querySelectorAll('article img')].map(n=>({src:n.src,width:n.getBoundingClientRect().width,loaded:n.complete&&n.naturalWidth>0}))})''')
+   assert response.status==200 and result['documentWidth']<=width+1 and result['formulas']==result['math'] and not result['nested'] and not result['mathErrors'],result
+   assert all(i['loaded'] for i in result['images']),result
+   if route.startswith('lessons/'):
+    assert all('/blob/lessons-v0.5.0/' in url for url in result['colab']),result
+   else:
+    assert all('/blob/main/notebooks/00_environment_check.ipynb' in url for url in result['colab']),result
+   figures=[]
+   for image in result['images']:
+    url=image['src'];network=page.evaluate('async url=>{const r=await fetch(url);return {status:r.status,data:Array.from(new Uint8Array(await r.arrayBuffer()))}}',url);payload=bytes(network['data']);src=root/'docs/assets/diagrams'/url.split('/')[-1]
+    assert network['status']==200 and payload==src.read_bytes()
+    figures.append({'url':url,'sha256':hashlib.sha256(payload).hexdigest(),'matches_release_worktree':True})
+   result.update(http=response.status,figures=figures);results.append(result)
+   if route in ('','lessons/01-small-cnn/','lessons/08-own-data/') and width==390:
+    name=route.strip('/').replace('/','-') or 'home';page.screenshot(path=str(out/f'{name}-{width}.png'))
+  page.close()
+ b.close()
+assert not errors
+(out/'results.json').write_text(json.dumps({'observed_at_utc':datetime.now(timezone.utc).isoformat(timespec='seconds'),'release_ref':'lessons-v0.5.0','results':results,'pageErrors':errors},ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'public_pages':len(routes),'checks':len(results),'passed':True}))

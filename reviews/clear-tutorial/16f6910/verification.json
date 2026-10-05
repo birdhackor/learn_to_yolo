@@ -494,7 +494,8 @@
       "docs/research/version-sources.md": {
         "docs/research/version-sources.md": "7248ab8f8c0e00af80e76314201edd7cf5921b3384ad3fec9bbbe9511935ac44"
       }
-    }
+    },
+    "reviewed_inputs_definition": "review_coverage.digest: rendered main text excluding generated execution-record footer, normalized Colab tag; referenced SVG and repository case dependency SHA256. Actual full read-time hashes remain in the round reports."
   },
   "execution": {
     "rerun_lesson_cases": [
@@ -575,6 +576,86 @@
       "out_of_date_cpu_records": 0,
       "new_training_started": false,
       "command": ".venv-model/bin/python scripts/record_evidence.py"
+    },
+    "fresh_release_bootstrap": {
+      "passed": true,
+      "notebook_sessions": [
+        {
+          "name": "no-torch",
+          "passed": true
+        },
+        {
+          "name": "other-torch",
+          "passed": true
+        },
+        {
+          "name": "same-torch",
+          "passed": true
+        },
+        {
+          "name": "imported-torch",
+          "passed": true
+        },
+        {
+          "name": "deployment",
+          "passed": true
+        }
+      ],
+      "readme_commands": 16,
+      "all_readme_exit_codes_zero": true,
+      "lesson_runtime": {
+        "passed": 42,
+        "total": 42,
+        "same_output_as_record": [
+          "00-warmup",
+          "01-small-cnn",
+          "03-identity",
+          "03-projection",
+          "04-coordinates",
+          "05-assignment",
+          "06-decode-nms",
+          "06-evaluation",
+          "07-data",
+          "07-targets",
+          "07-loss",
+          "07-training",
+          "07-inference",
+          "07-heldout",
+          "08-own-images",
+          "08-own-data",
+          "09-anchors",
+          "09-anchor-clustering",
+          "10-multiscale",
+          "11-csp",
+          "11-fusion",
+          "11-augmentation",
+          "11-iou-loss",
+          "12-anchor-free",
+          "12-decoupled-head",
+          "12-assignment",
+          "12-dfl",
+          "13-dual-assignment",
+          "13-nms-free",
+          "14-feature-module",
+          "15-attention-bridge",
+          "15-area-attention",
+          "16-dfl-free",
+          "16-inference-head",
+          "16-training",
+          "19-tracking"
+        ],
+        "different_output": [
+          "02-diagnostics",
+          "03-comparison",
+          "04-localization",
+          "17-capstone",
+          "18-video",
+          "20-deployment"
+        ]
+      },
+      "unit_tests_passed": 72,
+      "unit_test_seconds": 3.02,
+      "scope": "Fresh Linux runner CPU, not Google Colab. All42 program assertions passed,36stdout exactly matched saved output,6differed; bootstrap summary does not retain each case full differingstdout, so this is not proof of only-timing differences for all6. Published lesson numbers refer to their specific saved machine/records."
     }
   },
   "browser": {
@@ -605,16 +686,65 @@
       "page_errors": []
     },
     "independent": "browser/independent-grid-evolution-manifest.json",
-    "visual_notes": "browser/coordinator-observations.md"
+    "visual_notes": "browser/coordinator-observations.md",
+    "public_key_pages": {
+      "record": "browser/public-pages/results.json",
+      "pages": 6,
+      "page_viewport_checks": 12,
+      "viewports": [
+        1280,
+        390
+      ],
+      "rendered_images_sha256_match": true,
+      "viewed_screenshots": [
+        "home-390.png",
+        "lessons-01-small-cnn-390.png",
+        "lessons-08-own-data-390.png"
+      ],
+      "scope": "Actual public Chromium render. Homepage environment-check notebook intentionally followsmain; 42lesson notebooks use release tag."
+    },
+    "public_math": {
+      "record": "browser/public-math/browser.json",
+      "desktop_observations": 9,
+      "mobile_observations": 6,
+      "max_parallel_typesetting": 1,
+      "native_formula_and_table_scroll": true,
+      "missing_or_nested_or_disconnected_formulas": 0,
+      "page_errors": [],
+      "non_lesson_resource_console_errors": [
+        {
+          "url": "https://api.github.com/repos/birdhackor/learn_to_yolo/releases/latest",
+          "http": 404,
+          "occurrences": 2,
+          "scope": "Optional repository release metadata; repo uses tags without GitHub Release objects. Originalconsole preserved."
+        }
+      ]
+    },
+    "public_record_sha256": {
+      "browser/public-pages/results.json": "f86de3c5d224d618a742963601cdd2cddaf760b35e523a70d2fc7a822d3e096d",
+      "browser/public-math/browser.json": "2e175ec485498ae3949324d4fa4192a7a84ed0813254c633dff38a10e9cb0680"
+    }
   },
   "publication": {
-    "state": "not yet deployed at time of pre-release review commit",
-    "planned_ref": "lessons-v0.5.0",
-    "actual_post_release_records": [
-      "artifacts/checks/curriculum-publication.json",
-      "artifacts/checks/curriculum-release-bootstrap.json"
-    ],
-    "scope": "Old v0.4.1 records are historical only; after actual manual deploy and fresh verification a subsequent main commit saves v0.5 results without moving the tag."
+    "state": "passed: deployed and independently verified from public tag",
+    "source_ref": "lessons-v0.5.0",
+    "release_commit": "a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb",
+    "pages_workflow": {
+      "workflow_run_id": 37299823086,
+      "workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37299823086",
+      "deployed_commit": "a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb",
+      "deployed_commit_is_release_commit": true
+    },
+    "verification_workflow": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37299900616",
+    "navigation_pages_verified": 59,
+    "figures_verified": 59,
+    "notebooks_verified": 42,
+    "old_tags_retained": 4,
+    "records": {
+      "artifacts/checks/curriculum-publication.json": "9c0d6a5a76d7be17ce07d2bd48e015de983ae2fb195be3574f79d83861e935aa",
+      "artifacts/checks/curriculum-release-bootstrap.json": "175437232fdee00595e4fb6cc8f9aca05425e7eb8b873265cc821b6174f5ad25"
+    },
+    "tag_policy": "Verification results saved in a subsequent main commit; lessons-v0.5.0 remains immutable and contains the honest pre-release state."
   },
   "limitations": [
     "AI reviews are not human comprehension tests.",
@@ -622,5 +752,6 @@
     "Third round is an actual sequential full-page read with existing other-chapter context; not new segmented blind reading.",
     "No actual Google Colab service per-lesson execution, camera or new GPU training this turn.",
     "Seven optional first-read suggestions retained, not described as implemented."
-  ]
+  ],
+  "completed_at_utc": "2026-10-05T11:06:28+00:00"
 }
