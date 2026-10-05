@@ -1,0 +1,563 @@
+{
+  "passed": true,
+  "scope": "Actual Chromium interactions on the deployed GitHub Pages site; this does not establish fresh notebook setup or hosted Colab execution.",
+  "verified_at_utc": "2026-10-05T08:29:49.714004+00:00",
+  "website": "https://birdhackor.github.io/learn_to_yolo/",
+  "source_ref": "lessons-v0.4.1",
+  "release_commit": "e28f85a5591db42830a8fb0365c686b0d3676e8d",
+  "pages_workflow": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37283700451",
+  "browser": "Chromium 151.0.7922.173 built on Debian GNU/Linux 13 (trixie)",
+  "assets": [
+    {
+      "path": "assets/javascripts/mathjax.js",
+      "http_status": 200,
+      "expected_sha256": "8bfec822da079692e1dcf9ffe5369dad43fbfedcc77eacf983f94beac3cc5f05",
+      "download_sha256": "8bfec822da079692e1dcf9ffe5369dad43fbfedcc77eacf983f94beac3cc5f05",
+      "matches_release": true
+    },
+    {
+      "path": "assets/stylesheets/extra.css",
+      "http_status": 200,
+      "expected_sha256": "bd285e60fca6236ecca730a05c9ebe0320645bd2d6261a973a97dcf8f123aca6",
+      "download_sha256": "bd285e60fca6236ecca730a05c9ebe0320645bd2d6261a973a97dcf8f123aca6",
+      "matches_release": true
+    }
+  ],
+  "desktop": [
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/03-identity.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/03-identity/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 31,
+      "containers": 31,
+      "nested": 0,
+      "chars": 296,
+      "expectedInvisibleGlyphs": 0,
+      "missingGlyphs": [],
+      "mathItems": 31,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 1,
+      "label": "initial"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/04-coordinates.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/04-coordinates/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 25,
+      "containers": 25,
+      "nested": 0,
+      "chars": 289,
+      "expectedInvisibleGlyphs": 0,
+      "missingGlyphs": [],
+      "mathItems": 25,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 1,
+      "label": "click-04-coordinates"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/07-loss/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 74,
+      "containers": 74,
+      "nested": 0,
+      "chars": 827,
+      "expectedInvisibleGlyphs": 23,
+      "missingGlyphs": [],
+      "mathItems": 74,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 2,
+      "label": "click-07-loss"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb",
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/11-iou-loss/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 100,
+      "containers": 100,
+      "nested": 0,
+      "chars": 1383,
+      "expectedInvisibleGlyphs": 4,
+      "missingGlyphs": [],
+      "mathItems": 100,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 1,
+      "label": "click-11-iou-loss"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/16-inference-head.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/16-inference-head/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 6,
+      "containers": 6,
+      "nested": 0,
+      "chars": 127,
+      "expectedInvisibleGlyphs": 5,
+      "missingGlyphs": [],
+      "mathItems": 6,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 1,
+      "label": "click-16-inference-head"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/20-deployment.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/20-deployment/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 13,
+      "containers": 13,
+      "nested": 0,
+      "chars": 152,
+      "expectedInvisibleGlyphs": 0,
+      "missingGlyphs": [],
+      "mathItems": 13,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 4,
+      "label": "click-20-deployment"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb",
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/11-iou-loss/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 100,
+      "containers": 100,
+      "nested": 0,
+      "chars": 1383,
+      "expectedInvisibleGlyphs": 4,
+      "missingGlyphs": [],
+      "mathItems": 100,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 1,
+      "label": "rapid-two-clicks"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/07-loss/",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 74,
+      "containers": 74,
+      "nested": 0,
+      "chars": 827,
+      "expectedInvisibleGlyphs": 23,
+      "missingGlyphs": [],
+      "mathItems": 74,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 2,
+      "label": "browser-back"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/07-loss/#73-grid-miniyololoss",
+      "documentMarker": "published-v0.4.1-document",
+      "formulas": 74,
+      "containers": 74,
+      "nested": 0,
+      "chars": 827,
+      "expectedInvisibleGlyphs": 23,
+      "missingGlyphs": [],
+      "mathItems": 74,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 1280,
+      "clientWidth": 1280,
+      "documentWidth": 1265,
+      "tables": 2,
+      "label": "same-page-anchor"
+    }
+  ],
+  "mobile": [
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/03-identity.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/03-identity/",
+      "documentMarker": null,
+      "formulas": 31,
+      "containers": 31,
+      "nested": 0,
+      "chars": 296,
+      "expectedInvisibleGlyphs": 0,
+      "missingGlyphs": [],
+      "mathItems": 31,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 390,
+      "clientWidth": 390,
+      "documentWidth": 390,
+      "tables": 1,
+      "label": "mobile-03-identity"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/04-coordinates.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/04-coordinates/",
+      "documentMarker": null,
+      "formulas": 25,
+      "containers": 25,
+      "nested": 0,
+      "chars": 289,
+      "expectedInvisibleGlyphs": 0,
+      "missingGlyphs": [],
+      "mathItems": 25,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 390,
+      "clientWidth": 390,
+      "documentWidth": 390,
+      "tables": 1,
+      "label": "mobile-04-coordinates"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/07-loss/",
+      "documentMarker": null,
+      "formulas": 74,
+      "containers": 74,
+      "nested": 0,
+      "chars": 827,
+      "expectedInvisibleGlyphs": 23,
+      "missingGlyphs": [],
+      "mathItems": 74,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 390,
+      "clientWidth": 390,
+      "documentWidth": 390,
+      "tables": 2,
+      "label": "mobile-07-loss"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb",
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-iou-loss.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/11-iou-loss/",
+      "documentMarker": null,
+      "formulas": 100,
+      "containers": 100,
+      "nested": 0,
+      "chars": 1383,
+      "expectedInvisibleGlyphs": 4,
+      "missingGlyphs": [],
+      "mathItems": 100,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 390,
+      "clientWidth": 390,
+      "documentWidth": 390,
+      "tables": 1,
+      "label": "mobile-11-iou-loss"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/16-inference-head.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/16-inference-head/",
+      "documentMarker": null,
+      "formulas": 6,
+      "containers": 6,
+      "nested": 0,
+      "chars": 127,
+      "expectedInvisibleGlyphs": 5,
+      "missingGlyphs": [],
+      "mathItems": 6,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 390,
+      "clientWidth": 390,
+      "documentWidth": 390,
+      "tables": 1,
+      "label": "mobile-16-inference-head"
+    },
+    {
+      "colabLinks": [
+        "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/20-deployment.ipynb"
+      ],
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/20-deployment/",
+      "documentMarker": null,
+      "formulas": 13,
+      "containers": 13,
+      "nested": 0,
+      "chars": 152,
+      "expectedInvisibleGlyphs": 0,
+      "missingGlyphs": [],
+      "mathItems": 13,
+      "disconnectedItems": 0,
+      "unrelatedItems": 0,
+      "styleNodes": [
+        {
+          "connected": true,
+          "rules": 2788
+        }
+      ],
+      "adaptiveCSS": false,
+      "windowWidth": 390,
+      "clientWidth": 390,
+      "documentWidth": 390,
+      "tables": 4,
+      "label": "mobile-20-deployment"
+    }
+  ],
+  "stress_snapshot": {
+    "colabLinks": [
+      "https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/16-inference-head.ipynb"
+    ],
+    "url": "https://birdhackor.github.io/learn_to_yolo/lessons/16-inference-head/",
+    "documentMarker": "published-v0.4.1-document",
+    "formulas": 6,
+    "containers": 6,
+    "nested": 0,
+    "chars": 127,
+    "expectedInvisibleGlyphs": 5,
+    "missingGlyphs": [],
+    "mathItems": 6,
+    "disconnectedItems": 0,
+    "unrelatedItems": 0,
+    "styleNodes": [
+      {
+        "connected": true,
+        "rules": 2788
+      }
+    ],
+    "adaptiveCSS": false,
+    "windowWidth": 1280,
+    "clientWidth": 1280,
+    "documentWidth": 1265,
+    "tables": 1,
+    "label": "delayed-queue-stress"
+  },
+  "stress_probe": {
+    "events": [
+      {
+        "kind": "clear",
+        "before": 74
+      },
+      {
+        "kind": "start",
+        "connected": true,
+        "heading": "4.2 座標轉換與還原：框跟圖片一起移動¶"
+      },
+      {
+        "kind": "end",
+        "connected": false
+      },
+      {
+        "kind": "clear",
+        "before": 25
+      },
+      {
+        "kind": "start",
+        "connected": true,
+        "heading": "16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉¶"
+      },
+      {
+        "kind": "end",
+        "connected": true
+      }
+    ],
+    "active": 0,
+    "max": 1
+  },
+  "native_scroll": [
+    {
+      "kind": "formula",
+      "before": 0,
+      "after": 80,
+      "client": 358,
+      "scroll": 438
+    },
+    {
+      "kind": "table",
+      "before": 0,
+      "after": 220,
+      "client": 358,
+      "scroll": 672
+    }
+  ],
+  "document_requests": [
+    "https://birdhackor.github.io/learn_to_yolo/lessons/03-identity/"
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/03-identity/",
+      "location": {
+        "url": "https://api.github.com/repos/birdhackor/learn_to_yolo/releases/latest",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "url": "https://birdhackor.github.io/learn_to_yolo/lessons/03-identity/",
+      "location": {
+        "url": "https://api.github.com/repos/birdhackor/learn_to_yolo/releases/latest",
+        "lineNumber": 0,
+        "columnNumber": 0
+      },
+      "mobile": true
+    }
+  ],
+  "page_errors": [],
+  "detailed_trace_sha256": "b429ad0a8382a58dd80bf9fbf64ba9946b5df0dd02dbfec6e69ba0da80d862a8",
+  "probe_script_sha256": "b1d598ee1e6fb1a604e02c9b32945a554ac5a11c7b1ea52f5441eb57bfda84de",
+  "limits": [
+    "Six representative lesson pages, plus rapid navigation, back and anchor checks; the separate release workflow verifies every navigation article and figure.",
+    "390px touch-capable browser emulation and native horizontal wheel events; no physical phone or hosted Colab runtime.",
+    "The existing optional GitHub latest-release widget returns 404 because this repository has lesson tags without a GitHub Release; captured separately from MathJax failures."
+  ]
+}

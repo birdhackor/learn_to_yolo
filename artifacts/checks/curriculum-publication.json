@@ -1,312 +1,910 @@
 {
-  "verified_at_utc": "2026-10-02T18:38:55.130343+00:00",
-  "workflow_run_id": 37048732247,
-  "workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37048732247",
-  "workflow_conclusion": "success",
-  "deployed_code_commit": "328bcaf0b56b20daeb89d2ecd452726771a0a1bb",
-  "source_ref": "lessons-v0.3.0",
-  "release_commit": "b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777",
+  "verified_at_utc": "2026-10-05T08:28:55+00:00",
+  "source_ref": "lessons-v0.4.1",
+  "release_commit": "e28f85a5591db42830a8fb0365c686b0d3676e8d",
+  "website": "https://birdhackor.github.io/learn_to_yolo/",
+  "runner": {
+    "os": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "architecture": "x86_64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logical_cpus": 4,
+    "python": "3.12.14",
+    "workflow_run": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37283863456"
+  },
+  "build": [
+    {
+      "command": "/tmp/tmp7z78jejq/docs-venv/bin/python -m pip install -q -r requirements-docs.txt",
+      "exit_code": 0,
+      "seconds": 4.7,
+      "stdout": "",
+      "stderr": "\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: python -m pip install --upgrade pip\n"
+    },
+    {
+      "command": "/tmp/tmp7z78jejq/docs-venv/bin/zensical build --clean --strict",
+      "exit_code": 0,
+      "seconds": 2.7,
+      "stdout": "Build started\nBuild finished in 2.02s\n",
+      "stderr": "No issues found\n"
+    }
+  ],
+  "pages_workflow": {
+    "workflow_run_id": 37283700451,
+    "workflow_url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37283700451",
+    "deployed_commit": "e28f85a5591db42830a8fb0365c686b0d3676e8d",
+    "deployed_commit_is_release_commit": true
+  },
   "old_releases_retained": [
     {
       "source_ref": "lessons-v0.1.0",
-      "code_commit": "baed4ff05a2bdaf850c01e23adbdf6f544df4aaf"
+      "code_commit": "baed4ff05a2bdaf850c01e23adbdf6f544df4aaf",
+      "matches_previous_verification": true
     },
     {
       "source_ref": "lessons-v0.2.0",
-      "code_commit": "0c94e35d015341f4c42dc295d38739682a47674c"
+      "code_commit": "0c94e35d015341f4c42dc295d38739682a47674c",
+      "matches_previous_verification": true
+    },
+    {
+      "source_ref": "lessons-v0.3.0",
+      "code_commit": "b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777",
+      "matches_previous_verification": true
     }
   ],
-  "website": "https://birdhackor.github.io/learn_to_yolo/",
-  "lesson_pages_verified": 42,
-  "other_pages_verified": 4,
+  "navigation_pages_verified": 59,
   "pages": [
     {
       "path": "",
       "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "5c00371d985043b3a2920ea8439d2458833702dd4e154f3c85747c0cae31d20e"
+      "article_matches_build": true,
+      "article_sha256": "62868490eaae7ee71c06880ad4845eb4a996b2d418858cea566e3a68e732aab1"
     },
     {
-      "path": "lessons/00-warmup/",
+      "path": "learning-path/",
       "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "2e93168433eb275a0e25d1d60dbf9ffb55d65ee4a5f2b0beb79c1f796c911b35"
+      "article_matches_build": true,
+      "article_sha256": "1d1a0f1539ac069c4859626163b4a4dab735e90a4ad36238e98c323ac7d4373f"
     },
     {
-      "path": "lessons/01-small-cnn/",
+      "path": "glossary/",
       "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "922d55491f320cc43c78297a423fe43187142dcc4ed1afd8cd515b64ef6d0df3"
-    },
-    {
-      "path": "lessons/02-diagnostics/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "7c925f3d4a040f85f302308d1bb6b18d7df9f66046a26b6697effd0527067609"
-    },
-    {
-      "path": "lessons/03-identity/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "daa39e2c305612b2690abd337e2c2f8232072a6c8043d6fbff790c68bd603083"
-    },
-    {
-      "path": "lessons/03-projection/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "020dc48915d77f4a372d39b75d2f0c3a9604e08af174b1242dd980929bc593d2"
-    },
-    {
-      "path": "lessons/03-comparison/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "414599dd57b062033296c6426efcb2a767ec6daab751d85b80a55a0a94c1659d"
-    },
-    {
-      "path": "lessons/04-localization/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "58ced76d8e8c0925c6fdffd7ad2ce11e4eda6d7367f1a3f34b40dccbc5a2effb"
-    },
-    {
-      "path": "lessons/04-coordinates/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "3b3cb4967b510222508778e7826289fce32ab0955e2b94eec622f1892e547a98"
-    },
-    {
-      "path": "lessons/05-assignment/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "ca4deff360cc836cf418b446f75bd32ea1f7730b8f49030bebeb2d79ac0a278a"
-    },
-    {
-      "path": "lessons/06-decode-nms/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "ce7ee93157863e4de8395bb4ad28e950a03e294c02896f732502ebb01f72e252"
-    },
-    {
-      "path": "lessons/06-evaluation/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "093f9ea3e3cd83b24d5e4bb442be881b368f480d8b34b340f3d9c01dbad8f667"
-    },
-    {
-      "path": "lessons/07-data/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1e2c80ba908218ae032f9ec16686fe22204986ad6cd56ca68ec43da460d00a71"
-    },
-    {
-      "path": "lessons/07-targets/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1615cb5da08dfab433489a6c68c87eb6be8e41f8cdb8b5bc2a7447f2c33fc5e2"
-    },
-    {
-      "path": "lessons/07-loss/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "f2ecbb6a72193ece91c5e89aa993daab0196323ccb5d1ad07aca552f946b0898"
-    },
-    {
-      "path": "lessons/07-training/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1fe4a334fcb52f515795f044d4ab2a38a41ad16218af563719b79bad1ef8a46b"
-    },
-    {
-      "path": "lessons/07-inference/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1948e36512b65a5c8b61090aca149d3e347373b1e091304098d530d57b2e7306"
-    },
-    {
-      "path": "lessons/07-heldout/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "b70a3311ab9992581d51ff81f92a8af8edea4e3b0357c04400a022e25031925f"
-    },
-    {
-      "path": "lessons/08-own-images/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "07defd80523e2caa47b71b454064c1fad7a0b64ef2ff9df123bc35b84c020a04"
-    },
-    {
-      "path": "lessons/08-own-data/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "56a3bd74cd17599fde0d8e4888bfea2b9939c1e62f3b83b0cc0a4fde6d08d8a9"
-    },
-    {
-      "path": "lessons/09-anchors/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "9f5c006bf8b4642874dc65f8d8ead77e4d041923737269b8953e2e0ad228e4c0"
-    },
-    {
-      "path": "lessons/09-anchor-clustering/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "15770841cfe9cb90c235721bd497302895bfdf1c663421afbbc381dfaeacd6d9"
-    },
-    {
-      "path": "lessons/10-multiscale/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "5e6cb0ae470c1426b9d370413b09c4c77aa8f0066958c20c201f1dd1fef70c91"
-    },
-    {
-      "path": "lessons/11-csp/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "11f83ea81970774e9a7b9bc13245f577f74406d42f1888a35ae2c27cd55da026"
-    },
-    {
-      "path": "lessons/11-fusion/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "a8730c2bdcf5b366c1f7bdf40cc19c20c90e940956ff901c6e4e3a01772811af"
-    },
-    {
-      "path": "lessons/11-augmentation/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "0163c48ce2a680d12c6995cfd1c5bf923efdc69ffdf6eee69968f48b47a8e3ce"
-    },
-    {
-      "path": "lessons/11-iou-loss/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "3c6d36e0684021cd1218f1fd7d9ec77be32b2922cbb472dcbccc3e02075ba624"
-    },
-    {
-      "path": "lessons/12-anchor-free/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "464a15729e05e3a5c9faaa9c2c07c7eb2e27477adfa9a472812c79933f6814f4"
-    },
-    {
-      "path": "lessons/12-decoupled-head/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "e6cdc9dc687c65e37133539e80d786d78eb7c7eef7a477548241e1e0da2f3d40"
-    },
-    {
-      "path": "lessons/12-assignment/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "8ac7d62a06f08364528ad70478bd8655633e031ffba8961f2223d36221535b6e"
-    },
-    {
-      "path": "lessons/12-dfl/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "414b456ffefa8599218f86760f48603f83eed067a9c505acc5634ce92d414a50"
-    },
-    {
-      "path": "lessons/13-dual-assignment/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "959b4c5a92463cf326781b0f9ef791806523c63444f59ed64b01eeda46acb24f"
-    },
-    {
-      "path": "lessons/13-nms-free/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "bf4881daddc846dcc8145443318156c4bd77522c6521ec944861a8e9d90d1aa9"
-    },
-    {
-      "path": "lessons/14-feature-module/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1b9097107e2bb1b909135e9e3a508c03a6e28ffd0ae464d657f0c4e2f6da3b82"
-    },
-    {
-      "path": "lessons/15-attention-bridge/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "53c54a1f719c9ea35a287e946201a27c86a2f1f2be75b2496145578d0a5e6649"
-    },
-    {
-      "path": "lessons/15-area-attention/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "38df473ba2248c25b535736066b531d91ad4775a26ab2ab3378221aa661f1054"
-    },
-    {
-      "path": "lessons/16-dfl-free/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "59495f6835f1e41b96c4c83bdf3b38c3af8f8754add58a230919cdcbfc8c999b"
-    },
-    {
-      "path": "lessons/16-inference-head/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1da30db889f84efdeba4ec03be406101fef87b12782da40e554441341c12d0fa"
-    },
-    {
-      "path": "lessons/16-training/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "39b4d3dfd23da9a96315acc5f5bfcd3d9626e2b6a4c0d6e7224c158beda529df"
-    },
-    {
-      "path": "lessons/17-capstone/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "2a7b6c6d7e4f792ac9084da22ad6a3ccc010611cd6d0f6974f3b96406e37a699"
-    },
-    {
-      "path": "lessons/18-video/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "411f55bc2dc88fd4e2c4b28d51e26fde3db38f0711e9806f361196fef79fd0de"
-    },
-    {
-      "path": "lessons/19-tracking/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "8e51be834c218f948c8510e7ebda6a27fe498bb44247a54b4ad5888aa87876f7"
-    },
-    {
-      "path": "lessons/20-deployment/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "6f25a71516d42dd6230a6ee7ba43e8400038712a05ceabd3de8e3075883f6d41"
-    },
-    {
-      "path": "validation/curriculum/",
-      "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "3eb5b8bda5fec941c421e016e5d4da6ffd82bc1eabaa058fae828d53bd36ca3d"
+      "article_matches_build": true,
+      "article_sha256": "95a10bc25c34b20fcee7fbb9aaa48d75ac72cfac5ed0f51cbd294a90ecd090b5"
     },
     {
       "path": "status/",
       "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "f51160b76057394450c3921658b4e74c9bca19c13cf1c338d61702fa844f4ef7"
+      "article_matches_build": true,
+      "article_sha256": "de649e029c059be55cd9843c672d370ce8836d36a3705c6079de7dc74fd844b9"
+    },
+    {
+      "path": "validation/gpu-smoke/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "13df6420385076ca6d8d1695c116657bd75f60f5d34b2483a8614ef6f4d55c4c"
+    },
+    {
+      "path": "validation/curriculum/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "4be62f9ec4c840fbe1771a82d53af486f32b14864be1897e7c2b9c6ecc41b514"
+    },
+    {
+      "path": "lessons/00-warmup/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "f26849dc979046454e4280277b0910d7957eea1c403b2d5fae1e4be4d8a3c7b6"
+    },
+    {
+      "path": "lessons/01-small-cnn/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "8193e4f54a139612ce2b17c390e369b8391a18bf45b3ac330e66e6f24e5d5373"
+    },
+    {
+      "path": "lessons/02-diagnostics/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "40b9598643bc6cd1b589b4021ce4f430fbd81ec754e55e0995df4d5a3812f8f5"
+    },
+    {
+      "path": "lessons/03-identity/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "a63e9bdc3d7df5a25b907ab6c00d1b03c2d0494db2e6098646a5c0056c7a0c40"
+    },
+    {
+      "path": "lessons/03-projection/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "ae5c51b8659fc122163109b775b49f7a62e159d37cd4d6fda0d345308cce1859"
+    },
+    {
+      "path": "lessons/03-comparison/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "9b34a646f03fac3a57b49e2c90b8d207ad939a172fa62c39f4aa97cd0dd4782a"
+    },
+    {
+      "path": "lessons/04-localization/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "55e69f81a8ddde4443ec94a0e2c47882c0b425f16d0c6d12d28ddbb4041e9171"
+    },
+    {
+      "path": "lessons/04-coordinates/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "37b22c2cd189260119bb8937530cf56acf667dd5f6c114a5ce9cb4ec8a9dc9e7"
+    },
+    {
+      "path": "lessons/05-assignment/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "501401dab68e52c9179b077a9cc414407fdb17e08315df5bb0c0d7bff589c84b"
+    },
+    {
+      "path": "lessons/06-decode-nms/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "c9afeeb48627dca8cad9e0fdaf953baa3de851396a141a5fd1efac3efce9459f"
+    },
+    {
+      "path": "lessons/06-evaluation/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "70e63883b9627345184a0312b9f2d4cf56abb7fb6d2b190622729b73bfb4efc5"
+    },
+    {
+      "path": "lessons/07-data/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "85765aec6cd6a4a1e925cac4f9b089ad459fe9a0bd482874987250c9df45b752"
+    },
+    {
+      "path": "lessons/07-targets/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "c25d891af10895732879188d85f3a7a337865e6b802b15c802ccd045e02b06a4"
+    },
+    {
+      "path": "lessons/07-loss/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "a0e943d1369d24adf70d52cc878ac2d4e895bb4b512ac5c6b52bdb3fd4745d06"
+    },
+    {
+      "path": "lessons/07-training/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "737ca099d86580b1384a655db4d317a87c67b6002ff1d2998b6779894d59f1c9"
+    },
+    {
+      "path": "lessons/07-inference/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "8d2545eb22b7856611c650d2e7bdc8cde054687d1d788e93f993e0df3eea0924"
+    },
+    {
+      "path": "lessons/07-heldout/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "6787a24075f024029e901a6b5d4ab312c5597999eddc5925ea5e053b02b5f86c"
+    },
+    {
+      "path": "lessons/08-own-images/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "4dd77c6e2b848e745c14cd967034f23d1a395905b49061da492d2b8be8b9b64b"
+    },
+    {
+      "path": "lessons/08-own-data/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "448e26a57c12f4a1fa08a3c048c0106006a30cead5655120575e916796655ff9"
+    },
+    {
+      "path": "lessons/09-anchors/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "85db2ec4b806dbdebc537463fae61ef3c19cebf9ce6f1331cdc6667377ebd0d5"
+    },
+    {
+      "path": "lessons/09-anchor-clustering/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "00dabac0c06c0178d3340ee551d6a9f1685fd3328dd099ce65c0366d9516c021"
+    },
+    {
+      "path": "lessons/10-multiscale/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "582451192592973dc6b5f7ed16043f3d9a57541912ee2f896f1e6c4cb452b205"
+    },
+    {
+      "path": "lessons/11-csp/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "473d6a18d01867c3c1f588b206ac7cca8f93a92ba882160aa3b8af648ad8dfc3"
+    },
+    {
+      "path": "lessons/11-fusion/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "bde948ea098fa5a0ac7228ef89f0bf9dac758c72694779b87a411455bb66fb75"
+    },
+    {
+      "path": "lessons/11-augmentation/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "c3fe1b96ca652368a5b2496b79bf94314c2868320241d358e54a1254b5ea1d41"
+    },
+    {
+      "path": "lessons/11-iou-loss/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "9ef4ff3641b0cd3bab9dfb0dcb5c79b8870e7df7889a4cacf6e38a7d28c3b399"
+    },
+    {
+      "path": "lessons/12-anchor-free/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "7f4287bc8d55a8699af798943f253af2e8d95274b16e159e0ee9f7df1103399f"
+    },
+    {
+      "path": "lessons/12-decoupled-head/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "6d6bceed7a54ff740b6288a2b2a61aff275f9c9a5da2cba046064535ada34bc3"
+    },
+    {
+      "path": "lessons/12-assignment/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "6d9fd44a1bdf5069295987e7413ab072d3aa5c8772d4a19ee2d67047f892ee1d"
+    },
+    {
+      "path": "lessons/12-dfl/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "22212c8af203024dea1838769df302e784f9a0171eba9ae06f4da129d2ca42e5"
+    },
+    {
+      "path": "lessons/13-dual-assignment/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "a15a9fd45e872c55994628ad2129e5627e722f0b1e4f7651847178a939ae744d"
+    },
+    {
+      "path": "lessons/13-nms-free/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "3b1da9d9f632a40fa9c6f289d6a48daff0420fd38de6c206121a241d87f7e935"
+    },
+    {
+      "path": "lessons/14-feature-module/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "2b12276328887823698863f6c569df13b6b4f14e4d84b7cc46feb59a747d718a"
+    },
+    {
+      "path": "lessons/15-attention-bridge/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "9c9f15e6c6ef566716ce5438cfb5eb6e4bd566f1306dd0875e00c8083d9a0fb0"
+    },
+    {
+      "path": "lessons/15-area-attention/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "bb8234bfd0bd57eff1cb2d805a708c712485bf8f9211db983748701aefa11fe0"
+    },
+    {
+      "path": "lessons/16-dfl-free/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "b14bd1d5d3eb239fc47503e72b7927b38b3acf52b8a588873da5fa3d99b246f5"
+    },
+    {
+      "path": "lessons/16-inference-head/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "76de7ee8103dd02fdaeaae0d59edb613616922053c3cf6b75a60ff7e9311f604"
+    },
+    {
+      "path": "lessons/16-training/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "203c76c4607b8665ccad185940dc451fb0772da31e13241b63fcb9b63c691291"
+    },
+    {
+      "path": "lessons/17-capstone/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "af543e1a5400a5493d60a39de22c39f293bc62c54b1f353c980688939fc2c6c6"
+    },
+    {
+      "path": "lessons/18-video/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "d10a50e24fcf5a213ae8a2ee4957dc4b5330c857613591e3e517e03ffc5e6698"
+    },
+    {
+      "path": "lessons/19-tracking/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "4248908186443ab13c93c52adbd9ebe8cdbb2beb86b4154bb478a8ffe0d8bc0d"
+    },
+    {
+      "path": "lessons/20-deployment/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "b0de3b7a708ae90b370aaa607e8d7a7d3f5c2f153ec05f31229e232702b7c20d"
+    },
+    {
+      "path": "preparation/data/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "00a817ba4275247c85a889895efe094f587a0fa852d5dae8309b98e0c83cb601"
+    },
+    {
+      "path": "preparation/publish/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "77c0d6238f0f8b5cb86bf12842a4aacf7e5b6eac72959001348b95dae836b92b"
+    },
+    {
+      "path": "preparation/architecture/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "577800e34ec57f585c362e11254cdd6b3262c3b861f2c186e09b11b508c1f2a2"
     },
     {
       "path": "planning/outline/",
       "http_status": 200,
-      "article_matches_reviewed_build": true,
-      "article_sha256": "1d09a49edbf297abac84e3aa28fd591a10269bc90cb8ec836cd5c548ca028a3b"
+      "article_matches_build": true,
+      "article_sha256": "107b1c5472c6479a684f05e2b95c38206d94a2339bd1707ad2a97603e9b8c930"
+    },
+    {
+      "path": "planning/course-research/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "3174b0e97e171b709d5f78d59bb797c579d898e91b0e8de4c6e82b1261dc5c91"
+    },
+    {
+      "path": "planning/feedback/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "d4dacd1e32a1915aa483bf3c83e1e44b30e0dd55fd8fab71b0059355c6e1ad67"
+    },
+    {
+      "path": "research/foundation-data/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "9eb31001f0d84cc59ef756916b1597b5b59ffd75e539bf4101ddd3caf9a4b15a"
+    },
+    {
+      "path": "research/detection-data/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "33410c2de31516cca0ce0ae31973a8655145b2a767749925dfa97918739a8778"
+    },
+    {
+      "path": "research/lfs/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "fc69fa7d0e7331194a19f653d415e07d9870e1d2d88826381e6dd7ccecfdc92e"
+    },
+    {
+      "path": "research/pages-colab/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "c923685099a3480b6645ddda4549ef39815d9db6b0ed12b939156b469203ab1a"
+    },
+    {
+      "path": "research/version-sources/",
+      "http_status": 200,
+      "article_matches_build": true,
+      "article_sha256": "6ad5356737ef57c89b6380ee5462d9c79cf9d57f45a06b843a85a4cddfe5e932"
     }
   ],
-  "svg_assets_match_reviewed_build": [
-    "object-journey.svg",
-    "14-split-paths.svg",
-    "15-area-layout.svg",
-    "16-stal-candidates.svg",
-    "10-multiscale-learning.svg",
-    "08-custom-learning.svg",
-    "08-custom-160-step.svg",
-    "18-video.svg",
-    "19-tracking.svg"
+  "figures": [
+    {
+      "name": "01-small-cnn-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "01-small-cnn.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "02-diagnostics.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "03-comparison-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "03-identity.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "03-projection.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "04-coordinates.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "04-localization-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "04-localization.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "05-assignment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "06-decode-nms.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "06-evaluation.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "07-data.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "08-custom-160-step.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "08-custom-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "08-own-images.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "09-anchor-clustering.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "09-anchors.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "10-multiscale-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "10-multiscale.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "11-augmentation.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "11-csp.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "11-fusion.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "11-iou-loss.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "12-anchor-free.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "12-assignment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "13-nms-free.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "14-split-paths.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "15-area-layout.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "15-attention-bridge.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "16-distance-decode.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "16-head-paths.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "16-stal-candidates.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "17-capstone.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "18-video.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "19-tracking.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "20-deployment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "grid-learning-curve.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "grid-learning-predictions.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "name": "object-journey.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    }
   ],
-  "scope": "Actual public HTTP content and key SVG bytes equal the local reviewed strict build; 42 Colab links use the published immutable release. Live Google runtime not tested."
+  "lessons": [
+    {
+      "id": "00-warmup",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "01-small-cnn",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "02-diagnostics",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "03-identity",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "03-projection",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "03-comparison",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "04-localization",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "04-coordinates",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "05-assignment",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "06-decode-nms",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "06-evaluation",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "07-data",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "07-targets",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "07-loss",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "07-training",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "07-inference",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "07-heldout",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "08-own-images",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "08-own-data",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "09-anchors",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "09-anchor-clustering",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "10-multiscale",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "11-csp",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "11-fusion",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "11-augmentation",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "11-iou-loss",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "12-anchor-free",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "12-decoupled-head",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "12-assignment",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "12-dfl",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "13-dual-assignment",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "13-nms-free",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "14-feature-module",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "15-attention-bridge",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "15-area-attention",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "16-dfl-free",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "16-inference-head",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "16-training",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "17-capstone",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "18-video",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "19-tracking",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    },
+    {
+      "id": "20-deployment",
+      "colab_link_on_public_page": true,
+      "notebook_http_status": 200,
+      "environment_cell_uses_tag": true,
+      "last_cell_is_lesson_program": true
+    }
+  ],
+  "scope": "Public HTTP content of every navigation page's article and every figure equals a strict build of the tag on this runner; every lesson page links to the tag's notebook on Colab, whose environment cell uses the tag and whose last cell is the lesson program; earlier lesson tags point to the commits the previous verification recorded. Colab itself was not opened.",
+  "passed": true
 }

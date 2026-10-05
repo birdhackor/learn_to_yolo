@@ -148,3 +148,17 @@ TypeError: sequence item 0: expected str instance, list found
 | `.github/workflows/verify-release.yml` | `e490d35241d29a69cb3abb7ef19a6bfd4cbf738fce5a08eb692ac45d2b392a0d` |
 
 42 本保存的 stdout stream.text 全部是 list[str]。完整 42 本 notebook 的 SHA-256 清單（清單自身 SHA-256 `4a3774fb98a3a76706b0a1616824b372a84185d834675753dd7cd35ba4a68fcf`）和上述檔案 hash 在副本 `artifacts/runs/verifier-review/snapshot-hashes.json`。同目錄另有 `probe.py`、`probe.json`、`probe.stdout`、`pytest.log`、`verifier.diff`、`release-delta.json`、官方原文／schema、來源抓取失敗記錄、`root-bootstrap-probe.log` 與 `root-probe-limit.json`。交付前再比對 root 的 verifier、tests、section-map、README 與本副本逐 byte 相同。
+
+## 發布後的主審實測紀錄
+
+2026-10-05，主審核對實際 Actions artifact，並在公開網站操作瀏覽器。
+
+- [Pages 37283700451](https://github.com/birdhackor/learn_to_yolo/actions/runs/37283700451)：build／deploy 均成功，部署 commit `e28f85a5591db42830a8fb0365c686b0d3676e8d`，與 immutable `lessons-v0.4.1` 相同。
+- [Verify published lessons 37283863456](https://github.com/birdhackor/learn_to_yolo/actions/runs/37283863456)：site／bootstrap 均成功，兩份 artifact 的頂層 `passed` 都是 JSON boolean `true`，source_ref／release_commit 正確。
+- 公開網站：59 頁 article 與 tag 的嚴格建置逐字相同，40 張圖逐 byte 相同，42 個 Colab／notebook 配對正確；原先三個已驗證 tag 的 commit 保留。另用遠端 refs 核對 v0.4.0 仍為 `8292a666b72934f86228e5d408ffb922c1855599`，沒有移動。
+- 全新環境：五個 notebook cases 全通過，Torch 最終皆為 `2.9.1+cpu`；四個暖身 case 與保存 stdout 逐字相同，同版 Torch 的 RECORD 狀態保留；已 import 的舊版要求重啟，新的 process 續跑成功。第 20 章含計時，其 stdout 不逐字相同；實際程式的 ONNX／ORT 對照與斷言通過，符合原判定。
+- README：16 條命令全部 exit 0，包括全新 clone 的 **72 tests**、42 節 runtime、160 步合成偵測訓練、Fashion-MNIST 下載與兩步分類，以及嚴格網站建置與驗證。42 節全部通過；36 節 stdout 與保存紀錄逐字相同，6 節不同，清單保存在 bootstrap JSON。原紀錄與教材引用仍綁定各自記錄的電腦與來源。
+- runner 是 Python 3.12.14、AMD EPYC 7763、4 個 logical CPU 的 Linux。bootstrap job 6 分 26 秒包含 job 設定、下載／clone、安裝、程式執行及 artifact 保存；不是模型訓練效能測量。
+- 公開瀏覽器：六節、9 個桌面及 6 個手機快照，快速換頁／返回／錨點與延遲排版皆通過；缺字、nested math、舊頁 MathItems 為 0，兩個公開 JS／CSS 的 SHA-256 和 release 相同。手機公式原生橫捲 0→80、表格 0→220 pixels；細節在第三份 JSON。
+
+結果已保存：[`curriculum-publication.json`](../artifacts/checks/curriculum-publication.json)、[`curriculum-release-bootstrap.json`](../artifacts/checks/curriculum-release-bootstrap.json)、[`curriculum-public-browser.json`](../artifacts/checks/curriculum-public-browser.json)。這次沒有啟動GPU 工作；託管 Colab、實體手機手勢與正式 GPU效能不在此次發布驗證範圍。
