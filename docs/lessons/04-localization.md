@@ -1,6 +1,6 @@
 # 4.1 單物件分類與定位：類別之外，還要回答在哪裡
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/04-localization.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/04-localization.ipynb){ .md-button }
 
 分類器回答「這張圖是紅或藍」，定位器還要指出矩形的位置。一張圖只有一個物件時，可以從同一個 backbone（抽取特徵的主幹）分出兩個 head（把特徵轉成答案的末端）：一個分類，另一個輸出四個框數字。讀完本節，你能在幾種框的寫法之間換算、手算框的誤差與重疊程度，並說明本節的框 head 為什麼要讀展平後的特徵，而不是只讀平均後的特徵。前置只需懂卷積與 loss；本節會從頭定義框、正規化和 IoU（兩框的重疊比例），不需要先讀後面的偵測章節。
 

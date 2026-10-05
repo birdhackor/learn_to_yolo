@@ -1,6 +1,6 @@
 # 17 靜態偵測結業：用一次有理由的改動交付結果
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/17-capstone.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/17-capstone.ipynb){ .md-button }
 
 本節是靜態偵測（單張圖片，不是影片）的結業任務。這次不從「要用哪一版 YOLO」出發，而是從一個具體需求出發：先訓練模型、看它錯在哪裡，再根據失敗只改一個設定。讀完後，你能用事先寫好的規則判斷一次改動該不該保留，並交付真實跑出的數字、失敗的圖，以及這次還不能下結論的地方。
 

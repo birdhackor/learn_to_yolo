@@ -1,6 +1,6 @@
 # 7.6 Grid MiniYOLO：獨立資料與評估證據
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-heldout.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-heldout.ipynb){ .md-button }
 
 本節要分清楚兩件事：「評估程式跑通」和「模型真的在沒看過的圖片上找到物件」。讀完後，你能用答案已知的例子核對評估器，也知道要宣稱模型有效時，還得固定並保存哪些東西。
 
@@ -75,7 +75,7 @@ with torch.inference_mode():  # 推論時不記錄計算圖
 result = evaluate_ap(predicted,heldout_anns,num_classes=2,iou_threshold=.5)
 ```
 
-在 Colab 執行[本節 notebook](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-heldout.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。輸出有兩行（頁尾有本次的執行紀錄）：
+在 Colab 執行[本節 notebook](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-heldout.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。輸出有兩行（頁尾有本次的執行紀錄）：
 
 - 第一行是人工 fixture，應核對 AP=0.5、precision=1/3、recall=0.5。
 - 第二行是三步模型的冒煙測試（smoke test）。開頭的英文 `3-step held-out PIPELINE SMOKE, not trained detector evidence`，意思是「三步模型的 held-out 管線冒煙測試，不是已訓練偵測器的證據」。

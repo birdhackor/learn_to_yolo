@@ -1,0 +1,66 @@
+{
+  "scope": "Pre-release checks for lessons-v0.4.1, before its immutable tag",
+  "completed_at_utc": "2026-10-05T08:18:40.561449+00:00",
+  "base_commit": "8292a666b72934f86228e5d408ffb922c1855599",
+  "passed": true,
+  "checks": [
+    {
+      "command": "python3 scripts/validate_preparation.py",
+      "exit_code": 0,
+      "log_sha256": "e18f6cd342789f4d66b9d8139ab58b7634425dbf59eb4a97c191486afbf50ecc",
+      "stdout_and_stderr": "Dataset manifest, section pairing, notebook code and website publication boundaries: OK\n"
+    },
+    {
+      "command": "python3 scripts/validate_lessons.py",
+      "exit_code": 0,
+      "log_sha256": "55863f8499d250b032b629405a5800e471245891957175150bfa74264a1326b0",
+      "stdout_and_stderr": "42 lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK\n"
+    },
+    {
+      "command": "python3 scripts/validate_curriculum_evidence.py",
+      "exit_code": 0,
+      "log_sha256": "30b7469b5c4ee32a0c1449fad94e8216060652f297b7498a2d6984cbbf9d1f91",
+      "stdout_and_stderr": "42 lesson records and 11 supplementary records match the current code\n"
+    },
+    {
+      "command": ".venv-model/bin/python -m pytest tests/",
+      "exit_code": 0,
+      "log_sha256": "1255cd5ec99d0ce54f80347997c1800b095029669faad3199fb8f0087663d299",
+      "stdout_and_stderr": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /workspace/learn_to_yolo\ncollected 72 items\n\ntests/test_checkpoint.py ..                                              [  2%]\ntests/test_core.py .......................                               [ 34%]\ntests/test_custom_data_report.py .....................................   [ 86%]\ntests/test_notebook_bootstrap.py ......                                  [ 94%]\ntests/test_release_verification.py ....                                  [100%]\n\n============================== 72 passed in 4.62s ==============================\n"
+    },
+    {
+      "command": ".venv-docs/bin/zensical build --clean --strict",
+      "exit_code": 0,
+      "log_sha256": "7aaee31a2817b6c86bef9b029aca138350a96cbb7f5ab787a9e372e9f4f37b31",
+      "stdout_and_stderr": "Build started\nNo issues found\nBuild finished in 2.60s\n"
+    },
+    {
+      "command": "python3 scripts/validate_site.py",
+      "exit_code": 0,
+      "log_sha256": "48d06ffcef2ee39b84591bf17aa4c40005ce531cc12cba97e6c9ba7895c1620b",
+      "stdout_and_stderr": "{\"builder\": \"zensical\", \"version\": \"0.0.67\", \"html_pages\": 60, \"lesson_pages\": 42, \"all_local_links_and_anchors\": \"passed\", \"colab_pairs\": \"passed\", \"markdown_rendering\": \"passed: tables, numbered lists, admonitions, math, links and no text parsed as tags\", \"search_language\": [\"zh-TW\"], \"all_lessons_indexed\": true, \"artifact_files\": 137, \"artifact_bytes\": 8441358, \"artifact_boundaries\": \"passed\"}\n"
+    }
+  ],
+  "evidence": {
+    "unchanged_cpu_records": 51,
+    "unchanged_prior_gpu_records": 2,
+    "gpu_jobs_launched": 0,
+    "test_count": 72,
+    "reviewed_pages": 59,
+    "version_reference_pages_independently_reviewed": 3
+  },
+  "verifier_review": "reviews/release-v0.4.1-verification.md",
+  "prior_browser_evidence": "artifacts/checks/site-rendering-v0.4.0.json",
+  "limits": [
+    "The local full bootstrap probe using the corrected verifier and the old public tag stopped on HTTP 503 at the README clone and produced no final JSON. It is not a passed release verification.",
+    "Hosted Colab and the new public tag have not yet been verified; the post-release workflow must complete."
+  ],
+  "source_sha256": {
+    "scripts/verify_release.py": "fff8a374c293b329cc1caf48219426d9f07f4674cbe548e3a155c952c26e2f79",
+    "tests/test_release_verification.py": "59c9079006b455b28de51b3929a8b5ffd9bed7eb9ccd0f96220f0c6031e56c01",
+    "section-map.json": "490393fd15d4c294cd670ded579cd2fcdfa527ab51fb3a343ac6cb340fb8afa5",
+    "docs/assets/javascripts/mathjax.js": "8bfec822da079692e1dcf9ffe5369dad43fbfedcc77eacf983f94beac3cc5f05",
+    "docs/assets/stylesheets/extra.css": "bd285e60fca6236ecca730a05c9ebe0320645bd2d6261a973a97dcf8f123aca6",
+    "reviews/coverage.json": "b173bf44d47fda5da2f8d9399a646e8bb3e491ed38ef2e3c76f2ee7b22b4622b"
+  }
+}

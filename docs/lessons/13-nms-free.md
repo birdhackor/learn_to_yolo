@@ -1,6 +1,6 @@
 # 13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/13-nms-free.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/13-nms-free.ipynb){ .md-button }
 
 NMS-free 指推論時不跑 NMS，直接用 13.1 的一對一 head（把特徵轉成預測的輸出模組）算出的分數挑框。只看分數的篩選仍然保留，例如 score 門檻（分數不夠高就刪）和 top-k（只留分數最高的前 k 個）。要做到這點，訓練時就得讓每個物件只有一個候選拿高分。本節用四個框驗證：重複框 p1 在一對多訓練下分數約 0.96，改用一對一 target 訓練後只有約 0.04。
 

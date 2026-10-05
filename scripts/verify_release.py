@@ -240,6 +240,12 @@ def session(python: Path, work: Path, cells: list[str], mode: str) -> dict:
     return run([python, "session.py", "cells.json", mode], work, environment)
 
 
+def notebook_stdout(cell: dict) -> str:
+    """Read stdout streams, accepting both ipynb multiline-text representations."""
+    return "".join("".join(output.get("text", "")) for output in cell.get("outputs", [])
+                   if output.get("output_type") == "stream" and output.get("name") == "stdout")
+
+
 def check_bootstrap(tag: str, work: Path) -> dict:
     source = work / "source"
     commit = clone(tag, source)
@@ -253,8 +259,7 @@ def check_bootstrap(tag: str, work: Path) -> dict:
         notebook = json.loads((source / "notebooks" / f"{lesson}.ipynb").read_text())
         cells = ["".join(notebook["cells"][1]["source"]), "".join(notebook["cells"][-1]["source"])]
         pinned = re.search(r'"torch==([0-9.]+)"', cells[0]).group(1)
-        saved = "".join(output.get("text", "") for output in notebook["cells"][-1].get("outputs", [])
-                        if output.get("output_type") == "stream" and output.get("name") == "stdout")
+        saved = notebook_stdout(notebook["cells"][-1])
         folder = work / name
         folder.mkdir(parents=True)
         python = new_environment(folder / "venv")

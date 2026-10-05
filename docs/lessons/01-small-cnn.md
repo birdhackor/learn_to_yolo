@@ -1,6 +1,6 @@
 # 1 VGG 風格小 CNN：讓局部圖樣重複使用
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/01-small-cnn.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/01-small-cnn.ipynb){ .md-button }
 
 本節做一個很小的 CNN（卷積神經網路），分辨 32×32 的圖裡畫的是紅矩形還是藍矩形。讀完本節，你能說明卷積為什麼比全連線層省參數，能手算這個模型每層的輸出 shape、參數量與計算量，也能分辨「參數有更新」和「學會分類」是兩件事。前置只需[暖身節](00-warmup.md)的內容：知道 forward（把輸入算成輸出）、loss 和一次參數更新；不必先懂完整的 VGG。
 

@@ -130,3 +130,27 @@
 ### 第 4 輪：上一輪的處理：通過
 
 第 3 輪第 1 項：第 10–11 行改成「- 主要複本」「- 驗證器實驗另開一份複本」，點名的路徑佔位字已移除。處理說明屬實。
+
+## lessons-v0.4.1 版本引用檢查
+
+2026-10-05，另一位 AI 的獨立審查。**本頁版本引用檢查 closed，沒有必要問題。**
+
+獨立副本為 `/tmp/lessons-v0.4.1-review-version-pages/`，以指定 rsync 從 root 複製，排除 `.git`、`site`、`.venv*`。已讀完整頁面、AGENTS 與發布審查規範，並以 read-only Git 對照 v0.4.0 HEAD `8292a666b72934f86228e5d408ffb922c1855599`。未修改 root、coverage、commit、push、tag 或 GPU。
+
+完整 byte 對照確認：HEAD 本頁僅有一個 `lessons-v0.4.0`，替換成 v0.4.1 後與副本全文完全相同。改的是〈發布後的公開驗證〉的本版 tag，42 節清單、補充實驗、GPU、審查範圍、數據、連結及限制都沒有變。本頁沒有嵌入圖，diagrams 相對 HEAD 無變更。
+
+讀取 `.github/workflows/verify-release.yml` 與 `scripts/verify_release.py`，核對 site／bootstrap／save、五個 fresh cases、已 import torch 時的重新啟動、20 節不要求計時 stdout 相同、README 排除 serve、頁面所列「兩份頂層 passed 均為 true 才 commit」的發布規範；save 本身只下載並保存結果。`notebook_stdout` 只收 stdout stream，接受 ipynb text 的字串與字串列表；新增測試實際覆蓋兩種表示、忽略 stderr／display、空輸出及42本原始JSON輸出與紀錄一致，沒有透過 nbformat 正規化掩蓋原 bug。它修正了 session 前讀取已存輸出的 TypeError，不代表 fresh sessions 已實跑通過。
+
+在副本使用既有 Python 3.12.14／CPU 模型環境實際執行：
+
+- `PYTHONPATH=. python -m pytest -q tests/test_release_verification.py tests/test_notebook_bootstrap.py tests/test_core.py tests/test_checkpoint.py`：35 passed，含修正後 helper 的 4 個 regression cases。
+- `python scripts/validate_curriculum_evidence.py --report artifacts/runs/version-pages/evidence.json`：42 節與 11 份補充紀錄相符；既有 GPU 紀錄只查綁定，沒有執行 GPU。
+- `PYTHONPATH=. python scripts/check_lesson_runtime.py --section 00-warmup --report artifacts/runs/version-pages/runtime-00.json`：PASS，輸出與紀錄逐字相同。
+- `python scripts/validate_preparation.py`、嚴格 Zensical 0.0.67 建置及 `python scripts/validate_site.py`：均 exit 0；60 頁／42 課的連結、錨點、Colab 配對與 Markdown 轉換通過。
+- `python scripts/verify_release.py --help`：exit 0；只檢查 CLI，沒有啟動公開 site／bootstrap／save。
+
+另外逐一核對 42 節頁面入口、section-map source_ref、環境格均指 v0.4.1，末格與案例相同，41 個一般環境格逐字相同。42 本 notebook 相對 HEAD 只改 tag 與導言的舊頁名同步，實驗與存的數值輸出未變。此範圍仍清楚區分 CPU 紀錄一致性、編輯審查、發布後公開驗證與 Colab 未實測，沒有新增已完成的公開驗證宣稱。
+
+本頁 SHA-256：`fb7393a8588304af68ef41048f3050db709eb2ecdd9a4c80ea1771ad35dc5285`；HEAD 舊頁：`df33ae0350bac4774c1284665954f27270fdac78d806bb81ac2b834dce85a26f`。結束前副本頁面再次與 root 逐 byte 相同。證據在副本 `artifacts/runs/version-pages/scope.json`、`notebook-tags.json`、`evidence.json` 與 `runtime-00.json`。
+
+這是發布前的版本引用審查。新 tag 尚未 push，不能把本次本地驗證當成 v0.4.1 的公開驗證；主審正在進行的舊公開版本五個 fresh sessions／README 探針，以及之後的新 tag Actions，都未由本次查核證明通過。副本的 publication JSON 仍引用 v0.3.0、沒有頂層 `passed`，bootstrap JSON 尚不存在，沒有拿它們作新版本通過證據。沒有進入 Colab 託管 runtime，也沒有測 GPU 或重跑 42 節的全部實驗。

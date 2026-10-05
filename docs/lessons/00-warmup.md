@@ -1,6 +1,6 @@
 # 0 一次學習的超短暖身
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/00-warmup.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/00-warmup.ipynb){ .md-button }
 
 先回答一個最小問題：模型算出「參數往哪邊調，誤差會變小」之後，就算學到了嗎？還沒有，還要真的去調。在 PyTorch 程式裡，前一步是 `loss.backward()`，它只算出梯度；後一步是 `optimizer.step()`，它才修改參數。optimizer（優化器）是專門拿梯度去修改參數的物件。這些名詞下面會一一說明。
 
@@ -14,7 +14,7 @@
 
     1. 點頁首的按鈕，Colab 會在瀏覽器開啟本節的 notebook。執行程式前要先登入 Google 帳號。
     2. 執行第一個程式格（環境格）：點格子左側的執行鈕，或點進格子後按 Shift+Enter。Colab 可能先跳出警告，說這份 notebook 不是 Google 編寫的、是從 GitHub 載入的；它來自本教材的 GitHub 專案，選擇仍要執行即可（按鈕名稱以 Colab 當時的畫面為準）。
-    3. 等環境格印出「固定教材版本： lessons-v0.4.0」這一行，環境才算準備好。PyTorch 不是 2.9.1 時，環境格要先下載、改裝，會多等一會兒。安裝套件時可能印出一些訊息，其中可能有 `ERROR:` 開頭、說其他預裝套件（例如 torchvision）需要別的版本的訊息；各節實驗用不到那些套件，只要之後有印出這一行，就是成功了。若環境格停在錯誤、沒有印出這一行（例如要你重新啟動工作階段），照訊息做完，再從第一格執行。
+    3. 等環境格印出「固定教材版本： lessons-v0.4.1」這一行，環境才算準備好。PyTorch 不是 2.9.1 時，環境格要先下載、改裝，會多等一會兒。安裝套件時可能印出一些訊息，其中可能有 `ERROR:` 開頭、說其他預裝套件（例如 torchvision）需要別的版本的訊息；各節實驗用不到那些套件，只要之後有印出這一行，就是成功了。若環境格停在錯誤、沒有印出這一行（例如要你重新啟動工作階段），照訊息做完，再從第一格執行。
     4. 用同樣的方式執行最後一格「本節可修改的完整實驗」。剛打開 notebook 時，這一格下方已經有一份輸出：那是執行紀錄存下的結果，不是你跑出來的；你執行之後，它會換成這次印出的內容。之後改了程式，要再執行一次這一格才會生效。
 
 ??? note "在自己的電腦執行"

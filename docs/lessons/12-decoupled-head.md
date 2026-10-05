@@ -1,6 +1,6 @@
 # 12.2 Decoupled head：分類和定位在哪裡分工
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/12-decoupled-head.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/12-decoupled-head.ipynb){ .md-button }
 
 偵測模型要從同一份特徵回答兩個問題：「這裡是哪一類？」和「框的邊在哪裡？」本節把 head 分成框、類別兩條分支，再用三次 backward 追蹤梯度走哪條路。讀完你能說出 decoupled head 哪裡分開、哪裡仍然共用，能驗算兩個 loss 的梯度在共用的部分怎麼相加，也能算出分支多花了多少參數。
 

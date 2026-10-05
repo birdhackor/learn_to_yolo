@@ -1,6 +1,6 @@
 # 10 YOLOv3 機制：同一個 pixel 框看兩種尺度
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/10-multiscale.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/10-multiscale.ipynb){ .md-button }
 
 只用 4×4 的格子預測時，8×8 pixel 的小物件容易被背景淹沒。本節試著多加一個較細、8×8 格的預測 head。讀完你能算出同一個框在兩種格子下的 target，說出兩個 head 各學什麼，也知道推論時怎麼合併兩個 head 的框、去掉重複。
 
@@ -125,7 +125,7 @@ assert torch.allclose(boxes[selected],small['boxes'],atol=1e-4)
 
 兩框同類、座標相同（都還原成 `[5,5,13,13]`），IoU 為 1，所以合併後的分類別 NMS 只留一個，數量 2→1。注意 `decode_grid` 內部本來就會在單一尺度內先做一次分類別 NMS（第 7 章〈[完整圖片推論](07-inference.md)〉）。但這個小例子每個尺度只有一個框，尺度內 NMS 沒有東西可刪；2→1 完全來自合併後那一次跨尺度 NMS，尺度內的 NMS 代替不了它。本節程式的完整流程是：各尺度 decode（先用 score 門檻篩掉 score 太低的候選框，再做尺度內 NMS）→ 串接 → 再做一次分類別 NMS（原版只做最後這一次，見上方〈與原版 YOLOv3 的差異〉）。
 
-執行[本節 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/10-multiscale.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/10-multiscale.py`。應核對：
+執行[本節 Colab](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/10-multiscale.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/10-multiscale.py`。應核對：
 
 - 表內兩個 target：輸出第 2、3 行的 4 個數，依序是表中的格內 x、y 與 normalized w、h。
 - 兩個 head 的輸出 shape，以及候選數 `64+16=80`（輸出第 4 行）。

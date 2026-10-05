@@ -1,6 +1,6 @@
 # 19 簡易 tracking：框很準，ID 仍可能換人
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/19-tracking.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/19-tracking.ipynb){ .md-button }
 
 偵測只回答「這一幀（frame，影片裡的一張畫面）有哪些框」。追蹤（tracking）還要回答：這一幀的某個框，是否和上一幀的某個框是同一個物件？本節要讓你看到：兩個同類物件交叉時，偵測可以完全正確，追蹤給的編號（track ID）卻互換了。讀完本節，你能手算一個小型 tracker（追蹤器）每一幀怎麼配對，也能自己數出 ID 換了幾次。你也會知道：只看上一幀的框為什麼會換號，先用速度預測位置為什麼不會。
 

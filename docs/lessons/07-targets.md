@@ -1,6 +1,6 @@
 # 7.2 Grid MiniYOLO：把框變成訓練目標
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/07-targets.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/07-targets.ipynb){ .md-button }
 
 一張圖只有兩個框，模型卻固定輸出 4×4=16 個位置的預測：哪一格該學哪個框？其他 14 格又該學什麼？本節把標註框換算成這 16 個位置各自的正確答案，也就是訓練目標（target）。讀完你能手算任何一個框由哪一格負責、那一格的 target 是哪四個數，也知道每一格要算哪些 loss。
 

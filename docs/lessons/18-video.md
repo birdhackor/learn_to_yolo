@@ -1,6 +1,6 @@
 # 18 影片串流：處理每一幀，並分清 FPS 與延遲
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/18-video.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/18-video.ipynb){ .md-button }
 
 本節把圖片偵測搬到影片上。影片是一連串的幀（frame：影片中的一張畫面）。偵測器（detector）不必換，只要把「讀一張圖 → 前處理 → 模型 → 後處理 → 畫框」放進迴圈，每一幀跑一次。讀完本節，你能把影片一幀一幀送進同一個模型，並分清「每秒處理完幾幀」和「一幀要等多久才有結果」這兩件事。
 

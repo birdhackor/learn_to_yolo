@@ -1,6 +1,6 @@
 # 2 訓練診斷：loss 不降時，先查哪裡、再查哪裡
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/02-diagnostics.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/02-diagnostics.ipynb){ .md-button }
 
 「loss 不動」不是一個完整診斷。可能是標籤錯、梯度斷、沒有更新、學習率（learning rate，程式裡的 lr）不合適，也可能是資料太難。先查能直接核對的事項，比同時換 optimizer、模型與資料更容易找出原因。讀完本節，你會知道 loss 不降時依序該查哪四件事，也會看過三種刻意製造的失敗。前置是看得懂 tensor shape，知道 forward／backward／step 各做什麼；本節不需要記住 CNN 架構。
 

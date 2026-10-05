@@ -1,6 +1,6 @@
 # 9.2 尺寸聚類：先驗由哪一份資料決定
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/09-anchor-clustering.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/09-anchor-clustering.ipynb){ .md-button }
 
 上一節的 anchor 寬高是手填的（標題的「先驗」指的就是 anchor）。本節改從訓練資料找 anchor，用的方法是聚類（clustering，也叫分群）：把相近的資料分成幾群，每群用一個代表值。這裡的資料是訓練框的寬高，每群的代表寬高就當一個 anchor。讀完你能用 1−IoU 當距離手算一次聚類，並用一個數字比較幾組 anchor 和訓練框的形狀有多接近。
 

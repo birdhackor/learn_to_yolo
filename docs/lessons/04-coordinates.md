@@ -1,6 +1,6 @@
 # 4.2 座標轉換與還原：框跟圖片一起移動
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/04-coordinates.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/04-coordinates.ipynb){ .md-button }
 
 上一節的定位模型只能吃固定大小的圖片（那一節是 32×32）：它的框 head 把特徵圖攤平（flatten）成 1024 個數再計算；輸入若改成 64×64，攤平後變成 4096 個數，就接不上了。同一個 batch 的圖片也要疊成同一個 tensor，例如 `[B,3,64,64]`（B 是這批圖片的張數）。所以不管原圖多寬多高，都要先轉成固定大小；本節用 64×64，後面章節的 MiniYOLO 預設輸入也是 64×64。
 

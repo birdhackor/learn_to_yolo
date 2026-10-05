@@ -23,9 +23,9 @@
  },
  "docs/lessons/00-warmup.md": {
   "review": "reviews/00-warmup.md",
-  "review_sha256": "1b0af409363202f7d1a76a8f875894863c5ff706f3899be18426570d70d3642d",
+  "review_sha256": "7e73f51fe7aaa6415bfd859b01d8e201c219e913fd61a3bd20ab9f9643018148",
   "covered": {
-   "docs/lessons/00-warmup.md": "23f809ad63e3df0913a2c333335d5c6a1ba2a5091054b0134922da1833f2d897",
+   "docs/lessons/00-warmup.md": "169c2dfb17ad031e7190999a8d5c7e65ee6aff0b63f3648335aa7bc04a8ce5e2",
    "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
   }
  },
@@ -577,16 +577,16 @@
  },
  "docs/status.md": {
   "review": "reviews/status.md",
-  "review_sha256": "67126f468f8d7f558a595bce23e51fad7d0e32d73407509f7f27d058f7ae89be",
+  "review_sha256": "a9b12d00c62326386346d29205a3282af6e7090a2c0269fc88796e1b8dfa1a0a",
   "covered": {
-   "docs/status.md": "ea64ffc3672d9d9c25d64a7db3868ed178b90acf7e39b7c9c00e3aed3dec053c"
+   "docs/status.md": "329bae18484ba39889378e64b1583f9181545f490610420ed41abbbbc82d322f"
   }
  },
  "docs/validation/curriculum.md": {
   "review": "reviews/validation-curriculum.md",
-  "review_sha256": "7d2b53bf8cbb59249d344f07f7a71fdb1b176840e4a9c843bff9c93eb63402aa",
+  "review_sha256": "782ef15a0404d698c1d1456d2d8a6a9f95f4677ce22635d408976651332f6a7d",
   "covered": {
-   "docs/validation/curriculum.md": "df33ae0350bac4774c1284665954f27270fdac78d806bb81ac2b834dce85a26f"
+   "docs/validation/curriculum.md": "fb7393a8588304af68ef41048f3050db709eb2ecdd9a4c80ea1771ad35dc5285"
   }
  },
  "docs/validation/gpu-smoke.md": {

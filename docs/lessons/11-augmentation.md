@@ -1,6 +1,6 @@
 # 11.3 增強：畫素怎麼變，框就怎麼變
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/11-augmentation.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-augmentation.ipynb){ .md-button }
 
 前兩節（CSP、特徵融合）改的是模型；本節換到資料這一側，模型和 loss 都不動，只改訓練資料的變換。
 
@@ -114,7 +114,7 @@ cropped_labels = labels[keep]  # labels 用同一個 keep 篩
 
 ## 執行完整程式
 
-[在 Colab 執行完整程式](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/11-augmentation.ipynb)（和頁首按鈕相同），或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-augmentation.py`。這是資料幾何實驗，不需 backward，也沒有 AP 結論。開頭的 `torch.manual_seed(7)`、`torch.set_num_threads(2)` 是各節程式共用的設定；本節的翻轉與裁切參數都直接寫在程式裡，沒有抽任何亂數。預期輸出四行：
+[在 Colab 執行完整程式](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/11-augmentation.ipynb)（和頁首按鈕相同），或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-augmentation.py`。這是資料幾何實驗，不需 backward，也沒有 AP 結論。開頭的 `torch.manual_seed(7)`、`torch.set_num_threads(2)` 是各節程式共用的設定；本節的翻轉與裁切參數都直接寫在程式裡，沒有抽任何亂數。預期輸出四行：
 
 ```text
 flip box [[40.0, 12.0, 56.0, 28.0]] double flip is identity

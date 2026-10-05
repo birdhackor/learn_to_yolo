@@ -26,7 +26,7 @@
 - 用真實偵測資料長時間訓練：例如 Penn-Fudan 的行人照片，教材沒有它的格式轉換程式，也沒有用它訓練（見[資料規劃頁](preparation/data.md)）。
 - 在真實資料上，用相同資料與訓練預算（例如訓練步數）比較各機制的效果。合成資料上只有少數小型對照，例如 3.3 節的 plain 與 residual。
 - 正式的 GPU 速度與效能測試。
-- 在 Google Colab 上執行 notebook，包括 Colab 可能分配給你的 GPU：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出。代替的檢查有兩項。第一，環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。第二，網站發布後，在 GitHub 提供的 Linux 電腦上，從公開的 `lessons-v0.4.0` 重新下載教材，在全新的 Python 環境裡照原樣執行 notebook 的環境格和實驗格（notebook 最後一格，內容和 `lesson_cases/` 裡該節的程式相同）：第 0 章試沒裝 PyTorch、裝了別的版本、已是 2.9.1、已經 import 過別的版本四種情況，以及第 20 章（它的環境格還要另裝 ONNX 套件）；也依序執行 README 列出的指令（預覽網站用的 `zensical serve` 除外）。結果記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)。這台電腦不是 Colab，也沒有 GPU。
+- 在 Google Colab 上執行 notebook，包括 Colab 可能分配給你的 GPU：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出。代替的檢查有兩項。第一，環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。第二，網站發布後，在 GitHub 提供的 Linux 電腦上，從公開的 `lessons-v0.4.1` 重新下載教材，在全新的 Python 環境裡照原樣執行 notebook 的環境格和實驗格（notebook 最後一格，內容和 `lesson_cases/` 裡該節的程式相同）：第 0 章試沒裝 PyTorch、裝了別的版本、已是 2.9.1、已經 import 過別的版本四種情況，以及第 20 章（它的環境格還要另裝 ONNX 套件）；也依序執行 README 列出的指令（預覽網站用的 `zensical serve` 除外）。結果記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)。這台電腦不是 Colab，也沒有 GPU。
 - 用 TensorRT 跑更大的模型，或改用其他數值精度時的結果，例如強制每一層都用 FP16（16 位元浮點數），或用 INT8（8 位元整數，要先經校準或量化感知訓練等流程決定縮放）。
 - 接上實體攝影機當影片來源。
 - 真人學生的學習效果。
@@ -48,7 +48,7 @@
 
 ## 執行方式
 
-各節的 Colab 按鈕開啟固定在 `lessons-v0.4.0` 的 notebook，環境格也下載同一版的教材程式。執行紀錄用的是 Python 3.12、PyTorch 2.9.1（CPU 版）。Colab 預先裝好的 PyTorch 版本可能不同；環境格發現版本不是 2.9.1 時，會改裝成 2.9.1 的 CPU 版（預先裝好的若已是 2.9.1，不論 CPU 版或 CUDA 版都保留不動）；改裝後就用不到 GPU。各節實驗都只用 CPU，不必選 GPU 執行階段。若需要改裝，而這個工作階段已經 import 過 torch，環境格會在改裝後停下，提示重新啟動工作階段；照做後從第一格重跑。每個實驗都可單獨執行。
+各節的 Colab 按鈕開啟固定在 `lessons-v0.4.1` 的 notebook，環境格也下載同一版的教材程式。執行紀錄用的是 Python 3.12、PyTorch 2.9.1（CPU 版）。Colab 預先裝好的 PyTorch 版本可能不同；環境格發現版本不是 2.9.1 時，會改裝成 2.9.1 的 CPU 版（預先裝好的若已是 2.9.1，不論 CPU 版或 CUDA 版都保留不動）；改裝後就用不到 GPU。各節實驗都只用 CPU，不必選 GPU 執行階段。若需要改裝，而這個工作階段已經 import 過 torch，環境格會在改裝後停下，提示重新啟動工作階段；照做後從第一格重跑。每個實驗都可單獨執行。
 
 想在自己的電腦上執行：先從 [GitHub](https://github.com/birdhackor/learn_to_yolo) 下載本專案（在頁面上按 Code → Download ZIP 後解壓，或用 `git clone`），完整步驟與套件版本見 [repository README](https://github.com/birdhackor/learn_to_yolo#readme)。照 README 設定好環境後，在 repository 根目錄（教材專案資料夾的最上層）執行下面的指令；Windows 的寫法見 README：
 
@@ -89,7 +89,7 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 教材介紹的版本到 YOLO26 為止，不包含之後的版本，也不涵蓋 YOLOv6、v7、v9 的機制（範圍見[課程大綱](planning/outline.md)）；只寫找得到原文或公開程式碼可以查證的設計，不為無法確認的版本編造架構。每個已介紹的 YOLO 版本，都以原論文或官方程式碼的某個固定版本為準（commit：程式碼某一次提交的版本編號，對應的內容固定不變），而不是會隨時變動的最新版。
 
-審查紀錄每頁一份，存在 repository 的 `reviews/` 資料夾，記下查核的方法、每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查看過的內容（頁面文字、頁面上的 SVG 圖，課程頁還包括該節程式和它 import 的模組）都用 SHA-256 記在 `reviews/coverage.json`。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（`lessons-v0.4.0`）不算在內。
+審查紀錄每頁一份，存在 repository 的 `reviews/` 資料夾，記下查核的方法、每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查看過的內容（頁面文字、頁面上的 SVG 圖，課程頁還包括該節程式和它 import 的模組）都用 SHA-256 記在 `reviews/coverage.json`。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（`lessons-v0.4.1`）不算在內。
 
 這些都是編輯審查，沒有做過真人學生的學習實驗：沒有請真人學生實際用本教材學習，再測量學習效果。
 

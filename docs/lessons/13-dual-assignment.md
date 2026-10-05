@@ -1,6 +1,6 @@
 # 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/13-dual-assignment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/13-dual-assignment.ipynb){ .md-button }
 
 第 6 章（[人工框解碼與 NMS](06-decode-nms.md)）在推論的最後用 NMS（非極大值抑制：保留高分框，刪掉和它重疊太多的框）清掉同一物件的重複框。本節要回答：怎樣訓練，模型推論時才能不靠 NMS，也不輸出重複框？讀完本節，你能說出 YOLOv10 訓練時為什麼接兩個 head、推論時為什麼只留一個。你也能手算一張小品質表的兩種分配，並用程式確認梯度各自走到哪裡。
 

@@ -111,7 +111,7 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提
 
 ## 發布後的公開驗證
 
-網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.4.0`）。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
+網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.4.1`）。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
 
 - [`curriculum-publication.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)：在 runner 上嚴格建置（`zensical build --strict`，有警告就算失敗）這個 tag 的網站，再和公開網站比對：導覽裡每一頁的正文，以及 `assets/diagrams/` 的每張圖，都要完全相同。也確認每節的 Colab 連結開的是這個 tag 的 notebook、環境格固定在這個 tag、最後一格就是該節程式，以及先前發布的 tag 仍指向原本的 commit。
 - [`curriculum-release-bootstrap.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)：除了第 20 章，41 本 notebook 的環境格逐字相同，所以用第 0 章的 notebook 測四種情況：沒有 PyTorch、裝著其他版本、已經是 2.9.1，以及其他版本已經載入（環境格改裝 2.9.1 後要求重新啟動，用新的程序重跑兩格後通過）。每種情況都用全新的資料夾與虛擬環境，照 notebook 的順序執行環境格與最後一格，最後一格的輸出要和 notebook 存的輸出相同。第 20 章的環境格另外安裝 ONNX 套件，所以另在沒有 PyTorch 的環境執行一次它的兩格（輸出含計時，不要求相同）。接著在另一份全新的 clone 裡，依序執行 README 的 bash 區塊裡的每個指令（不會自己結束的 `zensical serve` 除外），其中包括 pytest，以及把 42 節的實驗格各跑一次、和紀錄比對輸出的 `scripts/check_lesson_runtime.py`（輸出和紀錄不同不算失敗，哪些節逐字相同記在紀錄的 `lesson_runtime`）。

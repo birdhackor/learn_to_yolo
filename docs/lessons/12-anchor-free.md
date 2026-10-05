@@ -1,6 +1,6 @@
 # 12.1 Anchor-free：從候選點量出四條邊
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/12-anchor-free.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/12-anchor-free.ipynb){ .md-button }
 
 一個候選點（特徵圖上可以各自輸出一個框的位置）一定要先選「寬 20、高 10」這類 anchor，再學偏移嗎？如果資料的長寬比改變，這組預先選好的尺寸還合適嗎？Anchor-free（不用 anchor）就是不使用這種預設的寬高模板；本節的做法是讓每個候選點直接預測它到框左、上、右、下四條邊的距離。本節換掉框的表示方式，但保留兩件事：候選點，以及「哪個候選點負責哪個物件」的規則（assignment）。讀完你能在框和四個距離之間來回換算，也能說明為什麼拿掉 anchor 之後仍然需要 assignment。
 

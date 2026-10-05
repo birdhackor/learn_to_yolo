@@ -1,6 +1,6 @@
 # 12.3 Sample assignment：哪個候選值得被教
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/12-assignment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.1/notebooks/12-assignment.ipynb){ .md-button }
 
 密集偵測器對一張影像輸出許多候選，標註卻可能只有兩個物件。訓練時要決定哪些候選當正樣本、各自學哪個物件，其餘的學背景；這一步叫樣本分配（sample assignment）。這裡的 sample 就是第 5 章說的正／負樣本，不是「範例」。第 5、7 章的規則是「物件中心所在的格負責」，只看標註，訓練前就能算好，而且永遠不變。本節的規則改用模型當下的分類分數和預測框，所以每訓練一步，誰當正樣本都可能改變。
 

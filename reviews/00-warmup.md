@@ -318,3 +318,53 @@
 | # | 嚴重度 | 位置 | 發現 | 處理 |
 |---|---|---|---|---|
 | 1 | 建議 | 第 65 行（第 1 次查核〈證據檔〉第一項） | 產生器 CLEAN 裡 `(?:scratch｜暫存)…暫存副本\s*[）)]?` 這條規則，結尾的 \s* 會吃掉換行。結果只寫路徑的那一行沒有被刪，反而把「暫存副本」黏到下一個清單項目前面。同一個原因也造成 18-video 第 52 行、16-training 第 30 行、glossary、planning-course-research 與 4 份 research 紀錄的黏字，其中幾處在先前幾輪已被點名過。內容沒有遺失，所以列為建議。 | 已修正：產生器的路徑規則不再吃掉換行，只寫路徑的那一行直接刪除，不再黏到下一項。 |
+
+## lessons-v0.4.1 版本引用檢查
+
+2026-10-05，另一位獨立 AI 依 `AGENTS.md` 與發布流程第 7 步，從 root 用指定 rsync 建立自己的 `/tmp/lessons-v0.4.1-review-00/` 副本，排除 `.git`、`site`、`.venv*`。完整閱讀 `docs/lessons/00-warmup.md`、README、`notebooks/00-warmup.ipynb` 四格與其保存輸出，對照主例、notebook 產生器、section-map、新舊執行紀錄及 v0.4.0 的 `base/` 快照。root、coverage、Git、remote、GPU 與既有模型環境均未修改，沒有下載資料集。
+
+**版本文字與 notebook。** 相對 v0.4.0 快照，第 00 課只有頁首 Colab URL 與〈第一次用 Colab〉第 3 步的 `固定教材版本： lessons-v0.4.1` 改動；README 只有開頭明示的固定 tag 改動。將這三處 v0.4.1 換回 v0.4.0，兩份全文分別與舊快照逐字相同。`00-warmup.py` 未變，notebook 最後格逐字等於它；環境格的 `REF`、clone 的 `--branch`、精確 tag 核對與最後印出的版本都使用同一個 REF，與正文新標記相符。
+
+另外只讀掃描 42 節：manifest `source_ref`、notebook metadata、環境格 REF、頁首 Colab URL 全部是 `lessons-v0.4.1`，42 本 notebook 最後格分別與同名 case 逐字相同。這是靜態配對檢查，沒有宣稱本次執行全部 42 節。第 00 課的標記摘錄以 validator 原有 `excerpt_problems()` 查得 `[]`。初次匯入整支 validator 時，因尚待登記的第 00 課等頁面 coverage 過期而停下；後續只讀使用它的摘錄檢查函式，沒有改 coverage，也沒有把完整 `validate_lessons.py` 說成通過。
+
+**主例、手算與練習。** cwd 與 `PYTHONPATH=.` 指向自己的副本，使用既有 Python 3.12.14、PyTorch 2.9.1+cpu 執行主例及 notebook 最後格。兩次均 exit 0、stderr 為空，四行輸出逐字符合當前保存紀錄和 notebook 的 stdout stream。notebook 的 `output.text` 是標準的 list of strings，串接後正好是紀錄的 stdout，沒有把 list 當成一個字串。當前 `00-warmup.json` 與 v0.4.0 base 的紀錄完全相同；另核對 2026-10-02 的較早紀錄，它的 case hash 不同、第 3 行尚未印 `new_prediction=3.60`，不拿它當作現行程式的完整輸出。現行紀錄、正文四行與 notebook 都使用 2026-10-05 那份輸出。
+
+獨立用精確分數手算：更新前預測 2、loss 4、梯度 −8；學習率 0.1 得 w=1.8、預測 3.6、loss 0.16。有限差分 w=1.01 得 loss 3.9204，差商 −7.96，與梯度 −8 差 0.04。頁面多輸入線性層示例另用 CPU 計算，輸出確為 `[4,2]`；重複 backward 未清梯度得 −16，無 no_grad 的參數原地改寫、以及以 `.item()`／`.detach()`／NumPy 斷開本例 loss 都得到正文所說的錯誤。
+
+所有練習變更都只放在自己副本的 `artifacts/runs/v041-review00/`，沒有刪除核對斷言來讓結果通過：
+
+| 實跑項目 | 結果 |
+| --- | --- |
+| 練習 1：只改主 optimizer 的 lr=0.25 | 印 w=3、預測 6、loss 4，第二行舊答案斷言報 AssertionError，符合正文。 |
+| 練習 1：只改第二行斷言、第三行仍保留 3.6 | 第三行斷言報 AssertionError，符合提醒。 |
+| 練習 1：依答案更新兩行斷言 | exit 0，四行全部印出；替換用 new_optimizer 的 lr 維持 0.1。 |
+| 延伸：lr=0.125，依手算更新答案斷言 | exit 0，w=2、預測 4、loss 0。 |
+| 練習 2：註解 optimizer.step() | 印 w=1、預測 2、loss 4，梯度仍 −8，第二行斷言報 AssertionError。 |
+| 正文 alias／snapshot 插入示例 | exit 0；前三行是 Parameter containing、1.8000、副本 1，後接原本四行。 |
+
+主例、notebook 最後格與上述變體共 5 個成功執行、3 個預期的斷言失敗，分開記錄。查核輔助程式最後印 `V041_REVIEW00_AUDIT_PASS`，補充探針印 `V041_REVIEW00_PROBES_PASS`。
+
+**來源、README 與頁面。** 重新開啟 PyTorch v2.9.1 官方 commit `d38164a545b4a4e4e0cf73ce67173f70574890b6` 的 [Linear](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/torch/nn/modules/linear.py)、[SGD](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/torch/optim/sgd.py) 與 [Optimizer](https://github.com/pytorch/pytorch/blob/d38164a545b4a4e4e0cf73ce67173f70574890b6/torch/optim/optimizer.py) 原始碼，核對 `xA^T+b`、權重 shape、bias=False、momentum／weight_decay 預設 0，以及 zero_grad 的 set_to_none=True 和 None 梯度跳過更新。這些相鄰說明沒有因升版而改變；本次沒有重做其他未受影響的函式庫主張之全面查核。
+
+README 的 CPU 主例指令已以既有指定環境實跑；notebook 最後格與 case 一致的說明也直接核對。README 的「新 tag、不覆寫舊 tag」及發布後跑 Verify published lessons 的步驟保留，與此次新建版本的流程一致。本次沒有重新安裝依賴、執行 README 的完整 42 節 runner、完整 pytest、資料下載、其他訓練或 GPU 指令，不把這些列為本次驗證。
+
+自己的 `zensical build --clean --strict` 與 `validate_site.py` 都 exit 0。以 Playwright／`/usr/bin/chromium` 對自有 HTTP server 做 390×844 瀏覽檢查，實際展開〈第一次用 Colab〉並查看截圖，確認 v0.4.1 完成標記已顯示、按鈕 href 指向 v0.4.1 notebook，article 沒有殘留 v0.4.0。瀏覽器結果印 `V041_REVIEW00_BROWSER_PASS`。自有 port 8818 server 已停止，root 的 8794 沒有操作。
+
+**發布前限制。** 查核時 `lessons-v0.4.1` 尚未推送公開，因此未做公開 tag clone、託管 Colab、公開網站比對或全新的固定版 bootstrap／README 驗證，也不宣稱它們已成功。環境格另在 mock 探針中執行：只供給正確 tag 及既有相同 PyTorch 時，印出新完成標記；供給舊 tag 時，先報版本不符且不印完成標記。探針沒有真正執行 Git、pip 或 chdir，僅驗證本地控制流程，不能取代發布後 root 執行的 Actions。本報告是發布候選內容的獨立檢查，公開固定版實跑仍待新 tag 發布後完成。
+
+必要問題：**0**；新增可選問題：**0**。上述未執行的公開驗證屬明示的後續發布步驟，不把尚未公開 tag 誤列為教材程式缺陷。
+
+**本次快照 SHA-256。** 正文 coverage hash 用現行 `digest()` 只讀計算，排除頁尾紀錄並正規化 Colab tag；新正文期待輸出的 tag 仍有涵蓋。完整數值、42 節靜態清單、每個子程序輸出、mock 探針、原始來源與手機截圖保存在自己副本的 `artifacts/runs/v041-review00/`，主要結果是 `audit.json`、`probes.json`、`browser.json` 與 `colab-v041-mobile.png`。
+
+```text
+docs/lessons/00-warmup.md（新正文 coverage hash）
+169c2dfb17ad031e7190999a8d5c7e65ee6aff0b63f3648335aa7bc04a8ce5e2
+README.md（原檔 hash）
+6732d75dab1314105722092ef0d02e7202c19a61087d7692bc8311f7d3442df3
+notebooks/00-warmup.ipynb
+c0cc2f7218339cf8a4bcf55ca2b92644ae326a98c98640f9468f7d9e9c701787
+lesson_cases/00-warmup.py
+7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b
+artifacts/checks/curriculum/00-warmup.json
+853aa4af361f96f475de9e2fd639270640a0d1ff02be2584d5fd1e14a5aff0ef
+```

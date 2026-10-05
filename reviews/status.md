@@ -514,3 +514,27 @@
 | 本次 `checks.json` | `0e97169a83d8aca94b0e32461ce8911018e2e7cf858089f15513298332039297` |
 
 本次是 INT8 用詞修正與其全文一致性的獨立確認，沒有執行 INT8 或重做其餘保存實驗。HTTP 結果、官方來源原文、數值探針、完整 digest、瀏覽器文字檢查結果及截圖保存於副本 `artifacts/runs/fix17-status-final/`。
+
+## lessons-v0.4.1 版本引用檢查
+
+2026-10-05，另一位 AI 的獨立審查。**本頁版本引用檢查 closed，沒有必要問題。**
+
+獨立副本為 `/tmp/lessons-v0.4.1-review-version-pages/`，以指定 rsync 從 root 複製，排除 `.git`、`site`、`.venv*`。已讀完整頁面、AGENTS 與發布審查規範，並以 read-only Git 對照 v0.4.0 HEAD `8292a666b72934f86228e5d408ffb922c1855599`。未修改 root、coverage、commit、push、tag 或 GPU。
+
+完整 byte 對照確認：將 HEAD 本頁的三個 `lessons-v0.4.0` 替換為 `lessons-v0.4.1`，就與副本全文完全相同。三處分別是發布後 bootstrap 流程、各節 Colab／環境格版本與 coverage 的 tag 排除說明；沒有其他文字、數字、表格或連結變更。本頁沒有嵌入圖，`docs/assets/diagrams/` 相對 HEAD 也無變更。
+
+獨立核對全部 42 節的頁面 Colab 入口、section-map source_ref 與 notebook 環境格均為 v0.4.1，最後一格仍與案例逐字相同；41 個一般環境格相同，第 20 節另外安裝 ONNX，與頁面的範圍說明一致。notebook 重建還將導言的舊頁名「驗證範圍與後續實驗」同步為「驗證範圍」；除這個頁名與 tag 外，42 本 notebook 與 HEAD 完全相同，沒有更改實驗程式或存的數值輸出。
+
+在副本使用既有 Python 3.12.14／CPU 模型環境實際執行：
+
+- `PYTHONPATH=. python -m pytest -q tests/test_release_verification.py tests/test_notebook_bootstrap.py tests/test_core.py tests/test_checkpoint.py`：35 passed，含修正後 helper 的 4 個 regression cases。
+- `python scripts/validate_curriculum_evidence.py --report artifacts/runs/version-pages/evidence.json`：42 節與 11 份補充紀錄相符；既有 GPU 紀錄只查綁定，沒有執行 GPU。
+- `PYTHONPATH=. python scripts/check_lesson_runtime.py --section 00-warmup --report artifacts/runs/version-pages/runtime-00.json`：PASS，輸出與紀錄逐字相同。
+- `python scripts/validate_preparation.py`、嚴格 Zensical 0.0.67 建置及 `python scripts/validate_site.py`：均 exit 0；60 頁／42 課的連結、錨點、Colab 配對與 Markdown 轉換通過。
+- `python scripts/verify_release.py --help`：exit 0；只檢查 CLI，沒有啟動公開 site／bootstrap／save。
+
+頁面把 Colab 未實測、模擬測試、發布後 Linux runner 的驗證分開，改版沒有新增「v0.4.1 已通過」宣稱；「網站發布後」描述的是後續流程，初學讀者仍可分清執行方式與證據限制。
+
+本頁 SHA-256：`329bae18484ba39889378e64b1583f9181545f490610420ed41abbbbc82d322f`；HEAD 舊頁：`ea64ffc3672d9d9c25d64a7db3868ed178b90acf7e39b7c9c00e3aed3dec053c`。結束前副本頁面再次與 root 逐 byte 相同。差異與版本配對證據在副本 `artifacts/runs/version-pages/scope.json`、`notebook-tags.json`。
+
+這是發布前的版本引用審查。新 tag 尚未 push，不能把本次本地驗證當成 v0.4.1 的公開驗證；主審正在進行的舊公開版本五個 fresh sessions／README 探針，以及之後的新 tag Actions，都未由本次查核證明通過。副本的 publication JSON 仍引用 v0.3.0、沒有頂層 `passed`，bootstrap JSON 尚不存在，沒有拿它們作新版本通過證據。沒有進入 Colab 託管 runtime，也沒有測 GPU 或重跑 42 節的全部實驗。
