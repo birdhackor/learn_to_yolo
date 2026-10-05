@@ -91,7 +91,7 @@ ort_raw = session.run(['raw_grid'], {'images': batch[:b].numpy()})[0]
 
 第二、三層比的是 PyTorch 和 ORT 兩邊；第一層只檢查 ONNX 檔本身。三層各抓不同的錯：
 
-1. **第一層：checker。** `onnx.checker` 檢查 ONNX 檔的結構是否符合規格，例如用到的運算在 opset 17 裡是否存在、每個運算的輸入輸出個數對不對、運算的屬性（寫在運算裡的固定設定，例如卷積核大小 `kernel_shape`）是否齊全、格式是否正確。本節照預設呼叫，不會核對每個運算收到的資料型別（dtype，例如 float32）與 shape 合不合規，要加 `full_check=True` 才會；它也不檢查數值，所以不能證明算出來的數和 PyTorch 一樣。
+1. **第一層：checker。** `onnx.checker` 檢查 ONNX 檔的結構是否符合規格，例如用到的運算在 opset 17 裡是否存在、每個運算的輸入輸出個數對不對、運算必填的屬性（寫在運算裡的固定設定，例如本例 AveragePool 的池化視窗大小 `kernel_shape`）是否齊全、格式是否正確。本節照預設呼叫，不會核對每個運算收到的資料型別（dtype，例如 float32）與 shape 合不合規，要加 `full_check=True` 才會；它也不檢查數值，所以不能證明算出來的數和 PyTorch 一樣。
 2. **第二層：比 raw。** 用 ORT 執行 B=1、2、3，和 PyTorch 的 raw 逐值比較，斷言（assert）要求 `atol=1e-5, rtol=1e-5`。頁尾紀錄中，三種 batch 的最大絕對差都約 `4.77e-7`，也就是 \(4.77\times10^{-7}\)＝0.000000477，低於容許差；report 的 `max_abs_raw_errors` 記下了這三個數。
 3. **第三層：比還原後的框。** 兩份 raw 各自經過同一套 decode、NMS 與還原，再比較每張原圖上的結果：框座標（原圖畫素）`atol=1e-4, rtol=1e-5`；分數 `atol=1e-6, rtol=1e-5`；類別必須完全相同。框座標以畫素計、數值比較大，所以容許差比 raw 寬。
 
@@ -115,7 +115,7 @@ assert all(c > 0 for c in box_counts), f'B={b}: a source has no restored box {bo
 
 report 的 `restored_boxes_per_source` 記下 B=3 那一圈三張原圖各自的框數，是 `[16, 16, 16]`：4×4＝16 格的候選全部留下，都通過了截斷門檻，NMS 也沒有刪掉任何一個。這些框不是偵測結果：來源是雜訊圖，模型也只更新過一步，分數都只略高於 0.05 的截斷門檻；它們只是讓第三層有實際的框可比。其中 80×48 與 48×80 兩張圖，各有 8 個框完全落在 letterbox 的補邊上，還原時被裁到原圖範圍內，寬或高變成 0。所以這個斷言保證的是兩邊確實有框可比，不保證每個框都落在原圖的內容上。
 
-實際部署時，還要放入空圖、小物件、長寬比極端的圖和擁擠的圖，並記錄差異出在哪個階段。本例比較了三張非正方形的來源，但沒有驗證所有圖片。
+實際部署時，還要放入空圖、小物件、長寬比極端的圖和擁擠的圖，並記錄差異出在哪個階段。空圖預期兩邊都沒有框，這類圖要確認兩邊一致；「每張原圖至少一個框」的斷言只用在預期會有框的圖，防的是兩邊都變成空結果卻照樣通過。本例比較了三張非正方形的來源，但沒有驗證所有圖片。
 
 ## 動態 batch 不是動態空間
 
@@ -260,15 +260,15 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
 
 1. 先記下 GPU、driver（顯示卡驅動程式）、CUDA（NVIDIA 讓程式在 GPU 上計算的平台）與 TensorRT 的版本，以及實際的精度設定，之後才能重現與比較。
 2. 用相容的版本，讀取已通過 ORT 比對的 ONNX。
-3. 依安裝的 TensorRT 版本，確認命令裡的 flag（旗標：命令或建置設定裡的開關，例如 `--fp16`、`--noTF32`）與 ONNX 運算子（Conv、Relu 這類運算）都受支援；不同版本支援的不一樣。
+3. 依安裝的 TensorRT 版本，確認命令裡的 flag（旗標：命令或建置設定裡的開關，例如 `--fp16`、`--noTF32`）與 ONNX 運算子（Conv、Relu 這類運算）都受支援；不同版本支援的不一樣。例如 TensorRT 10.12 起，`--fp16`（Python 介面的 `BuilderFlag.FP16`）這種「允許 FP16、由 TensorRT 逐層挑精度」的做法已標為棄用（deprecated：目前還能用，之後的版本可能移除），官方改推 strongly typed network（強型別網路，trtexec 的 `--stronglyTyped`）：每個 tensor 的精度照 ONNX 檔裡宣告的型別決定，例如要 FP16 就先匯出 FP16 的 ONNX。本頁的命令與 L4 實測用的，都是 10.13 仍可使用的舊做法。
 4. engine 通常受 GPU 架構（顯示卡的世代設計）與 runtime（載入並執行 engine 的程式庫）版本限制，不要當成跨裝置通用的檔案。
 5. FP32 基線要加 `--noTF32`，目的是停用可能預設允許的 TF32 乘法。輸入是 FP32、engine 檔名有 fp32，都不能保證整個計算是完整的 FP32。
 6. 先對 FP32 engine 用相同的 RGB 輸入，比對 raw 與 decode 後的結果，再測 FP16。換 FP16 後要重新評估 AP，並檢查門檻敏感的樣本：分數或 IoU 剛好在門檻附近，數值稍微一變就會改變去留的圖。
 7. INT8 還需要有代表性的校準或量化流程，不能只加 flag 就期待品質不變。
 8. `trtexec` 量的是 engine 相關的執行，不會自動包含本教材的 letterbox 和 NMS；產品的端到端時間要另外量。
-9. GPU 計時必須同步，或改用 CUDA events，否則只會量到「把工作排進佇列」的時間。
+9. GPU 計時必須同步，否則只會量到「把工作排進佇列」的時間；改用 CUDA events 時，讀取時間前也要等事件完成。
 
-為什麼 GPU 計時要同步？CPU 把工作交給 GPU 之後，不會等 GPU 做完，而是立刻往下執行，這叫非同步。交出去的工作先排進 GPU 的待辦佇列，這個佇列叫 CUDA stream（和[第 18 章](18-video.md)的影片串流 stream 是兩回事），把工作放進佇列叫 enqueue。如果沒等 GPU 做完就停錶，量到的只是排進佇列的時間；就像把衣服丟進洗衣機就按停錶，量到的是放衣服的時間，不是洗衣服的時間。所以停錶前要先同步，也就是等 GPU 做完（例如呼叫 `torch.cuda.synchronize()`）；或改用 CUDA events：在佇列裡打上時間戳記，由 GPU 自己記錄時間。本節 CPU 版的 PyTorch 與 ORT 都是算完才返回，所以沒有這個問題。
+為什麼 GPU 計時要同步？CPU 把工作交給 GPU 之後，不會等 GPU 做完，而是立刻往下執行，這叫非同步。交出去的工作先排進 GPU 的待辦佇列，這個佇列叫 CUDA stream（和[第 18 章](18-video.md)的影片串流 stream 是兩回事），把工作放進佇列叫 enqueue。如果沒等 GPU 做完就停錶，量到的只是排進佇列的時間；就像把衣服丟進洗衣機就按停錶，量到的是放衣服的時間，不是洗衣服的時間。所以停錶前要先同步，也就是等 GPU 做完（例如呼叫 `torch.cuda.synchronize()`）；或改用 CUDA events：在佇列裡打上時間戳記，由 GPU 自己記錄時間；但讀取兩個戳記之間的時間差之前，仍要等結束的戳記真的記下（例如對結束的 event 呼叫 `synchronize()`，或呼叫 `torch.cuda.synchronize()`）。本節 CPU 版的 PyTorch 與 ORT 都是算完才返回，所以沒有這個問題。
 
 ## 收益、代價與常見錯誤
 
@@ -284,8 +284,6 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
 - **忽略框還原**：decode 出來的框在 64×64 的 letterbox 座標裡，要還原才是原圖座標。
 - **把 FP16 的誤差當成一定可以忽略**：FP16 只有約 3 位有效數字，分數靠近門檻時，可能改變框的去留。
 - **在沒有 GPU 的環境寫「TensorRT 已驗證」**：TensorRT 要在 NVIDIA GPU 上執行，CPU 範例並沒有跑它。
-
-參考來源：[PyTorch ONNX 官方文件](https://pytorch.org/docs/stable/onnx.html)、[ONNX Runtime Python 入門](https://onnxruntime.ai/docs/get-started/with-python.html)、[TensorRT 10.13 官方 trtexec 範例](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/trtexec/README.md#example-3-running-an-onnx-model-with-full-dimensions-and-dynamic-shapes)與 [flags 定義](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/common/sampleOptions.cpp)。
 
 ## L4 GPU 上的 TensorRT 實測 { #l4-results }
 
@@ -309,6 +307,8 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
     - **計時範圍**：先暖機 3 次，再取 20 次的中位數。包含 shape／address 設定、輸出 buffer（存放輸出的記憶體）配置、enqueue 與 stream／device 同步（等 GPU 做完）；不含前處理、decode、CPU 拷貝、engine 建置與 container（容器：打包好程式與執行環境的獨立執行單位）啟動。Actions client（在 GitHub Actions 上呼叫 Modal 的程式）的總時間 39.20 秒，則包含建置、啟動與傳輸。這個小模型的單次測試，不能當成正式訓練或服務的效能。
     - **檔案保存**：ONNX 與兩份 engine 存在專案專用的 Modal Volume（Modal 的雲端儲存空間）`projects/learn-to-yolo/deployment/github-37217013901-1-463d3f59fb80/`。明確 commit（正式寫入，讓其他容器讀得到）後，由另一個 CPU container 重新讀取，三個檔案的 SHA-256（由檔案內容算出的指紋，內容改一點就會不同）都相符。模型與 engine 沒有放進普通的 Git。
     - **重跑方式**：[完整 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/deployment-gpu.json)。重跑入口是手動觸發的 workflow（GitHub Actions 的自動化流程）`deployment-gpu.yml`；一般的 push（上傳提交）或 PR（請求合併修改）不會啟動 GPU。
+
+參考來源：[PyTorch 2.9 ONNX 官方文件](https://docs.pytorch.org/docs/2.9/onnx.html)、[ONNX Runtime Python 入門](https://onnxruntime.ai/docs/get-started/with-python.html)、[TensorRT 10.13 官方 trtexec 範例](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/trtexec/README.md#example-3-running-an-onnx-model-with-full-dimensions-and-dynamic-shapes)、[flags 定義](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/common/sampleOptions.cpp)與 [BuilderFlag 的棄用註記](https://github.com/NVIDIA/TensorRT/blob/b8db91e15be2cae4465ac17fab19e0f969e45407/include/NvInfer.h#L8848-L8850)。
 
 <!-- curriculum-evidence:start -->
 

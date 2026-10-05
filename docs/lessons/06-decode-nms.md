@@ -53,7 +53,7 @@ c_y=(1+0.75)\times16=28.
 def decode(logits, score_threshold=0.25, image_size=64):
     # logits 的 shape 是 [4,4,7]；shape[0] 是第一軸的長度，也就是每軸格數 4
     grid = logits.shape[0]
-    # row、col 是兩張 4×4 的表，分別記下每一格的列號與欄號（見下方說明）
+    # torch.arange(grid) 是 [0,1,2,3]；row、col 是兩張 4×4 的表，分別記下每一格的列號與欄號（見下方說明）
     row, col = torch.meshgrid(torch.arange(grid), torch.arange(grid), indexing="ij")
     # torch.stack((col, row), -1) 是每一格的 (x 方向格號, y 方向格號)
     # logits[..., :2]：「...」表示前面的軸（4×4 格）全取，「:2」取最後一軸前兩個值 (tx,ty)

@@ -1,83 +1,89 @@
-# 第 07 課審查：loss
+# 審查紀錄：Grid MiniYOLO loss
 
-審查角色：完全不熟悉此專案、Python／PyTorch／CNN 入門、久未接觸大學數學的讀者。只閱讀 `docs/lessons/07-loss.md` 與 `lesson_cases/07-loss.py`；未閱讀其他教材、大綱或 `miniyolo` 原始碼。Colab 佔位不列為問題。沒有修改教材。
+審查範圍：`docs/lessons/07-loss.md`，以及 `lesson_cases/07-loss.py` 與它 import 的 repo 模組；頁尾自動產生的執行紀錄區塊不在範圍內，由 `scripts/validate_curriculum_evidence.py` 對照紀錄檢查。審查者都是 AI，沒有真人學生測試。這份紀錄涵蓋的內容以 SHA-256 記在 `reviews/coverage.json`；頁面、圖或程式之後再改，`scripts/validate_lessons.py` 就會要求重新審查。
 
-## 結論與實測
+## 獨立查核
 
-loss 數值與程式一致，未發現計算錯誤。執行 `PYTHONPATH=. .venv-model/bin/python lesson_cases/07-loss.py` 成功：box `0.109375`、objectness `0.693147`、classification `0.693147`、total `1.933169`，正／負 objectness 梯度分別為 `-0.03125`、`0.03125`，空圖可以 backward。
+頁面依目前的程式改寫後，由另一位 AI 獨立查核：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，檢查程式摘錄與網頁轉換，並從初學讀者（高中程度、數學好、程式新手）的角度看用詞與說明順序。有必要問題時，修正後再由另一位 AI 複查；建議事項另外處理，處理後同樣再查一次。
 
-另外透過執行公開函式（未閱讀其原始碼）核對：所有負格的框及 class 梯度均為 0；空圖的 total／objectness 均為 `0.693147`，框／class loss 與梯度均為 0；複製成兩張圖不改變三項 mean loss；class logits 共同加 10 不改變 CE。末尾練習答案正確。
+### 第 1 次查核：通過
 
-對指定讀者，主要問題是符號與張量契約沒有交代，導致讀者能照抄數字，卻不易理解為何要取這些位置、這四個座標以及不同的平均分母。
+結論：通過。沒有必要，也沒有建議。所有程式都只在暫存副本裡執行，repo 沒有動。查核用的腳本和 log 在同目錄的暫存副本（mutate.py、nums_check.py、extra_check.py、build.log、validate_site.log、validate_lessons.log）。
 
-## 實質問題與具體修改
+1. 頁面對程式的敘述都正確
+   - lesson 執行 exit 0，輸出四行，和〈執行與核對〉的四條依序對得上，第 3 行是 `positive-cell class gradients [-0.5, 0.5]`。
+   - 頁面說三種錯「每一種都會讓其中一個斷言失敗」。我只改暫存副本的 miniyolo/losses.py 做突變測試，每次跑完都還原並用 cmp 確認：
+     - 先 sigmoid 再傳給 BCE：objectness 變成 0.942827，程式停在「objectness 等於 ln 2」的斷言。
+     - 先 softmax 再傳給 CE：類別 loss 仍是 0.693147，梯度變成 [-0.25, 0.25]，程式停在正格類別梯度的斷言。
+     - 負格也送進 CE：類別 loss 仍是 0.693147，程式停在「負格類別梯度為 0」的斷言。
+     - 拿掉空圖分支：程式停在「空圖 box/class 等於 0」的斷言。這時 loss 是 NaN，但梯度全是有限值，和頁面說的「壞掉的是 loss 值」一致。
+     - class_ids 填 −1 再送進 CE，確實會報錯（IndexError）。
+   - 練習 3：我從頁面直接抽出程式，照頁面說的存成 .py，在 repo 根目錄用 PYTHONPATH=. 執行。exit 0，印出的四項 loss 和參考答案一致。
+   - 照最後一段改成 [scene, scene]，並改那三個斷言，也是 exit 0。類別斷言如果沒有改成 [-.25, .25] 就會失敗，所以這個變體真的能核對練習 1。
+   - 其他實測都相符：練習 1 每個正格的類別梯度是 [-0.25, 0.25]，框梯度減半；練習 2 加 10 之後類別梯度仍是 [-0.5, 0.5]；負格的 class_ids 預設確實是 0。
+   - notebook 的環境格會切到 repo 目錄（chdir），並把它加進 sys.path，所以在最後新增的儲存格可以 import miniyolo。
 
-### 1. shape、通道、符號與 Boolean mask 沒有定義
+2. 數字
+   - 新增的數字都是確定值，沒有從這台 Mac 帶進會隨機器改變的數字：數值驗算的 0.692647／0.693647、softmax([.001, 0]) 兩數相差約 0.0005（雙重 softmax 的 CE 是 0.692897）。
+   - 要等紀錄重產才會吻合的值，編輯都已列出。
 
-位置：教材第 9、16、19–23 行；程式第 11–13 行。
+3. 先前審查意見與受程式改動影響的段落項目全部處理完
+   - 兩條先前審查意見：頁首按鈕不手改；正文重複的 Colab 連結改成「用頁首的按鈕」。
+   - 總評的兩條：程式行號引用、BCEWithLogitsLoss 的寫法。
+   - 受程式改動影響的段落第 5、134、185、196、199、217、286 行各條。
+   - 沒有留下「程式抓不到」這類過時說明。全頁沒有修訂或審查的敘事，正文也沒有程式行號。
 
-`[1,4,4,7]`、`B`、`S`、`Npositive`、`pred[..., :4]`、`pred[..., 5:][pos]` 都直接出現。初學者不知道哪一軸是圖片／格子／通道，七個值是什麼，也不知道 Boolean mask 會把三個前導維度選成「正格清單」。`build_targets([scene], 4, 64, 2)` 的三個數字用途同樣未說明。
+4. 程式摘錄
+   - 摘錄比對工具在 repo 和暫存副本都輸出 []；我故意改壞摘錄一個字元，會被抓到。
+   - grid_loss 區塊已寫明是簡化版。練習程式不是逐字摘錄，不需要標記。
 
-建議在第 9 行前補一小段與 shape 表：本例圖片大小為 64×64、grid 為 4×4、類別數為 2；`B` 是 batch 圖片數、`S` 是每邊格數、`C` 是類別數、`Npositive = pos.sum()` 是整批正格數。每格輸出四個框 logit、一個 objectness logit、`C` 個 class logits。logit 是尚未轉成機率的實數；sigmoid 將一個值轉成 0 到 1，softmax 將多個類別值轉成總和為 1 的機率。
+5. 渲染
+   - zensical build --clean --strict 沒有任何問題，validate_site.py 通過（連結與錨點、Colab 配對、數學、摺疊區塊都過）。
+   - 新增的推導 note 裡，列表和數學式都正確轉成 HTML；標了 data-excerpt 的區塊照常以 Python 高亮顯示。
+   - 本頁沒有 SVG。
+   - validate_lessons 只在審查涵蓋檢查失敗，因為 reviews 還沒做，這在預期之內。前面的 notebook／程式一致檢查和摘錄檢查都過了。
+   - 和 07-loss 有關的檔案（lesson code、notebook、紀錄 JSON、reviews）都和 HEAD 相同，只有本頁被改。
 
-| 名稱 | 本例 shape／dtype | 經正格 mask 後 |
-| --- | --- | --- |
-| prediction | `[B,S,S,5+C] = [1,4,4,7]`，浮點數 | 框為 `[Npositive,4]`；類別為 `[Npositive,C]` |
-| `target['positive']` | `[B,S,S]`，bool | `True` 的格才提供框與類別監督 |
-| `target['box']` | `[B,S,S,4]`，浮點數 | `[Npositive,4]` |
-| `target['objectness']` | `[B,S,S]`，浮點數 0／1 | 不取 mask，全格計算 |
-| `target['class_ids']` | `[B,S,S]`，整數 `torch.long` | `[Npositive]` |
+順帶兩點，都不算頁面問題：
+- 編輯疑慮裡說「notebooks/07-loss.ipynb 也還對應舊程式」，這不精確。notebook 最後一格已經和目前的 lesson_cases/07-loss.py 逐字相同（validate_lessons 的比對已通過）。過期的只有 artifacts/checks/curriculum/07-loss.json（case_sha256 仍是 de8c…）和頁尾的紀錄區塊。
+- 「除以 Npositive」確實沒有人守：CE 改成 reduction='sum' 時，完整程式照樣通過，我重現了。頁面沒有說程式守著這一點，而讀者跑練習的 [scene, scene] 變體就會抓到。要不要補一個測試，屬於程式範圍，需要另外決定。
 
-再以一句話解釋 `...` 是「保留前面的 batch、y、x 三個軸」，`:4` 取通道 0–3，通道 4 是 objectness，`5:` 取類別通道；本例 mask 只有 `[0,1,1]` 為 True。標題「七個零 logits」也宜改成「每格七個零 logits」，因為整張 prediction 有 16×7 個值。
+## 來源對照
 
-### 2. 框 target 的四個分量與正規化單位不明
+頁面上關於原始論文、官方程式與函式庫行為的說法，由 AI 打開頁面引用的來源（論文章節、固定 commit 的官方程式、官方文件）逐句核對。查閱的來源：
 
-位置：教材第 9、11、16 行；程式第 10–14 行。
+- https://arxiv.org/abs/1506.02640（YOLOv1，以 ar5iv HTML https://ar5iv.labs.arxiv.org/html/1506.02640 讀全文，即 arXiv 最新版 v5）：§2 Unified Detection（中心所在格負責；每格 B 個框與 confidence=Pr(Object)*IOU；沒有物件時 confidence 為 0、有物件時等於 IOU；每格一組條件類別機率；Pascal VOC 的設定 S=7、B=2、7×7×30）、式 (1)（測試時把類別條件機率乘上 confidence）、§2.1（最後一層用線性輸出）、§2.2 Training（xy 以格為基準、wh 以整張圖正規化，都落在 0 到 1；sum-squared error；λcoord=5、λnoobj=.5 的理由；預測寬高的平方根；由當下 IOU 最高的預測器負責）
+- https://arxiv.org/abs/2004.10934（YOLOv4，以 ar5iv HTML https://ar5iv.labs.arxiv.org/html/2004.10934 讀全文）：§3.4〈Eliminate grid sensitivity〉，sigmoid 乘上大於 1 的係數（07-targets 提到這件事，但沒有附連結）
+- https://pytorch.org/docs/stable/generated/torch.optim.Adam.html（轉址到 https://docs.pytorch.org/docs/2.14/generated/torch.optim.Adam.html）：演算法框（m_t、v_t、偏差修正、θ_t 更新式）與 betas 參數說明「running averages of gradient and its square」，預設值 (0.9, 0.999)
+- https://github.com/cocodataset/cocoapi 的 commit 8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9，PythonAPI/pycocotools/cocoeval.py：第 506–508 行（iouThrs 是 .50:.05:.95 共 10 個門檻，recThrs 是 101 點）、第 370–376 行（沒有真值的類別直接跳過，precision 留在 -1）、第 396–410 行（先取 precision 包絡線，再在 101 個 recall 位置取值）、第 452–455 行（取平均時排除 -1）
+- 本機 PyTorch 2.9.1（.venv-model）實測函式庫行為：cross_entropy 的 target 為 -1 時報 IndexError；類別放在最後一軸時報 RuntimeError（shape 不合）；mse_loss 與 cross_entropy 對空 tensor 取平均得到 NaN；torch.stack 的錯誤訊息開頭；對常數 0 呼叫 backward 會報錯；float32 的 sigmoid(-18)≈1.52e-8，sigmoid(-89)=0；24 附近的 ulp 是 1.9e-6，所以 24±w/2 會捨入成同一個數；inference_mode 產生的 tensor 不能拿去算梯度；squeeze 會刪掉所有長度為 1 的軸
 
-`[8,12,24,28] → [0,.25,.25,.25]` 是手算的起點，但這兩組數字各自的順序與轉換沒有寫出來。尤其第一個 0 不代表物件位於圖片最左側；前兩個分量是相對格子的中心偏移，後兩個分量是相對圖片的寬高。「座標已正規化」不足以讓讀者分清這兩種分母。
+這一頁沒有發現與來源不符的說法。
 
-建議在第 9 行後完整算一次：原框為 `[x1,y1,x2,y2]`（pixel），中心 `(16,20)`、寬高 `(16,16)`；每格邊長 `64/4=16`，中心落在 `(y=1,x=1)`。框 target 的順序為 `[tx,ty,w/W,h/H]`，所以 `tx=16/16−1=0`、`ty=20/16−1=.25`、`w/W=h/H=16/64=.25`。四個框預測 logit 都是 0，sigmoid 後得到 `[.5,.5,.5,.5]`，誤差向量為 `[.5,.25,.25,.25]`，再平方、加總、除以 4，得到 `.109375`。
+## 後續編輯的檢查
 
-第 16 行的 pixel 比較宜跟著補「中心偏移除以格子邊長，寬高除以圖片邊長」，避免讀者誤以為四個分量都除以 64。平均與權重說明本身正確。
+上面各輪之後的編輯（各頁的小修正、審查方式的說明），由另一位 AI 對照程式、紀錄與來源再檢查；檢查找到的問題處理後，再交給另一位 AI 檢查，直到沒有必要問題。
 
-### 3. loss 片段沒有展示歸約設定和空正格處理
+### 第 3 輪：上一輪的處理與審查紀錄：通過
 
-位置：教材第 18–24、30、36 行。
+以腳本核對紀錄：獨立查核通過，沒有待處理的建議，所以沒有〈定稿修正〉；〈來源對照〉列出來源；結構檢查通過。
 
-片段使用未定義的 `mse`、`bce_with_logits`、`cross_entropy`，也沒有明示 `reduction='mean'`。讀者無法判斷這是可執行 PyTorch 寫法或示意寫法。更重要的是，片段對空 mask 仍直接求 MSE／CE，與第 30 行宣稱的空圖處理不完整對應。
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 建議 | reviews/07-loss.md 第 11、32 行 | 內部名稱：「查核用的腳本和 log 在同目錄的暫存副本（mutate.py、nums_check.py…）」「verdict 的兩條：程式行號引用、BCEWithLogitsLoss 的寫法」。 | 未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |
 
-建議以 `import torch.nn.functional as F`、`F.mse_loss(..., reduction='mean')`、`F.binary_cross_entropy_with_logits(..., reduction='mean')`、`F.cross_entropy(..., reduction='mean')` 呈現，並在框／類別計算前加入 `if pos.any(): ... else: ...`。else 中可用 `box = pred[..., :4].sum() * 0`、`cls = pred[..., 5:].sum() * 0`，objectness 仍放在分支之外全格計算。順便說明 scalar 是 shape 為 `[]` 的單一值 tensor；乘 0 保留與 prediction 的計算關係，因此回傳零梯度。
+### 第 4 輪：上一輪的處理：有必要問題
 
-在片段旁明示三個分母：框對選出的 `Npositive×4` 個元素平均，CE 先為每個正格算一次 loss 再對 `Npositive` 平均，BCE 對 `B×S×S` 格平均。`Npositive=0` 時不執行前兩個 mean。
+第 3 輪第 1 項：第 32 行的總評已改成「總評」；但點名的路徑殘句沒改，處理說明不實。
 
-### 4. 對久未接觸數學的讀者，BCE 與梯度方向仍差一步
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 必要 | reviews/07-loss.md 第 11 行 | 點名的「查核用的腳本和 log 在同目錄的暫存副本（mutate.py、nums_check.py…）」逐字還在，處理卻寫已清理。 | 已處理：第 3 輪的處理說明改成統一的說明。未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |
 
-位置：教材第 12–13、28 行。
+### 第 5 輪：上一輪的處理：有必要問題
 
-MSE 有手算式，但 BCE 為何對正負 target 都是 `ln(2)`、`/16` 從何而來，以及負梯度為何提高 logit，只給結果。第 28 行的 `/16` 也只適用於本例，初學者容易當成通用常數。
+第 4 輪第 1 項屬實。第 3 輪第 1 項不實，而且和第 4 輪的說明互相矛盾。
 
-建議補 `p=sigmoid(z)`、`t∈{0,1}`，單格 BCE 是 `−[t ln(p)+(1−t)ln(1−p)]`；`p=.5` 時正格取 `−ln(.5)`，负格取 `−ln(1−.5)`，兩者相同。CE 是正確類別的 `−ln(p[class_id])`。`ln`／`log` 在這裡都是自然對數。
-
-接著寫全格 mean 的梯度為 `(p−t)/(B×S×S)`；本例分母才是 16。用一次更新 `z_new=z−學習率×gradient` 展示：正格梯度 `−.03125`，所以減去負數會提高 z；負格相反。不要求讀者先會微積分推導，可明示這是本例使用的導數結果。
-
-### 5. 現有檢查比「mask 正確、空圖有有效梯度」的教學目標弱
-
-位置：教材第 3、13、28、30–32 行；程式第 20–23、27–33 行。
-
-目前僅驗證 `[0,0,0]` 一個背景格的框梯度為 0，未檢查其他背景格或任何背景 class 梯度。objectness 梯度僅 assert 正負號，精確數值靠 print；空圖只驗證框／class loss 為 0 與梯度有限，若空圖 objectness 被錯誤歸零，仍可能通過有限梯度檢查。這不是目前實作有錯，而是檢查沒有覆蓋文中聲稱要驗證的性質。
-
-建議程式用 `pos = target['positive']`，assert 所有 `prediction.grad[~pos][..., :4]` 及 `prediction.grad[~pos][..., 5:]` 均為 0；用 `torch.allclose` 核對所有正／負 objectness 梯度為 `−1/32`、`1/32`。空圖再 assert objectness／total 等於 `math.log(2)`、所有 objectness 梯度等於 `1/32`、框／class 梯度全部為 0。如此可把「有限」與「正確」分開驗證。
-
-## 其餘評估
-
-- 沒有發現框、objectness、class 權重相加或數字四捨五入錯誤。
-- 正格框／分類、全格 objectness 的監督範圍合理；實測也吻合。
-- 權重 5 的設計說明、與 YOLOv1 的差異、空 tensor mean 得到 NaN、CE 對共同平移不變，均正確。
-- 沒有明顯冗餘。建議優先補上同一個案例的 shape 與座標推導，無須另加不同場景的長篇例子。
-
-
-## 作者修訂與驗證（2026-10-02）
-
-補完整head／target shape、logit／mask、框encode兩種分母、BCE自然對數及一般梯度分母；正文F.*使用mean與空mask分支。case檢查所有背景框／class梯度0、正負obj精確±1/32，空圖obj=ln2且所有obj梯度1/32。
-
-已實跑 `PYTHONPATH=. .venv-model/bin/python lesson_cases/07-loss.py`，exit code 0，相關assertions通過。此段是作者修改與執行紀錄，並非獨立reviewer重審通過的宣告。
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 必要 | 第 3 輪第 1 項處理欄（第 73 行） | 處理欄寫「已修正：點名的文字已不在紀錄裡」，但第 11 行仍是「查核用的腳本和 log 在同目錄的暫存副本（mutate.py、nums_check.py、extra_check.py、…）」，正是發現用「…」省略引用的那一句；已改寫的只有第 32 行（「verdict 的兩條」改成「總評的兩條」）。第 4 輪第 1 項的說明也寫這句仍在。看來產生器把引文裡的「…」當成了字面字元比對。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |

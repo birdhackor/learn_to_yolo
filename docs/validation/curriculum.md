@@ -1,18 +1,18 @@
 # 全套實驗與審查
 
-本頁列出教材的每一份執行紀錄與審查紀錄：42 節各自的實驗、用同一套程式多跑一些步數的補充實驗、兩項 GPU 檢查、網站導覽裡每一頁的審查，以及發布後的公開驗證。這些結果能支持哪些結論、哪些事沒有驗證，見〈[驗證範圍](../status.md)〉。
+本頁列出教材的每一份執行紀錄與審查紀錄：42 節各自的實驗、把幾節實驗延長或接上真實檔案與資料的補充實驗、兩項 GPU 檢查、網站導覽裡每一頁的審查，以及發布後的公開驗證。這些結果能支持哪些結論、哪些事沒有驗證，見〈[驗證範圍](../status.md)〉。
 
 ## 執行紀錄怎麼產生、怎麼檢查
 
-每一節的完整程式（`lesson_cases/<節>.py`，也就是 notebook 的最後一格）都在同一台電腦上用 CPU 從頭跑完，程式裡的 assert 全部通過。印出的文字存成 `artifacts/checks/curriculum/<節>.json`；紀錄裡另有執行的日期（UTC）、電腦（作業系統、CPU 型號、使用的執行緒數、Python 與 PyTorch 版本），以及用 SHA-256 記下的程式：該節程式，加上它直接或間接 import 的每個 repo 檔案。notebook 最後一格存的輸出，和每節頁尾的〈實際執行紀錄〉，都從這份紀錄填入。
+每一節的完整程式（`lesson_cases/<節>.py`，也就是 notebook 的最後一格）都用 CPU 從頭跑完，程式裡的 assert 全部通過。印出的文字存成 `artifacts/checks/curriculum/<節>.json`；紀錄裡另有執行的日期（UTC）、電腦（作業系統、CPU 型號、使用的執行緒數、Python 與 PyTorch 版本等），以及用 SHA-256（由檔案內容算出的指紋，內容改一點就不同）記下的程式：該節程式，加上它直接或間接 import 的每個 repo 檔案。notebook 最後一格存的輸出，和每節頁尾的〈實際執行紀錄〉，都從這份紀錄填入。
 
-紀錄綁定的檔案都沒變，紀錄就一直有效；其中任何一個改了，紀錄才算過期，要重跑。Pages 工作流程建置網站之前，先用 `scripts/validate_curriculum_evidence.py` 核對：每份紀錄都要對得上目前的程式，notebook 最後一格的輸出要和紀錄一字不差，頁尾的執行紀錄區塊也要和紀錄一致；有一項不符，網站就不會發布。這項檢查確認頁面、notebook 與紀錄出自同一份程式；頁面講得對不對，由下方的審查負責。
+紀錄綁定的檔案都沒變，紀錄就一直有效；其中任何一個改了，紀錄才算過期，要重跑。過期的紀錄由 `scripts/record_evidence.py` 列出並重產（GPU 紀錄經 GitHub Actions 重跑），步驟見〈[發布與帳號設定](../preparation/publish.md)〉。沒有過期的紀錄沿用，保留原本的日期與電腦，所以各節頁尾的日期不一定相同。發布網站的 Pages 工作流程（Publish Learn to YOLO）建置網站之前，先用 `scripts/validate_curriculum_evidence.py` 核對：每份紀錄都要對得上目前的程式，notebook 最後一格的輸出要和紀錄一字不差，頁面上也要找得到紀錄的日期、CPU 型號與 PyTorch 版本（比對整頁文字）；有一項不符，網站就不會發布。頁尾區塊裡的輸出由 `scripts/verify_curriculum.py` 從紀錄寫入，這項檢查不逐字比對它，也不檢查網站上的任何實驗圖。這項檢查只比對、不重跑程式，確認的是紀錄對得上目前的程式、notebook 存的就是紀錄的輸出；頁面講得對不對，由下方的審查負責。
 
-機制章的通過條件，是數值、shape、監督訊號與梯度符合該節寫出的定義，不是把每個版本的完整模型重訓一次。沒有在相同資料與預算下做完整對照的地方，教材不寫 AP 或速度提升的結論。
+第 9–16 章（各版 YOLO 的機制）的通過條件，是數值、shape、監督訊號與梯度符合該節寫出的定義，不是把每個版本的完整模型重訓一次。沒有在相同資料與相同訓練預算（例如步數）下做完整對照的地方，教材不寫 AP 或速度提升的結論。
 
 ## 逐節執行清單
 
-「實驗範圍」欄只粗分各節實驗的重點：「固定數值／幾何／張量機制」的節主要核對數值、shape、監督與梯度，其中不少節也會為了示範機制更新參數（例如 12.4、16.1）；是否更新、更新幾步，以各節頁面為準。
+「實驗範圍」欄只粗分各節實驗的重點：「固定數值／幾何／張量機制」的節主要核對數值、shape、監督與梯度，其中不少節也會為了示範機制更新參數（例如 12.4、16.1）；「短步更新／管線」的節，重點是讓參數真的更新，或把資料、模型、解碼與評估串成一條跑通，步數從第 0 章的 1 步到第 17、18 章的 160 步不等。是否更新、更新幾步，以各節頁面為準。
 
 |節次／教材|實驗範圍|執行紀錄|審查紀錄|
 |---|---|---|---|
@@ -61,33 +61,33 @@
 
 ## 補充實驗清單
 
-各節程式只跑幾步、幾秒鐘。下面這些實驗用同一套程式多跑一些步數，或接上真實的檔案與資料，結果在對應的頁面解說。每份紀錄同樣記下執行的電腦，並用 SHA-256 綁定所用的腳本與它 import 的模組；哪份紀錄綁定哪些檔案，列在 `scripts/evidence_records.py`。
+下面這些實驗把第 1、3、4、7、8、10 章的實驗延長、讓第 18、19 章讀寫真正的影片檔，並用 Fashion-MNIST 核對分類的訓練流程，結果在對應的頁面解說。每份紀錄也都記下執行的電腦，並用 SHA-256 綁定所用的腳本與它 import 的模組：完整的檔案清單記在各紀錄的 `dependencies_sha256`，`scripts/evidence_records.py` 列出每份紀錄從哪些入口檔開始追查 import。
 
 |實驗|紀錄|解說|
 |---|---|---|
-|第 1 章的小 CNN：同樣 8 張固定的色塊圖，Adam 更新 40 次|[`01-small-cnn-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn-learning.json)|[1](../lessons/01-small-cnn.md)|
+|第 1 章的小 CNN：同樣 8 張固定的色塊圖，Adam 更新 40 次，只在這 8 張訓練圖上評分|[`01-small-cnn-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn-learning.json)|[1](../lessons/01-small-cnn.md)|
 |第 3 章：plain 與 residual 兩個網路從相同的初始權重出發，用 8 張圖各做 40 次 SGD 更新，再用 4 張位置平移過的圖評估|[`03-comparison-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison-learning.json)|[3.3](../lessons/03-comparison.md)|
 |第 4 章的單物件模型：2 張固定的圖，Adam 更新 40 次，只在這 2 張訓練圖上評分|[`04-localization-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization-learning.json)|[4.1](../lessons/04-localization.md)|
-|第 7 章的訓練 CLI：32 張圖從頭訓練 160 步，另用新 seed 畫的圖做 validation 與 test|[`grid-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)|[7.4](../lessons/07-training.md)、[7.6](../lessons/07-heldout.md)|
+|第 7 章的訓練指令 `python -m miniyolo.train`：32 張圖從頭訓練 160 步，另用新 seed 畫的圖做 validation 與 test|[`grid-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)|[7.4](../lessons/07-training.md)、[7.6](../lessons/07-heldout.md)|
 |第 8 章的自有格式資料：訓練 160 步與 1600 步，checkpoint 存檔後重讀|[`custom-data-160-step.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-160-step.json)、[`custom-data-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-learning.json)|[8.2](../lessons/08-own-data.md)|
-|第 10 章的兩尺度模型：1 張圖，更新 40 次，兩個 head 都解碼並畫出預測|[`10-multiscale-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/10-multiscale-learning.json)|[10](../lessons/10-multiscale.md)|
+|第 10 章的兩尺度模型：1 張圖，更新 40 次，兩個 head 都解碼並畫出預測，只在這張訓練圖上評分|[`10-multiscale-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/10-multiscale-learning.json)|[10](../lessons/10-multiscale.md)|
 |第 18、19 章：把 12 幀畫面寫成無損的 FFV1 AVI 檔再讀回，比對畫素、模型預測與疊圖，並把預測接上 tracker|[`video-file.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)|[18](../lessons/18-video.md)、[19](../lessons/19-tracking.md)|
-|Fashion-MNIST：真實分類資料的讀取檢查與 40 步分類管線核對|[`fashion-mnist-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/fashion-mnist-learning.json)|[資料規劃](../preparation/data.md)|
+|Fashion-MNIST：真實分類資料的讀取檢查與 40 步分類管線核對|[`fashion-mnist-learning.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/fashion-mnist-learning.json)|[資料規劃](../preparation/data.md#fashion-mnist)|
 
 ## GPU 檢查
 
-GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions 工作流程在 Modal 的一張 NVIDIA L4 上執行，紀錄同樣綁定所執行的程式：
+GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提供的自動執行程式服務）工作流程在 Modal（租用雲端 GPU 的服務）的一張 NVIDIA L4 上執行。紀錄綁定 `miniyolo/` 裡的實驗程式（`deployment_gpu.py`、`gpu_smoke.py`）與它們 import 的模組；啟動 Modal 工作的 `scripts/modal_deployment.py`、`scripts/modal_gpu_smoke.py` 不在其中，雖然它們也定義了一部分在 Modal 上執行的步驟（見〈[GPU／checkpoint 實測](gpu-smoke.md)〉）：
 
-- 第 20 章：GridDetector 訓練 40 步後匯出 ONNX，建出 TensorRT 的 FP32 engine 與允許 FP16 的 engine，核對 batch 1–4 的原始輸出、解碼後的框、類別與分數都和 PyTorch 一致（[`deployment-gpu.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/deployment-gpu.json)，解說在[第 20 章](../lessons/20-deployment.md)）。沒有檢查每一層實際用的精度，所以不說全部的層都用 FP16。
-- 存檔續訓：GridDetector 在 GPU 上訓練、中途存 checkpoint，換一個新的 container 讀回後接著訓練，結果和不中斷的訓練一致（[`gpu-smoke.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/gpu-smoke.json)，解說在〈[GPU／checkpoint 實測](gpu-smoke.md)〉）。
+- 第 20 章：GridDetector 訓練 40 步後匯出 ONNX，建出 TensorRT 的 FP32 engine 與允許 FP16 的 engine，核對 batch 1–4 的原始輸出、解碼後的框與分數都在容許誤差內和 PyTorch 相符，類別與候選順序完全相同（[`deployment-gpu.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/deployment-gpu.json)，解說在[第 20 章的 L4 結果](../lessons/20-deployment.md#l4-results)）。沒有檢查每一層實際用的精度，所以不能確定每一層都用 FP16。
+- 存檔續訓：GridDetector 在 GPU 上訓練、中途存 checkpoint，換一個新的 container（獨立的執行環境）讀回後接著訓練，和不中斷的訓練相比，最大差異為 0（[`gpu-smoke.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/gpu-smoke.json)，解說在〈[GPU／checkpoint 實測](gpu-smoke.md)〉）。
 
 這兩項確認的是 GPU 上的訓練、存檔、續訓與部署管線，不是各機制的品質或速度比較。
 
 ## 審查
 
-審查者都是 AI，沒有真人學生測試。每一節課程頁有兩份意見：一位扮演初學讀者（高中程度、數學好、程式新手）的 AI，檢查看不看得懂、圖文與數字是否一致；一位 AI 技術查核，對照原始論文、固定 commit 的官方程式與計算。網站導覽裡的其他 17 頁，各有一位以該頁讀者身分閱讀的 AI（前導頁是初學讀者，維護頁是維護者），以及一位對照 repo 的程式、紀錄與頁面引用來源的 AI 事實查核。每份審查紀錄都列出全部的發現、每個發現怎麼處理，以及修改後的複查。
+網站導覽裡的每一頁都有一份審查紀錄。課程頁由 AI 獨立查核：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，檢查程式摘錄與網頁轉換，也從初學讀者（高中程度、數學好、程式新手）的角度看用詞與說明順序；頁面引用原始論文、官方程式或函式庫文件的說法，另由 AI 打開原始來源逐句核對（論文看原文，官方程式看固定的 commit 或 tag，函式庫看官方文件），查閱的來源記在該頁的審查紀錄。其他 17 頁由 AI 對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。查到的問題修正後，都由另一位 AI 檢查修正。每份紀錄列出查核的方法、全部的發現與每一項的處理。審查者都是 AI，沒有真人學生測試。
 
-審查紀錄存在 `reviews/`。`reviews/coverage.json` 用 SHA-256 記下每份審查看的是哪個版本：頁面文字、頁面上的 SVG 圖，以及課程頁的程式與它 import 的模組；頁尾自動產生的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。Pages 工作流程建置網站之前，`scripts/validate_lessons.py` 會核對這些 SHA-256；有任何一頁在審查之後又改過，網站就不會發布。課程頁的審查紀錄連在上方〈逐節執行清單〉的表格裡，其他頁如下：
+審查紀錄存在 `reviews/`。`reviews/coverage.json` 用 SHA-256 記下每份審查看的是哪個版本：頁面文字、頁面上的 SVG 圖，以及課程頁的程式與它 import 的模組；頁尾自動產生的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。Pages 工作流程建置網站之前，`scripts/validate_lessons.py` 會核對這些 SHA-256；有任何一頁在審查之後又改過，網站就不會發布。正文引用的紀錄數字不在這項核對裡：紀錄重產後，由維護者在 `docs/` 與 `README.md` 搜尋紀錄的檔名與舊數字，對照新紀錄逐一核對，改了正文就重審那一頁（見〈[發布與帳號設定](../preparation/publish.md)〉）。課程頁的審查紀錄連在上方〈逐節執行清單〉的表格裡，其他頁如下：
 
 |頁面|審查紀錄|
 |---|---|
@@ -111,13 +111,13 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions 工作流程
 
 ## 發布後的公開驗證
 
-網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.4.0`），結果存成兩份紀錄：
+網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.4.0`）。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
 
-- [`curriculum-publication.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)：在 runner 上嚴格建置這個 tag 的網站，逐頁比對公開網站上每一頁的正文與每一張圖；確認每節的 Colab 連結開的是這個 tag 的 notebook、環境格固定在這個 tag、最後一格就是該節程式；也確認先前發布的 tag 仍指向原本的 commit。
-- [`curriculum-release-bootstrap.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)：每種情況都用全新的資料夾與虛擬環境，照 notebook 的順序執行環境格與最後一格：沒有 PyTorch、裝著其他版本、已經是 2.9.1，以及其他版本已經載入（環境格改裝 2.9.1 後要求重新啟動，重新執行後通過）；第 20 章的環境格另外安裝 ONNX 套件。接著在另一個全新的 clone 依序執行 README 的每個指令。
+- [`curriculum-publication.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-publication.json)：在 runner 上嚴格建置（`zensical build --strict`，有警告就算失敗）這個 tag 的網站，再和公開網站比對：導覽裡每一頁的正文，以及 `assets/diagrams/` 的每張圖，都要完全相同。也確認每節的 Colab 連結開的是這個 tag 的 notebook、環境格固定在這個 tag、最後一格就是該節程式，以及先前發布的 tag 仍指向原本的 commit。
+- [`curriculum-release-bootstrap.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)：除了第 20 章，41 本 notebook 的環境格逐字相同，所以用第 0 章的 notebook 測四種情況：沒有 PyTorch、裝著其他版本、已經是 2.9.1，以及其他版本已經載入（環境格改裝 2.9.1 後要求重新啟動，用新的程序重跑兩格後通過）。每種情況都用全新的資料夾與虛擬環境，照 notebook 的順序執行環境格與最後一格，最後一格的輸出要和 notebook 存的輸出相同。第 20 章的環境格另外安裝 ONNX 套件，所以另在沒有 PyTorch 的環境執行一次它的兩格（輸出含計時，不要求相同）。接著在另一份全新的 clone 裡，依序執行 README 的 bash 區塊裡的每個指令（不會自己結束的 `zensical serve` 除外），其中包括 pytest，以及把 42 節的實驗格各跑一次、和紀錄比對輸出的 `scripts/check_lesson_runtime.py`（輸出和紀錄不同不算失敗，哪些節逐字相同記在紀錄的 `lesson_runtime`）。
 
-runner 是 GitHub 的 Linux 機器，不是 Google Colab 的託管 runtime；這兩項驗證沒有登入 Google，也沒有用到 GPU。
+依發布步驟，兩份紀錄最外層的 `passed` 都是 `true`，才 commit 到 main。這兩份紀錄在 tag 建立之後才產生，所以 tag 裡的 `curriculum-publication.json` 是上一版的驗證。紀錄裡逐項記著每一頁、每種情況與每個指令的結果。runner 是 GitHub 的 Linux 機器，不是 Google Colab 的託管 runtime；這兩項驗證沒有登入 Google，也沒有用到 GPU。
 
 ## 沒有驗證的事
 
-沒有真人學生的學習成效研究，沒有在真實照片資料集上長時間訓練，也沒有 INT8 量化或實體攝影機的實測。notebook 沒有在 Google Colab 的託管 runtime 上逐節執行。
+偵測實驗都只用合成圖或小型自製資料。沒有真人學生的學習成效研究，沒有在真實照片資料集上長時間訓練，也沒有 INT8 量化或實體攝影機的實測。notebook 沒有在 Google Colab 的託管 runtime 上執行過，Colab 可能分配的 GPU 也沒有測。完整的清單見〈[驗證範圍](../status.md)〉的〈沒有驗證的事〉。

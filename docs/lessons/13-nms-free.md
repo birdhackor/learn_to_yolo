@@ -8,7 +8,7 @@ NMS-free 指推論時不跑 NMS，直接用 13.1 的一對一 head（把特徵�
 
 前置：[NMS](06-decode-nms.md)（非極大值抑制：依分數由高到低，每輪保留一個框，再刪掉和它重疊太多的候選）、[13.1 的一對多／一對一監督](13-dual-assignment.md)（一對多讓同一物件的多個候選都學高分，一對一只教一個）。後面的手算評估會用到 [AP50](06-evaluation.md)（TP、FP 怎麼判定，AP 怎麼算）。
 
-YOLOv10 的做法：訓練時有一對多、一對一兩個 head，共用同一組特徵（見 13.1）。推論時只用一對一 head 算出的分數：先取分數最高的前 k 個（官方預設最多 300 個），再刪掉低於 score 門檻的，就直接輸出。整個過程沒有 NMS 那一步，也就是不再「保留高分框，再刪掉和它 IoU 太高的候選」。
+YOLOv10 的做法：訓練時有一對多、一對一兩個 head，共用同一組特徵（見 13.1）。推論時只用一對一 head 算出的分數：先取分數最高的前 k 個（官方預設最多 300 個），再刪掉低於 score 門檻的，就直接輸出。官方排的是每個（框, 類別）組合的分數，有多個類別時，同一個框可能以不同類別各出現一次；本節每個框只有一個分數，取前 k 個分數就是取前 k 個框。整個過程沒有 NMS 那一步，也就是不再「保留高分框，再刪掉和它 IoU 太高的候選」。
 
 本節的簡化：真正的 YOLOv10 要靠 assignment（決定哪個候選負責哪個物件）挑出正樣本；本節沒有重現這些挑選步驟，而是直接指定正樣本。每個候選只有一個可以學的數字（logit，經過 sigmoid 就是分數）；四個 logit 本身就是參數，不學框，也不接 CNN。兩套 logits 分別在兩個獨立的對照實驗裡訓練，不是 13.1 那種共用特徵的兩個 head。兩者的訓練步數、學習率和初值都相同，所以分數的差別只來自 target。這個實驗只驗證「改 target 會改變重複框的分數」，不能稱作完整的 YOLOv10，也不代表已達到真實任務的偵測品質。
 
@@ -162,7 +162,7 @@ NMS-free 的目標是同一物件不重複，不是所有互相重疊的物件�
     - `assert one_ids == [0, 2]` 改成 `assert one_ids == []`。
     - 覆蓋斷言 `assert 2 in many_after_nms and any(i in many_after_nms for i in (0, 1))` 改成 `assert many_after_nms == []`。score 篩選後已經沒有框，不能再要求保留 p2 或 p0／p1。
 
-參考來源：[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[官方 v10Detect 推論](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)（`v10Detect` 是官方程式中 YOLOv10 偵測 head 的類別名稱；`max_det = 300` 寫在這裡）、[postprocess 的 top-k（`v10postprocess`）](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/ops.py)（postprocess 指模型輸出後挑框的後處理）、[預測時只取一對一 head 的輸出，top-k 後再用 score 門檻篩選](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/models/yolov10/predict.py)。
+參考來源：[YOLOv10 論文](https://arxiv.org/abs/2405.14458)、[官方 v10Detect 推論](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py)（`v10Detect` 是官方程式中 YOLOv10 偵測 head 的類別名稱；這裡的 `max_det = 300` 只在匯出模型時使用）、[postprocess 的 top-k（`v10postprocess`）](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/ops.py)（postprocess 指模型輸出後挑框的後處理）、[預測時只取一對一 head 的輸出，top-k 後再用 score 門檻篩選](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/models/yolov10/predict.py)（k 取自設定 `max_det`）、[預設設定（`max_det: 300`）](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/cfg/default.yaml)。
 
 <!-- curriculum-evidence:start -->
 

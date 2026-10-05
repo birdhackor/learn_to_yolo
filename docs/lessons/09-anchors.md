@@ -74,7 +74,7 @@ w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
 - **ignore**：同一格的其他槽，若和物件的尺寸 IoU 大於 0.2，就什麼 loss 都不算。本例格 (1,1) 的槽 1（8×8，尺寸 IoU 0.25）就是 ignore。
 - **negative**：其餘的槽，只學「這裡沒有物件」。
 
-為什麼要 ignore？8×8 槽和物件在同一格，尺寸也有幾分像（尺寸 IoU 0.25）。把它當 negative，等於要它的 objectness 學「這裡沒有物件」，但這一格明明有物件。本節選擇讓它不計任何 loss。0.2 是本節為了示範三種狀態設的教學值，不是原版設定；這個簡化的 ignore 規則不能代表原版所有訓練細節。
+為什麼要 ignore？8×8 槽和物件在同一格，尺寸也有幾分像（尺寸 IoU 0.25）。把它當 negative，等於要它的 objectness 學「這裡沒有物件」，但這一格明明有物件。本節選擇讓它不計任何 loss。0.2 是本節為了示範三種狀態設的教學值。這條 ignore 規則是本節自訂的，和原版不同：YOLOv2 論文沒有說明 ignore 規則。官方 Darknet 程式（[region_layer.c](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/region_layer.c#L236-L306)）把每個槽解碼後的預測框（含位置）和圖中每個 GT 算一般的 IoU；最大值超過 0.6（[yolov2-voc.cfg](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/yolov2-voc.cfg#L257) 的 thresh）的槽不算 objectness loss，範圍不限同一格，比的也不是 anchor 尺寸。唯一的例外是負責學某個 GT 的槽（相當於本節的 positive）：不論 IoU 多大，它都照常計算 objectness loss。本節的規則也不代表原版其他訓練細節。
 
 因此本例有 1 個 positive、1 個 ignore、30 個 negative。各自算哪些 loss：
 
@@ -96,7 +96,7 @@ ignore 不參與 objectness loss，所以 objectness BCE 是對 31 個槽（1 po
 
     第 7 章單張圖的分母是 16 格，所以是 ±0.03125。
 
-    上面三種槽的梯度都是手算的，完整程式不會印出；它的斷言（assert）只核對其中 ignore 槽的 0。想親眼看到 ±0.0161，可以在完整程式 `loss.backward()` 的下一行加上這一行，縮排和 `loss.backward()` 對齊：
+    上面三種槽的 obj 梯度都是手算的，完整程式不會印出；它的斷言（assert）只核對其中 ignore 槽的 0。想親眼看到 ±0.0161，可以在完整程式 `loss.backward()` 的下一行加上這一行，縮排和 `loss.backward()` 對齊：
 
     ```python
     print(raw.grad[0,1,1,:,4].tolist(), raw.grad[0,0,0,:,4].tolist())

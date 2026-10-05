@@ -36,7 +36,7 @@
 
 ``` { .python data-excerpt="lesson_cases/07-data.py" }
 import torch
-...  # 省略：匯入 miniyolo.data、def main(): 與兩行設定（隨機種子、執行緒數）
+...  # 省略：匯入 miniyolo.data、def main(): 與兩行不影響本節輸出的設定
 image = torch.zeros(3, 64, 64)  # 背景全是 0
 image[0, 12:28, 8:24] = 1  # 紅，索引順序是 channel,y,x
 image[2, 36:52, 40:56] = 1  # 藍
@@ -101,7 +101,7 @@ images, targets = collate([(image, target), (torch.zeros_like(image), empty)])
 
 固定場景只用 0 和 1 兩種畫素值，所以能逐值精確核對。後續訓練用的是生成資料，不是反覆學本節這兩個 256 畫素的固定色塊。
 
-`ShapeDataset` 是本書 `miniyolo/data.py` 裡的 PyTorch Dataset 類別，可以用 `dataset[i]` 取出第 i 筆資料。給它編號 i，它就依固定的隨機種子（seed）畫出第 i 張圖和標註；同一個編號每次都畫出同一張。它的圖有這些性質：
+`ShapeDataset` 是本書 `miniyolo/data.py` 裡的 PyTorch Dataset 類別，可以用 `dataset[i]` 取出第 i 筆資料。給它編號 i，它就依固定的亂數種子（seed）畫出第 i 張圖和標註；同一個編號每次都畫出同一張。它的圖有這些性質：
 
 - 預設設定下，每張有 0～2 個矩形，所以會出現空圖。本節完整程式沿用預設，用 seed=7 取 8 張，其中就有 3 張空圖。
 - 每個矩形整個落在 4×4 格的某一格（16×16 畫素）裡，寬、高是 8～15 畫素。同一張圖的矩形一定在不同格子，避開第 5 章講的同格碰撞（兩個物件中心落在同一格）。

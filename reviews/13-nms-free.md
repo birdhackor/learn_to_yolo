@@ -1,34 +1,107 @@
-# 第 13 課 NMS-free 陌生讀者審閱
+# 審查紀錄：NMS-free 推論
 
-審閱範圍：只讀 `docs/lessons/13-nms-free.md` 與 `lesson_cases/13-nms-free.py`。以僅有基本 PyTorch／CNN 知識、未讀其他教材的讀者角度審閱。課文未引用圖，也未找到以 `13` 或 `nms` 命名的相關圖檔；Colab 佔位略過。
+審查範圍：`docs/lessons/13-nms-free.md`、頁面上的圖（`docs/assets/diagrams/13-nms-free.svg`），以及 `lesson_cases/13-nms-free.py` 與它 import 的 repo 模組；頁尾自動產生的執行紀錄區塊不在範圍內，由 `scripts/validate_curriculum_evidence.py` 對照紀錄檢查。審查者都是 AI，沒有真人學生測試。這份紀錄涵蓋的內容以 SHA-256 記在 `reviews/coverage.json`；頁面、圖或程式之後再改，`scripts/validate_lessons.py` 就會要求重新審查。
 
-整體判斷：能理解「關掉 NMS 不會改變已學到的重複高分；改成一對一 target，才會壓低重複候選的分數」，也能理解 top-k 只看分數、可能把兩個名額都給同一物件。固定框與四個可學 logits 的簡化交代清楚，成本與風險的敘述合理。沒有發現數字錯誤，也沒有需要刪除的段落。以下兩點會影響初學者完整理解。
+## 獨立查核
 
-## 1. 用這個例子補上 TP／FP／FN，否則「框數正確」與「偵測正確」仍少一座橋
+頁面依目前的程式改寫後，由另一位 AI 獨立查核：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，檢查程式摘錄與網頁轉換，並從初學讀者（高中程度、數學好、程式新手）的角度看用詞與說明順序。有必要問題時，修正後再由另一位 AI 複查；建議事項另外處理，處理後同樣再查一次。
 
-- 位置：課文第 31、41、45 行；程式第 43–44 行。
-- 問題：第 31 行以兩框「符合兩物件」總結，第 41 行卻直接引入 held-out AP、重複 FP、漏檢，第 45 行再用 recall。基本 PyTorch 讀者不一定知道：同一 GT 即使有兩個高分且 IoU 合格的預測，第二個仍是 FP；分類分數也不是定位 IoU。程式目前核對框數與索引，沒有示範這個評估規則。
-- 具體建議：在第 31 行後加一句「評估時，一個 GT 最多配對一個同類預測；此處以定位 IoU ≥ .5 配對，多出的重複預測算 FP，未配對的 GT 算 FN」。再加一個手算表：many/no-NMS = TP 2、FP 1、FN 0；many/NMS = TP 2、FP 0、FN 0；one/no-NMS = TP 2、FP 0、FN 0。說明 score threshold 是保留候選的門檻，matching IoU 是判定位置是否合格的門檻。第 41 行將 AP 首次展開為「平均精確率（AP，以不同分數門檻下的 precision／recall 衡量）」，第 45 行將 recall 補為 `TP / GT 數`。不必為這個玩具例子增加完整 AP 實作。
+### 第 1 次查核：通過
 
-## 2. 補清楚誰決定一對一 target，以及它與 YOLOv10 的關係
+結論：通過，沒有必要也沒有建議。所有程式都在我自己的暫存副本執行，沒有寫入 repo。
 
-- 位置：課文第 7、15–20、39 行；程式第 22–38 行。
-- 問題：表格可以照著讀，但初學者仍會問「為什麼是 p0 負責 A，而不是 p1？模型自己選的嗎？」第 7 行的 `head` 又未定義，程式輸出的 `many-head`／`one-head` 實際是兩套獨立 logits。歷史句只說 YOLOv10 訓練一對一 head，未說明其訓練同時具有一對多分支；讀者可能把兩套獨立 BCE 當成真實方法的完整訓練機制。
-- 具體建議：第 7 行加短定義：「head 是網路產生分類分數與框的輸出分支；YOLOv10 訓練時同時使用一對多與一對一分支，推論採一對一分支。」表格後補：「本例由我們手動指定 p0 負責 A、p2 負責 B；真正模型的訓練會用配對規則決定負責候選。本例不實作這個配對，也不實作兩分支共享特徵，因此只驗證已指定 target 對分數的作用。」這可保留現有簡化，又讓第 39 行的「學好唯一負責人」有明確含義。
+1. 程式敘述都與定稿程式相符。lesson_cases/13-nms-free.py 的 sha256 是 7697044f…，就是兩個 unit 修完後的版本。
+- 程式 exit 0，印出 5 行，和第 115–118 行的核對清單逐項相同。
+- 第 19、82、85 行說留下 p0，依據是 stable=True 加上三分完全平手，逐輪走過的結果是 [0, 2]，屬實。
+- 第 87 行說「p1 排前面就留 p1」。我把送進 nms 的順序改成 [1, 0, 2] 實測，印出 many/NMS: [1, 2]，斷言全過。
+- torch 2.9.1 的 docstring 確認兩件事：argsort 預設不保證同分元素的順序；stable=True 保留原本先後。topk(stable=True) 實測得到 TypeError，所以第 91 行的「沒有保證」保留得正確。
+- 「第 6 章 class_nms、第 7 章 decode_grid 用的 NMS 也這樣排序」：06-decode-nms.py 的 class_nms 和 miniyolo/geometry.nms 都用 argsort(descending=True, stable=True)。這兩個名稱也都在第 6、7 章頁面上出現過。
+- 兩題練習完全照頁面步驟做：
+  - 第 1 題：只改 target 時，程式停在 assert one_ids == [0, 2]；把斷言改成 [1, 2] 後印出 one/no NMS: [1, 2]。
+  - 第 2 題：只改門檻時，程式停在框數斷言；三條斷言照參考答案改完後，三條路徑全空，exit 0。
+- Colab 的格子描述（「本節可修改的完整實驗」下方那格）也核對過，相符。
 
-## 執行核對
+2. 先前審查意見與受程式改動影響的段落全部處理。
+- 第 3 行的 tag 已是 lessons-v0.4.0，沒有手改。第 28 行照先前審查意見的條件保留，因為輸出標籤沒有改。
+- 第 19、82、85、87、115 行都照受程式改動影響的段落改寫。第 170、175、176 行在紀錄標記之下，一字未動。第 91 行照 unit 疑慮保留「沒有保證」。
+- 頁面上已不剩平手「沒有保證」的補丁說法。全頁 grep 不到修訂敘事，也沒有程式行號。
 
-命令：`PYTHONPATH=. .venv-model/bin/python lesson_cases/13-nms-free.py`，退出碼 0，現有 assertions 全部通過。
+3. 數字：0.959、0.8182、[0, 1, 2]／[0, 2]／[0, 2] 都是確定值。沒有從這台 Mac 引入任何數字。待重錄的值，編輯都已在待重錄數值清單列出。我在複本裡只對本節呼叫 verify_curriculum 的 run 與 attach，重產後頁尾印出 [0.959, 0.959, 0.959, 0.041]／[0.959, 0.041, 0.959, 0.041]，和第 115 行的新敘述、SVG 一致。
 
-- many 分數：約 `[.959, .959, .959, .041]`。
-- one 分數：約 `[.959, .041, .959, .041]`。
-- many/no-NMS：`[0, 1, 2]`；本次 many/NMS：`[0, 2]`；one/no-NMS：`[0, 2]`。
-- top-2：`[0, 1]`，確實漏掉 B 的候選 p2。
-- duplicate IoU：`.8182`，符合 `90 / 110`。
+4. 摘錄：摘錄比對工具印出 []。我分別在兩段各做一次突變，各自都被抓到。我也逐行比對過：第一段是程式第 23–31 行的連續逐字複製，第二段是第 37–46 行，只是去掉 4 格縮排；兩段都只多了中文註解，引言也寫明了這一點。在複本中，validate_lessons.py 通過所有頁面檢查，只停在預期中「審查紀錄尚未建立」的那一關。
 
-課文第 31 行已有同分時不依賴 NMS tie 排序的說明，這點處理妥當。第 45 行 `.99` 門檻在本例實際會把全部候選濾掉，可把「可能全被過濾」改成「全部被過濾」作小幅文字精確化；不列為第三項關鍵問題。
+5. 易讀性：「穩定排序」在第 85 行第一次出現就有定義，第 19 行刻意不用術語，前後順序合理。
 
+6. 建置與 SVG：在複本中，zensical build --clean --strict 與 validate_site.py 都通過，兩段摘錄渲染成 language-python。SVG 有 viewBox、title、desc，qlmanage 渲染正常，數字與程式輸出相同。這次只動了 docs/lessons/13-nms-free.md；SVG、notebook、紀錄 JSON、reviews 與程式都沒有差異。
 
-## 作者修訂紀錄（2026-10-02）
+不影響通過的備註：
+(a) 第 85 行跨檔的第 6、7 章敘述目前屬實。但本頁的審查紀錄只綁本節程式，日後 geometry.py 改了排序也不會觸發本頁重審。編輯已在疑慮列出，受程式改動影響的段落也允許這樣寫。
+(b) 沒有斷言固定「留下 p0」：拿掉 stable=True 後輸出不變、斷言全過。這一點編輯已在疑慮列出，要不要加斷言交給總編輯決定。
+(c) 編輯報告說「notebook 最後一格要等重建」，這一句有一半已不成立：notebooks/13-nms-free.ipynb 最後一格的原始碼已經和程式相同，只有輸出還要等重錄。
+(d) 第 115 行的「和上圖右半的數字相同」寫成「分數」會更精確，因為右半也有 target 欄。不至於誤導讀者，所以不列為問題。
 
-已補head定義、人工指定target與官方dual-assignment的差別；人工分數例逐框TP/FP/FN matching，precision=2/3、recall=1、all-points interpolated AP=5/6，以及top-2漏B時recall=.5。原案例的真SGD分數、3框→2框與一對一結果已CPU實跑通過。
+## 來源對照
+
+頁面上關於原始論文、官方程式與函式庫行為的說法，由 AI 打開頁面引用的來源（論文章節、固定 commit 的官方程式、官方文件）逐句核對。查閱的來源：
+
+- https://arxiv.org/abs/2405.14458 — abs page (v1 2024-05-23, v2 2024-10-30; the page links the unversioned abs, which resolves to v2)
+- https://arxiv.org/html/2405.14458v2 — Abstract (NMS hampers end-to-end deployment and adds latency); §1 Introduction (slows inference, performance sensitive to NMS hyperparameters, prevents optimal end-to-end deployment); §2 Related Work (DETR adopts Hungarian loss for one-to-one matching); §3.1 Dual label assignments (weak supervision of one-to-one, identical-structure one-to-one head, backbone and neck get one-to-many supervision, discard one-to-many head at inference without extra cost, top-one selection performs the same as Hungarian matching); §3.1 Consistent matching metric (Eq. 1 uniform matching metric, analysis assumption of identical predictions, Eq. 2 supervision gap on soft targets, α_o2o=r·α_o2m and β_o2o=r·β_o2m imply m_o2o=m_o2m^r, r=1 default, Fig. 2(b) alignment frequency after training); §4 Analyses for NMS-free training (α_o2m=0.5, β_o2m=6.0); Appendix A.2; whole text searched for detach/stop gradient (none)
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/nn/modules/head.py — Detect cv2/cv3 L39–42; v10Detect L497–525 (max_det=300, deepcopy one2one_cv2/cv3, xi.detach() for one-to-one input, export-only v10postprocess)
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/loss.py — v8DetectionLoss L150–166 (TaskAlignedAssigner topk=tal_topk, alpha=0.5, beta=6.0), __call__ (assigner fed with that head's own detached pred_scores and pred_bboxes; box, cls BCE, DFL losses), v10DetectLoss L717–727 (tal_topk=10 and 1)
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/tal.py — target normalization L83–86, get_pos_mask L90–100, get_box_metrics L102–121, iou_calculation CIoU clamp(0) L123–125, select_highest_overlaps L232–258
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/ops.py — v10postprocess L851–864
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/models/yolov10/predict.py — postprocess (one2one only, v10postprocess with self.args.max_det, then preds[...,4] > self.args.conf)
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/cfg/default.yaml — L50 conf, L52 max_det: 300
+- https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/engine/exporter.py — L226–233 (sets v10Detect.max_det = args.max_det on export)
+- PyTorch 2.9.1 (version pinned in requirements) docstrings of the installed package, same text as https://docs.pytorch.org/docs/2.9/generated/torch.argsort.html (stable=False does not guarantee the order of equal elements) and https://docs.pytorch.org/docs/2.9/generated/torch.topk.html (no stable option; indices of tied elements are not guaranteed to be stable)
+- https://docs.python.org/3.12/library/itertools.html#itertools.permutations — order and the empty result when r > n checked by running Python 3.12.15; the max() empty-iterable ValueError message checked by execution in the same interpreter
+
+| # | 嚴重度 | 位置 | 發現 |
+|---|---|---|---|
+| 1 | 建議 | 「YOLOv10 的做法」段：「先取分數最高的前 k 個（官方預設最多 300 個），再刪掉低於 score 門檻的，就直接輸出」，以及頁末連到 v10postprocess 的「postprocess 的 top-k」 | 和 13.1 同一個簡化。v10postprocess 是兩段 top-k：先依最高類別分數取 k 個候選，再取 k 個（候選, 類別）分數。所以官方輸出裡，同一個框可以帶不同類別出現多次，並不是「每個候選最多一筆」。本頁正在討論 NMS-free 輸出會不會重複，這一點和主題直接相關。 |
+| 2 | 建議 | 頁末參考來源：「官方 v10Detect 推論（……`max_det = 300` 寫在這裡）」 | 預測路徑傳給 v10postprocess 的 k 是 `self.args.max_det`（predict.py），它的預設值來自 ultralytics/cfg/default.yaml L52 的 `max_det: 300`。head.py 的類別屬性 `max_det = 300` 只在 export 路徑使用（head.py L521–522），而且 exporter.py L232–233 會用 `self.args.max_det` 覆寫它。把「官方預設最多 300 個」的出處指向 head.py，讀者會以為預測時的上限是在那裡設定的。 |
+
+各項的處理見下方〈定稿修正〉（來源為「來源對照」的列）。
+
+## 定稿修正
+
+上面各項意見與先前查核留下的建議，由 AI 逐項核實後處理：必要問題全部修正，建議事項只在修正明確、範圍小時採用。
+
+| # | 來源 | 意見 | 處理 |
+|---|---|---|---|
+| 1 | 來源對照 | 「取前 k 個」沒說明官方排的是（框, 類別）組合，同一個框可能重複出現 | 已修正：在「YOLOv10 的做法」段補一句：官方排的是每個（框, 類別）組合的分數，多類別時同一個框可能以不同類別各出現一次。本節程式的 logits 是 [4]，每個框只有一個分數，所以取前 k 個分數就等於取前 k 個框。 |
+| 2 | 來源對照 | 300 的出處指向 head.py，但預測時的 k 來自設定裡的 max_det | 已修正：已確認三件事：predict.py 傳入 self.args.max_det；default.yaml 設定 max_det: 300；head.py 的 max_det 只在 export 分支使用，exporter.py 匯出時會用 args 覆寫它。參考來源改成：head.py 的 max_det 只在匯出模型時使用；predict.py 的 k 取自設定的 max_det；另加 default.yaml（max_det: 300）的固定 commit 連結。 |
+
+修正後由另一位 AI 檢查這一批頁面（`docs/lessons/13-dual-assignment.md`、`docs/lessons/13-nms-free.md`、`docs/lessons/14-feature-module.md`、`docs/lessons/15-attention-bridge.md`、`docs/lessons/15-area-attention.md`）的改動，第 1 次：通過。檢查內容：每項改動是否符合程式、紀錄與引用的來源（需要時重算或重跑），回報已修正的必要問題是否真的修好、沒改的理由是否成立，改動是否符合寫作規範，網站嚴格建置與程式摘錄比對是否通過。
+
+## 後續編輯的檢查
+
+上面各輪之後的編輯（各頁的小修正、審查方式的說明），由另一位 AI 對照程式、紀錄與來源再檢查；檢查找到的問題處理後，再交給另一位 AI 檢查，直到沒有必要問題。
+
+### 第 1 輪：獨立查核之後的編輯
+
+頁尾來源行為「參考來源：」。v10Detect 的 max_det=300 只在 export 分支呼叫 v10postprocess，與括號說明相符；predict.py、default.yaml 的連結內容也符合。
+
+### 第 3 輪：上一輪的處理與審查紀錄：通過
+
+以腳本核對紀錄：獨立查核通過；〈來源對照〉2 項在〈定稿修正〉處理；批次檢查掛在本頁；結構檢查通過。
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 建議 | reviews/13-nms-free.md 第 11、26 行 | 內部名稱：「第 91 行照 unit concern 保留「沒有保證」」，以及殘句「所有程式都在我自己的複本暫存副本執行」。 | 未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |
+
+### 第 4 輪：上一輪的處理：有必要問題
+
+第 3 輪第 1 項：第 11 行的殘句已清理；但處理聲稱的改字沒有發生。
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 必要 | reviews/13-nms-free.md 第 26 行 | 處理寫「「unit 疑慮」改成「先前查核提出的疑慮」」，但第 26 行仍是「第 91 行照 unit 疑慮保留「沒有保證」」。 | 已處理：第 3 輪的處理說明改成統一的說明。未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |
+
+### 第 5 輪：上一輪的處理：通過
+
+第 4 輪第 1 項屬實：第 26 行仍是「第 91 行照 unit 疑慮保留「沒有保證」」，「先前查核提出的疑慮」不在紀錄裡。第 3 輪第 1 項中，第 11 行的殘句確實已改寫。
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 建議 | 第 3 輪第 1 項處理欄（第 91 行） | 產生器取最內層的引號，把頁面原文「沒有保證」當成仍在的點名文字。發現真正點名的是內部名稱「第 91 行照 unit concern 保留「沒有保證」」，現在只把 concern 換成了「疑慮」，「unit」仍在第 26 行，處理欄沒寫這件事。讀者會以為剩下的問題是「沒有保證」。 | 已處理：用詞類的處理說明改成統一的說明（紀錄保留查核者的原文，只統一替換路徑與內部名稱），不再逐句計數。 |

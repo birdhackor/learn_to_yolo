@@ -39,7 +39,7 @@ f → 類別分支：3×3 卷積(8→8) → ReLU → 1×1 卷積(8→2) → logi
 | 框分支（`box_branch`） | `[2,4,4,4]` | 四個 channel 是 `ltrb` 距離的原始輸出 |
 | 類別分支（`class_branch`） | `[2,2,4,4]` | 兩個 channel 各是一個類別的 logit |
 
-框分支輸出 `[2,4,4,4]` 的 axis0 是 B=2（兩張圖），axis1 是四個 channel，axis2、axis3 才是高度、寬度。ltrb 是候選點到框左、上、右、下四邊的距離（上一節 anchor-free 的表示）。程式的 `boxes` 變數就是這種原始輸出；這裡沿用前幾節的叫法，也稱它為 logits，意思是還沒經過 softplus 的原始數，可正可負，不是機率。程式裡名叫 `logits` 的變數則是類別分支的輸出。框的原始輸出經 `F.softplus(boxes)` 才變成正距離，再和 1.5 格的 target（程式的 `distances`）比較；`boxes` 不是已解碼的 xyxy 框。
+框分支輸出 `[2,4,4,4]` 的第 0 軸是 B=2（兩張圖），第 1 軸是四個 channel，第 2、3 軸才是高度、寬度。4×4＝16 個位置各是一個候選點，套用 12.1 節的記號就是 P＝16；把高、寬兩軸攤平成 P，再把 channel 移到最後，`[2,4,4,4]` 就是 12.1 節表格的 `[B,P,4]`，`[2,2,4,4]` 就是 `[B,P,C]`。ltrb 是候選點到框左、上、右、下四邊的距離（上一節 anchor-free 的表示）。程式的 `boxes` 變數就是這種原始輸出：還沒經過 softplus 的原始數，可正可負，不是機率（術語表的 logits 也包含這種框的原始輸出）。本頁單說 logits，都指程式裡同名的變數 `logits`，也就是類別分支的輸出。框的原始輸出經 `F.softplus(boxes)` 才變成正距離，再和 1.5 格的 target（程式的 `distances`）比較；`boxes` 不是已解碼的 xyxy 框。
 
 這個 head 沒有 objectness（第 7 章表示「這格有沒有物件」的那個輸出），兩個類別各有一個 sigmoid 分數，用 BCE 學。在這個示範中，所有位置都當成正樣本：類別 target（程式的 `classes`）的 class0 是 1、class1 是 0。這裡刻意省去 assignment（候選與真值的責任分配），讓我們只追蹤 head 的梯度。完整的 YOLOv8 這類偵測器只在選定的正樣本上計算框 loss；背景位置仍要算分類 loss，而且所有類別的 target 都是 0：這就是「分類負訊號」。
 
@@ -90,7 +90,7 @@ class_backbone_grad = model.backbone.weight.grad.clone()
 - \(g_{\text{box}}=\partial L_{\text{box}}/\partial\theta\)，就是程式的 `box_backbone_grad`。
 - \(g_{\text{cls}}=\partial L_{\text{cls}}/\partial\theta\)，就是程式的 `class_backbone_grad`。
 
-總 loss 是 \(L=L_{\text{box}}+L_{\text{cls}}\)。和的導數等於導數的和，所以 \(\theta\) 的梯度是 \(g_{\text{box}}+g_{\text{cls}}\)；每一項再各自沿自己的分支，用連鎖律（chain rule）乘回 \(\theta\)。完整程式裡這樣核對：
+總 loss 是 \(L=L_{\text{box}}+L_{\text{cls}}\)。和的導數等於導數的和，所以 \(\theta\) 的梯度是 \(g_{\text{box}}+g_{\text{cls}}\)。其中每一項都是從自己的 loss 出發，沿自己的分支用連鎖律（chain rule）一路乘回 \(\theta\) 得到的；兩條路在共用特徵 f 會合，梯度在那裡相加。完整程式裡這樣核對：
 
 ``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 model.zero_grad()
@@ -140,7 +140,7 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 - 框分支的輸出層（1×1，8→4）：`4×8+4=36`
 - 類別分支的輸出層（1×1，8→2）：`2×8+2=18`
 
-合計 `224+584×2+36+18=1,446`，其中兩條分支本身共 1,222。最簡單的 coupled head 是一層 8→6 的 1×1 卷積，6 個輸出 channel 是 4 個框值＋2 個類別，只要 `6×8+6=54` 個參數。這個基線不只沒有分工，容量也不同，所以兩者的效果差異不能都歸因於分工。公平比較應選相近的 channel 數、層數或成本，並說明對齊哪一項。
+合計 `224+584×2+36+18=1,446`，其中兩條分支本身共 1,222。最簡單的 coupled head 是一層 8→6 的 1×1 卷積，6 個輸出 channel 是 4 個框值＋2 個類別，只要 `6×8+6=54` 個參數。這層 1×1 其實等於並排的 8→4、8→2 兩層 1×1（`54=36+18`，每個輸出 channel 本來就有自己的一列權重），所以只把輸出層拆成兩個不算分工；分工指的是輸出層之前各有自己的卷積。這個基線不只沒有分工，容量也不同，所以兩者的效果差異不能都歸因於分工。公平比較應選相近的 channel 數、層數或成本，並說明對齊哪一項。
 
 ??? note "保留一層 3×3 的 coupled head 有多少參數？"
 
@@ -153,9 +153,9 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 3. backbone 的總梯度等於兩份梯度之和：`verified`。
 4. 參數數量：`1446`。
 
-第 2、3 項印的英文是固定的文字，不是程式算出來的值。程式先跑完所有斷言才開始印，所以印得出這兩行，就表示對應的 `is None` 與 `torch.allclose` 斷言已經通過。另外會印出一次梯度 cosine（輸出的第 3 行，`shared-backbone gradient cosine`）。它可作檢查訊號，但沒有通用的理想數字。
+第 2、3 項印的英文是固定的文字，不是程式算出來的值。程式先跑完所有斷言才開始印，所以印得出這兩行，就表示對應的 `is None` 與 `torch.allclose` 斷言已經通過。另外會印出一次梯度 cosine（`shared-backbone gradient cosine` 那行）。它可作檢查訊號，但沒有通用的理想數字。
 
-## 收益、代價與下一項判斷
+## 收益、代價與常見錯誤
 
 分支讓定位與分類在最後幾層各用自己的卷積權重，也能分開決定每條分支的 channel 數與 loss。代價有三：
 
@@ -168,12 +168,12 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 常見錯誤：
 
 - **兩次 backward 之間忘了清梯度**：backward 預設把新梯度加在舊梯度上，第二次看到的就是兩次的累加。
-- **把 `.grad` 是 None 和全 0 tensor 混為一談**：若改用 `model.zero_grad(set_to_none=False)`，上一次有梯度、這次沒用到的分支會留下全 0 tensor，而不是 None，`is None` 的斷言就會失敗（兩者的差別見第 2 章〈[訓練診斷](02-diagnostics.md)〉）。
+- **把 `.grad` 是 None 和全 0 tensor 混為一談**：若把第二次反傳前的 `model.zero_grad()`（程式裡的第二個）改成 `model.zero_grad(set_to_none=False)`，框分支在第一次反傳得到的梯度會被填成全 0 tensor，而不是設回 None；第二次反傳沒走進框分支，它就一直是全 0，`model.box_branch[0].weight.grad is None` 的斷言便失敗。改第一個沒有作用，因為那時所有參數的 `.grad` 本來就是 None（兩者的差別見第 2 章〈[訓練診斷](02-diagnostics.md)〉）。
 - **在分支前誤用 `detach()`**：例如把 `forward` 裡的 `self.class_branch(f)` 寫成 `self.class_branch(f.detach())`，分類 loss 的梯度就到不了 backbone，backbone 只剩框 loss 在訓練。一般的訓練迴圈很難發現這個錯：分類分支本身仍會更新，loss 也可能照樣下降。本節程式則會在第二次反傳後停下：分類 loss 沒有流進 backbone，`model.backbone.weight.grad` 仍是 None；None 沒有 `.clone()` 可呼叫，所以接著取 `class_backbone_grad` 的那行報 `AttributeError`。本節兩個任務都需要訓練共用特徵，所以不在分支前做 detach。
 
 自主練習：
 
-1. 只把分類 loss 乘 2：第三次改成反傳 \(L_{\text{box}}+2L_{\text{cls}}\)。先預測 backbone 的總梯度，以及框分支、類別分支的梯度各會怎麼變。再改完整程式驗證 backbone 的總梯度；兩條分支的梯度怎麼變，程式不會檢查，請對照參考答案。完整程式就是 Colab 裡「本節可修改的完整實驗」那一格，內容和 `lesson_cases/12-decoupled-head.py` 相同。要一起改三處：
+1. 只把分類 loss 乘 2：第三次改成反傳 \(L_{\text{box}}+2L_{\text{cls}}\)。先預測 backbone 的總梯度，以及框分支、類別分支的梯度各會怎麼變。再改完整程式驗證 backbone 的總梯度；兩條分支的梯度怎麼變，程式不會檢查，請對照參考答案。完整程式就是 Colab 裡「本節可修改的完整實驗」下面那一格程式，內容和 `lesson_cases/12-decoupled-head.py` 相同。要一起改三處：
 
     - `(box_loss + cls_loss).backward()` 改成 `(box_loss + 2 * cls_loss).backward()`。
     - 下一行斷言的預期值 `box_backbone_grad + class_backbone_grad`，改成 `box_backbone_grad + 2 * class_backbone_grad`。
@@ -189,9 +189,9 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 
     第二次單獨反傳要保持原本的 `cls_loss`，`class_backbone_grad` 才代表 \(g_{\text{cls}}\) 本身。若那行也改成 `2 * cls_loss`，`class_backbone_grad` 就已經是 \(2g_{\text{cls}}\)；預期值再乘 2，會變成 \(g_{\text{box}}+4g_{\text{cls}}\)，和實際的 \(g_{\text{box}}+2g_{\text{cls}}\) 對不上，斷言就會失敗。
 
-    **第 2 題**：沒有標準答案。舉一個梯度路徑的差別：保留一層 3×3 的 coupled 版本（f → 3×3 → ReLU → 1×1 輸出 6 個 channel，共 638 個參數）只反傳框 loss 時，最後那層 1×1 的權重裡，負責類別的 2 列梯度是全 0，而不是 None。因為整個 1×1 權重是同一個參數，只要有一部分用到，`.grad` 就是完整的 tensor；這正好和本節分支的 None 對照。
+    **第 2 題**：沒有標準答案。舉一個梯度路徑的差別：保留一層 3×3 的 coupled 版本（f → 3×3 → ReLU → 1×1 輸出 6 個 channel，共 638 個參數）裡，那層 3×3 在只反傳框 loss、只反傳分類 loss 時都有梯度，和 backbone 一樣由兩個任務共用；本節的兩層 3×3 則各只收到一種 loss 的梯度。至於最後那層 1×1，只反傳框 loss 時，負責類別的 2 列梯度是全 0 而不是 None：整個 1×1 權重是同一個參數，只要有一部分用到，`.grad` 就是完整的 tensor。就梯度路徑來說，全 0 和 None 都表示這個 loss 沒有梯度流到這些權重，只是 PyTorch 的記法不同。
 
-參考來源：[Ultralytics Detect 中 cv2／cv3 的分支定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)。cv2、cv3 是 Ultralytics `Detect` 類別裡兩條分支的成員名：cv2 是框分支，cv3 是類別分支，和 OpenCV 的 `cv2` 套件無關。YOLOv8 的每條分支是兩層 3×3 卷積再接一層 1×1 卷積；本節的兩層小分支（一層 3×3 加一層 1×1）、全正樣本與 Smooth L1 是教學簡化。
+參考來源：[Ultralytics Detect 中 cv2／cv3 的分支定義](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)。cv2、cv3 是 Ultralytics `Detect` 類別裡兩條分支的成員名：cv2 是框分支，cv3 是類別分支，和 OpenCV 的 `cv2` 套件無關。YOLOv8 的每條分支是兩層 3×3 卷積再接一層 1×1 卷積。連結檔案裡的類別分支 cv3 有兩種寫法：YOLOv8 用的是 `self.legacy` 為真的那一種（兩個 `Conv(…, 3)` 再接 `nn.Conv2d(…, 1)`），另一種是較新版本的類別分支。本節的兩層小分支（一層 3×3 加一層 1×1）、全正樣本與 Smooth L1 是教學簡化。
 
 <!-- curriculum-evidence:start -->
 

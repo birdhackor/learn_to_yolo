@@ -214,7 +214,7 @@ top-3 一定輸出三個候選，即使它們都是背景。實際使用時，�
 
     卷積本來就接受任何尺寸，不用改。若不改這兩處，中心點和距離都還按 16 換算，程式照樣執行，但所有框的座標都只剩正確值的一半。
 
-參考來源：[YOLO26 配置的 end2end 與 reg_max](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[Detect forward、postprocess、get_topk_index 及 fuse](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)。
+參考來源：[YOLO26 配置的 end2end 與 reg_max](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[Detect forward、postprocess、get_topk_index 及 fuse](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[整個模型的 fuse（BaseModel.fuse：卷積／BN 融合，再呼叫 Detect 的 fuse）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/tasks.py)。
 
 
 

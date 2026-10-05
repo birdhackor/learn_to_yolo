@@ -12,7 +12,7 @@
 2. 另一個只用 CPU 的 container 重新讀取 Volume，核對兩個 checkpoint 與四個 JSON 檔（設定、前處理、資料來源、程式版本）的 SHA-256（由檔案內容算出的指紋，內容改一點就會不同）。有 Hugging Face（HF，存放與分享模型檔的網站）的 token（存取金鑰）時，再把中途 checkpoint 與這四個 JSON 檔上傳到私有的 checkpoint repo，然後依這次上傳產生的 commit（HF repo 的版本）把中途 checkpoint 下載回來（JSON 檔不下載），核對它的 SHA-256，通過後存進 Volume。
 3. 一個新開、只用一次的 L4 container 讀取這份下載的 checkpoint（沒有 HF 下載檔時改讀 Volume 裡原本的中途 checkpoint），從第 20 步接著練到第 40 步，再和對照比較模型、Adam 的狀態、StepLR（學習率排程：每隔固定步數把學習率乘上固定比例）、每步的 loss 與梯度大小（L2 norm：把所有參數的梯度元素平方後加總，再開根號），以及 RNG（亂數產生器）。
 
-三段合計 80 次 optimizer 更新。GPU 函式固定 `gpu="L4"`、`max_containers=1`（同時最多一個 container）、`startup_timeout=600`（container 啟動最多 600 秒）、`timeout=600`（啟動後每次呼叫的執行最多 600 秒）、`retries=0`（失敗不自動重試）、`single_use_containers=True`（每個 container 只處理一次呼叫）；整個 Actions 工作最多 25 分鐘。工作流程屬於 `learn-to-yolo-gpu-smoke` 這個 concurrency 群組（第 20 章的 `deployment-gpu.yml` 也在這一組）：同一時間只跑一個，進行中的不會被取消。三段依序呼叫，前一段結束才開始下一段。工作流程結尾的檢查步驟不論前面成功與否都會執行：確認這次執行在 Modal 上建立的 app（上面各段函式所屬的應用程式）已停止（stopped），而且執行中的任務數為 0（tasks=0）。連查三次仍未停止，它會停止這個 app（只停這次的，不動其他 app）再繼續查；最後仍確認不了，這一步就失敗。程式不修改帳號的費用上限。
+三段合計 80 次 optimizer 更新。GPU 函式固定 `gpu="L4"`、`max_containers=1`（同時最多一個 container）、`startup_timeout=600`（container 啟動最多 600 秒）、`timeout=600`（啟動後每次呼叫的執行最多 600 秒）、`retries=0`（失敗不自動重試）、`single_use_containers=True`（每個 container 只處理一次呼叫）；整個 Actions 工作最多 25 分鐘。工作流程屬於 `learn-to-yolo-gpu-smoke` 這個 concurrency 群組（第 20 章的 `deployment-gpu.yml` 也在這一組）：同一時間只跑一個，進行中的不會被取消；排隊等待的最多只有一個，又有新的執行排進來時，原本在等待的那一個會被取消。`scripts/record_evidence.py --gpu` 等前一個工作流程跑完才啟動下一個，不受這點影響。三段依序呼叫，前一段結束才開始下一段。工作流程結尾的檢查步驟不論前面成功與否都會執行：確認這次執行在 Modal 上建立的 app（上面各段函式所屬的應用程式）已停止（stopped），而且執行中的任務數為 0（tasks=0）。連查三次仍未停止，它會停止這個 app（只停這次的，不動其他 app）再繼續查；最後仍確認不了，這一步就失敗。程式不修改帳號的費用上限。
 
 Volume 預設是 `learn-to-yolo-checkpoints`。每次執行寫進自己專用的目錄 `projects/learn-to-yolo/runs/github-<run_id>-<attempt>-<commit>/`（`<commit>` 是程式 commit 的前 12 碼；這裡的 commit 是 Git 的版本編號）；目錄已存在時程式會停下，不覆寫。HF 上也用相同的專案與路徑，不會覆寫其他專案的檔案。checkpoint 只上傳到私有 repo，不發布公開模型。
 
@@ -26,7 +26,7 @@ Volume 預設是 `learn-to-yolo-checkpoints`。每次執行寫進自己專用的
 - `HF_CHECKPOINT_REPO`（variable）指定要上傳的 HF repo；沒有指定時，用 token 所屬帳號的 `learn-to-yolo-checkpoints`。repo 不存在時，程式把它建成私有 repo；已存在而且是公開的，程式不上傳。沒有任何 Secret 含 `HF_TOKEN` 時，程式跳過 HF 的上傳與下載，這次執行仍可通過；有 token 卻遇到公開的 repo 或 HF 這一段出錯時，第 3 段照樣執行，但整次執行的狀態記為 partial（部分完成），不算通過。`HF_RELEASE_REPO`（variable）只在紀錄裡註明是否設定，這個工作流程不使用 release repo。
 - `MODAL_CHECKPOINT_VOLUME`（或 `MODAL_VOLUME_NAME`）指定要用的 Volume，沒有設定時用 `learn-to-yolo-checkpoints`；Volume 不存在時會自動建立。
 
-Actions 端（在 GitHub Actions 上呼叫 Modal 的程式 `scripts/modal_gpu_smoke.py`）只安裝 `requirements-modal.txt`，也就是 Modal 的用戶端套件，不安裝 PyTorch；工作流程會先確認 Actions 端沒有 PyTorch。GPU container 的 image（映像檔：預先裝好套件的執行環境）安裝 `requirements-gpu.lock`。它由 `requirements-gpu.in` 產生：`requirements-model.txt` 再加上 CUDA（NVIDIA 的 GPU 運算平台）版的 `torch==2.9.1+cu128`，連同它們依賴的套件全部固定版本，安裝時核對每個套件檔的 SHA-256。所以 GPU 上的 PyTorch 是 2.9.1+cu128（針對 CUDA 12.8 編譯的版本），其他模型依賴的版本與 `requirements-model.txt` 相同。GPU 函式把結果轉成 JSON 字串再傳回，`torch.__version__` 也先轉成一般字串，所以傳回 Actions 端的資料裡沒有 PyTorch 的物件。
+Actions 端執行 `scripts/modal_gpu_smoke.py`（這個檔案在 GitHub Actions 上呼叫 Modal，也定義了上面三段在 Modal 上執行的函式），只安裝 `requirements-modal.txt`，也就是 Modal 的用戶端套件，不安裝 PyTorch；工作流程會先確認 Actions 端沒有 PyTorch。GPU container 的 image（映像檔：預先裝好套件的執行環境）安裝 `requirements-gpu.lock`。它由 `requirements-gpu.in` 產生：`requirements-model.txt` 再加上 CUDA（NVIDIA 的 GPU 運算平台）版的 `torch==2.9.1+cu128`，連同它們依賴的套件全部固定版本，安裝時核對每個套件檔的 SHA-256。所以 GPU 上的 PyTorch 是 2.9.1+cu128（針對 CUDA 12.8 編譯的版本），其他模型依賴的版本與 `requirements-model.txt` 相同。GPU 函式把結果轉成 JSON 字串再傳回，`torch.__version__` 也先轉成一般字串，所以傳回 Actions 端的資料裡沒有 PyTorch 的物件。
 
 ## checkpoint 與比較
 
@@ -40,9 +40,16 @@ Actions 端（在 GitHub Actions 上呼叫 Modal 的程式 `scripts/modal_gpu_sm
 
 ## 計時與驗證結果
 
-下面的結果來自 GitHub Actions 的[執行 37217100342](https://github.com/birdhackor/learn_to_yolo/actions/runs/37217100342)（2026-10-04，UTC）。紀錄存在 repo 的 [`artifacts/checks/gpu-smoke.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/gpu-smoke.json)，狀態為 passed（通過）；執行的程式 commit 是 `463d3f59fb8042f8edc07fcc18581fab2c6bb418`。
+下面的結果來自 GitHub Actions 的[執行 37217100342](https://github.com/birdhackor/learn_to_yolo/actions/runs/37217100342)。紀錄存在 repo 的 [`artifacts/checks/gpu-smoke.json`](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/gpu-smoke.json)，狀態為 passed（通過）；執行的程式 commit 是 `463d3f59fb8042f8edc07fcc18581fab2c6bb418`。
 
-這份紀錄用 SHA-256 綁定在 Modal 上執行的實驗程式 `miniyolo/gpu_smoke.py`，以及它直接或間接 import 的每個 repo 模組（列在紀錄的 `dependencies_sha256`；Actions 端的 `scripts/modal_gpu_smoke.py` 不在其中）。這些檔案都沒變，紀錄就一直有效，不必重跑；任何一個改了，紀錄才算過期，要用 `scripts/record_evidence.py --gpu <分支>` 重跑。它會在 GitHub Actions 上啟動這個工作流程，跑完後下載結果、存成新的紀錄，步驟見〈[發布與帳號設定](../preparation/publish.md)〉。網站建置時，`scripts/validate_curriculum_evidence.py` 會確認紀錄對得上目前的程式、狀態為 passed，而且 Modal app 已確認停止。
+這份紀錄用 SHA-256 綁定 `miniyolo/gpu_smoke.py`（訓練、存檔與比對的程式），以及它直接或間接 import 的每個 repo 模組（列在紀錄的 `dependencies_sha256`）。`scripts/modal_gpu_smoke.py` 不在其中：GPU 函式外層的 Volume reload／commit、`HF_TOKEN` 的檢查，以及整個第 2 段（Volume 的 SHA-256 核對、HF 的上傳與下載）都寫在這個檔案裡，在 Modal 上執行；`requirements-gpu.lock` 與 `gpu-smoke.yml` 也不在其中。綁定的檔案都沒變，紀錄就一直有效；任何一個改了，紀錄才算過期，要用 `scripts/record_evidence.py --gpu <分支>` 重跑。它會在 GitHub Actions 上啟動這個工作流程，跑完後下載結果、存成新的紀錄，步驟見〈[發布與帳號設定](../preparation/publish.md)〉。只改了沒有綁定的檔案時，紀錄不會過期，`record_evidence.py --gpu` 也會跳過它。要重新驗證時：
+
+1. 先把修改 commit 並推到 `<分支>`（工作流程跑的是推上去的程式），再手動啟動這個工作流程：`gh workflow run gpu-smoke.yml --ref <分支>`。
+2. 用 `gh run list --workflow gpu-smoke.yml` 找到這次執行的編號；跑完後用 `gh run download <編號> --dir artifacts/runs/gpu-smoke-download`，把結果下載到不進 git 的資料夾。
+3. 確認下載的 `result.json` 裡，`status` 是 `passed`、`modal_stop_confirmation.verified` 是 `true`，再把它存成 `artifacts/checks/gpu-smoke.json`。
+4. 執行 `python3 scripts/validate_curriculum_evidence.py --scope gpu`，通過才 commit。
+
+網站建置時，同一支檢查會確認紀錄對得上目前的程式、狀態為 passed，而且 Modal app 已確認停止。
 
 ### 驗證結果
 

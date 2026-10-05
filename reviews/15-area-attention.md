@@ -1,34 +1,96 @@
-# 第 15.2 課 Area Attention 審查
+# 審查紀錄：YOLOv12 Area Attention
 
-審查範圍：只讀 `docs/lessons/15-area-attention.md`、`lesson_cases/15-area-attention.py`，並確認本文沒有引用區域示意圖；未讀其他教材。以對專案陌生、具基本 PyTorch／CNN 知識的讀者為準。Colab 佔位不列為問題。
+審查範圍：`docs/lessons/15-area-attention.md`、頁面上的圖（`docs/assets/diagrams/15-area-layout.svg`），以及 `lesson_cases/15-area-attention.py` 與它 import 的 repo 模組；頁尾自動產生的執行紀錄區塊不在範圍內，由 `scripts/validate_curriculum_evidence.py` 對照紀錄檢查。審查者都是 AI，沒有真人學生測試。這份紀錄涵蓋的內容以 SHA-256 記在 `reviews/coverage.json`；頁面、圖或程式之後再改，`scripts/validate_lessons.py` 就會要求重新審查。
 
-結論：CNN／global／area 的單層互動範圍、水平帶分區、pair 計數及跨區訊號限制都講對了。主程式可以執行，數值與文字一致。需要補兩處，才能讓讀者直接完成練習，並清楚區分本例與原版 YOLOv12。
+## 獨立查核
 
-## 1. 「改 areas」練習會撞上固定參數與斷言
+頁面依目前的程式改寫後，由另一位 AI 獨立查核：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，檢查程式摘錄與網頁轉換，並從初學讀者（高中程度、數學好、程式新手）的角度看用詞與說明順序。有必要問題時，修正後再由另一位 AI 複查；建議事項另外處理，處理後同樣再查一次。
 
-位置：教材第 44 行；程式第 26、30–33、37 行。
+### 第 1 次查核：通過
 
-教材請讀者改 `areas=2`，但程式沒有集中設定的 `areas` 變數，兩次 area 計算各寫死 `4`。只改第一次呼叫，未干預與干預的分區方式就不同，第 31 行會失敗；兩次都改成 2，第 33 行的 `64` 仍會失敗。改成 1 時，area 就是 full，第 31 行的「第一區完全不變」斷言與第 37 行寫死的 `area=False` 也不再成立。這些失敗會讓初學者誤以為自己的分區推論錯了。
+結論：通過。六項檢查都沒有必要或建議等級的問題。所有程式都在暫存副本執行，沒有在 repo 裡跑任何東西。
 
-具體修法：在 `main()` 設一個 `areas = 4`，第 26、30 行都使用它；pair 斷言改成 `tokens.shape[1] ** 2 // areas`。干預檢查改為比較實際的 token 0 輸出，根據 token 15 是否與 token 0 同區決定預期結果，輸出文字也由比較結果產生。教材第 44 行明確說只改這個變數。若暫時不改程式，至少列出 areas=2 必須修改兩次呼叫與 pair 斷言，areas=1 必須調整跨區斷言。
+1. 頁面對程式的敘述都正確。
+- 原程式實跑 exit 0。印出的六行，包括 `first-token output full=0.46875, area=0.09375` 與 `after intervention: full=0.78125, area=0.09375`，都和頁面的清單一致，清單也涵蓋了全部六行。`changing token 15…` 那一行依序印出 full_affected、area_affected、same_area，頁面寫的順序是對的。
+- 三題練習都照頁面指示，從原程式只改一行來跑：
+  - areas=2：印出 `(2, 8, 8) 128`、area=0.21875、area=False。
+  - areas=1：印出 256，0.46875→0.78125，`same area=True`。
+  - changed_index=3：印出 full=0.78125、area=1.34375。
+  - assert 全部通過，結果和參考答案一致。
+- 第一個程式框：我把它原樣包進函式，用 areas=1／2／4 各跑一次，output 與 weights 都和 `attend` 的回傳值 torch.equal 相同。所以「依 `attend` 改寫的簡化版」這個說法成立。框前列的三個差異（大寫 B、N、C、省略 assert、只存 output）也都屬實。
+- 摘錄框裡的 `...`：略去的正是程式中算 full_affected、area_affected 的那兩行，前後行在程式裡是連續的。
 
-## 2. 沒有明確交代 toy 單 head 與原版 multihead 的 shape 差異
+2. 先前審查意見與受程式改動影響的段落都處理了。
+- trace line 3：頁首在 HEAD 就已經是 lessons-v0.4.0，validate_lessons 的 source_ref 檢查也通過。
+- trace line 153 與受程式改動影響的段落 114、116、149、153：取偶數的說明、「程式印成 0.2188」、「不是筆誤」、指向 4.2 `round()` 的連結都刪掉了。我在全頁找 0.4688、0.7812、0.2188、1.3438、四位、取偶、正中間、筆誤，只剩頁尾自動產生的區塊（第 171、173 行）。
+- impact 161、168、170 在頁尾，沒有動過，和 HEAD 逐位元相同，之後由 verify_curriculum.py 重產。
+- 全頁沒有修訂、審查或製作經過的敘述。
 
-位置：教材第 7、11–20、42 行；程式第 11–14、22 行。
+3. 數字都對，也不受機器影響。新寫入的 0.46875、0.09375、0.78125、0.21875、1.34375 都是 1/32 的倍數，和手算、實跑結果相同，換哪台機器跑都一樣。正文沒有寫進 loss 或計時這類會因機器而變的數字。要等重產的值（頁尾的日期、版本與兩行輸出）都已列在修正者的待重錄數值清單。
 
-第 7 行說原版有 multihead、位置卷積及輸出投影，卻只明確指出位置卷積被省略。範例後續用 `sqrt(C)` 與三維 weights，未交代這其實是 **一個 head、head dimension 就是 C=2**，而且輸出投影也省略了。第 42 行雖提醒不要把 area 當 head，讀者仍看不到兩者如何同時出現在 tensor 中，也可能把這個公式直接套到原版的總 channel 數。
+4. 摘錄檢查通過。
+- 摘錄比對工具對 repo 和暫存副本都印出 `[]`。
+- 突變測試：把 `==` 改成 `!=`、把 `shape[1]` 改成 `shape[0]`，兩種都被抓到；拿掉 data-excerpt 標記、改成一般的 ```python，則被判為未標記的逐字摘錄。
+- 第一個框沒有標記，框前已說明它是簡化版，檢查也不會把它誤判成逐字摘錄。
+- 正文沒有引用程式行號。
 
-具體修法：在第 7 行後加上「本例 num_heads=1、head_dim=C=2，省略位置卷積與輸出投影；areas 是空間分組數，不是 head 數」。再加一個 shape 對照：若原版有 M 個 heads、D=C/M，每個 head 的 Q／K／V 可表示為 `[B×A,M,N/A,D]`，weights 為 `[B×A,M,N/A,N/A]`，縮放因子是 `sqrt(D)`；本例 M=1，所以省略那個大小為 1 的維度。如此也能說明目前 256／64 是單 head 的 weights 元素數，M-head 情況會再乘上 M，而 `N²/A` 是每個 head 的 pair 數。無需搬入完整 YOLOv12 程式。
+5. 可讀性沒有問題。新加的兩句框前說明，寫法和其他頁一致。`...` 的意思，以及 full_affected、area_affected、same_area 這三個名字，都在使用前解釋過。刪掉取偶數說明不影響教學順序。
 
-## 已驗證、無問題的部分
+6. 渲染沒有問題。
+- 暫存副本中 `zensical build --clean --strict` exit 0（No issues found），validate_site.py 也是 exit 0。建出的 HTML 裡，摘錄框是正常的 language-python 高亮區塊。
+- SVG 和 HEAD 相同，有 viewBox、<title>、<desc>。用 qlmanage 算圖，畫面乾淨：A=4 是四條帶，A=2 是兩段，紅框標 token0，紫框標 token3 和 token15，都和程式一致。
+- 本節的相關檔案中，只有頁面和 HEAD 不同；git diff --check 沒有錯誤。
 
-- `PYTHONPATH=. .venv-model/bin/python lesson_cases/15-area-attention.py` 成功，印出 weights `(1,16,16)`／256 與 `(4,4,4)`／64、首 token `0.4688`／`0.0938`，loss 約 `0.0048`。
-- 使用相同 QKV 權重另外驗證 areas=1／2／4：pair 數為 256／128／64，首 token 為 0.46875／0.21875／0.09375。token 15 各 channel 加 5，首 token 的變化為 0.31250／0／0；token 3 各 channel 加 5，變化為 0.31250／0.62500／1.25000。教材的干預與練習答案正確。
-- MSE backward 後 Q、K、V 三段權重各有非零梯度；SGD 可執行。此處作為可訓練性的簡短實驗足夠，沒有精度收益的錯誤推論。
-- 第 26–28 行有區分 pair 成本與總延遲；第 34、40、42 行有區分單層隔離與完整網路跨區傳遞，CNN 對照沒有編造實測結果。
-- 本文沒有引用圖，沒有圖文矛盾可指出。若新增本節圖，應畫出 row-major 的 0–15 編號及四條水平帶，不應畫四個 2×2 象限。沒有需要刪除的內容。
+以下備註不影響通過，屬於發布流程，不是這次修改的問題：
+- 頁尾與 artifacts/checks/curriculum/15-area-attention.json 的 stdout 還是舊的 0.4688、0.7812，notebook 最後一格目前也沒有存輸出。要等紀錄重產後才會和正文一致，所以重產必須和本頁一起發布。
+- 在暫存副本整份跑 validate_lessons.py：notebook 與程式逐字相同、全站摘錄檢查都通過，只在「審查紀錄」那一步失敗，而且全站每一頁都一樣是 no review。發布前要針對本頁目前的文字重審 reviews/15-area-attention.md。
+- areas=16 會在 grad 的 assert 失敗，HEAD 也一樣。頁面沒有要讀者試這個值，所以沒有任何敘述因此變成錯的。
 
+佐證檔：
+- 實跑輸出
+- 練習與簡化框測試
+- 建置與驗證紀錄：暫存副本、.validate-site.log、.validate-lessons.log
+- SVG 算圖
 
-## 作者修訂紀錄（2026-10-02）
+## 來源對照
 
-已集中areas與changed_index設定，兩次attention、pair數與跨區干預assert/輸出均動態計算。補單head省略M軸、原版multihead QKV/weights shape與sqrt(D)尺度；pair數明示每head。CPU主例及areas=2、areas=1、changed_index=3三種練習均通過，pair為64/128/256且干預是否同區判斷正確。
+頁面上關於原始論文、官方程式與函式庫行為的說法，由 AI 打開頁面引用的來源（論文章節、固定 commit 的官方程式、官方文件）逐句核對。查閱的來源：
+
+- https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/block.py（Bottleneck、C3、C2f、C3k、C3k2）
+- https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/conv.py（Conv：bias=False、BatchNorm2d、default_act=SiLU）
+- https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/11/yolo11.yaml（backbone/head 的 C3k2、SPPF、C2PSA）
+- https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/tasks.py（parse_model：m/l/x 尺度把 C3k2 的 c3k 強制設為 True）
+- https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/block.py（AAttn、ABlock、A2C2f）
+- https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/modules/conv.py（Conv）
+- https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/cfg/models/v12/yolov12.yaml（第 6 層 A2C2f area=4、第 8 層 P5/32 area=1，head 的 A2C2f a2=False）
+- https://github.com/sunsmarterjie/yolov12/blob/2abab7153a065fb2925e8088e9ca2b19016ab7d6/ultralytics/nn/tasks.py（parse_model：A2C2f 的 n 插在 args[2]）
+- https://arxiv.org/abs/2502.12524（Submission history：只有 v1）
+- https://arxiv.org/html/2502.12524 §3.2 Area Attention（分成 l 段，(H/l,W) 或 (H,W/l)；只需一次 reshape、速度較快；預設 l=4，感受野變 1/4 但仍然夠大）、§3.4 Architectural Improvements（移除 positional encoding，改用 7×7 large separable convolution『position perceiver』）
+- https://arxiv.org/abs/1706.03762 → https://arxiv.org/html/1706.03762 §3.2.1 Scaled Dot-Product Attention 正文（We suspect…）與腳註（變異數 d_k）
+- https://ar5iv.labs.arxiv.org/html/1512.03385 §4.1 Deeper Bottleneck Architectures（1×1、3×3、1×1 三層）
+
+這一頁沒有發現與來源不符的說法。
+
+## 後續編輯的檢查
+
+上面各輪之後的編輯（各頁的小修正、審查方式的說明），由另一位 AI 對照程式、紀錄與來源再檢查；檢查找到的問題處理後，再交給另一位 AI 檢查，直到沒有必要問題。
+
+### 第 1 輪：獨立查核之後的編輯
+
+頁尾來源行為「參考來源：」。核對釘選的 yolov12 block.py：AAttn 的 `self.pe = Conv(all_head_dim, dim, 5, 1, 2, g=dim, act=False)`，與正文「程式版本是 5×5」一致。N²/A 的推導支持術語表 attention 列的說法。
+
+### 第 3 輪：上一輪的處理與審查紀錄：通過
+
+以腳本核對紀錄：獨立查核通過，沒有待處理的建議；〈來源對照〉列出 YOLOv12 論文與官方程式，沒有不符；結構檢查通過。
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 建議 | reviews/15-area-attention.md 第 50–53 行 | 空洞的路徑清單：「- 實跑輸出：.../暫存副本」「- 練習與簡化框測試：.../暫存副本」「- 建置與驗證紀錄：.../暫存副本、.validate-site.log、.validate-lessons.log」「- SVG 算圖：.../暫存副本」。 | 未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |
+
+### 第 4 輪：上一輪的處理：有必要問題
+
+第 3 輪第 1 項：第 50、51、53 行已改成類別標籤；但第 52 行點名的殘句沒有清理，處理說明不實。
+
+| # | 嚴重度 | 位置 | 發現 | 處理 |
+|---|---|---|---|---|
+| 1 | 必要 | reviews/15-area-attention.md 第 52 行 | 點名的「- 建置與驗證紀錄：.../暫存副本、.validate-site.log、.validate-lessons.log」只拿掉「.../」，變成「- 建置與驗證紀錄：暫存副本、.validate-site.log、.validate-lessons.log」，仍是殘缺的檔名清單。處理卻寫已清理。 | 已處理：第 3 輪的處理說明改成統一的說明。未逐句改寫：紀錄保留查核者的原文，只由產生器統一替換路徑與內部名稱；點名的文字可能因此改變，也可能仍在。 |

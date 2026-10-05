@@ -76,7 +76,7 @@
 
 ``` { .python data-excerpt="lesson_cases/07-inference.py" }
 images, anns = collate([(image,two), (one_image,one), (torch.zeros_like(image),empty)])
-# 剛建立、未訓練的模型；.eval() 切到推論模式，並回傳模型本身
+# 剛建立、未訓練的模型；.eval() 切到評估（eval）模式，並回傳模型本身
 model = GridDetector(num_classes=2, grid_size=4, width=8).eval()
 with torch.inference_mode():
     raw = model(images)  # [3,4,4,7]
@@ -129,13 +129,13 @@ decoder 在每個類別內依 score 排序做 NMS，所以兩個不同類別的�
 
 畫圖時有兩個常見的換算錯誤。一是把 normalized wh（0～1 的寬高比例，也就是 sigmoid(tw)、sigmoid(th)）當成 pixel。二是把 xyxy 當成 `(x,y,w,h)`：`(x,y,w,h)` 指左上角座標加寬高，有些畫圖函式要的是這種格式；從 xyxy 換算要算 w=x2−x1、h=y2−y1。`(x,y,w,h)` 也不是中心加寬高的 cxcywh。
 
-人工紅／藍場景可對照[資料頁的靜態圖](07-data.md)。想看模型輸出真的疊回圖片的樣子，可以看[三步訓練](07-training.md)那一節 160 步實驗的驗證圖：圖中橙色的模型框，就是訓練後的模型輸出經過同一個 `decode_grid` 得到的；那裡的 score 門檻是評估用的 0.05，比本節的顯示門檻 0.25 低。
+人工紅／藍場景可對照[資料頁的靜態圖](07-data.md)。想看模型輸出真的疊回圖片的樣子，可以看[三步訓練](07-training.md)那一節 160 步實驗的驗證圖：圖中橙色的模型框，就是訓練後的模型輸出經過同一個 `decode_grid` 得到的；那裡用的是評估用的候選截斷門檻 0.05，比本節的顯示門檻 0.25 低，所以那張圖可能畫出 score 不到 0.25 的框。
 
 收益是：訓練程式在 validation／test 資料（驗證集、測試集）上的評估、之後的評估和畫圖展示，都呼叫同一個 `decode_grid`（算 loss 時不經過 decode）；沒有框的圖、一次多張圖，輸出格式也都固定。代價是：固定 grid 每格只有一個框，兩個物件中心落在同一格時，可能漏掉其中一個；NMS 也不能補回模型根本沒預測出來的框。提高 score 門檻會讓畫面更乾淨，同時可能降低 recall（真實物件中被找到的比例）；必須用獨立評估判斷，不能憑畫出的框變少就說進步。
 
 常見錯誤：
 
-- **推論前沒呼叫 `eval()`**：有 Dropout／BatchNorm 的模型，輸出會和推論模式不同。本節的模型沒有這些層，所以看不出差別。
+- **推論前沒呼叫 `eval()`**：有 Dropout／BatchNorm 的模型，輸出會和 eval 模式下不同。本節的模型沒有這些層，所以看不出差別。
 - **類別各自做 sigmoid，卻當成 softmax 那種互斥機率**：例如紅、藍的 logit 都是 2 時，sigmoid 各得 0.88，加起來 1.76；softmax 則得 0.5、0.5，加總為 1，表示只能選一類。各自 sigmoid 的結果不是這種機率。
 - **NMS 不分類別**：紅框和藍框重疊超過門檻時，分數較高的那個會把另一個刪掉，即使兩者是不同類別的物件。
 - **對空結果取 `[0]`**：某張圖沒有框時寫 `result[b]['boxes'][0]`，會出現 IndexError（索引超出範圍）。`result[0]` 則是取第 0 張圖；list 的長度固定是 B，所以安全。

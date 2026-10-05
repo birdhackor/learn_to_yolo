@@ -50,9 +50,9 @@ def count_up():
 for x in count_up(): print('拿到', x)  # 每要一筆，函式才往下跑到下一個 yield
 ```
 
-含 `yield` 的函式叫 generator（產生器）。呼叫它時，函式本體還不會執行，所以單寫 `count_up()` 什麼都不會印。使用結果的 for 迴圈每要一筆，它才往下跑到下一個 `yield`，交出一個值後暫停。所以上面的程式依序印出：準備 0、拿到 0、準備 1、拿到 1、準備 2、拿到 2。
+含 `yield` 的函式叫 generator（產生器）。呼叫它時，函式本體還不會執行，所以單寫 `count_up()` 時，裡面的 `print` 一個都不會執行（在 Colab 只會顯示 `<generator object count_up at …>`，也就是這個還沒開始跑的 generator 物件本身）。使用結果的 for 迴圈每要一筆，它才往下跑到下一個 `yield`，交出一個值後暫停。所以上面的程式依序印出：準備 0、拿到 0、準備 1、拿到 1、準備 2、拿到 2。
 
-`run_stream` 也是這樣：只呼叫 `run_stream(frames, model)` 不會開始逐幀工作；for 迴圈來要結果時，它才讀下一幀，處理完再用 `yield` 交出。下面是簡化過的核心片段，和完整程式不同的地方是：省略了函式開頭的說明文字、斷言（assert）、計時與畫框；letterbox 前的 tensor 另取名 `tensor_rgb`（完整程式裡 letterbox 前後的 tensor 都叫 `image`）；交出的 dict 只留三個欄位，完整程式還會交出疊好框的畫面 `image` 與各段計時 `ms`。`model` 傳進來前已設成 eval。`@torch.no_grad()` 寫在 `def` 的上一行，效果和第 0 章的 `with torch.no_grad():` 相同，只是套用在整個函式上：函式裡的計算都不記錄計算圖。
+`run_stream` 也是這樣：只呼叫 `run_stream(frames, model)` 不會開始逐幀工作；for 迴圈來要結果時，它才讀下一幀，處理完再用 `yield` 交出。下面是簡化過的核心片段，和完整程式不同的地方是：省略了函式開頭的說明文字、斷言（assert）、計時與畫框；letterbox 前的 tensor 另取名 `tensor_rgb`（完整程式裡 letterbox 前後的 tensor 都叫 `image`）；交出的 dict 只留三個欄位，完整程式還會交出疊好框的畫面 `image` 與各段計時 `ms`。`model` 傳進來前已設成 eval。`@torch.no_grad()` 寫在 `def` 的上一行，讓函式裡的計算都不記錄計算圖，用途和第 0 章的 `with torch.no_grad():` 一樣。`run_stream` 是 generator，PyTorch 只在它往下執行時關閉梯度，`yield` 交出結果時就恢復原狀，所以外面的 for 迴圈不受影響；如果改成在函式裡用 `with torch.no_grad():` 包住迴圈，generator 暫停時，外面的程式也會停在不記錄計算圖的狀態。
 
 ```python
 @torch.no_grad()
@@ -81,7 +81,7 @@ def run_stream(frames, model):
 
 ## 把管線時間拆開量
 
-完整程式把每一幀的處理分成四段計時：前處理、模型、後處理（decode／NMS／還原座標），以及畫框。做法是在每一段前後各呼叫一次 `time.perf_counter()`（高精度計時器，單位秒），兩次相減再乘 1000，就是這一段花了幾毫秒。在 CPU 上，PyTorch 的運算回傳時就已經算完（同步執行），所以這樣量得準；GPU 則會先把工作排隊、稍後才算（非同步），計時前要先等它算完。
+完整程式把每一幀的處理分成四段計時：前處理、模型、後處理（decode／NMS／還原座標），以及畫框。做法是在每一段前後各呼叫一次 `time.perf_counter()`（高精度計時器，單位秒），兩次相減再乘 1000，就是這一段花了幾毫秒。在 CPU 上，PyTorch 的運算回傳時就已經算完（同步執行），所以這樣量得準；GPU 則會先把工作排隊、稍後才算（非同步）：每次讀 `time.perf_counter()` 之前（每一段的開頭和結尾），都要先呼叫 `torch.cuda.synchronize()` 等它算完，或改用 `torch.cuda.Event` 計時；否則 GPU 的計算時間會被算進後面第一個要等結果的步驟。
 
 正式的 12 幀開始之前，完整程式先暖機（warmup）。暖機在 3.3 節〈[Plain／residual 對照](03-comparison.md)〉說明過：同一個程式裡，第一次執行某段計算，常會多花一些只需要做一次的準備時間，所以正式計時前先跑幾次，把這些一次性的準備做掉，這幾次的時間丟掉不算。不暖機的話，這些準備時間會算在最先處理的第 0 幀頭上。本節在 `main()` 裡用 1 幀暖機：
 
@@ -95,7 +95,7 @@ results = list(run_stream(synthetic_frames(count=count, fps=fps), model))  # 正
 timing = {key: float(np.median([r['ms'][key] for r in results])) for key in results[0]['ms']}
 ```
 
-暖機那一行由內往外讀：`next(...)` 是手動向 generator 要下一筆（for 迴圈每一圈做的也是這件事），這裡只向新建的 `synthetic_frames` 要第一筆，得到另外產生的一份第 0 幀；`[ ]` 把它裝進只有 1 幀的 list，當成 `run_stream` 的來源；最外層的 `list()` 把結果要完，`run_stream` 才真的處理這一幀。這一幀走完整條管線：前處理、模型、後處理、畫框。它不在 12 幀裡：正式的 `results` 另外新建一個 `synthetic_frames`，從第 0 幀重新開始。暖機的時間不進任何統計；它的結果只用在下一行的斷言，以及 report 的 `warmup_frames`（暖機幀數，值是 1）。
+暖機那一行由內往外讀：`next(...)` 是手動向 generator 要下一筆（for 迴圈每一圈做的也是這件事），這裡只向新建的 `synthetic_frames` 要第一筆，得到另外產生的一份第 0 幀；`[ ]` 把它裝進只有 1 幀的 list，當成 `run_stream` 的來源；最外層的 `list()` 把結果要完，`run_stream` 才真的處理這一幀。這一幀走完整條管線：前處理、模型、後處理、畫框。它不在 12 幀裡：正式的 `results` 另外新建一個 `synthetic_frames`，從第 0 幀重新開始。暖機的時間不進任何統計；它的結果只用在下一行的斷言，以及 report 的 `warmup_frames`（暖機幀數，值是 1）。report 是 `main()` 印出、也存成 `artifacts/lesson-18/report.json` 的摘要，頁尾〈實際執行紀錄〉印出的 JSON 就是它。
 
 暖機用的畫面要有物件，而且模型要真的在上面留下框：這樣後處理才會呼叫 NMS，畫框這一段也才會畫出框、寫上分數，這些步驟第一次執行時的準備才會一起在暖機時做掉。斷言就檢查兩件事：暖機剛好 1 幀，而且這一幀有框。
 
@@ -159,7 +159,7 @@ timing = {key: float(np.median([r['ms'][key] for r in results])) for key in resu
 
 有框也不等於框得準。用[檔案實測紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)保存的框計算，第 0、1、6、7 幀的預測框和紅方塊的 IoU（交集面積÷聯集面積）約 0.50、0.47、0.30、0.46；這份紀錄怎麼來，見下方摺疊區〈進階：用無損影片檔驗證 adapter〉。
 
-本節的 score 門檻是 0.1：每個候選框拿自己的 score 去比，低於 0.1 就丟掉。它比第 7 章畫圖用的顯示門檻 0.25（也是 `decode_grid` 的預設值）低。`run_stream` 裡的註解寫明了理由：在這些 letterbox 過的畫面上，這個只訓練 160 步的偵測器，多數幀的最高 score 都不到 0.25；門檻用 0.1，較弱的偵測也會留下來。本節沒有為了好看而填入 GT 框；同一段註解也寫明，門檻 0.1 下的框數不是準確率。
+本節的 score 門檻是 0.1：每個候選框拿自己的 score 去比，低於 0.1 就丟掉。它比第 7 章畫圖用的顯示門檻 0.25（也是 `decode_grid` 的預設值）低。完整程式 `run_stream` 裡的英文註解寫明了理由：在這些 letterbox 過的畫面上，這個只訓練 160 步的偵測器，多數幀的最高 score 都不到 0.25；門檻用 0.1，較弱的偵測也會留下來。本節沒有為了好看而填入 GT 框；同一段註解也寫明，門檻 0.1 下的框數不是準確率。
 
 為什麼漏檢？以下只是可能原因；本節沒有做對照實驗，不能當成已證實的因果。
 
@@ -171,11 +171,11 @@ timing = {key: float(np.median([r['ms'][key] for r in results])) for key in resu
 
 ## 接真影片的同一個入口
 
-完整程式提供 `opencv_frames(source)` 這個 adapter，把影片檔或相機的畫面轉成一幀幀的 `Frame`。它用 OpenCV 讀影片，需要額外安裝 `opencv-python-headless`：這是 OpenCV（Python 裡叫 `cv2`）不含開視窗功能的版本，適合 Colab。
+完整程式提供 `opencv_frames(source)` 這個 adapter，把影片檔或相機的畫面轉成一幀幀的 `Frame`。它用 OpenCV（Python 裡叫 `cv2`）讀影片。本課固定用 `opencv-python-headless`，這是不含開視窗功能的版本，適合 Colab 這類雲端環境。OpenCV 的四個套件 `opencv-python`、`opencv-contrib-python`、`opencv-python-headless`、`opencv-contrib-python-headless` 共用 `cv2` 這個名字，同一環境只能裝一種。已經裝了別的 OpenCV 套件時（Colab 通常已經預裝），先用 `python -m pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless` 全部移除，再只裝本課的這一個；在 Colab 的 code cell 裡，指令前面要加 `!`。
 
 adapter 裡有三個重點：
 
-- 用 `cv2.VideoCapture('clip.mp4')` 開啟檔案。開啟後，程式會占用這個檔案或相機，用完要呼叫 `capture.release()` 交還系統；不釋放的話，相機可能一直被占住。
+- 用 `cv2.VideoCapture('clip.mp4')` 開啟檔案。開啟後，程式會占用這個檔案或相機，用完要呼叫 `capture.release()` 交還系統。VideoCapture 物件被回收時，OpenCV 也會自動釋放，但何時回收不由你控制：物件還被變數或錯誤訊息留著時，在它被回收或程式（Colab 的工作階段）結束之前，相機會一直被占住。
 - OpenCV 讀出的顏色順序是 B、G、R（藍、綠、紅），所以每幀先轉成 RGB。不轉的話紅色會變成藍色，類別就錯了（本書紅是類別 0、藍是類別 1）。
 - `capture.release()` 寫在 `try…finally` 的 `finally` 區塊裡。讀到檔尾、generator 被中途關閉，或 adapter 自己出錯（例如檔案打不開）時，`finally` 都會執行，檔案或相機因此會被釋放。這就是開頭說的「資源釋放」。外面的迴圈提前 `break` 或推論出錯時，generator 會停在 `yield`，要等 Python 回收它（確認已沒有任何東西用到它，把它清掉）時才會自動關閉。它若還存在變數裡，或 Colab 還留著那次錯誤的資訊（traceback），就不會被回收，檔案或相機會繼續被占著。所以後面〈換成自己的影片〉用 `closing`，離開 `with` 時一定把它關閉，不必等回收。
 
@@ -218,7 +218,7 @@ adapter 裡有三個重點：
 
 ### 換成自己的影片
 
-換自己的 `clip.mp4` 時，先在 repo 根目錄執行 `python -m pip install -r requirements-video.txt`，安裝固定版本的依賴，並把影片檔放在 repo 根目錄。下面的程式用 `runpy` 載入完整程式裡的函式，在新開的 Python 工作階段也能執行。先說明三個寫法：
+換自己的 `clip.mp4` 時，先在 repo 根目錄執行 `python -m pip install -r requirements-video.txt`，安裝固定版本的依賴（環境裡已經有別的 OpenCV 套件時，先照上面的說明移除），並把影片檔放在 repo 根目錄。下面的程式用 `runpy` 載入完整程式裡的函式，在新開的 Python 工作階段也能執行。先說明三個寫法：
 
 1. 檔名 `18-video.py` 以數字開頭，又有連字號，不能寫成一般的 `import`。`runpy.run_path` 會執行這個檔，並回傳一個 dict，裡面裝著檔案執行後的所有名稱（函式、類別、匯入的模組等）。所以用中括號 `video['fit_detector']` 取出函式，再加 `()` 呼叫。
 2. 檔尾寫著 `if __name__ == '__main__': main()`，這個條件只在直接執行這個檔時成立。用 `run_path` 執行時，`__name__` 不是 `'__main__'`，所以 `main()` 不會被呼叫，不會重跑 12 幀示範。
@@ -230,7 +230,7 @@ adapter 裡有三個重點：
 import runpy
 import torch
 from contextlib import closing
-torch.set_num_threads(2)  # 和完整程式一樣，只用 2 個 CPU 執行緒
+torch.set_num_threads(2)  # PyTorch 的 CPU 運算只用 2 個執行緒（和完整程式一樣）；OpenCV 解碼另有自己的執行緒
 video = runpy.run_path('lesson_cases/18-video.py')  # 執行完整程式檔，回傳裝著檔內名稱的 dict
 model = video['fit_detector']()  # 取出函式再呼叫：重新訓練 160 步，得到合成矩形模型
 with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時自動呼叫 frames.close()
@@ -246,11 +246,11 @@ with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時�
 
 ??? note "進階：用無損影片檔驗證 adapter"
 
-    先說明幾個名詞。FFV1 是一種無損影片編碼：存進去再讀出來，每個畫素都不變，所以能逐值比對。AVI 是裝影片的檔案格式（容器）。MP4 常用的有損編碼（例如 H.264）為了縮小檔案會丟掉一些細節，讀回的畫素會略有不同。
+    先說明幾個名詞。FFV1 是一種無損影片編碼：交給它的像素會原樣存回來。本實驗用 OpenCV 寫入 8 位元 BGR 畫面，OpenCV 讓 FFV1 直接存 RGB 類的格式，所以讀回後每個畫素都不變，能逐值比對；若先把畫面轉成 YUV 4:2:0（把顏色資訊縮成四分之一解析度的格式）再編碼，即使用 FFV1，顏色也已經變了。AVI 是裝影片的檔案格式（容器）。MP4 常用的 H.264 除了有損壓縮會丟掉一些細節，通常也會先轉成 YUV 4:2:0，所以讀回的畫素會略有不同。
 
     同一個 adapter 已用 12 幀的 FFV1 無損 AVI 檔實測：把前面 `synthetic_frames` 產生的畫面轉成 BGR 寫入檔案，再用 adapter 讀回成 RGB，畫素與原本完全相同；模型的框、分數、類別與疊圖也都相同。12 幀的時間戳仍是 0 至 0.55 秒。程式也核對了三種情況：讀到檔尾、中途關閉 generator、檔案打不開，OpenCV 的影片物件都已關閉。[檔案實測紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)保留了影片的 SHA-256（檔案指紋）與結果。這次沒有測實體相機，也不能保證有損 MP4 編解碼後的畫素完全相同。
 
-    可自己重跑這段不用下載的檔案實驗：
+    可自己重跑這段不用下載的檔案實驗（環境裡已經有別的 OpenCV 套件時，先照〈接真影片的同一個入口〉的說明移除）：
 
     ```bash
     python -m pip install -r requirements-video.txt

@@ -10,7 +10,7 @@ NMS-free 推論（論文的預設；官方 API 要設 `nms=False`，見 [16.2](1
 
 - **Progressive Loss**（漸進調整兩分支的 loss 權重）：訓練中把總 loss 的比重，從 many 分支慢慢移到推論用的 one 分支。這是本節的主實驗。
 - **STAL**（Small-Target-Aware Label Assignment，照顧小物件的候選分配）：小框裡可能一個候選點都沒有，所以選候選時暫時把小框放大。本節只算一個資格例子。
-- **MuSGD**（Muon 與 SGD 混合的優化器）：改變矩陣參數的更新方式。官方說它讓訓練更穩定，本節沒有驗證，只做說明。
+- **MuSGD**（Muon 與 SGD 混合的優化器）：改變矩陣參數的更新方式。[YOLO26 論文](https://arxiv.org/abs/2606.03748)（§3.3.1、§4.3.2）說它讓訓練更穩定、收斂更快：從零訓練 COCO 時，MuSGD 500 個 epoch 的 COCO mAP（IoU 0.50～0.95 的平均，百分制）是 47.4，SGD 600 個 epoch 是 47.0。本節沒有驗證，只做說明。
 
 不要看到三個名稱就一次全加入，否則不知道結果由誰造成。本節的實驗只是兩個線性 head 的小例子，不是完整的 YOLO26 訓練；做了什麼、沒做什麼，整理在下面的摺疊區。
 
@@ -97,7 +97,7 @@ def total_one_weight(history):
 
 
 def main():
-    ...
+    ...  # 省略：設定 seed 與執行緒數
     final_many = .1  # 自主練習只改這個值
     fixed, fixed_history, _ = train(False)  # 固定 0.8/0.2（fixed_weights 的預設值）
     progressive, history, first_step = train(True, final_many=final_many)  # 上式的排程
@@ -107,9 +107,10 @@ def main():
     matched_weights = (1 - matched_one, matched_one)  # 本例是 (0.45, 0.55)
     matched, matched_history, _ = train(False, fixed_weights=matched_weights)  # 等總量對照組
     assert abs(total_one_weight(matched_history) - total_one_weight(history)) < 1e-9
+    ...  # 省略：核對首步表的斷言、印出結果與 STAL 例子
 ```
 
-排程的 b 從 0.2 起每輪增加 0.7/29，到 0.9 為止，是等差數列：30 輪的和是 30×(0.2+0.9)/2=16.5，平均 `matched_one` 是 16.5/30=0.55。所以等總量對照組每輪都用 many/one 為 0.45/0.55 的權重，30 輪的 b 總和同樣是 16.5；最後一行的斷言（assert）核對這兩個總和相等。progressive 和固定 0.8/0.2 有兩處不同：b 的總和（16.5 對 6），以及 b 每輪怎麼變（逐輪增加對每輪相同）。progressive 和等總量對照組只差在第二處。
+排程的 b 從 0.2 起每輪增加 0.7/29，到 0.9 為止，是等差數列：30 輪的和是 30×(0.2+0.9)/2=16.5，平均 `matched_one` 是 16.5/30=0.55。所以等總量對照組每輪都用 many/one 為 0.45/0.55 的權重，30 輪的 b 總和同樣是 16.5；摘錄裡最後一個斷言（assert）核對這兩個總和相等。progressive 和固定 0.8/0.2 有兩處不同：b 的總和（16.5 對 6），以及 b 每輪怎麼變（逐輪增加對每輪相同）。progressive 和等總量對照組只差在第二處。
 
 progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
 
@@ -150,7 +151,7 @@ progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
 
     所以每一輪的更新是 \(d\leftarrow d-0.05\,b\,Hd\)。
 
-    H 有兩個特別的方向：\(u_1=(1,\ 0.618)\) 乘上 H，只會變成 3.618 倍；\(u_2=(1,\ -1.618)\) 乘上 H，只會變成 1.382 倍（都是近似值；線性代數把這種方向叫特徵向量，倍數 λ 叫特徵值）。把 d 寫成 \(c_1u_1+c_2u_2\)，每一輪的更新就只是把 \(c_1\) 乘上 \(1-0.05\,b\times3.618\)、把 \(c_2\) 乘上 \(1-0.05\,b\times1.382\)。三次訓練中最大的 \(0.05\,b\,\lambda\) 是 \(0.05\times0.9\times3.618\approx0.16\)，所以這些倍數都介於 0 和 1 之間。30 輪後，每個分量都乘上
+    H 有兩個特別的方向：\(u_1=(1,\ 0.618)\) 乘上 H，只會變成 3.618 倍；\(u_2=(1,\ -1.618)\) 乘上 H，只會變成 1.382 倍（都是近似值）。線性代數把這種方向叫特徵向量（eigenvector），倍數 λ 叫特徵值（eigenvalue）；這裡的特徵值和特徵圖上的特徵值是兩回事。把 d 寫成 \(c_1u_1+c_2u_2\)，每一輪的更新就只是把 \(c_1\) 乘上 \(1-0.05\,b\times3.618\)、把 \(c_2\) 乘上 \(1-0.05\,b\times1.382\)。三次訓練中最大的 \(0.05\,b\,\lambda\) 是 \(0.05\times0.9\times3.618\approx0.16\)，所以這些倍數都介於 0 和 1 之間。30 輪後，每個分量都乘上
 
     \[
     (1-0.05\,b_0\lambda)(1-0.05\,b_1\lambda)\cdots(1-0.05\,b_{29}\lambda),
@@ -161,7 +162,7 @@ progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
     1. 乘法可以交換順序，30 個 b 不管怎麼排，乘積都一樣，所以 b 先小後大本身沒有好處。本節程式沒有跑把 b 倒過來排的對照，這一點是由推導得出的。
     2. b 的總和固定是 16.5 時，這 30 個倍數的總和也固定，是 \(30-0.05\lambda\times16.5\)。算幾不等式（正數的算術平均不小於幾何平均）說：總和固定的正數，全部相等時乘積最大。等總量對照組每輪的 b 都是 0.55，兩個分量都縮得最少；progressive 的 b 有大有小，縮得多一點。
 
-    one 的 MSE 等於 \(c_1^2\)、\(c_2^2\) 各乘一個正數再相加，所以 progressive 的 one MSE 略低於等總量對照組。
+    最後把 MSE 也寫成 \(c_1\)、\(c_2\)。用四筆 x 的和 2、平方和 6 展開平方可以驗證，one 的 MSE 是 \(\tfrac12\,d\cdot(Hd)\)（\(d\) 與 \(Hd\) 內積的一半）。代入 \(d=c_1u_1+c_2u_2\)、\(Hd=3.618\,c_1u_1+1.382\,c_2u_2\) 展開，含 \(c_1c_2\) 的項都乘著 \(u_1\cdot u_2=1\times1+0.618\times(-1.618)\approx0\)（兩個方向互相垂直），所以消失；one 的 MSE 等於 \(c_1^2\)、\(c_2^2\) 各乘一個固定的正數再相加。三次訓練開始時的 \(c_1\)、\(c_2\) 相同，progressive 的兩個分量都縮得比等總量對照組多，所以 progressive 的 one MSE 略低於等總量對照組。
 
 ## STAL（Small-Target-Aware Label Assignment）：擴張候選資格，不放大真值框
 
@@ -205,7 +206,7 @@ progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
 
     最後，MuSGD 再加上另一份動量的一般 SGD 更新，兩種更新各乘一個比例後相加。
 
-額外的矩陣計算、多存的一份動量、分組與混合設定，會增加運算、記憶體和調參成本。是否換得更好的收斂，要另做配對實驗。本節沒有執行 MuSGD，不能從兩個線性 head 的 MSE 宣稱這個優化器較好。
+額外的矩陣計算、多存的一份動量、分組與混合設定，會增加運算、記憶體和調參成本。在自己的資料與模型上是否換得更好的收斂，要另做配對實驗。本節沒有執行 MuSGD，不能從兩個線性 head 的 MSE 宣稱這個優化器較好。
 
 這些細節在官方程式碼裡都讀得到，但本節不自行拼出未驗證的 MuSGD 簡化版，也不聲稱重現官方發布模型的整套訓練配方（recipe：資料、預訓練、增強、超參數與步數等全部設定）。官方訓練指南說，發布的模型先在 Objects365（有 365 類物件的大型偵測資料集）預訓練，再用 COCO 微調（以預訓練好的參數為起點，在新資料上繼續訓練）。部分內部超參數（例如 many 分支的 loss 權重）只能在實驗用的程式碼分支上設定。這種分支是 Git branch（同一份程式碼另外開出的平行版本），放在 Ultralytics 的 GitHub 上、沒有併入主線（main），和 many／one 分支無關；一般安裝的套件不接受這些設定。所以前面的 0.8→0.1 是固定版本程式的預設，不代表發布模型的實際設定。
 
@@ -235,7 +236,7 @@ progressive 的第一步（第 0 輪，b=0.2）可以逐值核對：
     3. progressive 印出 `sum of b=13.500`（改之前是 16.500）：b 改成從 0.2 線性增加到 0.7，30 輪的和是 30×(0.2+0.7)/2=13.5，第 1 輪起每一輪都比改之前小。等總量對照組自動變成 `matched fixed many/one (0.55, 0.45)`，`sum of b` 也是 13.500；固定 0.8/0.2 那一行完全不變。progressive 的 one MSE 變大，因為 one 的有效學習率從第 1 輪起每輪都比改之前小。等總量對照組的 one MSE 仍和 progressive 很接近、略高一點：b 總和相同時，b 每輪大小不同的 progressive 會略低（推導見正文的摺疊區）。多留給 many 的 loss 權重，在本例對 one 沒有幫助，因為兩個 head 互不相連。在真實模型（例如官方 YOLO26，backbone 只由 many 分支訓練）上值不值得這樣分配，要另做配對實驗才知道。
     4. 最多 1 個。4 只是有資格進池的點數；查核版本的 one-to-one 分支，最後每個 GT 最多只留品質最高的 1 個（topk2=1）。本例沒有做品質排序，說不出會是哪一個。
 
-參考來源：[E2ELoss 排程](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[小物件資格與 top-1 篩選（topk2）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[MuSGD 公開實作](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/optim/muon.py)、[官方訓練配方（recipe）與重現範圍](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/docs/en/guides/yolo26-training-recipe.md)。
+參考來源：[E2ELoss 排程](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[每個 epoch 結束才更新排程（trainer 呼叫 criterion.update）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/engine/trainer.py)、[one 分支讀 detach 後的特徵（Detect.forward）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[小物件資格與 top-1 篩選（topk2）](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py)、[MuSGD 公開實作](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/optim/muon.py)、[官方訓練配方（recipe）與重現範圍](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/docs/en/guides/yolo26-training-recipe.md)。
 
 <!-- curriculum-evidence:start -->
 

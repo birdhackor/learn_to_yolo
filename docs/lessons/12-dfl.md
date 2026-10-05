@@ -10,7 +10,7 @@
 
 ??? note "名字裡的 Focal 是什麼意思"
 
-    Focal 是「聚焦」：原論文說，DFL 讓網路很快把機率集中在真值兩側最近的兩個刻度。DFL 的公式沒有 focal loss 常見的額外調整項，就是加權的 cross entropy。
+    Focal 是「聚焦」：原論文說，DFL 讓網路很快把機率集中在真值兩側最近的兩個刻度。DFL 的公式沒有 focal loss 常見的額外調整項，就是加權的 cross entropy。論文把 focal loss、同一篇提出的 QFL（Quality Focal Loss，用在分類分支）和 DFL 都看成 Generalized Focal Loss（focal loss 的推廣）的特例；DFL 是不帶調整項的那一種，因為框只在正樣本上學，沒有類別不平衡的問題，所以只留下 cross entropy 的部分。
 
 這些刻度叫 bin。bin 可想成尺上的整數刻度：本例把距離分成 0、1、2、3 格四個 bin（bin0 代表 0 格、bin1 代表 1 格，依此類推）。模型對每個 bin 輸出一個 logit，softmax 後就是距離落在該刻度的機率。DFL 等於把「距離幾格」當成 4 選 1 的分類題，只是正確答案拆給相鄰兩格：距離不是整數時，由兩側相鄰的兩個 bin 分擔監督。
 

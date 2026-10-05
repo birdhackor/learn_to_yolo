@@ -192,7 +192,7 @@ source_id 不跨 split；跨 split 也沒有完全相同的 PNG 檔或解碼後�
 
 腳本在訓練結束後，會拿全部 train 圖檢查框的資料與 target：每張 train PNG 實際塗色的範圍都等於 JSON 裡的框（這一項只對合成資料做；空圖沒有塗色，也沒有框）；21 個 GT 剛好對應 21 個正格；正格寬、高的 target 都不是 0；負格的 box 梯度為 0，符合 positive mask 的設計（box loss 只算正格）。任何一項不成立，腳本就報錯停下；這次全部通過，數據記在紀錄的 `training_box_diagnosis`。這幾項都通過，代表標註、target 與 mask 沒有接錯。結束時，框的位置仍偏；正格的預測框中，最矮的一個高度只剩約 0.05 畫素（以 64×64 的輸入計）。
 
-但逐步紀錄（每批 8 張的 loss）顯示，訓練中途並不平穩。第 144–153 步，每批 loss 大多只有約 0.01–0.04（box 約 0.002）；第 154–158 步卻出現以分類 loss 為主的尖峰，第 158 步約 1.86，box loss 也升到約 0.02。160 步的評估，正好落在這次訓練不穩之後。下方 1600 步實驗的圖中，紅色虛線標出第 160 步，也就是 160 步實驗結束、做評估的位置；緊貼在虛線旁的尖峰，就是這裡的第 158 步。1600 步實驗的前 160 步和這次用同樣的 seed、資料與設定，loss 逐值相同，圖例也寫明了這一點。
+但逐步紀錄（每批 8 張的 loss）顯示，訓練中途並不平穩。第 144–153 步，每批 loss 大多只有約 0.01–0.04（box 約 0.002）；第 154–158 步卻出現以分類 loss 為主的尖峰，第 158 步約 1.86；box loss 在第 157 步與第 159–160 步也升到約 0.02。160 步的評估，正好落在這次訓練不穩之後。下方 1600 步實驗的圖中，紅色虛線標出第 160 步，也就是 160 步實驗結束、做評估的位置；緊貼在虛線旁的尖峰，就是這裡的第 158 步。1600 步實驗的前 160 步和這次用同樣的模型 seed、train 資料與訓練設定（test 圖不同，但 test 不參與訓練），loss 逐值相同，圖例也寫明了這一點。
 
 所以這次的低 mAP50，不能單純解讀成「框還沒開始學」。這也說明：只看一個 total loss 數字，或只看最後一步，看不出訓練中途發生了什麼。
 
@@ -209,7 +209,7 @@ source_id 不跨 split；跨 split 也沒有完全相同的 PNG 檔或解碼後�
     python scripts/run_custom_data_learning.py --fixture --steps 1600 --fixture-test-seed 7001 --output artifacts/runs/custom-data-learning-1600 --prior-diagnostic artifacts/runs/custom-data-learning/report.json
     ```
 
-    第一行用預設的 test seed 7000，結果存在 `artifacts/runs/custom-data-learning/`。第二行把第一行的 `report.json` 交給 `--prior-diagnostic`，先做上面的核對，再訓練 1600 步，結果存在 `artifacts/runs/custom-data-learning-1600/`；它的 `learning.svg` 才有第 160 步的紅色虛線。前面那行沒有 `--prior-diagnostic` 的指令（Colab「可選」段落用的也是它）不做這些核對，圖上也沒有紅色虛線。網站上的兩份紀錄也是這樣分兩步產生（`scripts/record_evidence.py`），只是用 `--report`、`--diagram` 把紀錄檔與圖寫到 `artifacts/checks/curriculum/` 與 `docs/assets/diagrams/`，第二步的 `--prior-diagnostic` 也就指向 160 步的紀錄檔。
+    第一行用預設的 test seed 7000，結果存在 `artifacts/runs/custom-data-learning/`。第二行把第一行的 `report.json` 交給 `--prior-diagnostic`，先做上面的核對，再訓練 1600 步，結果存在 `artifacts/runs/custom-data-learning-1600/`；它的 `learning.svg` 才有第 160 步的紅色虛線。〈完整實驗：訓練、評估、存檔與重新載入〉開頭那行 `--fixture --steps 1600 --fixture-test-seed 7001`（Colab「可選」段落用的也是它）沒有 `--prior-diagnostic`，不做這些核對，圖上也沒有紅色虛線。第一行和它一樣寫到 `artifacts/runs/custom-data-learning/`，會覆蓋先前跑出的 `checkpoint.pt`、`report.json` 與 `learning.svg`。網站上的兩份紀錄也是這樣分兩步產生（`scripts/record_evidence.py`），只是用 `--report`、`--diagram` 把紀錄檔與圖寫到 `artifacts/checks/curriculum/` 與 `docs/assets/diagrams/`，第二步的 `--prior-diagnostic` 也就指向 160 步的紀錄檔。
 
 ??? note "test 只看一次：真實資料怎麼做"
 
@@ -249,7 +249,7 @@ source_id 不跨 split；跨 split 也沒有完全相同的 PNG 檔或解碼後�
 
 有物件的三張，模型都只留下一個框，類別也都對，但位置不一定對。按配對 IoU 門檻 0.5 判定：紅矩形 IoU 約 0.56，算 TP；藍矩形 IoU 約 0.51，剛過門檻，仍算 TP，分數也只有約 0.46；黃矩形的分數約 1.00，IoU 卻只有約 0.30，所以算一個 FP，它的 GT 也算 FN。分數高不等於位置對。
 
-圖和 AP 都使用 64×64 letterbox 座標。另外，對原始 PNG 推論的入口 `scripts/detect_image.py`，會用 checkpoint 裡有順序的 class_names 重建三類 head，再把預測還原到 80×120 或 120×80 的原圖；兩套座標不能直接比數值。腳本用它對紅矩形那張 validation 原圖推論兩次：一次在程式裡直接呼叫，一次另開一個程序（獨立執行的另一個 Python），像下文那樣在 repo 根目錄執行指令（指令記在紀錄的 `image_cli_compatibility.standalone_cli.command`）。兩次都用評估的門檻（score≥0.1、NMS 的 IoU 門檻 0.5）；還原到原圖的框、類別與分數，要和 letterbox 座標的預測換算回去的結果一致，兩份 JSON 除了路徑的寫法也要逐值相同，否則腳本報錯停下。
+圖和 AP 都使用 64×64 letterbox 座標。另外，對原始 PNG 推論的入口 `scripts/detect_image.py`，會用 checkpoint 裡有順序的 class_names 重建三類 head，再把預測還原到 80×120 或 120×80 的原圖；兩套座標不能直接比數值。腳本用它對紅矩形那張 validation 原圖推論兩次：一次在程式裡直接呼叫，一次另開一個程序（獨立執行的另一個 Python），像下文那樣在 repo 根目錄執行指令（指令記在紀錄的 `image_cli_compatibility.standalone_cli.command`）。兩次都用評估的門檻（score≥0.1、NMS 的 IoU 門檻 0.5）；還原到原圖的框、類別與分數，要和 letterbox 座標的預測換算回去的結果一致；`detect_image.py` 每次推論都會另存一份記錄框、類別與分數的 JSON，這兩次的兩份 JSON 除了路徑的寫法也要逐值相同，否則腳本報錯停下。
 
 四張圖固定取各類的第一張與第一張空圖，沒有依偵測效果挑選；可[開啟原尺寸圖](../assets/diagrams/08-custom-learning.svg)查看小字。圖中黃矩形那張就同時有誤報與漏檢；這四張以外的 validation 圖也有誤報與漏檢，不能只看這四張就忽略整體 mAP50。每個 split 的 TP、FP、FN 個數，記在紀錄裡各 split 的 `true_positives`、`false_positives`、`false_negatives`。
 

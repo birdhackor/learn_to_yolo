@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 344" role="img" aria-labelledby="title desc">
   <title id="title">兩條路徑對齊 shape 的 projection block</title>
-  <desc id="desc">示意圖，方框大小不代表權重多寡。輸入 x 的 shape 是 B 乘 3 乘 4 乘 4，分成兩支。上方主分支 F：3 乘 3 卷積，stride 2、padding 1，channel 3 變 6；經過 ReLU 後再接 3 乘 3 卷積，stride 1、padding 1，channel 6 變 6；輸出 B 乘 6 乘 2 乘 2，共 486 個可學權重。下方 shortcut P：1 乘 1 卷積，stride 2、padding 0，channel 3 變 6；輸出也是 B 乘 6 乘 2 乘 2，共 18 個可學權重，不是複製輸入。兩支每一軸都一致，才逐值相加成 P(x)+F(x)，shape 仍是 B 乘 6 乘 2 乘 2。圖下說明：s 是 stride，p 是 padding。</desc>
+  <desc id="desc">示意圖，方框大小不代表權重多寡。輸入 x 的 shape 是 B 乘 3 乘 4 乘 4，分成兩支。上方主分支 F：3 乘 3 卷積，stride 2、padding 1，channel 3 變 6；經過 ReLU 後再接 3 乘 3 卷積，stride 1、padding 1，channel 6 變 6；輸出 B 乘 6 乘 2 乘 2，共 486 個可學權重。下方 shortcut P：1 乘 1 卷積，stride 2、padding 0，channel 3 變 6；輸出也是 B 乘 6 乘 2 乘 2，共 18 個可學權重，不是複製輸入。兩支每一軸都一致，才逐值相加成 P(x)+F(x)，shape 仍是 B 乘 6 乘 2 乘 2。圖下說明：s 是 stride，p 是 padding，括號內是輸入到輸出的 channel 數。</desc>
   <rect width="720" height="344" fill="#f8fafc"/>
   <g fill="#e0f2fe" stroke="#0369a1" stroke-width="2">
     <rect x="16" y="117" width="116" height="72" rx="8"/>
@@ -23,5 +23,5 @@
     <text x="330" y="259">[B,6,2,2]；18 個可學權重</text>
     <text x="641" y="146">P(x)+F(x)</text><text x="641" y="174">[B,6,2,2]</text>
   </g>
-  <text x="16" y="326" font-family="sans-serif" font-size="18" fill="#334155">s=stride，p=padding</text>
+  <text x="16" y="326" font-family="sans-serif" font-size="18" fill="#334155">s=stride，p=padding，括號內是輸入→輸出 channel 數</text>
 </svg>

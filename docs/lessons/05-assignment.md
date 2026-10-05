@@ -21,7 +21,7 @@
 
     本節的 MiniYOLO 每格只輸出**一個框**。「這格有沒有物件」用一個單獨的 objectness 分數表示，不是把背景當成 softmax 裡的另一個類別。這一點原版也一樣：原版每個框的 confidence 就是這種獨立的分數，也沒有背景類別。差別在要學的目標：原版負責物件的那個框，confidence 要學預測框與真值框的 IoU（第 4 章），不是固定的 1；本節的 objectness 只學 1（正格）或 0（負格）。兩個物件類別本節用 softmax；原版每格一組類別機率，不經過 softmax：最後一層是線性輸出，類別機率和其他項一樣直接用平方誤差訓練。原版的每格多框、以 IoU 為目標的 confidence 與 loss 設計，本節都省略，所以不是 YOLOv1 的重現。每格只能放一個物件，所以也不保證多個物件都放得下（見後面〈容量限制必須讓人看得見〉）。
 
-可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/05-assignment.py`。程式在 CPU 上生成 target，再用兩個不對稱的框核對負責的格和 target 沒有把 row／col、x／y 或寬高寫反，並確認同一格放進兩個物件時會明確報錯；最後用一組亂數當作人工特徵圖（feature map），讓 head 更新兩步。程式沒有用圖片訓練偵測器（detector），所以看不出偵測效果。
+可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/05-assignment.py`。程式在 CPU 上生成 target，再用兩個不對稱的框（中心的 x、y 不相等；其中一框的寬、高也不相等）核對負責的格和 target 沒有把 row／col、x／y 或寬高寫反，並確認同一格放進兩個物件時會明確報錯；最後用一組亂數當作人工特徵圖（feature map），讓 head 更新兩步。程式沒有用圖片訓練偵測器（detector），所以看不出偵測效果。
 
 ## 固定輸出，如何接變動數量標註
 

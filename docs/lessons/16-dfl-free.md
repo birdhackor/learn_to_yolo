@@ -99,7 +99,9 @@ PyTorch 的 Smooth L1 預設 beta=1；beta 是平方段與線性段的分界，�
 
 官方程式用 `BboxLoss` 這個模組計算框 loss。在本書查核的版本裡，reg_max（即 K）>1 時，它算 CIoU 加 DFL；DFL-free（reg_max=1）時仍計算 CIoU，只是把 DFL 換成正規化 L1。正規化 L1 的做法是：先把預測和 target 的格單位距離都乘 stride 換成畫素；左、右距離除以圖寬，上、下距離除以圖高；再對四邊取 |預測−目標| 的平均（這就是 L1 loss）。例如 640×640 的輸入，右邊 18 格×8＝144 畫素，正規化後是 144/640＝0.225。
 
-原始程式中這一項的變數仍叫 `loss_dfl`，但這個分支實際算的是 L1；閱讀程式要看運算，不只看名稱。權重、正樣本品質與 assignment（哪些候選點負責哪個物件）也會影響訓練。不能把框 loss 全部刪掉，還指望框自己變準。
+以上是一個正樣本的值。合計全部正樣本時，每個正樣本的值先乘上它的類別 target（[12.2 節](12-decoupled-head.md)提過：依預測品質給的 0～1 分數），加總後再除以這些類別 target 的總和；CIoU 那一項也用同樣的加權。最後整項再乘超參數 `dfl`（預設 1.5）：DFL-free 時要調這個 L1 的比重，調的就是 `dfl`。
+
+原始程式中這一項的變數仍叫 `loss_dfl`，超參數也仍叫 `dfl`，但這個分支實際算的是 L1，訓練時印出的 loss 名稱是 `l1_loss`；閱讀程式要看運算，不只看名稱。權重、正樣本品質與 assignment（哪些候選點負責哪個物件）也會影響訓練。不能把框 loss 全部刪掉，還指望框自己變準。
 
 ## 收益、代價與常見錯誤
 
@@ -139,7 +141,7 @@ PyTorch 的 Smooth L1 預設 beta=1；beta 是平方段與線性段的分界，�
 
     但不是任意負距離都合法。框寬＝x2−x1＝(l＋r)×stride，框高＝(t＋b)×stride，所以只要 `l+r>0` 且 `t+b>0`，框就合法（`x1<x2`、`y1<y2`）。反例 `[-3,2,2,4]`：x1＝84＋24＝108、x2＝84＋16＝100，`x1>x2`，不是合法框。
 
-參考來源：[YOLO26 官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[Detect 的 DFL/identity 分支](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[DFL-free BboxLoss](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)。
+參考來源：[YOLO26 官方配置](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/models/26/yolo26.yaml)、[Detect 的 DFL/identity 分支](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py)、[DFL-free BboxLoss](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py)、[超參數 dfl 的預設值](https://github.com/ultralytics/ultralytics/blob/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/cfg/default.yaml)。
 
 <!-- curriculum-evidence:start -->
 

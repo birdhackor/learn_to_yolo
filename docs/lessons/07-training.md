@@ -21,7 +21,7 @@
 | 1×1 卷積（head） | `[B,7,4,4]` | 每一格各自把 32 個特徵組合成 7 個數；各格共用同一組權重 |
 | permute | `[B,4,4,7]` | 只把 7 移到最後一軸，數值不變 |
 
-adaptive pool 是 `AdaptiveAvgPool2d`：它自動分區取平均，輸出指定的大小。〈[VGG 風格小 CNN](01-small-cnn.md)〉用它縮成 1×1，這裡縮成 4×4。輸出第 y 列、第 x 欄位置的 7 個數，就是圖上第 y 列、第 x 欄那一格的預測。target 也用同樣的 `[b,y,x]` 位置存放每格的答案，所以兩者能逐格對齊。完整程式見 [GridDetector 原始碼](https://github.com/birdhackor/learn_to_yolo/blob/main/miniyolo/models.py)。
+adaptive pool 是 `AdaptiveAvgPool2d`：它自動分區取平均，輸出指定的大小。〈[VGG 風格小 CNN](01-small-cnn.md)〉用它縮成 1×1，這裡縮成 4×4。輸出第 y 列、第 x 欄位置的 7 個數，就是圖上第 y 列、第 x 欄那一格的預測。target 也用同樣的 `[b,y,x]` 位置存放每格的答案，所以兩者能逐格對齊。GridDetector 的完整定義在 [miniyolo/models.py](https://github.com/birdhackor/learn_to_yolo/blob/main/miniyolo/models.py)。
 
 head 有兩組 bias 是手動設定的。框寬高（tw、th）的 bias 設 −1.8，讓起始的框寬、高都約 9 畫素，接近資料裡的矩形。objectness 的 bias 設 −2：sigmoid(−2)≈0.1192，所以起始 objectness 約 0.12，而不是〈[Grid MiniYOLO loss](07-loss.md)〉零 logits 的 0.5；這比較符合「有物件的格子很少」（物件稀疏）的實況。這只是手動設定的起點，模型沒有載入預訓練權重。
 

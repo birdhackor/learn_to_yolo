@@ -52,7 +52,7 @@ R=\frac{TP}{TP+FN}=\frac{2}{3}\approx0.6667.
 
 排名 1 的框 score 高達 0.95，卻是背景誤報。score 是模型自己的排序訊號（見[上一節](06-decode-nms.md)講 score 的那一小節），高分不保證正確，所以 score 不等於 precision。
 
-本書這套配對規則是教學簡化版。常見的官方規則來自 Pascal VOC 與 COCO：它們是兩個常用的公開物件偵測資料集，各附官方評分程式。論文常拿它們的分數互相比較，這種固定資料與規則的公開評比叫 benchmark（基準測試）。原始規則可讀 [Pascal VOC 官方評估說明](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00054000000000000000)（VOC2012 開發套件文件的 4.4 節；AP 的算法在同一份文件的 3.4.1 節）與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)；本書和它們差在哪裡，見下方摺疊區。
+本書這套配對規則是教學簡化版。常見的官方規則來自 Pascal VOC 與 COCO：它們是兩個常用的公開物件偵測資料集，各附官方評分程式。論文常拿它們的分數互相比較，這種固定資料與規則的公開評比叫 benchmark（基準測試）。規則文字見 [Pascal VOC 官方評估說明](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00054000000000000000)（VOC2012 開發套件文件的 4.4 節；AP 的算法在同一份文件的 3.4.1 節）與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)；配對順序、VOC 標成 difficult（難以辨認）的物件怎麼計數、候選數上限這類細節，以官方評分程式為準。本書和它們差在哪裡，以及這些細節在程式裡的出處，見下方摺疊區。
 
 ??? note "本書配對與官方 VOC／COCO 的差別"
 
@@ -68,6 +68,8 @@ R=\frac{TP}{TP+FN}=\frac{2}{3}\approx0.6667.
     - crowd：一大群擠在一起、很難逐一標框的物件，標成一個 crowd 區域；配到它的預測不算 TP，也不算 FP。
     - ignore：像 crowd 這樣「評估時不計分」的 GT 或預測。VOC 標成 difficult 的物件也屬於這一類：不算進 GT 總數，配到它的預測不算 TP 也不算 FP。這和[第 5 章](05-assignment.md)訓練時「暫不給某項 loss」的 ignore 不是同一件事。
     - 候選數上限：每張圖、每個類別最多只計分數最高的 100 個預測。COCO 網站的說明寫成每張圖跨所有類別合計 100 個，但官方評分程式（pycocotools）實際上按類別分開計。
+
+    這些細節的出處是官方評分程式。VOC 的程式是開發套件 [VOCdevkit_18-May-2011.tar](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/VOCdevkit_18-May-2011.tar) 裡的 `VOCcode/VOCevaldet.m`：每筆預測先跑完同一張圖、同一類別的全部 GT，記下 IoU 最高的那個（程式裡的 `ovmax`、`jmax`），之後才檢查它是不是 difficult（`diff`）、是否已被配對（`det`）；GT 總數也只加上非 difficult 的物件。COCO 的程式是 pycocotools 的 `cocoeval.py`：其中的 [`evaluateImg`](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L235-L296) 每次只處理一張圖的一個類別，先把預測截成分數最高的 `maxDet` 個（算 AP 時是 100），配對時跳過已被配對、又不是 crowd 的 GT；把 crowd 設成 ignore 的，是同一個檔案裡[準備資料的步驟](https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py#L106-L109)。
 
     所以正式 benchmark 應使用官方工具，不能只把 AP 的面積算法換掉，就當成官方分數。
 
@@ -141,7 +143,7 @@ COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻�
     | 0.80 | FP | 1/2 | 1/3 |
     | 0.70 | TP | 2/3 | 2/3 |
 
-    包絡：recall 0 到 1/3 高 1，1/3 到 2/3 高 2/3，2/3 到 1 高 0（每段寬 1/3）。AP=1/3×1+1/3×2/3=5/9≈0.556。完整程式（Colab 裡的那份）中的 `cleaned` 就是這個改動：評估它的結果存在 `clean_result`，斷言（assert）核對 `clean_result["map"]` 是 5/9，並印出 `remove known high-score FP: mAP50=0.555556`。這裡同樣只有類別 0 有 GT，所以 mAP50 就是這題的 AP。
+    包絡：recall 0 到 1/3 高 1，1/3 到 2/3 高 2/3，2/3 到 1 高 0（每段寬 1/3）。AP=1/3×1+1/3×2/3=5/9≈0.556。完整程式（Colab 裡的那份）中的 `cleaned` 就是這個改動：評估它的結果存進 `clean_result`，斷言（assert）核對其中的 mAP 欄位 `clean_result["map"]` 是 5/9，並印出 `remove known high-score FP: mAP50=0.555556`。這裡同樣只有類別 0 有 GT，所以 mAP50 就是這題的 AP。
 
     這裡 AP=5/9，比最後的 P×R=2/3×2/3=4/9 大：包絡不是全平的，所以 AP 大於 P×R。
 

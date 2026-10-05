@@ -2,7 +2,7 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.4.0/notebooks/00-warmup.ipynb){ .md-button }
 
-先回答一個最小問題：程式跑完一次 `loss.backward()`，模型已經學到了嗎？還沒有。這一步只算出梯度；`optimizer.step()` 才修改參數。optimizer（優化器）是專門拿梯度去修改參數的物件。
+先回答一個最小問題：模型算出「參數往哪邊調，誤差會變小」之後，就算學到了嗎？還沒有，還要真的去調。在 PyTorch 程式裡，前一步是 `loss.backward()`，它只算出梯度；後一步是 `optimizer.step()`，它才修改參數。optimizer（優化器）是專門拿梯度去修改參數的物件。這些名詞下面會一一說明。
 
 本節用一個能手算的小例子，把訓練一步的四件事接起來：forward（前向計算：把輸入算成預測）→ loss（損失：預測離目標多遠）→ gradient（梯度：loss 隨參數怎麼變）→ 更新參數。讀完後，你能用紙筆算出這一步的每個數字，也能指出程式裡哪一行做哪件事。
 
@@ -10,27 +10,44 @@
 
 不想設定環境，就用頁首的「在 Colab 執行本節」按鈕。
 
+??? note "第一次用 Colab"
+
+    1. 點頁首的按鈕，Colab 會在瀏覽器開啟本節的 notebook。執行程式前要先登入 Google 帳號。
+    2. 執行第一個程式格（環境格）：點格子左側的執行鈕，或點進格子後按 Shift+Enter。Colab 可能先跳出警告，說這份 notebook 不是 Google 編寫的、是從 GitHub 載入的；它來自本教材的 GitHub 專案，選擇仍要執行即可（按鈕名稱以 Colab 當時的畫面為準）。
+    3. 等環境格印出「固定教材版本： lessons-v0.4.0」這一行，環境才算準備好。PyTorch 不是 2.9.1 時，環境格要先下載、改裝，會多等一會兒。安裝套件時可能印出一些訊息，其中可能有 `ERROR:` 開頭、說其他預裝套件（例如 torchvision）需要別的版本的訊息；各節實驗用不到那些套件，只要之後有印出這一行，就是成功了。若環境格停在錯誤、沒有印出這一行（例如要你重新啟動工作階段），照訊息做完，再從第一格執行。
+    4. 用同樣的方式執行最後一格「本節可修改的完整實驗」。剛打開 notebook 時，這一格下方已經有一份輸出：那是執行紀錄存下的結果，不是你跑出來的；你執行之後，它會換成這次印出的內容。之後改了程式，要再執行一次這一格才會生效。
+
 ??? note "在自己的電腦執行"
 
-    先從 [GitHub](https://github.com/birdhackor/learn_to_yolo) 下載本專案，依 README 安裝 PyTorch。接著在專案根目錄（含 `lesson_cases` 資料夾的那一層）執行 `PYTHONPATH=. python lesson_cases/00-warmup.py`。
+    先從 [GitHub](https://github.com/birdhackor/learn_to_yolo) 下載本專案，照 README 建立 `.venv-model`（專給本教材用、裝好固定版本套件的 Python 環境）並安裝 PyTorch。接著在專案根目錄（含 `lesson_cases` 資料夾的那一層）執行 `PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py`。
 
-    `PYTHONPATH=.` 讓 Python 找得到專案裡的 miniyolo（本專案共用的程式套件）；本節用不到，後面章節需要。Windows 的 PowerShell 不支援這種寫法，要照 README 先用 `$env:PYTHONPATH='.'` 設定，再執行 `python lesson_cases/00-warmup.py`。
+    `.venv-model/bin/python` 是這個環境裡的 Python，PyTorch 就裝在這裡。只打 `python` 時，用到的是電腦原本的 Python：可能出現 `No module named 'torch'`（找不到 PyTorch），有的電腦甚至沒有 `python` 這個指令（出現 `command not found`）。之後各節寫的 `python …` 也一樣：先執行 `source .venv-model/bin/activate` 啟用這個環境，`python` 就會是這個環境的 Python（只對這個終端機視窗有效，開新視窗要再啟用一次）；或直接把 `python` 換成 `.venv-model/bin/python`。
+
+    `PYTHONPATH=.` 讓 Python 找得到專案裡的 miniyolo（本專案共用的程式套件）；本節用不到，後面章節需要。Windows 的 PowerShell 不支援這種寫法，要照 README 先用 `$env:PYTHONPATH='.'` 設定，再執行 `.venv-model\Scripts\python.exe lesson_cases/00-warmup.py`；之後各節的 `python` 也換成 `.venv-model\Scripts\python.exe`。
 
 實驗只有一筆資料、一個參數，在 CPU 上做一步 SGD（stochastic gradient descent，隨機梯度下降）；不用下載資料。「隨機」指一般訓練每次隨機抽一小批資料來算梯度；本例只有一筆資料，不必抽。這是算術驗證，不代表完成了任何圖片任務。
 
 ## 從輸入走到誤差
 
-把模型想成只有一個旋鈕的機器：旋鈕的刻度就是可學參數 \(w\)，機器把輸入乘上 \(w\)。輸入數字 \(x=2\)，輸出預測 \(\hat y=wx\)。目標（希望得到的輸出）是 \(y=4\)。旋鈕一開始轉在 \(w=1\)，所以預測是 2。因為 \(2\times2=4\)，轉到 \(w=2\) 時預測剛好等於目標。
+把模型想成只有一個旋鈕的機器：旋鈕的刻度就是可學參數 \(w\)，機器把輸入乘上 \(w\)。輸入數字 \(x=2\)，輸出預測 \(\hat y=wx\)（\(\hat y\) 讀作 y hat）。目標（希望得到的輸出）是 \(y=4\)。旋鈕一開始轉在 \(w=1\)，所以預測是 2。因為 \(2\times2=4\)，轉到 \(w=2\) 時預測剛好等於目標。
 
-PyTorch 程式把資料和參數（本例的 x、目標、權重）裝在 tensor（張量）裡。tensor 是帶 shape（形狀）的數字容器；shape 記錄每個軸有多長，每多包一層中括號就多一個軸。程式把 x 存成 `[[2.0]]`，shape 是 `[1,1]`：第一軸長度 1，表示這一批（batch）只有 1 筆資料；第二軸長度 1，表示每筆只有 1 個輸入數字（這種輸入數字叫特徵）。權重也是 `[1,1]`。
+PyTorch 程式把資料（本例的 x 與目標 y）和參數 w 都裝在 tensor（張量）裡；程式把 w 這種和輸入相乘的參數叫權重（weight）。tensor 是帶 shape（形狀）的數字容器；shape 記錄每個軸有多長，每多包一層中括號就多一個軸。以兩層括號為例：最外層括號裡有幾個元素，第一軸就多長；每個內層括號裡有幾個數，第二軸就多長。例如兩筆資料、每筆 3 個數的 `[[1.0,2.0,3.0],[4.0,5.0,6.0]]`，shape 是 `[2,3]`。程式把 x 存成 `[[2.0]]`，shape 是 `[1,1]`：第一軸長度 1，表示這一批（batch）只有 1 筆資料；第二軸長度 1，表示每筆只有 1 個輸入數字（這種輸入數字叫特徵）。權重 w 的 shape 也是 `[1,1]`。
 
 ??? note "一般情況：多筆資料、多個輸入"
 
-    一般的線性層（PyTorch 裡就是 `torch.nn.Linear`）一次處理 B 筆資料，每筆有 D 個輸入特徵，每筆算出 K 個輸出。輸入是 `[B,D]`，權重是 `[K,D]`，輸出是 `[B,K]`。
+    一般的線性層（模型裡一種「乘上權重再相加」的計算步驟，PyTorch 裡就是 `torch.nn.Linear`）一次處理 B 筆資料，每筆有 D 個輸入特徵，每筆算出 K 個輸出。輸入的 shape 是 `[B,D]`，權重是 `[K,D]`，輸出是 `[B,K]`。
 
-    先看一筆資料的手算例。輸入是 [1,2,3]（D=3），要算 2 個輸出（K=2）。第一個輸出的權重是 [1,0,1]：每個輸入乘上對應權重再加起來，\(1\times1+2\times0+3\times1=4\)。第二個輸出的權重是 [0,1,0]：\(1\times0+2\times1+3\times0=2\)。所以輸出是 [4,2]。這種「對應相乘再相加」就是內積。
+    先看一筆資料的手算例。輸入是 1、2、3 三個數（D=3），要算 2 個輸出（K=2）。第一個輸出的權重是 1、0、1：每個輸入乘上對應的權重再加起來，\(1\times1+2\times0+3\times1=4\)。第二個輸出的權重是 0、1、0：\(1\times0+2\times1+3\times0=2\)。所以兩個輸出是 4 和 2。這種「對應相乘再相加」就是內積。
 
-    PyTorch 把每個輸出的那組權重存成一列，所以權重的 shape 是「輸出數×輸入數」，這裡是 [2,3]。轉置就是把矩陣的列和行對調，[2,3] 轉置後變成 [3,2]。把這筆輸入看成 shape [1,3]（1 筆、3 個數），乘上 [3,2]，才得到 [1,2] 的輸出。B 筆資料時也一樣：`[B,D]` 輸入乘上 `[K,D]` 權重的轉置，得到 `[B,K]`。
+    PyTorch 把每個輸出的那組權重存成一列（橫的一排），兩列疊成下面的權重矩陣 \(W\)，shape 是「輸出數×輸入數」，這裡是 `[2,3]`。轉置就是把矩陣的列和行對調，所以 \(W\) 的轉置 \(W^\top\) 的 shape 是 `[3,2]`。把這筆輸入寫成只有一列的矩陣（shape `[1,3]`：1 筆、3 個數），乘上 \(W^\top\)，得到 shape `[1,2]` 的結果，正是上面手算的兩個輸出：
+
+    \[
+    W=\begin{bmatrix}1&0&1\\0&1&0\end{bmatrix},\qquad
+    W^\top=\begin{bmatrix}1&0\\0&1\\1&0\end{bmatrix},\qquad
+    \begin{bmatrix}1&2&3\end{bmatrix}W^\top=\begin{bmatrix}4&2\end{bmatrix}.
+    \]
+
+    B 筆資料時也一樣：shape `[B,D]` 的輸入乘上權重的轉置（shape `[D,K]`），得到 shape `[B,K]` 的輸出。
 
     一般 `Linear` 還會加上每個輸出的 bias（可學的常數偏移）；本例設定 `bias=False`，只有 w 這一個參數。
 
@@ -50,9 +67,9 @@ PyTorch 程式把資料和參數（本例的 x、目標、權重）裝在 tensor
 
 第一段 \(\hat y=wx\)：w 增加一點點 \(\Delta w\)，預測增加 \(x\Delta w\)，所以變化率是 x=2。
 
-第二段令誤差 \(e=\hat y-y\)，於是 \(L=e^2\)：\((e+\Delta e)^2-e^2=2e\Delta e+(\Delta e)^2\)。兩邊除以 \(\Delta e\) 得到 \(2e+\Delta e\)；\(\Delta e\) 趨近 0 時就是 \(2e\)，這是 L 對 e 的瞬時變化率。目標 y 固定，所以預測多多少，e 就多多少；\(2e\) 也就是 L 對預測 \(\hat y\) 的變化率。
+第二段令誤差 \(e=\hat y-y\)，於是 \(L=e^2\)。e 增加 \(\Delta e\) 時，L 的變化量是 \(\Delta L=(e+\Delta e)^2-e^2=2e\Delta e+(\Delta e)^2\)，所以 \(\Delta L/\Delta e=2e+\Delta e\)；\(\Delta e\) 趨近 0 時就是 \(2e\)，這是 L 對 e 的瞬時變化率。目標 y 固定，所以預測多多少，e 就多多少；\(2e\) 也就是 L 對預測 \(\hat y\) 的變化率。
 
-兩段接起來：\(\Delta\hat y=x\,\Delta w\)，所以 \(\Delta L\approx 2e\,\Delta\hat y=2e\,x\,\Delta w\)。兩邊除以 \(\Delta w\)，再讓 \(\Delta w\) 趨近 0，就得到下面的式子。這說明了式子裡的 2、誤差和 x 各從哪裡來，不用背導數表。
+兩段接起來：\(\Delta\hat y=x\,\Delta w\)，所以 \(\Delta L=2e\,\Delta\hat y+(\Delta\hat y)^2\approx 2e\,x\,\Delta w\)。約等號 ≈ 表示略去了很小的 \((\Delta\hat y)^2\)：它等於 \(x^2(\Delta w)^2\)，除以 \(\Delta w\) 後是 \(x^2\Delta w\)，在 \(\Delta w\) 趨近 0 時也趨近 0。所以兩邊除以 \(\Delta w\)，再讓 \(\Delta w\) 趨近 0，就得到下面的式子。這說明了式子裡的 2、誤差和 x 各從哪裡來，不用背導數表。
 
 \[
 \frac{\partial L}{\partial w}
@@ -60,23 +77,25 @@ PyTorch 程式把資料和參數（本例的 x、目標、權重）裝在 tensor
 =2(2-4)\times2=-8.
 \]
 
-最前面的 2 來自平方，括號裡的 2 是預測 \(\hat y\)，最後的 2 是輸入 x。也可以用計算機驗證：把 w 從 1 改成 1.01，預測變成 2.02，loss 變成 \((2.02-4)^2=3.9204\)。loss 的變化量是 \(3.9204-4=-0.0796\)，除以 w 的變化量 0.01，得到 −7.96，很接近 −8。
+最前面的 2 來自平方，括號裡的 2 是預測 \(\hat y\)，最後的 2 是輸入 x。也可以用計算機驗證：把 w 從 1 改成 1.01，預測變成 2.02，loss 變成 \((2.02-4)^2=3.9204\)。loss 的變化量是 \(3.9204-4=-0.0796\)，除以 w 的變化量 0.01，得到 −7.96，很接近 −8；差的 0.04 正是前面略去的 \(x^2\Delta w=4\times0.01\)。
 
-PyTorch 的 `loss.backward()` 會自動做同一件事。forward 時，PyTorch 會記下 loss 是由 w 經過哪些運算算出來的，這份紀錄叫計算圖（computation graph）。backward 沿著計算圖從 loss 往回、一段一段套用連鎖律算出梯度，所以叫 backward。本例算出的 −8 會存進參數的 `.grad`。
+PyTorch 的 `loss.backward()` 會自動做同一件事。forward 時，PyTorch 會記下 loss 是由 w 經過哪些運算算出來的，這份紀錄叫計算圖（computation graph）。backward 沿著計算圖從 loss 往回、一段一段套用連鎖律算出梯度，所以叫 backward（反向傳播，也簡稱反傳）。本例算出的 −8 會存進參數的 `.grad`。
 
 記 \(g=\partial L/\partial w\)，本例 \(g=-8\)。梯度指向 loss 增加的方向：\(g>0\) 表示 w 變大時 loss 也變大，該讓 w 變小；\(g<0\) 正好相反，該讓 w 變大。兩種情況都要往梯度的反方向走，所以下一段的更新式用減號。沿梯度的反方向走、讓 loss 往下降，就叫梯度下降（gradient descent），也就是 SGD 名稱裡的 GD。本例 g 是負的，表示增加 w 能讓 loss 下降。
 
-SGD 用學習率 \(\eta=0.1\) 控制步伐。學習率是倍率：每步從 w 減掉的量是 \(\eta\) 乘上梯度，\(\eta g=0.1\times(-8)=-0.8\)。減掉 −0.8 等於加 0.8，所以 w 實際增加 0.8（步伐是 0.8，不是 0.1）：\(w_{\text{new}}=w-\eta g=1-0.1(-8)=1.8\)。更新後預測 \(1.8\times2=3.6\)，新 loss 是 \(0.16\)。這次下降有手算證據；一般模型每步或每批的 loss 不保證都下降。
+SGD 用學習率 \(\eta=0.1\)（\(\eta\) 讀作 eta）控制步伐。學習率是倍率：每步從 w 減掉的量是 \(\eta\) 乘上梯度，\(\eta g=0.1\times(-8)=-0.8\)。減掉 −0.8 等於加 0.8，所以 w 實際增加 0.8（步伐是 0.8，不是 0.1）：\(w_{\text{new}}=w-\eta g=1-0.1(-8)=1.8\)。更新後預測 \(1.8\times2=3.6\)，新 loss 是 \(0.16\)。這一步 loss 從 4 降到 0.16，每個數都能手算核對；一般模型不保證每一步的 loss 都下降。
+
+PyTorch 的 SGD 還有 momentum（動量）、weight_decay（權重衰減）等選項，預設都不啟用（這兩個的預設值是 0）。本例用預設值，所以每步正好是 \(w-\eta g\)；設了這些選項，更新式會多出別的項，例如 momentum 會把前幾步的梯度也算進來。
 
 ## 對應到五行程式
 
-下面兩段程式摘自完整程式（Colab 裡的那份，也就是 `lesson_cases/00-warmup.py`）。完整程式還多了幾行，例如印出數字、自動核對答案。摘錄裡單獨一行的 `...` 表示那裡省略了完整程式的幾行。
+下面兩段程式摘自完整程式（Colab 裡的那份，也就是 `lesson_cases/00-warmup.py`）。完整程式還多了幾行，例如印出數字、自動核對答案。摘錄裡單獨一行的 `...` 表示那裡省略了完整程式的幾行；摘錄裡的註解（`#` 後面的文字）都是本頁加的說明，完整程式裡沒有。除了 `import torch`，本頁摘錄的程式在完整程式裡都寫在 `def main():` 底下，所以每行比摘錄多縮排 4 格。
 
-先建立與手算相同的設定。程式用 `torch.nn.Linear`（線性層：把輸入乘上權重、通常再加上一個常數 bias 的層）當作那台只有一個旋鈕的機器。`bias=False` 讓模型只有 w，避免多一個截距；線性層的權重預設是隨機初始值，因此要明確把它設為 1：
+先建立與手算相同的設定。程式用 `torch.nn.Linear` 當作那台只有一個旋鈕的機器。模型通常由好幾個計算步驟接成，每個步驟叫一層（layer）；`Linear` 是線性層：把輸入乘上權重，通常再加上一個常數 bias。`bias=False` 讓模型只有 w，避免多一個截距；線性層的權重預設是隨機初始值，因此要明確把它設為 1：
 
 ``` { .python data-excerpt="lesson_cases/00-warmup.py" }
 import torch
-...                          # 省略：def main(): 和兩行與手算無關的設定
+...                          # 省略：def main(): 和兩行與手算無關的設定（見下方說明）
 # Linear(1, 1)：每筆輸入 1 個數、輸出 1 個數；bias=False：只有 w 一個參數
 model = torch.nn.Linear(1, 1, bias=False)
 with torch.no_grad():        # 縮排內的動作不記進計算圖（不包會報錯）
@@ -88,7 +107,9 @@ x, target = torch.tensor([[2.0]]), torch.tensor([[4.0]])  # x=2，目標 y=4
 
 `with torch.no_grad():` 底下縮排的程式，會在「不記錄計算圖」的設定下執行；離開縮排，就恢復記錄。手動設定初值不是模型計算的一部分，不該記進計算圖。而且 PyTorch 不允許在記錄計算圖時直接改寫需要梯度的參數；不包在 `torch.no_grad()` 裡，會出現 RuntimeError。
 
-手算符號在程式裡的名字：\(w\)→`model.weight`、\(\hat y\)→`prediction`、\(y\)→`target`、\(L\)→`loss`、\(g\)→`model.weight.grad`（backward 之後才有值）、\(\eta\)→`lr`。下面五行就是訓練一步：
+摘錄省略的兩行設定是 `torch.manual_seed(7)` 與 `torch.set_num_threads(2)`。前者固定亂數種子（seed），讓每次執行隨機產生的初始權重都一樣（第 1 章再細談）；後者讓 PyTorch 在 CPU 上最多同時用 2 個執行緒（thread：同時進行的計算工作）。兩者都不影響本例印出的數字：隨機的初始 w 隨後就被設成 1，而這麼小的計算用幾個執行緒，結果都一樣。
+
+手算符號在程式裡的名字：\(w\)→`model.weight`、\(\hat y\)→`prediction`、\(y\)→`target`、\(L\)→`loss`、\(g\)→`model.weight.grad`（backward 之後才有值）、\(\eta\)→`lr`。完整程式在下面五行之前還有一行 `model.train()`，把模型切到訓練模式；新建的模型本來就在訓練模式，這行不改變本例的數字，〈兩個常混在一起的開關〉會再說明它。下面五行就是訓練一步：
 
 ``` { .python data-excerpt="lesson_cases/00-warmup.py" }
 optimizer.zero_grad(set_to_none=True)
@@ -101,26 +122,43 @@ optimizer.step()                             # 修改參數
 
 下面逐一說明這幾行的細節，以及 PyTorch 常見的陷阱。第一次看不懂原因沒關係，先記住規則，後面章節會再遇到。
 
-`zero_grad` 清掉參數上留著的舊梯度。訓練通常要重複很多步，每步都要先清，因為 PyTorch 的 `backward` 預設會把新梯度加在舊梯度上（累加）。例如沒先清除，就在 w 還是 1 時再做一次 forward 和 backward，`model.weight.grad` 會變成 −8+(−8)=−16，更新就走兩倍遠。`set_to_none=True` 把 `.grad` 清成 None（表示還沒有梯度），目前的 PyTorch 預設就是 True。對下一次 backward 有算到梯度的參數來說，效果和歸零相同；曾有梯度、這次沒算到梯度的參數則不同：它的 `.grad` 會維持 None，而不是歸零後的全 0，`optimizer.step()` 也會直接跳過它。第 2 章〈[訓練診斷](02-diagnostics.md)〉就靠這個差別，找出沒接上 backward 的參數。本例只跑一步，有沒有這行結果都相同。
+`zero_grad` 清掉參數上留著的舊梯度。訓練通常要重複很多步，每步都要先清，因為 PyTorch 的 `backward` 預設會把新梯度加在舊梯度上（累加）。例如沒先清除，就在 w 還是 1 時再做一次 forward 和 backward，`model.weight.grad` 會變成 −8+(−8)=−16，更新就走兩倍遠。`set_to_none=True` 把 `.grad` 清成 None（表示還沒有梯度）。本課程用的 PyTorch 2.9.1 預設就是 True；程式仍明確寫出來，讀程式時不必記預設值。對下一次 backward 有算到梯度的參數來說，效果和歸零相同；曾有梯度、這次沒算到梯度的參數（例如這一步的 loss 沒用到它，計算圖沒經過它）則不同：它的 `.grad` 會維持 None，而不是歸零後的全 0，`optimizer.step()` 也會直接跳過它。第 2 章〈[訓練診斷](02-diagnostics.md)〉就靠這個差別，找出沒接上 backward 的參數。本例只跑一步，有沒有這行結果都相同。
 
-`mean` 表示在多筆資料時取平均；本例一筆，所以與手算相同。
+`mean` 在多筆資料時取平均，把每筆的誤差平方併成一個數；本例只有一筆，所以與手算相同。loss 要是一個數，才比得出「變小了沒」，`loss.backward()` 也要從這一個數往回算。有好幾筆資料卻沒用 `.mean()`（或 `.sum()`）併成一個數，`loss.backward()` 會報錯（RuntimeError: grad can be implicitly created only for scalar outputs）。
 
-backward 之後，可以用 `print(model.weight.grad)` 看梯度，應該印出 `tensor([[-8.]])`，和手算一致。想確認 step 真的改了參數，要先存一份更新前的副本。若只寫 `alias = model.weight` 來存舊值，得到的不是副本，而是別名：同一個物件多了一個名字。`optimizer.step()` 會直接改寫參數裡的數字，別名也就跟著變。就像 Python 的 `b = a` 不會複製 list：之後改 a 的內容（例如 `a[0] = 9`），b 也跟著變。把下面兩行插在五行程式的 `optimizer.step()` 之前，step 之後再印出 `alias` 和 `snapshot`，就能看出差別。副本不取名 `before`，是因為完整程式已經有一個 `before`（見下一段），後面印出 `weight: 1.00 -> 1.80` 的那行要用它；若把這兩行和之後加的 print 插進 Colab 的完整程式，每一行都要和 `optimizer.step()` 對齊縮排：
+backward 之後，可以用 `print(model.weight.grad)` 看梯度，應該印出 `tensor([[-8.]])`，和手算一致。
+
+想確認 step 真的改了參數，要先存一份更新前的副本。若只寫 `alias = model.weight` 來存舊值，得到的不是副本，而是別名：同一個物件多了一個名字。`optimizer.step()` 會直接改寫參數裡的數字，別名也就跟著變。就像 Python 的 `b = a` 不會複製 list：之後改 a 的內容（例如 `a[0] = 9`），b 也跟著變。
+
+可以動手看差別：在完整程式的 `optimizer.step()` 前面插入 `alias`、`snapshot` 兩行，後面加兩行 `print`，每一行都和 `optimizer.step()` 對齊縮排。副本不取名 `before`：完整程式已經用 `before` 存了更新前的 w（後面說明），第 3 行輸出要用它。
 
 ```python
 alias = model.weight                      # 別名：step 之後跟著變成 1.8
 snapshot = model.weight.detach().clone()  # 副本：step 之後仍是 1.0
+optimizer.step()                          # 完整程式原有的這一行，不要重複加
+print(alias)
+print(snapshot)
 ```
+
+執行後，原本的 4 行輸出前面會多出 3 行：
+
+```text
+Parameter containing:
+tensor([[1.8000]], requires_grad=True)
+tensor([[1.]])
+```
+
+前兩行是 `alias`：`model.weight` 是 Parameter（PyTorch 用來裝可學參數的 tensor），所以印出時多一行 `Parameter containing:`；`requires_grad=True` 表示 PyTorch 要替它算梯度。第三行是 `snapshot`，仍是更新前的 1。PyTorch 印 tensor 時，裡面的數都是整數，就只印到小數點，例如 `1.`；有小數時預設印到小數點後 4 位，所以 1.8 印成 `1.8000`。
 
 `detach()` 只把 tensor 從計算圖剪下來，數字仍和參數共用；`clone()` 才複製出自己的一份數字。所以只寫 `detach()` 存下的舊值，step 之後也會變成 1.8。完整程式則用 `before = model.weight.item()`：`.item()` 把只含一個數的 tensor 取成普通的 Python 數字，同樣不會跟著變。
 
-backward 要沿著計算圖從 loss 一路走回參數，所以算 loss 時計算圖不能斷。`.item()` 取出的普通數字不記得自己是怎麼算出來的；`.detach()` 會刻意把 tensor 從計算圖剪下；NumPy 是另一個常用的數值計算套件，它的陣列也不記錄計算圖。若把預測先 `.detach()`、轉成 NumPy，或先用 `.item()` 取成普通數字再算 loss，計算圖就斷了。在本例，這三種做法都會讓程式報錯。例如 `loss = (prediction.item() - 4.0) ** 2` 算出的是普通的 Python 浮點數（float），根本沒有 `.backward()` 可以呼叫。記錄數值可以用 `.item()`；要拿來 backward 的 loss，計算時要保留 tensor。
+backward 要沿著計算圖從 loss 一路走回參數，所以算 loss 時計算圖不能斷。`.item()` 取出的普通數字不記得自己是怎麼算出來的；`.detach()` 會刻意把 tensor 從計算圖剪下；NumPy 是另一個常用的數值計算套件，它的陣列也不記錄計算圖。若把預測先 `.detach()`、轉成 NumPy，或先用 `.item()` 取成普通數字再算 loss，計算圖就斷了。在本例，這三種做法都會讓程式報錯。例如 `loss = (prediction.item() - 4.0) ** 2` 算出的是普通的 Python 浮點數（float），根本沒有 `.backward()` 可以呼叫；只用 `.detach()` 時 loss 仍是 tensor，但本例只有 w 一個參數，剪斷後 loss 不再連著任何要學的參數，backward 就報錯。模型有好幾段參數時，用 `.detach()` 剪斷中間一段不一定報錯：loss 仍連著後段的參數，backward 照常執行，只是被剪斷的前段參數 `.grad` 停在 None、學不到東西。第 2 章〈[訓練診斷](02-diagnostics.md)〉的失敗一就是這種情況。記錄數值可以用 `.item()`；要拿來 backward 的 loss，計算時要保留 tensor。
 
 ## 兩個常混在一起的開關
 
 常被混在一起的兩個開關是 `model.eval()` 與 `torch.no_grad()`。前者（和 `model.train()` 成對）只切換某些層的行為，不會關掉梯度記錄；後者才讓 PyTorch 不記錄計算圖。推論（拿模型做預測、不更新參數）時，通常兩個一起用。
 
-`model.train()` 切到訓練模式，`model.eval()` 切到評估／推論模式。兩者只影響某些層：例如 Dropout（訓練時隨機把部分數值設成 0 的層）只在 train 模式遮值；BatchNorm（用平均與變異數把數值標準化的層）在 train 模式會更新它記錄的平均與變異數。本課程的程式沒用到這兩種層，只要記得：有些層在訓練與推論時行為不同。本節這個單純的線性層，兩種模式結果相同。
+`model.train()` 切到訓練模式，`model.eval()` 切到評估／推論模式。兩者只影響某些層：例如 Dropout（訓練時隨機把部分數值設成 0 的層）只在 train 模式遮值；BatchNorm（用平均與變異數把數值標準化的層）在 train 模式用這一批資料自己的平均與變異數來標準化，同時更新它記錄的平均與變異數；eval 模式改用記錄下來的值，所以同一筆輸入在兩種模式的輸出可能不同。本課程的程式沒用到這兩種層，只要記得：有些層在訓練與推論時行為不同。本節這個單純的線性層，兩種模式結果相同。
 
 完整程式在更新參數之後，兩個開關都用上：先切到 eval 模式，再在 `torch.no_grad()` 裡重算預測與 loss；接著用斷言（assert）驗證 `eval()` 本身不會關掉梯度記錄。斷言的意思是「條件不成立就報錯停下」，用來自動核對答案：
 
@@ -138,7 +176,7 @@ assert model(x).requires_grad   # eval 模式下，輸出仍連著計算圖
 
 ## 重建模型時，optimizer 也要重建
 
-optimizer 內部記住的是**當初交給它的參數物件**，不是 `model` 這個名字。在 Colab 這類可以分格執行的 notebook 裡，若只重跑 `model = ...` 那一格，只是讓 `model` 這個名字改指向一個新模型；optimizer 手上仍拿著舊模型的參數。就像 Python 執行 `a = [1]; b = a; a = [2]` 之後，b 還是 `[1]`。這和前面「改 a 的內容，b 也跟著變」不同：`a = [2]` 沒有改原本 list 的內容，而是讓 a 改指向另一個新 list。所以重建模型時，要一起重建 optimizer。
+optimizer 內部記住的是**當初交給它的參數物件**，不是 `model` 這個名字。在 Colab 這類可以分格執行的 notebook 裡，若建模型與建 optimizer 寫在不同格，之後只重跑建模型的那一格，只是讓 `model` 這個名字改指向一個新模型；optimizer 手上仍拿著舊模型的參數。就像 Python 執行 `a = [1]; b = a; a = [2]` 之後，b 還是 `[1]`。這和前面「改 a 的內容，b 也跟著變」不同：`a = [2]` 沒有改原本 list 的內容，而是讓 a 改指向另一個新 list。所以重建模型時，要一起重建 optimizer。本節的完整程式把兩者寫在同一格的 `main()` 裡，每次執行都一起重建，所以不會遇到這個問題。
 
 若忘了重建，程式不會報錯，但 `optimizer.step()` 只處理舊模型的參數：新模型的權重一直不變，loss 也一直不降。完整程式最後建了一個替換用的新模型和新 optimizer，並用斷言確認新 optimizer 拿到的是新模型的參數。
 
@@ -153,9 +191,9 @@ weight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16
 eval still tracks gradients; replacement optimizer points to replacement model
 ```
 
-第 1 行是正文講過的 shape，第 2、3 行就是本節手算的數字。第 2 行的 `prediction=2.00` 是更新前的預測；第 3 行的 `new_prediction=3.60` 是更新後的預測，也就是手算的 \(1.8\times2=3.6\)。第 1 行的 `(1, 1)`、正文寫的 `[1,1]`，和自己執行 `print(x.shape)` 會看到的 `torch.Size([1, 1])`，是同一個 shape 的不同印法。完整程式印出前 3 行後，會用斷言核對梯度、新權重、更新後的預測與新 loss。第 4 行要等所有斷言都通過才會印出，意思是：切到 eval 模式後，輸出仍連著計算圖；替換用的 optimizer 指向替換後的模型。
+第 1 行是正文講過的 shape：這裡的 `(1, 1)`、正文寫的 `[1,1]`，和自己執行 `print(x.shape)` 會看到的 `torch.Size([1, 1])`，是同一個 shape 的不同印法。第 2、3 行就是本節手算的數字：第 2 行的 `prediction=2.00` 是更新前的預測；第 3 行的 `new_prediction=3.60` 是更新後的預測，也就是手算的 \(1.8\times2=3.6\)。完整程式印出前 3 行後，會用斷言核對梯度、新權重、更新後的預測與新 loss。第 4 行要等所有斷言都通過才會印出，意思是：切到 eval 模式後，輸出仍連著計算圖；替換用的 optimizer 指向替換後的模型。
 
-你的輸出和上面 4 行相同、而且沒有錯誤訊息，本節就完成了。之後章節的訓練，基本上就是把前面那五行程式（也就是訓練一步）重複很多次。模型和資料會變大；loss 可能改用更複雜的算法，optimizer 也可能換成別種（例如第 7 章的訓練改用 Adam）。收益是每一步都能追到具體數字；代價是這個線性問題不含影像、非線性與泛化（對沒看過的資料也做得好），不能用它判斷 CNN（卷積神經網路）的準確率。
+你的輸出和上面 4 行相同、而且沒有錯誤訊息，本節就完成了。之後章節的訓練，基本上就是把前面那五行程式（也就是訓練一步）重複很多次。模型和資料會變大；loss 可能改用更複雜的算法，optimizer 也可能換成別種（例如第 7 章的訓練改用 Adam）。用一個參數的小例子，好處是每一步都能手算核對；限制是它沒有影像、沒有非線性的計算，也測不出泛化（對沒看過的資料也做得好），所以不能用它判斷 CNN（卷積神經網路）的準確率。
 
 ## 自主練習與答案
 
@@ -169,11 +207,11 @@ assert abs(after - 1.8) < 1e-6 and abs(new_loss - 0.16) < 1e-5
 assert abs(new_prediction.item() - 3.6) < 1e-5
 ```
 
-`gradient` 是 backward 之後記下的梯度，`after` 是更新後的 w，`new_prediction` 是更新後的預測。`new_prediction` 是 tensor；第三行先用 `.item()`（前面存 `before` 時介紹過）把它取成普通數字，和 `after`、`new_loss` 一樣用普通數字比較。`abs(a - b) < 1e-6` 表示 a 和 b 相差不到 10⁻⁶（`1e-5` 則是相差不到 10⁻⁵），用來容許小數計算的微小誤差。例如 `after` 實際上是 1.7999999523…，`new_prediction` 是 3.5999999046…，寫成 `after == 1.8` 或 `new_prediction.item() == 3.6` 反而不成立。
+`gradient` 是 backward 之後記下的梯度，`after` 是更新後的 w，`new_prediction` 是更新後的預測。`new_prediction` 是 tensor；第三行先用 `.item()`（前面存 `before` 時介紹過）把它取成普通數字，和 `after`、`new_loss` 一樣用普通數字比較。`abs(a - b) < 1e-6` 表示 a 和 b 相差不到 10⁻⁶（`1e-5` 則是相差不到 10⁻⁵），用來容許小數計算的微小誤差。電腦用二進位、有限的位數存小數；PyTorch 預設的 float32（32 位元浮點數）約只有 7 位有效數字，1.8、3.6 這類十進位小數存不精確，只能存成最接近它們的數。所以 `after` 實際上是 1.7999999523…，`new_prediction` 是 3.5999999046…，寫成 `after == 1.8` 或 `new_prediction.item() == 3.6` 反而不成立。
 
 只改學習率就執行，前 3 行照樣會印出（第 3 行已換成新的 w、更新後的預測與 new_loss），接著第二行斷言出現 AssertionError。這是預期中的錯誤：第二、三行斷言還在核對舊答案 1.8、0.16 與 3.6。把這三個數字換成你預測的新 w、new_loss 與更新後的預測，再執行一次；不再報錯、第 4 行也印出來，就表示你的預測對了。只改了第二行、忘了改第三行，就換成第三行斷言報錯。第一行核對梯度，不用改，因為梯度在更新之前就算好了，和學習率無關。不要刪掉斷言來讓錯誤消失。
 
-**練習 2**：只呼叫 `backward`，會改變 w 嗎？
+**練習 2**：只呼叫 `backward`，會改變 w 嗎？先預測，再用程式確認：把完整程式裡 `optimizer.step()` 那一行刪掉，或在那一行最前面加 `#`，讓 Python 把它當成註解跳過，再執行。第 3 行會印出什麼？哪一行斷言會報錯？做完記得改回來。
 
 ??? note "參考答案"
 
@@ -181,7 +219,7 @@ assert abs(new_prediction.item() - 3.6) < 1e-5
 
     延伸：學習率多少，才能一步剛好走到 w=2？要讓 \(1-\eta(-8)=2\)，也就是 \(8\eta=1\)，所以 \(\eta=0.125\)。
 
-    **練習 2**：不會。backward 只把梯度填進 `.grad`；要等 `optimizer.step()`，或你另外寫的手動更新程式，才會改變 w。
+    **練習 2**：不會。backward 只把梯度填進 `.grad`；要等 `optimizer.step()`，或你另外寫的手動更新程式，才會改變 w。拿掉 `optimizer.step()` 後，第 3 行印出 `weight: 1.00 -> 1.00; new_prediction=2.00; new_loss=4.00`：w、預測和 loss 都和更新前一樣。接著第二行斷言出現 AssertionError，因為 w 不是 1.8；第一行核對梯度，照樣通過，因為梯度在 backward 時就算好了。
 
 延伸閱讀（英文官方文件）：[PyTorch autograd 教學](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html)（autograd 是 PyTorch 自動算梯度的機制，`backward` 就靠它）與 [SGD 官方說明頁](https://pytorch.org/docs/stable/generated/torch.optim.SGD.html)。
 

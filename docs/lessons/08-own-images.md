@@ -14,7 +14,7 @@
 
 ## 120×80 圖片怎麼進 64×64 網路
 
-原圖寬 120、高 80，紅框 `[20,10,60,30]`，寬高 40×20。影像 `[80,120,3]` uint8 經 `convert('RGB')`、`permute(2,0,1)`、除以 255，得到 `[3,80,120]` float32。透明圖或灰階圖同樣要先轉 RGB：帶透明度的 PNG 通常是 RGBA，有 4 個 channel；灰階圖只有 1 個 channel，讀成陣列時甚至只剩 `[H,W]` 兩個軸。模型第一層卷積固定吃 3 個 channel，不轉的話，後面的 `permute` 或第一層卷積就會報錯；`convert('RGB')` 會把它們統一成 3 個 channel。
+原圖寬 120、高 80，紅框 `[20,10,60,30]`，寬高 40×20。影像 `[80,120,3]` uint8 經 `convert('RGB')`、`permute(2,0,1)`、除以 255，得到 `[3,80,120]` float32。透明圖或灰階圖同樣要先轉 RGB：帶透明度的 PNG 通常是 RGBA，有 4 個 channel；灰階圖只有 1 個 channel，讀成陣列時甚至只剩 `[H,W]` 兩個軸。模型第一層卷積固定吃 3 個 channel，不轉的話，後面的 `permute` 或第一層卷積就會報錯；`convert('RGB')` 會把它們統一成 3 個 channel。但它只是把透明度丟掉，不會鋪上背景色：透明的地方會露出檔案裡存的 RGB 值（常是黑色，但不保證）。要固定背景色，先建一張同尺寸、填滿指定顏色的 RGB 底圖（例如 `background = Image.new('RGB', image.size, (255, 255, 255))`），再以透明度當遮罩把圖貼上去（`background.paste(image, mask=image.getchannel('A'))`）。這裡的遮罩是 0 到 255 的比例：0 的地方保留底色，255 的地方用原圖，中間的值兩者按比例混合。
 
 從讀檔到送進模型，shape 依序變成：
 
@@ -59,7 +59,7 @@ original_boxes = undo_letterbox(pred['boxes'], meta)  # 用這張圖自己的 me
 可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`。輸出共 7 行，依序對應下面四項檢查：
 
 1. 第 1–2 行是往返（roundtrip）：框先經 letterbox 換到輸入座標，再用 undo_letterbox 還原。應看到原圖 shape `(3,80,120)`、上面算出的輸入框與 metadata，最後回到 `[20,10,60,30]`。float32 的計算有極小的捨入誤差（例如 60 實際算出 59.999996…），所以程式把框座標四捨五入到小數第 4 位才印出；assert 也用 `torch.allclose`，只檢查還原的框和原框非常接近，不要求完全相等。
-2. 第 3–5 行是存檔、重新載入與推論：程式先在 CPU 上做 3 次參數更新，存成 checkpoint，再用 `weights_only=True` 讀回（意思見下方「實際載入模型，推論指定圖片」），確認重新載入前後的 logits 逐值相等。接著用 `scripts/detect_image.py` 的 `detect_image()` 真正讀取 PNG 推論：只留 score 至少 0.25 的框（0.25 是顯示門檻，決定要畫出哪些框），存下疊框 PNG 與記錄原圖座標的 JSON。程式檢查 `detect_image()` 回傳的報告（也就是寫進 JSON 的內容）記下的 `score_threshold` 是 0.25，而且每個框的 score 都至少 0.25。第 3 行最後印出留下的框數與這個門檻，第 4 行是 PNG 與 JSON 的路徑，第 5 行是固定的提醒：這些只證明流程接得通，不代表照片的偵測品質。3 步模型還學不會偵測，所以框數不論多少都不算偵測結果，也不能用來判斷權重有沒有套用（那是前面「logits 逐值相等」這項檢查的工作）；兩種 score 門檻的差別，見下方「CLI 的步驟與預設門檻」。
+2. 第 3–5 行是存檔、重新載入與推論：程式先在 CPU 上做 3 次參數更新，存成 checkpoint，再用 `weights_only=True` 讀回（意思見下方「實際載入模型，推論指定圖片」），確認重新載入前後的 logits 逐值相等。接著用 `scripts/detect_image.py` 的 `detect_image()` 真正讀取 PNG 推論：只留 score 至少 0.25 的框（0.25 是顯示門檻，決定要畫出哪些框），存下 PNG（原圖疊上留下的框，沒有框時就是原圖）與記錄原圖座標的 JSON。程式檢查 `detect_image()` 回傳的報告（也就是寫進 JSON 的內容）記下的 `score_threshold` 是 0.25，而且每個框的 score 都至少 0.25。第 3 行最後印出留下的框數與這個門檻，第 4 行是 PNG 與 JSON 的路徑，第 5 行是固定的提醒：這些只證明流程接得通，不代表照片的偵測品質。3 步模型還學不會偵測，所以框數不論多少都不算偵測結果，也不能用來判斷權重有沒有套用（那是前面「logits 逐值相等」這項檢查的工作）；兩種 score 門檻的差別，見下方「CLI 的步驟與預設門檻」。
 3. 第 6 行：類別數與設定（config）不一致的 checkpoint 必須被拒絕。程式故意存一個有 3 個類別名稱、config 卻寫 2 類的檔案，載入時應報錯。
 4. 第 7 行是手填的已知答案：程式做一份「完美」的模型輸出。負責紅框的那一格：框值設成解碼後剛好得到輸入座標裡的紅框，objectness logit 填 10，類別 logits 填 10 與 −10（紅類較高）。其他格的 objectness logit 都填 −20。這份輸出經過 decode 和 undo_letterbox 後，應回到約 `[20,10,60,30]` 的原框。
 
@@ -67,7 +67,7 @@ original_boxes = undo_letterbox(pred['boxes'], meta)  # 用這張圖自己的 me
 
 第 7 章的訓練程式是一個 CLI（command-line interface，命令列程式：在終端機或 Colab cell 打指令、加參數來執行的程式）。它存下的 checkpoint 讀回來是一個 Python dict，分成幾個欄位：`model_state_dict` 是權重；`config` 記錄 image_size、grid_size、width 等設定；`class_names` 是照順序排好的類別名稱；另外還有 optimizer 狀態等推論用不到的欄位。
 
-`model_state_dict` 本身也是 dict，稱為 state_dict：key 是參數名稱，value 是該參數的 tensor。例如兩類、width 8 的模型，`head.weight` 對應一個 shape 為 `[7,32,1,1]` 的 tensor。state_dict 只存這些數字，不存模型結構（有哪些層、層與層怎麼接），所以要先用 config 和類別數新建一個同結構的 GridDetector，再用 `load_state_dict` 依參數名稱把數字填回去。要傳進去的是 `checkpoint['model_state_dict']`，不能把整個 checkpoint dict 直接送進 `load_state_dict`。image_size 不必給模型，它是給 letterbox 和 decode 用的。`scripts/detect_image.py` 的載入函式 `load_grid_checkpoint()` 就是這樣重建與載入的；下面摘錄它的關鍵幾行，`...` 是省略的檢查（見後文）：
+`model_state_dict` 本身也是 dict，稱為 state_dict：key 是參數的名稱，value 是對應的 tensor（有 BatchNorm 的模型還會存 `running_mean` 這類不是參數的 buffer；本書的模型沒有 buffer，所以這裡全是參數）。例如兩類、width 8 的模型，`head.weight` 對應一個 shape 為 `[7,32,1,1]` 的 tensor。state_dict 只存這些數字，不存模型結構（有哪些層、層與層怎麼接），所以要先用 config 和類別數新建一個同結構的 GridDetector，再用 `load_state_dict` 依參數名稱把數字填回去。要傳進去的是 `checkpoint['model_state_dict']`，不能把整個 checkpoint dict 直接送進 `load_state_dict`。image_size 不必給模型，它是給 letterbox 和 decode 用的。`scripts/detect_image.py` 的載入函式 `load_grid_checkpoint()` 就是這樣重建與載入的；下面摘錄它的關鍵幾行，`...` 是省略的檢查（見後文）：
 
 ``` { .python data-excerpt="scripts/detect_image.py" }
 def load_grid_checkpoint(path):
@@ -82,9 +82,9 @@ def load_grid_checkpoint(path):
     return model, config, classes
 ```
 
-`map_location='cpu'` 把檔案裡的 tensor 都載到 CPU，所以在 GPU 上存的檔，沒有 GPU 的電腦也能讀。`weights_only=True` 不是「只讀權重」，而是只允許還原 tensor、數字、字串、list、dict 這類單純的資料。`torch.load` 底層用 pickle（Python 把物件存成檔案的格式），來路不明的檔案可能夾帶會被執行的程式碼，這個設定會拒絕它們。config 與 class_names 也是這類單純資料，所以照樣讀得到。
+`map_location='cpu'` 把檔案裡的 tensor 都載到 CPU，所以在 GPU 上存的檔，沒有 GPU 的電腦也能讀。`weights_only=True` 不是「只讀權重」，而是只允許還原 tensor、數字、字串、list、dict 這類單純的資料。`torch.load` 底層用 pickle（Python 把物件存成檔案的格式），來路不明的檔案可能夾帶會被執行的程式碼。這個設定只還原允許清單裡的型別；檔案要求呼叫清單以外的函式或類別時，會直接報錯、不執行。PyTorch 官方的說法是「就目前所知是安全的」，所以來路不明的檔案，最好只在隔離的環境（例如容器或虛擬機）中載入。config 與 class_names 也是這類單純資料，所以照樣讀得到。
 
-`load_state_dict` 依參數名稱（key）填值。`strict=True` 要求名稱一一對上：檔案缺了模型需要的參數，或多出模型沒有的參數，都會報錯。shape 對不上時，不論 strict 怎麼設都會報錯；例如用 3 個類別名稱建模型，新模型的 `head.weight` 是 `[8,32,1,1]`，就對不上檔案裡兩類模型的 `[7,32,1,1]`。
+`load_state_dict` 依參數名稱（key）填值。`strict=True` 要求名稱一一對上：檔案缺了模型需要的參數（或 buffer），或多出模型沒有的，都會報錯。shape 對不上時，不論 strict 怎麼設都會報錯；例如用 3 個類別名稱建模型，新模型的 `head.weight` 是 `[8,32,1,1]`，就對不上檔案裡兩類模型的 `[7,32,1,1]`。
 
 `load_grid_checkpoint()`（CLI 和本節完整程式都用它）在上面 `...` 省略的地方還多做幾項檢查，例如：config 的 image_size、grid_size、width 都要是正整數；類別名稱不能是空的，也不能重複；config 若有 num_classes，必須等於名稱個數。上面快速實驗第 6 行那個故意做壞的檔案（config 寫 2 類，卻有 3 個類別名稱），就是被 num_classes 這一項擋下的，還沒走到 `load_state_dict`。
 
@@ -99,7 +99,7 @@ python -m miniyolo.train --steps 160 --samples 32 --device cpu
 python scripts/detect_image.py --image my.png --checkpoint artifacts/runs/grid-learning/checkpoint.pt
 ```
 
-把 `my.png` 換成你的圖片路徑，jpg 也可以；也可以把 `--image` 指定為訓練 CLI 輸出的 `artifacts/runs/grid-learning/validation-00.png`，先核對紅／藍合成圖。兩行都不必加 `PYTHONPATH=.`：`python -m` 會從目前資料夾（repo 根目錄）找到 `miniyolo`，`scripts/detect_image.py` 則會自己把 repo 根目錄加進 Python 找模組的路徑。
+把 `my.png` 換成你的圖片路徑，jpg 也可以；也可以把 `--image` 指定為訓練 CLI 輸出的 `artifacts/runs/grid-learning/validation-00.png`，先核對紅／藍合成圖。手機照片常把拍攝方向記在 EXIF 標籤裡；Pillow 讀檔時不會照這個標籤轉正，所以輸出的圖和座標，都以檔案實際存的像素方向為準。方向和相簿看到的不同時，先用 `PIL.ImageOps.exif_transpose()` 轉正、另存一張，再交給 CLI。兩行都不必加 `PYTHONPATH=.`：`python -m` 會從目前資料夾（repo 根目錄）找到 `miniyolo`，`scripts/detect_image.py` 則會自己把 repo 根目錄加進 Python 找模組的路徑。
 
 兩行的輸出預設都在 git 不追蹤的 `artifacts/runs/` 底下。第一行把 checkpoint、報告 `report.json` 等存在 `artifacts/runs/grid-learning/`，第二行讀的就是這裡的 checkpoint。第二行把疊框 PNG 存成 `artifacts/runs/predictions/my-image.png`，同檔名的 `my-image.json` 放在旁邊，記錄原圖座標的框、score、類別與所用的門檻；要換位置或檔名，就加 `--output`。CLI 最後印出一行摘要，含框數 `boxes`、`score_threshold`、`nms_iou`、輸出路徑 `output` 與 `class_names`。
 

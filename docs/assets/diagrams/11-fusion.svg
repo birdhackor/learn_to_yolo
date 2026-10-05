@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 690" role="img" aria-labelledby="title desc">
 <title id="title">兩尺度特徵融合：原圖 stride、lateral 與 top-down 路徑</title>
-<desc id="desc">示意圖，方框大小不代表特徵圖大小。左側四個框畫的是真實網路裡這兩層特徵從哪裡來：64×64 RGB 輸入圖片進入 backbone（特徵提取），得到畫在上方的 Shallow 淺層特徵（stride 8，8 channel、8×8 格，每格間距 8 畫素）；再繼續下取樣，得到畫在下方的 Deep 深層特徵（stride 16，16 channel、4×4 格，每格間距 16 畫素）。本節的 top-down 路徑在圖上由下往上走：Deep 先經 1×1 reduce 從 16 channel 減成 8 channel，再用 nearest 從 4×4 放大到 8×8；Shallow 則經「lateral 同尺度接入」直接送到右側。兩路 concat 成 8+8=16 channel，再經 3×3 mix 混成 8 channel，輸出 8 channel、8×8 的融合特徵。融合特徵往上接到右上角的框「細 head 接在這裡」，框內註明本節程式只算到融合特徵，沒接 head。從融合特徵往下的橘色虛線箭頭標「PAN 的 bottom-up 路徑（本節未實作）」。圖下文字：本節的 neck = reduce + upsample + concat + mix，位於 backbone 與預測 head 之間；FPN 原版是 top-down 加 lateral，用 add，本例用 concat，只示範一次 deep→shallow。</desc>
+<desc id="desc">示意圖，方框大小不代表特徵圖大小。左側四個框畫的是真實網路裡這兩層特徵從哪裡來：64×64 RGB 輸入圖片進入 backbone（特徵提取），得到畫在上方的 Shallow 淺層特徵（stride 8，8 channel、8×8 格，每格間距 8 pixel）；再繼續下取樣，得到畫在下方的 Deep 深層特徵（stride 16，16 channel、4×4 格，每格間距 16 pixel）。本節的 top-down 路徑在圖上由下往上走：Deep 先經 1×1 reduce 從 16 channel 減成 8 channel，再用 nearest 從 4×4 放大到 8×8；Shallow 則經「lateral 同尺度接入」直接送到右側。兩路 concat 成 8+8=16 channel，再經 3×3 mix 混成 8 channel，輸出 8 channel、8×8 的融合特徵。融合特徵往上接到右上角的框「細 head 接在這裡」，框內註明本節程式只算到融合特徵，沒接 head。從融合特徵往下的橘色虛線箭頭標「PAN 的 bottom-up 路徑（本節未實作）」。圖下文字：本節的 neck = reduce + upsample + concat + mix，位於 backbone 與預測 head 之間；FPN 原版是 top-down 加 lateral，用 add，本例用 concat，只示範一次 deep→shallow。</desc>
 <defs>
 <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563eb"/></marker>
 <marker id="arrow-pan" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#d97706"/></marker>
@@ -21,8 +21,8 @@
 <g font-size="18" text-anchor="middle">
 <text x="73" y="88">輸入圖片</text><text x="73" y="116">64×64 RGB</text>
 <text x="73" y="216">Backbone</text><text x="73" y="244">特徵提取</text>
-<text x="250" y="200">Shallow：stride 8</text><text x="250" y="230">8 channel × 8×8</text><text x="250" y="260">每格間距 8 畫素</text>
-<text x="250" y="454">Deep：stride 16</text><text x="250" y="484">16 channel × 4×4</text><text x="250" y="514">每格間距 16 畫素</text>
+<text x="250" y="200">Shallow：stride 8</text><text x="250" y="230">8 channel × 8×8</text><text x="250" y="260">每格間距 8 pixel</text>
+<text x="250" y="454">Deep：stride 16</text><text x="250" y="484">16 channel × 4×4</text><text x="250" y="514">每格間距 16 pixel</text>
 <text x="427" y="342">Nearest ↑</text><text x="427" y="370">4×4→8×8</text>
 <text x="427" y="470">1×1 reduce</text><text x="427" y="498">16ch→8ch</text>
 <text x="612" y="200">Concat：8+8=16ch</text><text x="612" y="230">3×3 mix：16→8ch</text><text x="612" y="260">輸出 8ch × 8×8</text>
