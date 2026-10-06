@@ -1,5 +1,0 @@
-one-to-many owner: [0, 0, 1]
-global one-to-one owner: [1, 0, -1]
-global quality=1.73; greedy quality=1.10
-detached one-to-one branch trains its head; only many branch trains backbone
-loss many=0.6855, one=0.7065

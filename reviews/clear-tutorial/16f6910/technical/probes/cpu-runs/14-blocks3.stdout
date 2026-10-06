@@ -1,6 +1,0 @@
-input/output: (2, 8, 8, 8) (2, 8, 8, 8)
-concatenated channels: 4 + 4 + 4 + 4 + 4 = 20; fuse 20 -> 8
-parameters plain / split: 1168 1128
-local transformation MSE 1.1248 -> 1.0141
-concat order, each direct concat-segment gradient, and each path total gradient: verified
-direct concat-segment gradient L1: [0.2839, 0.2487, 0.3176, 0.2832, 0.3192]

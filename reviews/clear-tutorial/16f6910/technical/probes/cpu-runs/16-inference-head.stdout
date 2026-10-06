@@ -1,7 +1,0 @@
-manual ltrb decode box: [[8.0, 32.0, 56.0, 64.0]]
-manual class probabilities: [[0.5, 0.75]] ; winner label=1, score=0.75
-training output keys: ['many', 'one']
-deploy boxes / scores / labels: (2, 3, 4) (2, 3) (2, 3)
-parameters training / deploy: 332 278
-retained one-head raw output vs reference, max abs difference: 0.0
-top-k has no pairwise IoU/NMS; random toy predictions are not accuracy evidence

@@ -1,6 +1,0 @@
-tokens: [[[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]]]
-first attention row: [0.3349, 0.1651, 0.3349, 0.1651]
-first weighted value: [0.6698, 0.5]
-shape feature -> tokens -> affinity -> feature: (1, 2, 2, 2) (1, 4, 2) (1, 4, 4) (1, 2, 2, 2)
-exercise fourth-token [2,0], first weight row: [0.2212, 0.1091, 0.2212, 0.4486]
-exercise first output: [1.3395, 0.3302]

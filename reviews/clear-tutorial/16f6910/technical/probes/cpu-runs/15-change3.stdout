@@ -1,6 +1,0 @@
-full affinity shape/count: (1, 16, 16) 256
-area affinity shape/count: (4, 4, 4) 64
-first-token output full=0.46875, area=0.09375
-changing token 3 affects token 0: full=True, area=True; same area=True
-after intervention: full=0.78125, area=1.34375
-area-attention backward/step verified; loss=0.0048

@@ -1,7 +1,0 @@
-max_age: 1
-per-frame IDs in detection order A,B (frame4 has only A):
-last-box IoU: [[1, 2], [1, 2], [2, 1], [2, 1], [2], [2, 3]] ; switches: 3
-velocity IoU: [[1, 2], [1, 2], [1, 2], [1, 2], [1], [1, 3]] ; switches: 1
-detector recall=11/12, false positives=0 (same detections feed both trackers)
-exact small matching passes non-greedy counterexample and empty detections
-actual ID panel: artifacts/lesson-19/ids.svg
