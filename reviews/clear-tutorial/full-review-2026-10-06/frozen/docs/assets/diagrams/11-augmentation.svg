@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="1970" viewBox="0 0 480 1970" role="img" aria-labelledby="title desc">
+<title id="title">水平翻轉與裁切各自從原圖出發，畫素與框一起改變</title>
+<desc id="desc">上下三個圖板，不是順序做flip再crop。①原圖64×64，②是①的水平翻轉，③是①的裁切。三張圖比例相同：1畫素對4 SVG單位，x向右y向下。原圖紅色畫素x=8到23、y=12到27，GT[8,12,24,28]；白虛線裁切區x[16,48)、y[8,40)。flip後紅色畫素x=40到55，框[40,12,56,28]，y不變。空心點是flip前中心(16,20)，實心點是flip後中心(48,20)；淡藍與亮藍虛線分別是負責格(1,1)與(3,1)，每格16畫素，取floor歸右邊那格。crop是從①切出32×32圖：框平移為[-8,4,8,20]再夾到[0,4,8,20]，紅畫素剩x=0到7、y=4到19。新圖左緣外的灰虛線8×16是被裁掉的左半，不是新圖內的畫素。可見128、原面積256、比例0.5。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#475569"/></marker><marker id="purple-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#7c3aed"/></marker></defs>
+<rect width="480" height="1970" fill="#f8fafc"/>
+<g font-family="Noto Sans CJK TC, sans-serif" fill="#0f172a">
+<text x="28" y="38" font-size="26" fill="#0f172a" font-weight="700">兩種操作，都從①原圖出發</text>
+<text x="28" y="74" font-size="24" fill="#0f172a">①→② flip；①→③ crop</text>
+<rect x="12" y="96" width="456" height="506" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="134" font-size="24" fill="#0f172a" font-weight="700">① 原圖 64×64</text>
+<text x="28" y="170" font-size="24" fill="#15803d">框 [8,12,24,28]</text>
+<text x="28" y="204" font-size="22" fill="#dc2626">紅畫素 x=8…23，y=12…27</text>
+<rect x="112" y="234" width="256" height="256" fill="#0f172a" />
+<rect x="144" y="282" width="64" height="64" fill="#ef4444" />
+<rect x="176" y="266" width="128" height="128" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="9 6" id="original-crop-window" data-xyxy="16,8,48,40"/>
+<rect x="144" y="282" width="64" height="64" fill="none" stroke="#4ade80" stroke-width="3" data-xyxy="8,12,24,28"/>
+<text x="28" y="534" font-size="24" fill="#0f172a">白虛線：① 的裁切區</text>
+<text x="28" y="572" font-size="24" fill="#0f172a">x [16,48)、y [8,40)</text>
+<rect x="12" y="618" width="456" height="768" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="656" font-size="24" fill="#0f172a" font-weight="700">② ①→② 水平 flip（64×64）</text>
+<text x="28" y="694" font-size="24" fill="#0f172a">新 x1=64−24=40</text>
+<text x="28" y="728" font-size="24" fill="#0f172a">新 x2=64−8=56；y 不變</text>
+<text x="28" y="762" font-size="22" fill="#15803d">框 [40,12,56,28]；紅 x=40…55</text>
+<rect x="104" y="826" width="256" height="256" fill="#0f172a" />
+<rect x="264" y="874" width="64" height="64" fill="#ef4444" />
+<path d="M168 826L168 1082" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<path d="M104 890L360 890" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<path d="M232 826L232 1082" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<path d="M104 954L360 954" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<path d="M296 826L296 1082" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<path d="M104 1018L360 1018" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<text x="136" y="814" font-size="22" fill="#7c3aed" text-anchor="middle">0</text>
+<text x="372" y="866" font-size="22" fill="#7c3aed">0</text>
+<text x="200" y="814" font-size="22" fill="#7c3aed" text-anchor="middle">1</text>
+<text x="372" y="930" font-size="22" fill="#7c3aed">1</text>
+<text x="264" y="814" font-size="22" fill="#7c3aed" text-anchor="middle">2</text>
+<text x="372" y="994" font-size="22" fill="#7c3aed">2</text>
+<text x="328" y="814" font-size="22" fill="#7c3aed" text-anchor="middle">3</text>
+<text x="372" y="1058" font-size="22" fill="#7c3aed">3</text>
+<text x="220" y="782" font-size="22" fill="#7c3aed">欄 gx</text>
+<text x="372" y="814" font-size="22" fill="#7c3aed">gy</text>
+<rect x="169.5" y="891.5" width="61" height="61" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-dasharray="5 4" stroke-opacity=".6"/>
+<rect x="297.5" y="891.5" width="61" height="61" fill="none" stroke="#60a5fa" stroke-width="3" stroke-dasharray="8 4" />
+<rect x="264" y="874" width="64" height="64" fill="none" stroke="#4ade80" stroke-width="3" data-xyxy="40,12,56,28"/>
+<path d="M176 906H284" stroke="#f8fafc" stroke-width="3"/><path d="M278 900L288 906L278 912Z" fill="#fff"/>
+<circle cx="168" cy="906" r="6" fill="#0f172a" stroke="#fff" stroke-width="2" data-xy="16,20"/>
+<circle cx="296" cy="906" r="6" fill="#fff" stroke="#0f172a" stroke-width="1.5" data-xy="48,20"/>
+<text x="28" y="1130" font-size="22" fill="#0f172a">空心（前）中心 (16,20) → 格 (1,1)</text>
+<text x="28" y="1170" font-size="22" fill="#0f172a">實心（後）中心 (48,20) → 格 (3,1)</text>
+<text x="28" y="1212" font-size="22" fill="#0f172a">每格 16：48/16=3、20/16=1.25</text>
+<text x="28" y="1254" font-size="24" fill="#0f172a">兩個中心 x 都在格線上；</text>
+<text x="28" y="1290" font-size="24" fill="#0f172a">取 floor 後，歸右邊那格。</text>
+<text x="28" y="1338" font-size="22" fill="#0f172a">淡／亮藍虛線：flip 前／後的負責格</text>
+<rect x="12" y="1402" width="456" height="536" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="1440" font-size="24" fill="#0f172a" font-weight="700">③ ①→③ crop（不是從②裁切）</text>
+<text x="28" y="1480" font-size="24" fill="#15803d">切出 32×32；框 [0,4,8,20]</text>
+<rect x="176" y="1510" width="128" height="128" fill="#0f172a" />
+<rect x="144" y="1526" width="32" height="64" fill="#cbd5e1" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4" id="removed-half" data-xyxy="-8,4,0,20"/>
+<rect x="176" y="1526" width="32" height="64" fill="#ef4444" stroke="#4ade80" stroke-width="3" data-xyxy="0,4,8,20"/>
+<path d="M138 1558L60 1558" fill="none" stroke="#475569" stroke-width="1.5"/>
+<text x="28" y="1668" font-size="22" fill="#0f172a">灰色：被裁掉的左半，在新圖外</text>
+<text x="28" y="1706" font-size="22" fill="#dc2626">紅畫素 x=0…7，y=4…19</text>
+<text x="28" y="1744" font-size="24" fill="#0f172a">可見面積：8×16=128</text>
+<text x="28" y="1782" font-size="24" fill="#0f172a">原面積：16×16=256</text>
+<text x="28" y="1820" font-size="24" fill="#0f172a" font-weight="700">可見比例：128/256=0.5</text>
+<text x="28" y="1864" font-size="22" fill="#0f172a">三張圖同一比例：1 畫素=4 SVG單位</text>
+<text x="28" y="1902" font-size="22" fill="#0f172a">框與紅畫素一起變；crop 來源是①。</text>
+</g></svg>

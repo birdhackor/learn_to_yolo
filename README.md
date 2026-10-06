@@ -8,6 +8,8 @@
 
 本版教材與 notebook 固定到 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準。既有 `lessons-v0.5.0` 的發布驗證與依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做的主線審查保留原本範圍；[原始閱讀紀錄與處理](reviews/clear-tutorial/16f6910/)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查也保存在 [`reviews/`](reviews/)，不改標成盲讀，也不當成新支線的審查。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[驗證範圍](docs/status.md)。模型是教學用的簡化版，不是原版的完整重現。
 
+2026-10-06 已依新版四題重新審閱全部 52 節，保留分段閱讀、修正、非作者技術核對與前後銜接紀錄，見[本輪總覽](reviews/clear-tutorial/full-review-2026-10-06/README.md)。四題仍有 DINO 介紹漏抓與逐項引用缺陷，不能把保存答案當成嚴格盲讀全面合格；原始紀錄及獨立裁定一併保留。
+
 ## CPU 本機執行
 
 使用 Python 3.12，在 repository 根目錄執行（第一行的 `python3` 要是 3.12 版；不是的話，換成 Python 3.12 直譯器的路徑）：
@@ -85,7 +87,7 @@ python3 scripts/validate_site.py
 2. 執行 `.venv-model/bin/python scripts/record_evidence.py`：列出程式有變而過期的執行紀錄，不執行任何實驗。程式沒變的紀錄沿用，保留原本的日期與電腦。
 3. 有過期的 GPU 紀錄時，先把目前的修改 commit 並推到一個分支，再執行 `.venv-model/bin/python scripts/record_evidence.py --gpu <分支>`。它用 GitHub CLI（`gh`）啟動 GitHub Actions 工作流程，等它跑完再把結果存成紀錄；工作流程跑的是推上去的程式，所以本機的 commit 要和該分支相同。
 4. 用 `.venv-model/bin/python -m pip install -r requirements-video.txt` 加裝影片紀錄要用的 OpenCV，再執行 `.venv-model/bin/python scripts/record_evidence.py --run`，在這台電腦重產過期的 CPU 紀錄。`--run` 會先確認 Python 與套件符合固定版本；最好在產生既有紀錄的同一種環境執行（每份紀錄都記有它的電腦），沒有改到的計算才會得到相同的數字。
-5. 重新審查改過的頁面。不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查對不上目前內容的頁面：頁面文字、頁面上的 SVG 圖，或課程頁的程式與它 import 的模組有變，都算改過；頁尾的執行紀錄區塊與 Colab 連結裡的 tag 不算。第 4 步會重畫部分實驗圖，所以審查放在紀錄之後。依 [clear-tutorial](.agents/skills/clear-tutorial/SKILL.md) 依序做逐段首次閱讀、非作者技術核對、另一位讀者銜接複查，保留原始卡點與實際核回。以下是第二輪的技術細節：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，並從初學讀者的角度看說明；頁面引用論文、官方程式或函式庫文件的說法，另打開原始來源逐句核對（論文看原文，官方程式看固定的 commit 或 tag，函式庫看官方文件），並在審查紀錄列出查閱的來源與版本。其他頁對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。修正要由另一位 AI 檢查，紀錄要列出每個發現與它的處理。審查紀錄放在 `reviews/`（課程頁是 `reviews/<節>.md`；其他頁用路徑命名，例如 `docs/validation/curriculum.md` 是 `reviews/validation-curriculum.md`），寫好後執行 `python3 scripts/review_coverage.py --write <頁面路徑>`，記下它涵蓋的內容。還有頁面沒有審查、或審查對不上目前內容時，`validate_lessons.py` 會失敗。審查之後又改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），就從第 1 步重來，因為 notebook 與執行紀錄都可能因此過期；只改了頁面文字或圖，就重新審查 `review_coverage.py` 列出的頁面（同一張圖可能出現在好幾頁），再對它們執行一次 `--write`。`review_coverage.py` 保存正文內容（包含數字）的指紋，但不自動核算正文與重產紀錄的數值是否一致：第 3、4 步重產了紀錄時，要在 `docs/` 與 `README.md` 搜尋這些紀錄的檔名與舊的數字，對照新紀錄逐一核對，改了正文就重審那一頁。
+5. 重新審查改過的頁面。不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查對不上目前內容的頁面：頁面文字、頁面上的 SVG、PNG 等圖，或課程頁的程式與它 import 的模組有變，都算改過；頁尾的執行紀錄區塊與 Colab 連結裡的 tag 不算。第 4 步會重畫部分實驗圖，所以審查放在紀錄之後。依 [clear-tutorial](.agents/skills/clear-tutorial/SKILL.md) 依序做逐段首次閱讀、非作者技術核對、另一位讀者銜接複查，保留原始卡點與實際核回。以下是第二輪的技術細節：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，並從初學讀者的角度看說明；頁面引用論文、官方程式或函式庫文件的說法，另打開原始來源逐句核對（論文看原文，官方程式看固定的 commit 或 tag，函式庫看官方文件），並在審查紀錄列出查閱的來源與版本。其他頁對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。修正要由另一位 AI 檢查，紀錄要列出每個發現與它的處理。審查紀錄放在 `reviews/`（課程頁是 `reviews/<節>.md`；其他頁用路徑命名，例如 `docs/validation/curriculum.md` 是 `reviews/validation-curriculum.md`），寫好後執行 `python3 scripts/review_coverage.py --write <頁面路徑>`，記下它涵蓋的內容。還有頁面沒有審查、或審查對不上目前內容時，`validate_lessons.py` 會失敗。審查之後又改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），就從第 1 步重來，因為 notebook 與執行紀錄都可能因此過期；只改了頁面文字或圖，就重新審查 `review_coverage.py` 列出的頁面（同一張圖可能出現在好幾頁），再對它們執行一次 `--write`。`review_coverage.py` 保存正文內容（包含數字）的指紋，但不自動核算正文與重產紀錄的數值是否一致：第 3、4 步重產了紀錄時，要在 `docs/` 與 `README.md` 搜尋這些紀錄的檔名與舊的數字，對照新紀錄逐一核對，改了正文就重審那一頁。
 6. 本節開頭的網站檢查全部通過後，用 `git rm artifacts/checks/curriculum-release-bootstrap.json` 刪掉上一版的環境格與 README 驗證，提交變更並推到 main，建立並推送新 tag，再從 main 執行 Pages 工作流程（Publish Learn to YOLO）。
 7. 部署成功後執行 Verify published lessons 工作流程（`gh workflow run verify-release.yml -f tag=<新版 tag>`）：它在 GitHub 的 Linux runner 上，從公開的新 tag 比對網站、執行 notebook 的環境格與這份 README 的指令。跑完後執行 `python3 scripts/verify_release.py save --run <run 編號>`，把兩份結果存成 `artifacts/checks/curriculum-publication.json` 與 `artifacts/checks/curriculum-release-bootstrap.json`；兩份都通過，就 commit 並推到 main。
 
@@ -95,7 +97,7 @@ python3 scripts/validate_site.py
 
 - `miniyolo/`：資料、模型、targets、loss、解碼、幾何、AP 與可選的訓練 CLI。
 - `lesson_cases/`、`notebooks/`：每節可獨立執行的實驗；各節 notebook 的最後一格與同名程式逐字相同。`notebooks/00_environment_check.ipynb` 另用來檢查 Colab 環境。
-- `docs/`：網站內容；各節教材在 `docs/lessons/`，SVG 圖在 `docs/assets/diagrams/`。
+- `docs/`：網站內容；各節教材在 `docs/lessons/`，示意圖與實際結果圖在 `docs/assets/diagrams/`。
 - `artifacts/checks/`：執行與檢查紀錄。每節一份的執行紀錄在 `artifacts/checks/curriculum/`。這些紀錄和補充實驗、GPU 的紀錄都記下執行的電腦或 GPU，並以 SHA-256 綁定各自的程式；補充與 GPU 紀錄的清單在 `scripts/evidence_records.py`。其他輸出寫在 git 不追蹤的 `artifacts/runs/` 等位置。
 - `reviews/`：網站導覽裡每一頁的 AI 審查紀錄；`coverage.json` 以 SHA-256 記下每份審查涵蓋的頁面文字、圖與程式。
 - `scripts/`：資料下載、補充實驗、執行紀錄與網站檢查的工具。

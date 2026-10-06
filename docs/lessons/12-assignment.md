@@ -133,7 +133,7 @@ YOLOv8 沒有 objectness；完整模型在所屬 GT 類別的欄位寫 target，
     - **正樣本的 target**：官方不是 1，而是依品質縮放、介於 0～1 的小數；本例簡化成 1。
     - **跨尺度**：官方把幾種 stride（通常是 8、16、32）特徵圖上的候選點放在一起排名、挑前 k 名；本例只有一個尺度的四個點。
     - **整批計算**：官方把一個 batch 的圖片一起算。每張圖的 GT 數不同，就補齊到相同長度，再用遮罩標出哪些是真的 GT。本例只有一張圖，用 Python 迴圈逐一處理。
-    - **小物件的候選**：官方選候選時，會把邊長小於 16 的 GT 框以中心暫時放大，讓小物件也有候選點（[16.3 節](16-training.md)的 STAL 會介紹，現在可以先跳過）；本節沒有套用。
+    - **小物件的候選**：官方選候選時，會把邊長小於 16 的 GT 框以中心暫時放大，讓小物件也有候選點（[16.3 節](16-training.md)的 STAL（Small-Target-Aware Label Assignment，照顧小物件的候選分配）會介紹，現在可以先跳過）；本節沒有套用。
 
 ## 收益、代價與常見錯誤
 
@@ -172,7 +172,7 @@ YOLOv8 沒有 objectness；完整模型在所屬 GT 類別的欄位寫 target，
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-assignment.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-assignment.json)
 
 ??? example "展開本次實際輸出"
 

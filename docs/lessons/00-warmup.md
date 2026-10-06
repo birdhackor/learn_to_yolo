@@ -46,7 +46,7 @@ PyTorch 的 `loss.backward()` 會沿著 loss 的計算過程，自動算出這�
 
 ### 現在真的轉動旋鈕
 
-optimizer（優化器）拿梯度修改參數。本例用 SGD（隨機梯度下降），學習率 \(\eta=0.1\) 控制每步走多遠。\(\eta\) 讀作 eta。更新是往梯度的反方向走：
+optimizer（優化器）拿梯度修改參數。本例用 **SGD（Stochastic Gradient Descent，隨機梯度下降）**，學習率 \(\eta=0.1\) 控制每步走多遠。SGD 在一般訓練中可隨機抽取資料來算梯度；本例只有一筆固定資料，沒有這個抽樣步驟。\(\eta\) 讀作 eta。更新是往梯度的反方向走：
 
 \[
 w_{\mathrm{new}}=w-\eta g=1-0.1(-8)=1.8.
@@ -202,7 +202,7 @@ assert abs(new_prediction.item() - 3.6) < 1e-5
 
     常被混在一起的兩個開關是 `model.eval()` 與 `torch.no_grad()`。前者（和 `model.train()` 成對）只切換某些層的行為，不會關掉梯度記錄；後者才讓 PyTorch 不記錄計算圖。推論（拿模型做預測、不更新參數）時，通常兩個一起用。
 
-    `model.train()` 切到訓練模式，`model.eval()` 切到評估／推論模式。兩者只影響某些層：例如 Dropout（訓練時隨機把部分數值設成 0 的層）只在 train 模式遮值；BatchNorm（用平均與變異數把數值標準化的層）在 train 模式用這一批資料自己的平均與變異數來標準化，同時更新它記錄的平均與變異數；eval 模式改用記錄下來的值，所以同一筆輸入在兩種模式的輸出可能不同。本課程的程式沒用到這兩種層，只要記得：有些層在訓練與推論時行為不同。本節這個單純的線性層，兩種模式結果相同。
+    `model.train()` 切到訓練模式，`model.eval()` 切到評估／推論模式。兩者只影響某些層：例如 Dropout（訓練時隨機把部分數值設成 0 的層）只在 train 模式遮值；BatchNorm（Batch Normalization，批次正規化，用平均與變異數把數值標準化的層）在 train 模式用這一批資料自己的平均與變異數來標準化，同時更新它記錄的平均與變異數；eval 模式改用記錄下來的值，所以同一筆輸入在兩種模式的輸出可能不同。本課程的程式沒用到這兩種層，只要記得：有些層在訓練與推論時行為不同。本節這個單純的線性層，兩種模式結果相同。
 
     完整程式在更新參數之後，兩個開關都用上：先切到 eval 模式，再在 `torch.no_grad()` 裡重算預測與 loss；接著用斷言（assert）驗證 `eval()` 本身不會關掉梯度記錄。斷言的意思是「條件不成立就報錯停下」，用來自動核對答案：
 
@@ -247,7 +247,7 @@ assert abs(new_prediction.item() - 3.6) < 1e-5
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/00-warmup.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/00-warmup.json)
 
 ??? example "展開本次實際輸出"
 

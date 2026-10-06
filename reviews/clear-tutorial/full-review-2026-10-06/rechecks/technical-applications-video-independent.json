@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "device": "cpu",
+  "model_parameters": 15511,
+  "training_steps": 160,
+  "boxes_per_frame": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "checks": [
+    {
+      "frame": 0,
+      "source_timestamp_s": 0.0,
+      "embedded_png_sha256": "e50170f0d1a854f453c07339f1362201b4a66f9fdbabdd15f9e93139a68f9b36",
+      "overlay_pixels_match_independent_inference": true
+    },
+    {
+      "frame": 5,
+      "source_timestamp_s": 0.25,
+      "embedded_png_sha256": "c67933b5046170a2cc34ea139a7f5226d785a79069d6c3d9926d5f03bd64f478",
+      "overlay_pixels_match_independent_inference": true
+    },
+    {
+      "frame": 11,
+      "source_timestamp_s": 0.55,
+      "embedded_png_sha256": "a226c369ea722be762ffe3e53155d45931eecd11acd6d1733037f4aecf36ed15",
+      "overlay_pixels_match_independent_inference": true
+    }
+  ],
+  "scope": "CPU 160步另訓練，同步核圖0/5/11幀的全部疊圖RGB像素；未重做計時圖或覆寫教材/正常記錄。",
+  "source_hashes": {
+    "lesson_cases/18-video.py": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+    "docs/assets/diagrams/18-video.svg": "9de1c32116ea96145b98dba4d3a3bc5da9211efffa20d684f548873412a71d6e"
+  }
+}

@@ -24,11 +24,11 @@
 
 ## MLP：在每個位置組合特徵
 
-**MLP（多層感知器）**在這裡指兩個線性層，中間加非線性函數。每個 token 的 32 個特徵先變成 64 個，再用 **GELU**，最後變回 32 個。GELU 的作用和第 1 章的 ReLU 相似，讓多次線性運算能表示非線性關係；它使用平滑的數值變化，而不是 ReLU 的硬折點。理解本節路徑不需要手算它的公式。
+**MLP（多層感知器）**在這裡指兩個線性層，中間加非線性函數。每個 token 的 32 個特徵先變成 64 個，再用 **GELU（Gaussian Error Linear Unit，高斯誤差線性單元）**，最後變回 32 個。GELU 的作用和第 1 章的 ReLU 相似，讓多次線性運算能表示非線性關係；它使用平滑的數值變化，而不是 ReLU 的硬折點。理解本節路徑不需要手算它的公式。
 
 同一套 MLP 權重分別套用到每個 token。它組合一個 token 內的特徵，不在這一步讀其他 patch；位置間的交換由前一段 attention 負責。MLP 中間雖擴到 64 維，最後回到 32 維，就能逐值加回原輸入。
 
-用 X 表示 block 輸入，U 表示第一個加號後的結果，Y 表示 block 輸出。三者 shape 都是 `[B,17,32]`。MSA 表示上一節的四 head attention；這個 block 的兩步是：
+用 X 表示 block 輸入，U 表示第一個加號後的結果，Y 表示 block 輸出。三者 shape 都是 `[B,17,32]`。MSA（Multi-head Self-Attention，多頭自注意力）表示上一節的四 head attention；這個 block 的兩步是：
 
 \[
 \begin{aligned}
@@ -104,12 +104,12 @@ Y &= U+\operatorname{MLP}(\operatorname{LN}_2(U)).
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-transformer.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-transformer.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
-    {"event": "transformer", "block_count": 2, "input_tokens_shape": [1, 17, 32], "pre_ln": true, "first_attention_update_norm": 0.18654006719589233, "first_mlp_update_norm": 0.21488948166370392, "manual_residual_matches_block": true, "cls_feature_shape": [1, 32], "patch_feature_shape": [1, 16, 32], "logit_shape": [1, 2], "permutation": [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], "without_position_equivariance_max_error": 3.5762786865234375e-07, "with_fixed_position_cls_max_change": 0.030437029898166656, "parameters": 23970, "limitation": "Untrained mechanism check; changed CLS values do not show successful color classification."}
+    {"event": "transformer", "block_count": 2, "input_tokens_shape": [1, 17, 32], "pre_ln": true, "first_attention_update_norm": 0.18654008209705353, "first_mlp_update_norm": 0.2148894965648651, "manual_residual_matches_block": true, "cls_feature_shape": [1, 32], "patch_feature_shape": [1, 16, 32], "logit_shape": [1, 2], "permutation": [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], "without_position_equivariance_max_error": 3.5762786865234375e-07, "with_fixed_position_cls_max_change": 0.03043721616268158, "parameters": 23970, "limitation": "Untrained mechanism check; changed CLS values do not show successful color classification."}
     ```
 
 <!-- curriculum-evidence:end -->

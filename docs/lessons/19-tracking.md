@@ -2,7 +2,7 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/19-tracking.ipynb){ .md-button }
 
-偵測只回答「這一幀（frame，影片裡的一張畫面）有哪些框」。追蹤（tracking）還要回答：這一幀的某個框，是否和上一幀的某個框是同一個物件？本節要讓你看到：兩個同類物件交叉時，偵測可以完全正確，追蹤給的編號（track ID）卻互換了。讀完本節，你能手算一個小型 tracker（追蹤器）每一幀怎麼配對，也能自己數出 ID 換了幾次。你也會知道：只看上一幀的框為什麼會換號，先用速度預測位置為什麼不會。
+偵測只回答「這一幀（frame，影片裡的一張畫面）有哪些框」。追蹤（tracking）還要回答：這一幀的某個框，是否和上一幀的某個框是同一個物件？本節要讓你看到：兩個同類物件交叉時，偵測可以完全正確，追蹤給的編號（track ID；ID 是 identifier，識別編號）卻互換了。讀完本節，你能手算一個小型 tracker（追蹤器）每一幀怎麼配對，也能自己數出 ID 換了幾次。你也會知道：只看上一幀的框為什麼會換號，先用速度預測位置為什麼不會。
 
 前置是 6.2 [偵測評估](06-evaluation.md) 用到的 IoU（交集面積÷聯集面積）與一對一配對，以及第 18 章[影片管線](18-video.md)的逐幀處理。
 
@@ -90,7 +90,7 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
 列舉的配法數漲得很快：全部合格時，2 條 track 對 2 個框有 7 種，10 對 10 約 2.3 億種。正式系統改用專門解一對一配對的演算法，例如匈牙利演算法（Hungarian algorithm），不必把所有組合列出來；本節的列舉不是這種演算法。
 
-正式系統處理「不配」常見兩種做法：SORT 先用匈牙利演算法配完，再剔除 IoU 低於門檻的配對；ByteTrack 的官方程式則把「不配」的代價放進配對問題本身，讓演算法在 IoU 太低時寧可不配。兩種做法的結果不一定相同。匈牙利演算法找的是總分最好的一對一配對，和本節「先比對數」的規則不完全一樣，結果也不一定相同。這類一對一配對問題，英文叫 assignment problem（指派問題）；這裡的 assignment 指配對問題，不是第 5 章、12.3 訓練時決定哪個預測負責哪個 GT 的 assignment。
+正式系統處理「不配」常見兩種做法：SORT（Simple Online and Realtime Tracking，簡單的線上即時追蹤）先用匈牙利演算法配完，再剔除 IoU 低於門檻的配對；ByteTrack 的官方程式則把「不配」的代價放進配對問題本身，讓演算法在 IoU 太低時寧可不配。兩種做法的結果不一定相同。匈牙利演算法找的是總分最好的一對一配對，和本節「先比對數」的規則不完全一樣，結果也不一定相同。這類一對一配對問題，英文叫 assignment problem（指派問題）；這裡的 assignment 指配對問題，不是第 5 章、12.3 訓練時決定哪個預測負責哪個 GT 的 assignment。
 
 ## 為什麼上一框法會追錯
 
@@ -106,11 +106,11 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
 上一框法在第 5 幀仍保留舊的 ID1：它最後在第 3 幀配到 B，框是 `[16,20,28,32]`；間隔 5−3=2，沒有大於 max_age，所以還在。B 這一幀的偵測框是 `[0,20,12,32]`，兩框 IoU=0，低於 0.1，所以舊 ID1 和 B 的偵測框都沒配到（unmatched），B 只好開新的 ID3。第三次換號不是因為舊 ID1 過期：`max_age=2` 只讓舊 track 留下來當候選，要接回仍須通過 IoU 門檻。
 
-![同一組偵測框的實際 ID 分配：上列為上一框法，下列為速度預測法](../assets/diagrams/19-tracking.svg)
+![同一組偵測框的實際 ID 分配：上組為上一框法，下組為速度預測法](../assets/diagrams/19-tracking-readable.svg)
 
-圖分上下兩列：上列是上一框法，下列是速度預測法，列標題寫著各自的 ID 切換次數（也就是 ID switch 數）；每列 6 格，依序是第 0 到第 5 幀。每一格裡，A 畫在上半、B 畫在下半，只是讓字不重疊；「A：ID1」這類標籤，寫在各自方塊那一排的上方、靠格子左邊。兩框實際的 y 都是 20 到 32，配對時用的也是這個 y；水平位置則照真實的 x 等比例畫。
+圖分上下兩組：上組是上一框法，下組是速度預測法，組標題寫著各自的 ID 切換次數（也就是 ID switch 數）。每組 6 格排成兩欄，依左至右、上至下是第 0 到第 5 幀；這只重排同次執行的圖，沒有重算或改動 ID。每一格裡，A 畫在上半、B 畫在下半，只是讓字不重疊；「A：ID1」這類標籤，寫在各自方塊那一排的上方、靠格子左邊。兩框實際的 y 都是 20 到 32，配對時用的也是這個 y；水平位置則照真實的 x 等比例畫。
 
-方塊的顏色代表 track ID，不是類別：紅色是 ID1、藍色是 ID2、紫色是 ID3。上列第 2 幀 A、B 互換顏色（A、B 各換 1 次），第 5 幀 B 變成紫色（再換 1 次），就是那 3 次換號；第 4 幀的「B：漏檢」表示 B 沒被偵測到。下列的顏色從頭到尾都沒變。
+方塊的顏色代表 track ID，不是類別：紅色是 ID1、藍色是 ID2、紫色是 ID3。上組第 2 幀 A、B 互換顏色（A、B 各換 1 次），第 5 幀 B 變成紫色（再換 1 次），就是那 3 次換號；第 4 幀的「B：漏檢」表示 B 沒被偵測到。下組的顏色從頭到尾都沒變。
 
 下面兩串數字是 update 實際回傳的 IDs。外層第 f 個（從 0 數起）是第 f 幀；內層依該幀偵測框的順序，列出各框拿到的 track ID。本例每幀的偵測框都照 A、B 排（第 4 幀只有 A），所以 `[2,1]` 表示 A 拿到 ID2、B 拿到 ID1。
 
@@ -121,9 +121,9 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
 兩種 tracker 吃的是同一組人工偵測框，偵測本身的好壞對兩者完全一樣。程式另用 `evaluate_detections()` 替這組偵測框評分，不經過 tracker：每一幀的偵測框和 `truth_boxes(f)` 的兩個真值框做評估配對（matching），判定標準和 6.2 相同：IoU 至少 0.5 才算配上（配對 IoU 門檻 0.5），而且一對一，每個真值框最多配一個偵測框，反過來也一樣；配上的偵測框是 TP（正確偵測），沒配上的是 FP（誤報）。
 
-這組人工框沒有 score，沒辦法照 6.2 那樣依 score 由高到低逐筆配；程式用的是本節的完整列舉 `exact_gated_matching`，門檻設成 0.5（tracker 配對時用的是 0.1）。本例 11 個偵測框都和自己的真值框完全重合（IoU=1），和另一個物件的真值框 IoU 最多 0.2，所以就算照 6.2 那樣一次處理一個框，不論先處理哪個框，結果也一樣：TP=11、FP=0。6 幀×2 個物件=12 個真值框，其中 11 個配上，所以偵測的 recall（真實物件被偵測到的比例）是 11/12；沒配上的就是第 4 幀的 B。ID switch 從 3 降到 0，全靠 tracker 換了配對方法，不是偵測變好。這也不是完整的多物件追蹤（MOT，Multi-Object Tracking）評估：本節只數 ID switch，沒有計算 IDF1、HOTA 等正式指標（說明見「收益、代價與失敗範圍」的摺疊區）。
+這組人工框沒有 score，沒辦法照 6.2 那樣依 score 由高到低逐筆配；程式用的是本節的完整列舉 `exact_gated_matching`，門檻設成 0.5（tracker 配對時用的是 0.1）。本例 11 個偵測框都和自己的真值框完全重合（IoU=1），和另一個物件的真值框 IoU 最多 0.2，所以就算照 6.2 那樣一次處理一個框，不論先處理哪個框，結果也一樣：TP=11、FP=0。6 幀×2 個物件=12 個真值框，其中 11 個配上，所以偵測的 recall（真實物件被偵測到的比例）是 11/12；沒配上的就是第 4 幀的 B。ID switch 從 3 降到 0，全靠 tracker 換了配對方法，不是偵測變好。這也不是完整的多物件追蹤（MOT，Multi-Object Tracking）評估：本節只數 ID switch，沒有計算 IDF1（ID F1 score，身份 F1 分數）、HOTA（Higher Order Tracking Accuracy，高階追蹤準確率）等正式指標（說明見「收益、代價與失敗範圍」的摺疊區）。
 
-執行 `PYTHONPATH=. python lesson_cases/19-tracking.py`（Colab 則執行「本節可修改的完整實驗」那一格），核對印出的兩份 IDs、switch 數 3→0，以及 `detector recall=11/12, false positives=0`。輸出倒數第二行的意思是「完整列舉通過了貪心反例與空偵測框兩項檢查」；程式先跑完所有斷言（assert）才開始印，所以看得到這一行，就表示這兩項檢查都通過了。recall 那一行也一樣：`evaluate_detections()` 依序回傳 TP、真值框數、FP，程式先用斷言確認它們是 `(11, 12, 0)`，才印出來。tracking 規則不是神經網路，本節不需要 backward；配對、預測、ID switch 計數，以及偵測的 recall 與 FP 都真實計算。輸出最後一行是程式畫出的 ID 圖的存檔路徑 `artifacts/lesson-19/ids.svg`；上面那張圖，就是頁尾執行紀錄那次執行畫出的這個檔案。
+執行 `PYTHONPATH=. python lesson_cases/19-tracking.py`（Colab 則執行「本節可修改的完整實驗」那一格），核對印出的兩份 IDs、switch 數 3→0，以及 `detector recall=11/12, false positives=0`。輸出倒數第二行的意思是「完整列舉通過了貪心反例與空偵測框兩項檢查」；程式先跑完所有斷言（assert）才開始印，所以看得到這一行，就表示這兩項檢查都通過了。recall 那一行也一樣：`evaluate_detections()` 依序回傳 TP、真值框數、FP，程式先用斷言確認它們是 `(11, 12, 0)`，才印出來。tracking 規則不是神經網路，本節不需要 backward；配對、預測、ID switch 計數，以及偵測的 recall 與 FP 都真實計算。輸出最後一行是程式畫出的 ID 圖的存檔路徑 `artifacts/lesson-19/ids.svg`；上面那張圖由這個檔案重排而來，沿用頁尾執行紀錄那次的所有 ID 與位置。
 
 ## 收益、代價與失敗範圍
 
@@ -144,7 +144,7 @@ pairs = exact_gated_matching(quality, threshold=.1)
 
     本節的 tracker 只取它們共同的核心（先預測位置，再一對一配對），不是這些方法的完整實作。
 
-    多物件追蹤的正式評估常用 IDF1 與 HOTA：IDF1 先把整段影片的軌跡和真實身份一對一對應再計分，著重身份有沒有維持住；HOTA 把偵測準不準和關聯對不對分開量，再合成一個分數。本節只數 ID switch，沒有計算這些分數。
+    多物件追蹤的正式評估常用 IDF1（ID F1 score，身份 F1 分數）與 HOTA（Higher Order Tracking Accuracy，高階追蹤準確率）：IDF1 先把整段影片的軌跡和真實身份一對一對應再計分，著重身份有沒有維持住；HOTA 把偵測準不準和關聯對不對分開量，再合成一個分數。本節只數 ID switch，沒有計算這些分數。
 
 常見錯誤：
 
@@ -199,7 +199,7 @@ for result in video['run_stream'](video['synthetic_frames'](), model):
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/19-tracking.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/19-tracking.json)
 
 ??? example "展開本次實際輸出"
 

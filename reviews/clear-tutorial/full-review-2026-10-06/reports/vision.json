@@ -1,0 +1,207 @@
+{
+  "reviewer": "vision",
+  "review_date": "2026-10-06",
+  "reading_scope": {
+    "completed_units": 161,
+    "total_units": 161,
+    "navigation_and_prerequisite_units": 98,
+    "target_units": 63,
+    "navigation_and_prerequisite_pages": ["index", "learning-path", "00-warmup", "01-small-cnn", "02-diagnostics", "03-identity", "03-projection", "03-comparison", "04-localization", "04-coordinates", "05-assignment", "06-decode-nms", "06-evaluation", "15-attention-bridge"],
+    "target_pages": ["21-patches", "21-attention", "21-transformer", "21-training", "22-views", "22-collapse", "22-distillation", "22-features", "23-dino-versions", "23-detection-bridge"],
+    "order": "依 gate 每次開放一單位，當場記錄後才開下一單位；實際導航與先修先於第21至23章。",
+    "original_notes": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/vision.jsonl",
+    "disclosure_log": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/vision-disclosures.jsonl"
+  },
+  "issues": [
+    {
+      "id": "vision-01",
+      "original_position": {"unit_id": "21-patches/00", "source": "docs/lessons/21-patches.md", "unit_lines": [1,8], "note_log_line": 99},
+      "quote": "Vision Transformer，簡稱 **ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "英文全名、切塊轉向量的角色已懂；缺中文名稱，不影響當前概念。",
+      "later_clarification": "後文持續教完整路徑，未補本名稱缺口。",
+      "final_severity": "optional",
+      "minimal_change": "首次完整名稱旁補視覺Transformer等中文譯名。"
+    },
+    {
+      "id": "vision-02",
+      "original_position": {"unit_id": "21-patches/04", "source": "docs/lessons/21-patches.md", "unit_lines": [46,68], "note_log_line": 103},
+      "quote": "我們在 16 個 patch 前面添一個 **CLS token**：一個可學的 32 維向量，作為整圖的彙整位置。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "可學整圖彙整位置、加入理由與形狀已懂；CLS縮寫全名未展開。",
+      "later_clarification": "後文釐清CLS如何經attention取得圖片內容，但未補縮寫名稱。",
+      "final_severity": "optional",
+      "minimal_change": "首次補CLS完整英文與中文名稱，保留現有角色解釋。"
+    },
+    {
+      "id": "vision-03",
+      "original_position": {"unit_id": "21-attention/03", "source": "docs/lessons/21-attention.md", "unit_lines": [48,71], "note_log_line": 109},
+      "quote": "後續逐 token 的運算和 residual 也保留這個性質。",
+      "original_severity": "burden",
+      "type": "教學時序",
+      "known_and_missing": "共用QKV與全來源加總的attention排列性質已懂；此刻比較完整兩Transformer blocks及LayerNorm之後CLS，其他新部件只列名，尚不能自行核對為何整條路徑亦成立。不是attention全面未教。",
+      "later_clarification": [
+        {"unit_id": "21-transformer/02", "note_log_line": 113, "quote": "它不把 17 個 token 平均成一個，也不把不同圖片混在一起算。", "meaning": "後一頁才明說LN逐token，不混其他位置。"},
+        {"unit_id": "21-transformer/03", "note_log_line": 114, "quote": "同一套 MLP 權重分別套用到每個 token。", "meaning": "後一頁才明說MLP逐token共權，不讀其他patch。"}
+      ],
+      "final_severity": "burden",
+      "final_status": "概念已被後文釐清；首次使用點的時序負擔仍需修，沒有把後來理解回寫成早期已知。",
+      "minimal_change": "在完整TinyViT交換比較首次出現處加一句：除了attention外，block其餘轉換與LayerNorm都各token使用相同規則，不新增token之間混合；詳細拆解仍留下一節。"
+    },
+    {
+      "id": "vision-04",
+      "original_position": {"unit_id": "21-transformer/03", "source": "docs/lessons/21-transformer.md", "unit_lines": [25,55], "note_log_line": 114},
+      "quote": "**MLP（多層感知器）**在這裡指兩個線性層，中間加非線性函數。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "中文名稱、角色與運算已懂；完整英文名稱未展開。",
+      "later_clarification": "未另補全名。",
+      "final_severity": "optional",
+      "minimal_change": "補Multi-Layer Perceptron。"
+    },
+    {
+      "id": "vision-05",
+      "original_position": {"unit_id": "21-transformer/03", "source": "docs/lessons/21-transformer.md", "unit_lines": [25,55], "note_log_line": 114},
+      "quote": "每個 token 的 32 個特徵先變成 64 個，再用 **GELU**，最後變回 32 個。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "非線性用途與比ReLU平滑的描述已懂；GELU完整英文與中文名稱未展開。",
+      "later_clarification": "後文使用此部件但未補全名。",
+      "final_severity": "optional",
+      "minimal_change": "補Gaussian Error Linear Unit與中文名稱，無需額外要求手算公式。"
+    },
+    {
+      "id": "vision-06",
+      "original_position": {"unit_id": "21-transformer/03", "source": "docs/lessons/21-transformer.md", "unit_lines": [25,55], "note_log_line": 114},
+      "quote": "MSA 表示上一節的四 head attention",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "可連回上一節四head自注意力；縮寫完整英文名稱未展開。",
+      "later_clarification": "未另補全名。",
+      "final_severity": "optional",
+      "minimal_change": "補Multi-head Self-Attention（多頭自注意力）。"
+    },
+    {
+      "id": "vision-07",
+      "original_position": {"unit_id": "21-training/02", "source": "docs/lessons/21-training.md", "unit_lines": [25,52], "note_log_line": 119},
+      "quote": "optimizer 使用 **AdamW**，學習率 0.003、weight decay 0.01。AdamW 保留過去梯度的移動平均，用來調整下一次更新；weight decay 在更新時讓權重稍微往 0 縮。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "optimizer角色、梯度歷史與權重收縮已有說明；未展開名稱，W與weight decay的直接對應需推測。",
+      "later_clarification": "後文設定與續訓清楚，未補名稱。",
+      "final_severity": "optional",
+      "minimal_change": "首次補完整英文名稱、中文名稱及W對應，保留現有機制說明。"
+    },
+    {
+      "id": "vision-08",
+      "original_position": {"unit_id": "21-training/04", "source": "docs/lessons/21-training.md", "unit_lines": [72,107], "note_log_line": 121},
+      "quote": "還需要 optimizer 的梯度歷史、已完成步數，以及隨機數產生器的狀態。後者簡稱 **RNG state**，保存的是「亂數抽到哪裡」，不只是最初的 seed。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "已有中文名稱、狀態意思及與seed差別；RNG英文未展開。",
+      "later_clarification": "22.3再次給亂數產生器中文與續訓角色，仍未展開英文。",
+      "final_severity": "optional",
+      "minimal_change": "補RNG＝Random Number Generator。"
+    },
+    {
+      "id": "vision-09",
+      "original_position": {"unit_id": "22-distillation/01", "source": "docs/lessons/22-distillation.md", "unit_lines": [7,18], "note_log_line": 136},
+      "quote": "![一個 DINO 更新步驟：舊中心產生固定 teacher 目標，student 走梯度，center 和 teacher 各走自己的 EMA]",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "兩模型、投影輸出與方向已教；開始完整使用時DINO全名未給。",
+      "later_clarification": {"unit_id": "22-distillation/06", "note_log_line": 141, "quote": "2021 年自監督 **DINO（self-distillation with no labels）**", "meaning": "英文名稱在頁末後補；中文譯名仍可補。"},
+      "final_severity": "optional",
+      "final_status": "名稱部分後釐清，原首次缺口保留。",
+      "minimal_change": "把完整英文前移到首次完整介紹，再補無標籤自蒸餾等中文名稱。"
+    },
+    {
+      "id": "vision-10",
+      "original_position": {"unit_id": "22-distillation/05", "source": "docs/lessons/22-distillation.md", "unit_lines": [75,95], "note_log_line": 140},
+      "quote": "梯度範數最大截為 3",
+      "original_severity": "optional",
+      "type": "概念介紹",
+      "known_and_missing": "前頁已懂所有梯度的整體範數，這裡懂上限3；未說超限時各梯度如何改，不能獨立確認共同比例縮放與保方向。未阻礙DINO主機制。",
+      "later_clarification": "未補操作公式。",
+      "final_severity": "optional",
+      "minimal_change": "加一句：範數超過3時全部梯度乘3／原範數，方向不變而長度降至3。"
+    },
+    {
+      "id": "vision-11",
+      "original_position": {"unit_id": "22-features/02", "source": "docs/lessons/22-features.md", "unit_lines": [15,36], "note_log_line": 144},
+      "quote": "**SSL** 是 160 步後的 teacher；**random** 保留它訓練起點、尚未更新的權重。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "兩套權重與對照角色已懂，也學過self-supervised learning；SSL縮寫與該詞連結未直接寫。",
+      "later_clarification": "後文持續定義SSL為訓練後teacher，未展開名稱。",
+      "final_severity": "optional",
+      "minimal_change": "補SSL＝self-supervised learning（自監督學習），此標記指訓練後teacher。"
+    },
+    {
+      "id": "vision-12",
+      "original_position": {"unit_id": "22-features/03", "source": "docs/lessons/22-features.md", "unit_lines": [37,44], "note_log_line": 145},
+      "quote": "先只用 train 特徵估計每維平均與標準差，再把 train／validation／test 都照這份統計標準化。標準差最小取 0.01",
+      "original_severity": "optional",
+      "type": "概念介紹",
+      "known_and_missing": "統計僅train、每維與分母下限已有說明；減train均值／除std可類比前頁LN推測，但未直接給本處轉換公式，因此在四題中標成推論。",
+      "later_clarification": "23.1逐channelImageNet正規化、23.2每grid位置／channel標準化仍以統計描述，未補完整減除公式。",
+      "final_severity": "optional",
+      "minimal_change": "補x′=(x−train該維平均)/max(train該維標準差,0.01)，同統計套三批；23.2對應下限0.05。"
+    },
+    {
+      "id": "vision-13",
+      "original_position": {"unit_id": "23-dino-versions/03", "source": "docs/lessons/23-dino-versions.md", "unit_lines": [55,81], "note_log_line": 152},
+      "quote": "DINOv3 的 Gram anchoring 用參考模型的 patch 關係約束 student。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "關係約束的角色、用途與機制明白；主方法只有英文未給中文名稱。",
+      "later_clarification": "未補中文名。",
+      "final_severity": "optional",
+      "minimal_change": "首次補Gram anchoring中文譯名，保留既有參考關係說明。"
+    },
+    {
+      "id": "vision-14",
+      "original_position": {"unit_id": "23-detection-bridge/03", "source": "docs/lessons/23-detection-bridge.md", "unit_lines": [34,51], "note_log_line": 159},
+      "quote": "Smooth L1（小誤差用平方、較大誤差用線性）",
+      "original_severity": "optional",
+      "type": "概念介紹",
+      "known_and_missing": "框loss用途與兩段定性已懂；缺中文名稱及本例小／大誤差門檻，不能獨立判誤差在哪段或算值。未阻礙單框方法角色。",
+      "later_clarification": "後文只有結果與限制，未補門檻。",
+      "final_severity": "optional",
+      "minimal_change": "補平滑L1損失中文名，指出本例兩段門檻或短分段公式。"
+    }
+  ],
+  "checkpoint_locations": {
+    "log_path": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/vision.jsonl",
+    "format": "每列notes.checkpoints；每筆answers為按skill原順序的四題，含逐項引文、來源、明說或推論與當下未知。以下數字為JSONL列號。",
+    "pages": [
+      {"page": "21-patches", "first_use": [{"unit_id":"21-patches/00","line":99},{"unit_id":"21-patches/03","line":102},{"unit_id":"21-patches/04","line":103}], "page_end":{"unit_id":"21-patches/06","line":105}},
+      {"page": "21-attention", "scope_overview":{"unit_id":"21-attention/00","line":106}, "first_use":[{"unit_id":"21-attention/02","line":108},{"unit_id":"21-attention/03","line":109}], "page_end":{"unit_id":"21-attention/04","line":110}},
+      {"page": "21-transformer", "first_use":[{"unit_id":"21-transformer/01","line":112},{"unit_id":"21-transformer/02","line":113},{"unit_id":"21-transformer/03","line":114}], "page_end":{"unit_id":"21-transformer/05","line":116}},
+      {"page": "21-training", "first_use":[{"unit_id":"21-training/02","line":119},{"unit_id":"21-training/04","line":121}], "page_end":{"unit_id":"21-training/05","line":122}},
+      {"page": "22-views", "first_use":[{"unit_id":"22-views/01","line":124},{"unit_id":"22-views/03","line":126}], "page_end":{"unit_id":"22-views/05","line":128}},
+      {"page": "22-collapse", "first_use":[{"unit_id":"22-collapse/01","line":130},{"unit_id":"22-collapse/03","line":132},{"unit_id":"22-collapse/04","line":133}], "page_end":{"unit_id":"22-collapse/05","line":134}},
+      {"page": "22-distillation", "first_use":[{"unit_id":"22-distillation/01","line":136},{"unit_id":"22-distillation/02","line":137},{"unit_id":"22-distillation/03","line":138},{"unit_id":"22-distillation/04","line":139},{"unit_id":"22-distillation/05","line":140}], "page_end":{"unit_id":"22-distillation/06","line":141}},
+      {"page": "22-features", "first_use":[{"unit_id":"22-features/01","line":143},{"unit_id":"22-features/02","line":144},{"unit_id":"22-features/03","line":145}], "page_end":{"unit_id":"22-features/06","line":148}},
+      {"page": "23-dino-versions", "scope_overview":{"unit_id":"23-dino-versions/01","line":150}, "first_use":[{"unit_id":"23-dino-versions/02","line":151},{"unit_id":"23-dino-versions/03","line":152},{"unit_id":"23-dino-versions/04","line":153}], "page_end":{"unit_id":"23-dino-versions/06","line":155}},
+      {"page": "23-detection-bridge", "first_use":[{"unit_id":"23-detection-bridge/02","line":158},{"unit_id":"23-detection-bridge/03","line":159},{"unit_id":"23-detection-bridge/04","line":160}], "page_end":{"unit_id":"23-detection-bridge/05","line":161}}
+    ]
+  },
+  "final_conclusion": {
+    "severity_counts": {"blocking":0,"burden":1,"optional":13},
+    "understanding": "經實際先修，第21至23章完整的patch→ViT→訓練／還原→同圖view→塌縮反例→DINO師生／中心／溫度→凍結評測→版本與Gram→單框定位路徑可理解。唯一主要時序負擔是21.2先用完整block交換性質，21.3才給逐tokenLN／MLP依據；後文已解，但首次處仍宜加短橋句。其他為名稱與小型算式／操作補充，沒有把已教角色擴大說成全面未教。",
+    "evidence_boundaries": "正文普遍把shape、手工反例、真更新、同規則獨立評測與比較收益分清。兩種凍結讀取器皆64/64不證SSL勝random；23.2單框聯合比例非AP、54/64且保留失敗、無random定位對照。官方v2只兩受控圖CPU前向、top2不同物件、無v3實跑或自然圖排名。沒有為一般概念額外要求訓練成果，也沒有替無比較主張要求較好證明。",
+    "visual_conclusion": "所有當次列出的目標PNG皆實際看過，圖與正文的shape、排列、單位、任務、數值及限制一致；未發現需補新圖才能解決的blocking／burden。唯一時序問題可先以正文一句修，不一定需新圖。",
+    "honest_unknowns": "選讀排除的完整SK／KoLeo／官方v2v3訓練算法仍未掌握，正文明示不實作，沒有將它們說成已完整介紹；SmoothL1門檻及部分標準化算式仍屬未明說，已按當時影響列optional。"
+  },
+  "access_declaration": {
+    "read": ["指定reader-instructions.txt", "frozen clear-tutorial SKILL.md及references/review-protocol.md", "gate當次揭露的161單位", "僅當次明列的PNG", "自己的current-note與state", "協調者提供確切路徑後，自己的vision.jsonl及vision-disclosures.jsonl以整理最終報告"],
+    "did_not_access": ["作者對話", "其他讀者或舊報告", "manifest", "封存packets", "未揭露未來正文", "教材程式實作或gate實作", "外部論文／官方程式／說明", "工作中教材修改"],
+    "actions": "只寫自己的逐段review note與本final-report，未改教材／其他紀錄，未下載權重、未啟動訓練。只在自己的vision目錄查找紀錄檔，沒有列目錄或搜尋repo。",
+    "isolation": "共享檔案系統是遵守範圍的行為隔離，不宣稱技術上無法存取。",
+    "append_only": "後文釐清與先修自我更正僅追加，未回改已記錄的早期理解。15-attention-bridge/00對更新的暫時誤判，在當次後讀/03追加更正，不算教材問題。"
+  },
+  "unverified": ["實際網站及手機呈現", "SVG在網站的排版與縮放", "數學公式實際渲染", "Colab操作與完整程式執行", "實際JSON輸出／checkpoint／SHA下載核對", "訓練與推論的獨立重跑", "外部來源與官方實作核查", "真實照片、多物件、跨硬體／版本的泛化或逐位重現"]
+}

@@ -237,3 +237,11 @@ concat／add 列的詳見欄加上 [11.1]：11.1 有〈串接不是相加〉、4
 - [原始卡點與具體處理](clear-tutorial/16f6910/decisions.json)保留未新增的選讀建議。原先前提包漏發及08提前brief的限制另列，沒有算成教材錯或冒稱08全程盲讀。
 
 本輪修正後沒有未解的必要問題；這是AI閱讀／技術查核的實際範圍，不是學生學習成效驗收。全站實際Zensical桌面／手機、公式換頁與執行檢查見 [verification.json](clear-tutorial/16f6910/verification.json)，不以SVG檔存在或strict build取代視覺查核。
+
+## 2026-10-06：最新版 clear-tutorial 全套重審
+
+本次全52節的實際方法、處置、證據與限制見[本輪報告](clear-tutorial/full-review-2026-10-06/README.md)。首頁與路線先於各組目標課實際閱讀；第三輪另讀首頁／路線／詞表並看其實際站點。詞表新增條目與真正首次正文介紹另由相應技術報告核對。
+
+本頁對應處置為 R005，見[決策表](clear-tutorial/full-review-2026-10-06/decisions.json)。[基礎技術報告](clear-tutorial/full-review-2026-10-06/rechecks/technical-foundations.json)與[最後維護delta核回](clear-tutorial/full-review-2026-10-06/rechecks/technical-detector-evolution.json)保存各自時點；[第三輪](clear-tutorial/full-review-2026-10-06/rechecks/transitions-visual.json)與[最後綁定](clear-tutorial/full-review-2026-10-06/final-bindings.json)區分實際查核範圍。
+
+沒有真人學生驗收，四題亦不能保證不漏報；本次 DINO 漏報、引用缺陷及手機細字限制已明列。[驗證結果](clear-tutorial/full-review-2026-10-06/verification.json)保存實際命令結果；此頁最新來源綁定於[coverage.json](coverage.json)，歷史審閱保留。

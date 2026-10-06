@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="1030" viewBox="0 0 440 1030" role="img" aria-labelledby="title desc">
+  <title id="title">雙 head 的訓練梯度與官方推論路徑</title>
+  <desc id="desc">訓練時，共享特徵送入一對多 head，也經 detach 送入一對一 head。一對多 loss 的梯度回到共享特徵，一對一 loss 只訓練自己的 head。官方採 top-10 與 top-1；本節 toy 採 top-2 與全域最優。官方推論只保留一對一 head，再取全圖 top-k 並過濾分數，不跑 NMS。toy 未測完整偵測推論。</desc>
+  <defs>
+    <marker id="forward" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#475569"/></marker>
+    <marker id="many" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#2563eb"/></marker>
+    <marker id="one" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#b45309"/></marker>
+  </defs>
+  <rect width="440" height="1030" rx="12" fill="#f8fafc"/>
+  <g font-family="sans-serif" text-anchor="middle" fill="#0f172a">
+    <text x="220" y="34" font-size="23" font-weight="700">訓練：兩個 head 都學</text>
+    <text x="220" y="64" font-size="19">實線 ↓ 特徵　虛線 ↑ 梯度</text>
+    <rect x="90" y="88" width="260" height="76" rx="9" fill="#e2e8f0" stroke="#64748b"/>
+    <text x="220" y="117" font-size="22">共享特徵</text>
+    <text x="220" y="146" font-size="20">backbone／neck</text>
+    <g fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#forward)">
+      <path d="M220 164V187H122V297"/>
+      <path d="M220 187H318V212"/>
+      <path d="M318 280V297"/>
+      <path d="M122 415V447"/>
+      <path d="M318 415V447"/>
+    </g>
+    <rect x="232" y="216" width="172" height="64" rx="7" fill="#fff7ed" stroke="#b45309" stroke-width="2"/>
+    <text x="318" y="242" font-size="20" font-weight="700">detach：值保留</text>
+    <text x="318" y="267" font-size="20">回傳梯度在此停</text>
+    <rect x="46" y="301" width="152" height="114" rx="9" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="122" y="332" font-size="21" font-weight="700">一對多 head</text>
+    <text x="122" y="366" font-size="20">官方：top-10</text>
+    <text x="122" y="396" font-size="20">toy：top-2</text>
+    <rect x="242" y="301" width="152" height="114" rx="9" fill="#fff7ed" stroke="#b45309" stroke-width="2"/>
+    <text x="318" y="332" font-size="21" font-weight="700">一對一 head</text>
+    <text x="318" y="366" font-size="20">官方：top-1</text>
+    <text x="318" y="396" font-size="20">toy：全域最優</text>
+    <rect x="57" y="451" width="130" height="56" rx="7" fill="#dbeafe"/>
+    <text x="122" y="486" font-size="22">many loss</text>
+    <rect x="253" y="451" width="130" height="56" rx="7" fill="#ffedd5"/>
+    <text x="318" y="486" font-size="22">one loss</text>
+    <path d="M57 479H23V126H85" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#many)"/>
+    <path d="M383 479H420V290H385" fill="none" stroke="#b45309" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#one)"/>
+    <path d="M379 283L392 296M392 283L379 296" fill="none" stroke="#b45309" stroke-width="3"/>
+    <text x="122" y="536" font-size="20" fill="#1d4ed8">學 head＋共享特徵</text>
+    <text x="318" y="563" font-size="20" fill="#92400e">只學自己的 head</text>
+    <text x="220" y="595" font-size="19">官方：兩 head 各有框、分類分支</text>
+    <text x="220" y="623" font-size="19">toy：兩 head 只做分類</text>
+    <path d="M24 648H416" stroke="#cbd5e1"/>
+    <text x="220" y="683" font-size="23" font-weight="700">官方推論：只留一對一 head</text>
+    <rect x="90" y="710" width="260" height="56" rx="9" fill="#e2e8f0" stroke="#64748b"/>
+    <text x="220" y="746" font-size="22">共享特徵</text>
+    <path d="M220 766V795" stroke="#475569" stroke-width="2.5" marker-end="url(#forward)"/>
+    <rect x="90" y="799" width="260" height="56" rx="9" fill="#fff7ed" stroke="#b45309"/>
+    <text x="220" y="835" font-size="22">一對一 head</text>
+    <path d="M220 855V884" stroke="#475569" stroke-width="2.5" marker-end="url(#forward)"/>
+    <rect x="68" y="888" width="304" height="72" rx="9" fill="#ecfdf5" stroke="#047857"/>
+    <text x="220" y="917" font-size="21">全圖 top-k → score 門檻</text>
+    <text x="220" y="946" font-size="21" font-weight="700">輸出框與類別，無 NMS</text>
+    <text x="220" y="1001" font-size="19">toy 只驗訓練梯度，未測偵測成績</text>
+  </g>
+</svg>

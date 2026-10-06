@@ -1,14 +1,14 @@
 {
   "id": "22-distillation",
   "passed": true,
-  "executed_at_utc": "2026-10-05T11:48:24.915909+00:00",
+  "executed_at_utc": "2026-10-06T05:23:17.197309+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -31,9 +31,973 @@
     "miniyolo/vision_data.py": "92b1cc3885a0b897eba2a24ac1cd604c55b5ea903a1886904e64b9364c67dde1",
     "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
   },
-  "process_wall_seconds": 12.4181,
+  "process_wall_seconds": 6.6124,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "{\n  \"seed\": 7,\n  \"device\": \"cpu\",\n  \"steps\": 160,\n  \"checkpoint_step\": 80,\n  \"train_samples\": 128,\n  \"batch_size\": 24,\n  \"backbone\": {\n    \"image_size\": 32,\n    \"patch_size\": 8,\n    \"embed_dim\": 32,\n    \"depth\": 2,\n    \"num_heads\": 4,\n    \"mlp_ratio\": 2,\n    \"num_classes\": 2,\n    \"dropout\": 0.0\n  },\n  \"training_config\": {\n    \"output_dim\": 16,\n    \"hidden_dim\": 64,\n    \"bottleneck_dim\": 16,\n    \"batch_size\": 24,\n    \"learning_rate\": 0.0005,\n    \"student_temperature\": 0.15,\n    \"teacher_temperature\": 0.08,\n    \"teacher_momentum\": 0.95,\n    \"center_momentum\": 0.9,\n    \"global_scale\": [\n      0.65,\n      1.0\n    ]\n  },\n  \"first_step\": {\n    \"step\": 1,\n    \"loss\": 1.9427120685577393,\n    \"teacher_entropy\": 1.7583107948303223,\n    \"student_grad_norm\": 24.119150161743164\n  },\n  \"last_step\": {\n    \"step\": 160,\n    \"loss\": 1.8742752075195312,\n    \"teacher_entropy\": 1.8416004180908203,\n    \"student_grad_norm\": 0.9461426734924316\n  },\n  \"backbone_weights_changed\": true,\n  \"teacher_has_no_grad\": true,\n  \"resume\": {\n    \"next_random_views_identical\": true,\n    \"student_teacher_optimizer_center_identical\": true,\n    \"loss_history_identical\": true,\n    \"final_step\": 160\n  },\n  \"diagnostics_train\": {\n    \"feature_std\": 0.32309845089912415,\n    \"normalized_feature_std\": 0.056578539311885834,\n    \"mean_pair_cosine\": 0.8623811602592468,\n    \"mean_output_entropy\": 1.7878174781799316,\n    \"marginal_output_entropy\": 2.215689182281494\n  },\n  \"elapsed_training_and_resume_seconds\": 7.333005840016995,\n  \"checkpoint_path\": \"artifacts/runs/dino/22-distillation-midpoint.pt\",\n  \"simplifications\": \"2 global views; ordinary MLP and no weight normalization; fixed temperatures/LR/EMA; no multi-crop or official schedules\",\n  \"limitation\": \"DINO2021 mechanism demonstration from scratch; loss/diagnostics are not downstream or natural-image capability proof\"\n}\nactual history: artifacts/runs/dino/22-distillation.json\n",
+  "stdout": "{\n  \"seed\": 7,\n  \"device\": \"cpu\",\n  \"steps\": 160,\n  \"checkpoint_step\": 80,\n  \"train_samples\": 128,\n  \"batch_size\": 24,\n  \"backbone\": {\n    \"image_size\": 32,\n    \"patch_size\": 8,\n    \"embed_dim\": 32,\n    \"depth\": 2,\n    \"num_heads\": 4,\n    \"mlp_ratio\": 2,\n    \"num_classes\": 2,\n    \"dropout\": 0.0\n  },\n  \"training_config\": {\n    \"output_dim\": 16,\n    \"hidden_dim\": 64,\n    \"bottleneck_dim\": 16,\n    \"batch_size\": 24,\n    \"learning_rate\": 0.0005,\n    \"student_temperature\": 0.15,\n    \"teacher_temperature\": 0.08,\n    \"teacher_momentum\": 0.95,\n    \"center_momentum\": 0.9,\n    \"global_scale\": [\n      0.65,\n      1.0\n    ]\n  },\n  \"first_step\": {\n    \"step\": 1,\n    \"loss\": 1.9427120685577393,\n    \"teacher_entropy\": 1.7583107948303223,\n    \"student_grad_norm\": 24.119152069091797\n  },\n  \"last_step\": {\n    \"step\": 160,\n    \"loss\": 1.8742694854736328,\n    \"teacher_entropy\": 1.8415940999984741,\n    \"student_grad_norm\": 0.9462160468101501\n  },\n  \"backbone_weights_changed\": true,\n  \"teacher_has_no_grad\": true,\n  \"resume\": {\n    \"next_random_views_identical\": true,\n    \"student_teacher_optimizer_center_identical\": true,\n    \"loss_history_identical\": true,\n    \"final_step\": 160\n  },\n  \"diagnostics_train\": {\n    \"feature_std\": 0.32309943437576294,\n    \"normalized_feature_std\": 0.05657871067523956,\n    \"mean_pair_cosine\": 0.8623802661895752,\n    \"mean_output_entropy\": 1.7878104448318481,\n    \"marginal_output_entropy\": 2.2156848907470703\n  },\n  \"elapsed_training_and_resume_seconds\": 4.2405333849983435,\n  \"checkpoint_path\": \"artifacts/runs/dino/22-distillation-midpoint.pt\",\n  \"simplifications\": \"2 global views; ordinary MLP and no weight normalization; fixed temperatures/LR/EMA; no multi-crop or official schedules\",\n  \"limitation\": \"DINO2021 mechanism demonstration from scratch; loss/diagnostics are not downstream or natural-image capability proof\"\n}\nactual history: artifacts/runs/dino/22-distillation.json\n",
   "stderr": "",
-  "exit_code": 0
+  "exit_code": 0,
+  "figure_data": {
+    "self_distillation_history": [
+      {
+        "step": 1,
+        "loss": 1.9427120685577393,
+        "teacher_entropy": 1.7583107948303223,
+        "student_grad_norm": 24.119152069091797
+      },
+      {
+        "step": 2,
+        "loss": 2.081080436706543,
+        "teacher_entropy": 1.818734049797058,
+        "student_grad_norm": 19.931062698364258
+      },
+      {
+        "step": 3,
+        "loss": 1.9025626182556152,
+        "teacher_entropy": 1.7943931818008423,
+        "student_grad_norm": 8.352400779724121
+      },
+      {
+        "step": 4,
+        "loss": 1.85591721534729,
+        "teacher_entropy": 1.816506266593933,
+        "student_grad_norm": 2.0145201683044434
+      },
+      {
+        "step": 5,
+        "loss": 1.9442307949066162,
+        "teacher_entropy": 1.9219557046890259,
+        "student_grad_norm": 1.9723823070526123
+      },
+      {
+        "step": 6,
+        "loss": 2.0041005611419678,
+        "teacher_entropy": 1.9958001375198364,
+        "student_grad_norm": 1.0857844352722168
+      },
+      {
+        "step": 7,
+        "loss": 2.1034843921661377,
+        "teacher_entropy": 2.0944995880126953,
+        "student_grad_norm": 0.9814468622207642
+      },
+      {
+        "step": 8,
+        "loss": 2.1971688270568848,
+        "teacher_entropy": 2.177748441696167,
+        "student_grad_norm": 1.730310320854187
+      },
+      {
+        "step": 9,
+        "loss": 2.287005662918091,
+        "teacher_entropy": 2.2595717906951904,
+        "student_grad_norm": 1.5779331922531128
+      },
+      {
+        "step": 10,
+        "loss": 2.365196704864502,
+        "teacher_entropy": 2.3302524089813232,
+        "student_grad_norm": 1.2393393516540527
+      },
+      {
+        "step": 11,
+        "loss": 2.460238456726074,
+        "teacher_entropy": 2.4148876667022705,
+        "student_grad_norm": 1.1563392877578735
+      },
+      {
+        "step": 12,
+        "loss": 2.5373635292053223,
+        "teacher_entropy": 2.4816839694976807,
+        "student_grad_norm": 1.1580517292022705
+      },
+      {
+        "step": 13,
+        "loss": 2.6091818809509277,
+        "teacher_entropy": 2.5457284450531006,
+        "student_grad_norm": 1.3077465295791626
+      },
+      {
+        "step": 14,
+        "loss": 2.663907766342163,
+        "teacher_entropy": 2.5979206562042236,
+        "student_grad_norm": 1.439818263053894
+      },
+      {
+        "step": 15,
+        "loss": 2.7056431770324707,
+        "teacher_entropy": 2.6383748054504395,
+        "student_grad_norm": 1.338244915008545
+      },
+      {
+        "step": 16,
+        "loss": 2.7396843433380127,
+        "teacher_entropy": 2.673654317855835,
+        "student_grad_norm": 1.3702894449234009
+      },
+      {
+        "step": 17,
+        "loss": 2.7495369911193848,
+        "teacher_entropy": 2.6924550533294678,
+        "student_grad_norm": 1.276145339012146
+      },
+      {
+        "step": 18,
+        "loss": 2.757844924926758,
+        "teacher_entropy": 2.706425905227661,
+        "student_grad_norm": 1.1640623807907104
+      },
+      {
+        "step": 19,
+        "loss": 2.7611327171325684,
+        "teacher_entropy": 2.7158477306365967,
+        "student_grad_norm": 1.0775938034057617
+      },
+      {
+        "step": 20,
+        "loss": 2.751124858856201,
+        "teacher_entropy": 2.712369680404663,
+        "student_grad_norm": 0.9466719627380371
+      },
+      {
+        "step": 21,
+        "loss": 2.736546516418457,
+        "teacher_entropy": 2.7033474445343018,
+        "student_grad_norm": 0.8183696866035461
+      },
+      {
+        "step": 22,
+        "loss": 2.7057132720947266,
+        "teacher_entropy": 2.675723075866699,
+        "student_grad_norm": 0.8694872856140137
+      },
+      {
+        "step": 23,
+        "loss": 2.676494598388672,
+        "teacher_entropy": 2.650524139404297,
+        "student_grad_norm": 0.8574523329734802
+      },
+      {
+        "step": 24,
+        "loss": 2.6356372833251953,
+        "teacher_entropy": 2.6139228343963623,
+        "student_grad_norm": 0.8015700578689575
+      },
+      {
+        "step": 25,
+        "loss": 2.591087818145752,
+        "teacher_entropy": 2.573558807373047,
+        "student_grad_norm": 0.7015277743339539
+      },
+      {
+        "step": 26,
+        "loss": 2.538546562194824,
+        "teacher_entropy": 2.5228378772735596,
+        "student_grad_norm": 0.7272613048553467
+      },
+      {
+        "step": 27,
+        "loss": 2.49436092376709,
+        "teacher_entropy": 2.4824719429016113,
+        "student_grad_norm": 0.7265601754188538
+      },
+      {
+        "step": 28,
+        "loss": 2.4419498443603516,
+        "teacher_entropy": 2.431584119796753,
+        "student_grad_norm": 0.7211903929710388
+      },
+      {
+        "step": 29,
+        "loss": 2.3924479484558105,
+        "teacher_entropy": 2.3849217891693115,
+        "student_grad_norm": 0.6104873418807983
+      },
+      {
+        "step": 30,
+        "loss": 2.343902111053467,
+        "teacher_entropy": 2.339747190475464,
+        "student_grad_norm": 0.4257735013961792
+      },
+      {
+        "step": 31,
+        "loss": 2.292515277862549,
+        "teacher_entropy": 2.289881467819214,
+        "student_grad_norm": 0.23734524846076965
+      },
+      {
+        "step": 32,
+        "loss": 2.245745897293091,
+        "teacher_entropy": 2.2436203956604004,
+        "student_grad_norm": 0.19044288992881775
+      },
+      {
+        "step": 33,
+        "loss": 2.196470260620117,
+        "teacher_entropy": 2.194314956665039,
+        "student_grad_norm": 0.22195252776145935
+      },
+      {
+        "step": 34,
+        "loss": 2.152822494506836,
+        "teacher_entropy": 2.15026593208313,
+        "student_grad_norm": 0.2625352144241333
+      },
+      {
+        "step": 35,
+        "loss": 2.1145105361938477,
+        "teacher_entropy": 2.111844301223755,
+        "student_grad_norm": 0.17322780191898346
+      },
+      {
+        "step": 36,
+        "loss": 2.0646910667419434,
+        "teacher_entropy": 2.0611932277679443,
+        "student_grad_norm": 0.310037761926651
+      },
+      {
+        "step": 37,
+        "loss": 2.0199594497680664,
+        "teacher_entropy": 2.0159127712249756,
+        "student_grad_norm": 0.3295869827270508
+      },
+      {
+        "step": 38,
+        "loss": 1.9831702709197998,
+        "teacher_entropy": 1.9786790609359741,
+        "student_grad_norm": 0.2721945643424988
+      },
+      {
+        "step": 39,
+        "loss": 1.9520066976547241,
+        "teacher_entropy": 1.9470263719558716,
+        "student_grad_norm": 0.31464987993240356
+      },
+      {
+        "step": 40,
+        "loss": 1.9199289083480835,
+        "teacher_entropy": 1.9148727655410767,
+        "student_grad_norm": 0.2847740650177002
+      },
+      {
+        "step": 41,
+        "loss": 1.8985273838043213,
+        "teacher_entropy": 1.8933486938476562,
+        "student_grad_norm": 0.3116942048072815
+      },
+      {
+        "step": 42,
+        "loss": 1.8740699291229248,
+        "teacher_entropy": 1.8678640127182007,
+        "student_grad_norm": 0.3754553496837616
+      },
+      {
+        "step": 43,
+        "loss": 1.869220495223999,
+        "teacher_entropy": 1.8632168769836426,
+        "student_grad_norm": 0.30204495787620544
+      },
+      {
+        "step": 44,
+        "loss": 1.8688340187072754,
+        "teacher_entropy": 1.862500786781311,
+        "student_grad_norm": 0.34290990233421326
+      },
+      {
+        "step": 45,
+        "loss": 1.8632299900054932,
+        "teacher_entropy": 1.856302261352539,
+        "student_grad_norm": 0.3601429760456085
+      },
+      {
+        "step": 46,
+        "loss": 1.8818899393081665,
+        "teacher_entropy": 1.8751826286315918,
+        "student_grad_norm": 0.37429970502853394
+      },
+      {
+        "step": 47,
+        "loss": 1.9109104871749878,
+        "teacher_entropy": 1.904672622680664,
+        "student_grad_norm": 0.37275630235671997
+      },
+      {
+        "step": 48,
+        "loss": 1.9391794204711914,
+        "teacher_entropy": 1.9332462549209595,
+        "student_grad_norm": 0.36150944232940674
+      },
+      {
+        "step": 49,
+        "loss": 1.972870111465454,
+        "teacher_entropy": 1.967563271522522,
+        "student_grad_norm": 0.3396485447883606
+      },
+      {
+        "step": 50,
+        "loss": 2.01782488822937,
+        "teacher_entropy": 2.013075113296509,
+        "student_grad_norm": 0.30729418992996216
+      },
+      {
+        "step": 51,
+        "loss": 2.0684304237365723,
+        "teacher_entropy": 2.064194679260254,
+        "student_grad_norm": 0.29907459020614624
+      },
+      {
+        "step": 52,
+        "loss": 2.117398262023926,
+        "teacher_entropy": 2.1138017177581787,
+        "student_grad_norm": 0.23364482820034027
+      },
+      {
+        "step": 53,
+        "loss": 2.1691880226135254,
+        "teacher_entropy": 2.1659421920776367,
+        "student_grad_norm": 0.2126927226781845
+      },
+      {
+        "step": 54,
+        "loss": 2.2154593467712402,
+        "teacher_entropy": 2.2120211124420166,
+        "student_grad_norm": 0.3202632963657379
+      },
+      {
+        "step": 55,
+        "loss": 2.2525975704193115,
+        "teacher_entropy": 2.2493457794189453,
+        "student_grad_norm": 0.3324551582336426
+      },
+      {
+        "step": 56,
+        "loss": 2.2864866256713867,
+        "teacher_entropy": 2.2835466861724854,
+        "student_grad_norm": 0.303113728761673
+      },
+      {
+        "step": 57,
+        "loss": 2.3096227645874023,
+        "teacher_entropy": 2.3072140216827393,
+        "student_grad_norm": 0.24814258515834808
+      },
+      {
+        "step": 58,
+        "loss": 2.3344647884368896,
+        "teacher_entropy": 2.332493543624878,
+        "student_grad_norm": 0.24408850073814392
+      },
+      {
+        "step": 59,
+        "loss": 2.355161666870117,
+        "teacher_entropy": 2.3529980182647705,
+        "student_grad_norm": 0.3103717863559723
+      },
+      {
+        "step": 60,
+        "loss": 2.370577335357666,
+        "teacher_entropy": 2.3683931827545166,
+        "student_grad_norm": 0.3331156373023987
+      },
+      {
+        "step": 61,
+        "loss": 2.381347417831421,
+        "teacher_entropy": 2.3794777393341064,
+        "student_grad_norm": 0.25609177350997925
+      },
+      {
+        "step": 62,
+        "loss": 2.387369155883789,
+        "teacher_entropy": 2.3856399059295654,
+        "student_grad_norm": 0.27109628915786743
+      },
+      {
+        "step": 63,
+        "loss": 2.4011244773864746,
+        "teacher_entropy": 2.3994033336639404,
+        "student_grad_norm": 0.24263189733028412
+      },
+      {
+        "step": 64,
+        "loss": 2.4087929725646973,
+        "teacher_entropy": 2.4069089889526367,
+        "student_grad_norm": 0.36338239908218384
+      },
+      {
+        "step": 65,
+        "loss": 2.406036615371704,
+        "teacher_entropy": 2.404083251953125,
+        "student_grad_norm": 0.37799835205078125
+      },
+      {
+        "step": 66,
+        "loss": 2.4138050079345703,
+        "teacher_entropy": 2.412046194076538,
+        "student_grad_norm": 0.24500073492527008
+      },
+      {
+        "step": 67,
+        "loss": 2.418539524078369,
+        "teacher_entropy": 2.4169223308563232,
+        "student_grad_norm": 0.2390502244234085
+      },
+      {
+        "step": 68,
+        "loss": 2.4134023189544678,
+        "teacher_entropy": 2.4116482734680176,
+        "student_grad_norm": 0.35907402634620667
+      },
+      {
+        "step": 69,
+        "loss": 2.4156713485717773,
+        "teacher_entropy": 2.4141950607299805,
+        "student_grad_norm": 0.22997155785560608
+      },
+      {
+        "step": 70,
+        "loss": 2.4024906158447266,
+        "teacher_entropy": 2.400984764099121,
+        "student_grad_norm": 0.1948058158159256
+      },
+      {
+        "step": 71,
+        "loss": 2.388026237487793,
+        "teacher_entropy": 2.3868229389190674,
+        "student_grad_norm": 0.20980075001716614
+      },
+      {
+        "step": 72,
+        "loss": 2.3731930255889893,
+        "teacher_entropy": 2.372058629989624,
+        "student_grad_norm": 0.24455903470516205
+      },
+      {
+        "step": 73,
+        "loss": 2.3515501022338867,
+        "teacher_entropy": 2.350250005722046,
+        "student_grad_norm": 0.12638549506664276
+      },
+      {
+        "step": 74,
+        "loss": 2.330469846725464,
+        "teacher_entropy": 2.3289709091186523,
+        "student_grad_norm": 0.2532972991466522
+      },
+      {
+        "step": 75,
+        "loss": 2.3080105781555176,
+        "teacher_entropy": 2.3062703609466553,
+        "student_grad_norm": 0.2477089911699295
+      },
+      {
+        "step": 76,
+        "loss": 2.2831220626831055,
+        "teacher_entropy": 2.2813243865966797,
+        "student_grad_norm": 0.3213496208190918
+      },
+      {
+        "step": 77,
+        "loss": 2.258849859237671,
+        "teacher_entropy": 2.2573418617248535,
+        "student_grad_norm": 0.1443956047296524
+      },
+      {
+        "step": 78,
+        "loss": 2.231126308441162,
+        "teacher_entropy": 2.2292630672454834,
+        "student_grad_norm": 0.17831483483314514
+      },
+      {
+        "step": 79,
+        "loss": 2.202118396759033,
+        "teacher_entropy": 2.2004668712615967,
+        "student_grad_norm": 0.1785096526145935
+      },
+      {
+        "step": 80,
+        "loss": 2.1788344383239746,
+        "teacher_entropy": 2.17690110206604,
+        "student_grad_norm": 0.14581754803657532
+      },
+      {
+        "step": 81,
+        "loss": 2.1553125381469727,
+        "teacher_entropy": 2.1528632640838623,
+        "student_grad_norm": 0.19540190696716309
+      },
+      {
+        "step": 82,
+        "loss": 2.138744354248047,
+        "teacher_entropy": 2.1364099979400635,
+        "student_grad_norm": 0.19020968675613403
+      },
+      {
+        "step": 83,
+        "loss": 2.1237096786499023,
+        "teacher_entropy": 2.1211493015289307,
+        "student_grad_norm": 0.3437348008155823
+      },
+      {
+        "step": 84,
+        "loss": 2.108384132385254,
+        "teacher_entropy": 2.1060945987701416,
+        "student_grad_norm": 0.18590882420539856
+      },
+      {
+        "step": 85,
+        "loss": 2.098933696746826,
+        "teacher_entropy": 2.0965540409088135,
+        "student_grad_norm": 0.2664676010608673
+      },
+      {
+        "step": 86,
+        "loss": 2.089052677154541,
+        "teacher_entropy": 2.0865447521209717,
+        "student_grad_norm": 0.18692688643932343
+      },
+      {
+        "step": 87,
+        "loss": 2.0808167457580566,
+        "teacher_entropy": 2.0781798362731934,
+        "student_grad_norm": 0.224662184715271
+      },
+      {
+        "step": 88,
+        "loss": 2.0943045616149902,
+        "teacher_entropy": 2.0917646884918213,
+        "student_grad_norm": 0.1663675159215927
+      },
+      {
+        "step": 89,
+        "loss": 2.1005983352661133,
+        "teacher_entropy": 2.098109483718872,
+        "student_grad_norm": 0.133398175239563
+      },
+      {
+        "step": 90,
+        "loss": 2.1219844818115234,
+        "teacher_entropy": 2.119609832763672,
+        "student_grad_norm": 0.154519721865654
+      },
+      {
+        "step": 91,
+        "loss": 2.124997615814209,
+        "teacher_entropy": 2.122326135635376,
+        "student_grad_norm": 0.26635849475860596
+      },
+      {
+        "step": 92,
+        "loss": 2.1475698947906494,
+        "teacher_entropy": 2.144871473312378,
+        "student_grad_norm": 0.32362645864486694
+      },
+      {
+        "step": 93,
+        "loss": 2.1876425743103027,
+        "teacher_entropy": 2.1842596530914307,
+        "student_grad_norm": 0.2681971490383148
+      },
+      {
+        "step": 94,
+        "loss": 2.206089496612549,
+        "teacher_entropy": 2.2025976181030273,
+        "student_grad_norm": 0.5001435875892639
+      },
+      {
+        "step": 95,
+        "loss": 2.233356475830078,
+        "teacher_entropy": 2.2298457622528076,
+        "student_grad_norm": 0.4444851875305176
+      },
+      {
+        "step": 96,
+        "loss": 2.278080463409424,
+        "teacher_entropy": 2.2746737003326416,
+        "student_grad_norm": 0.29492563009262085
+      },
+      {
+        "step": 97,
+        "loss": 2.3161470890045166,
+        "teacher_entropy": 2.3123667240142822,
+        "student_grad_norm": 0.633708119392395
+      },
+      {
+        "step": 98,
+        "loss": 2.3596816062927246,
+        "teacher_entropy": 2.355154514312744,
+        "student_grad_norm": 1.0337107181549072
+      },
+      {
+        "step": 99,
+        "loss": 2.4115450382232666,
+        "teacher_entropy": 2.408045530319214,
+        "student_grad_norm": 0.8069365620613098
+      },
+      {
+        "step": 100,
+        "loss": 2.4311025142669678,
+        "teacher_entropy": 2.427748680114746,
+        "student_grad_norm": 0.5704710483551025
+      },
+      {
+        "step": 101,
+        "loss": 2.4783973693847656,
+        "teacher_entropy": 2.475048780441284,
+        "student_grad_norm": 0.2987401485443115
+      },
+      {
+        "step": 102,
+        "loss": 2.513211250305176,
+        "teacher_entropy": 2.509774923324585,
+        "student_grad_norm": 0.6722922921180725
+      },
+      {
+        "step": 103,
+        "loss": 2.535339832305908,
+        "teacher_entropy": 2.529527425765991,
+        "student_grad_norm": 1.0347542762756348
+      },
+      {
+        "step": 104,
+        "loss": 2.5593855381011963,
+        "teacher_entropy": 2.5549192428588867,
+        "student_grad_norm": 0.28853335976600647
+      },
+      {
+        "step": 105,
+        "loss": 2.5763792991638184,
+        "teacher_entropy": 2.571012496948242,
+        "student_grad_norm": 0.4135083556175232
+      },
+      {
+        "step": 106,
+        "loss": 2.5865542888641357,
+        "teacher_entropy": 2.5813167095184326,
+        "student_grad_norm": 0.7439265847206116
+      },
+      {
+        "step": 107,
+        "loss": 2.5857551097869873,
+        "teacher_entropy": 2.57993745803833,
+        "student_grad_norm": 0.3556484282016754
+      },
+      {
+        "step": 108,
+        "loss": 2.576298236846924,
+        "teacher_entropy": 2.5700440406799316,
+        "student_grad_norm": 0.49707335233688354
+      },
+      {
+        "step": 109,
+        "loss": 2.5572526454925537,
+        "teacher_entropy": 2.5492522716522217,
+        "student_grad_norm": 0.9413085579872131
+      },
+      {
+        "step": 110,
+        "loss": 2.5255818367004395,
+        "teacher_entropy": 2.517380475997925,
+        "student_grad_norm": 0.447108656167984
+      },
+      {
+        "step": 111,
+        "loss": 2.4974007606506348,
+        "teacher_entropy": 2.4896936416625977,
+        "student_grad_norm": 0.45172742009162903
+      },
+      {
+        "step": 112,
+        "loss": 2.462949275970459,
+        "teacher_entropy": 2.454721450805664,
+        "student_grad_norm": 0.49322015047073364
+      },
+      {
+        "step": 113,
+        "loss": 2.4248523712158203,
+        "teacher_entropy": 2.416330099105835,
+        "student_grad_norm": 0.37593671679496765
+      },
+      {
+        "step": 114,
+        "loss": 2.3965237140655518,
+        "teacher_entropy": 2.3887102603912354,
+        "student_grad_norm": 0.5396955609321594
+      },
+      {
+        "step": 115,
+        "loss": 2.361220359802246,
+        "teacher_entropy": 2.3534417152404785,
+        "student_grad_norm": 0.8832778930664062
+      },
+      {
+        "step": 116,
+        "loss": 2.3168587684631348,
+        "teacher_entropy": 2.3092005252838135,
+        "student_grad_norm": 0.692370593547821
+      },
+      {
+        "step": 117,
+        "loss": 2.300137996673584,
+        "teacher_entropy": 2.2940256595611572,
+        "student_grad_norm": 0.40413564443588257
+      },
+      {
+        "step": 118,
+        "loss": 2.2625958919525146,
+        "teacher_entropy": 2.256260871887207,
+        "student_grad_norm": 0.4911240041255951
+      },
+      {
+        "step": 119,
+        "loss": 2.2415196895599365,
+        "teacher_entropy": 2.232449769973755,
+        "student_grad_norm": 1.7138365507125854
+      },
+      {
+        "step": 120,
+        "loss": 2.222959041595459,
+        "teacher_entropy": 2.20481276512146,
+        "student_grad_norm": 3.2683303356170654
+      },
+      {
+        "step": 121,
+        "loss": 2.1770663261413574,
+        "teacher_entropy": 2.1697261333465576,
+        "student_grad_norm": 0.9328284859657288
+      },
+      {
+        "step": 122,
+        "loss": 2.1558079719543457,
+        "teacher_entropy": 2.1435134410858154,
+        "student_grad_norm": 2.8169589042663574
+      },
+      {
+        "step": 123,
+        "loss": 2.1296277046203613,
+        "teacher_entropy": 2.104308843612671,
+        "student_grad_norm": 4.518523216247559
+      },
+      {
+        "step": 124,
+        "loss": 2.0781679153442383,
+        "teacher_entropy": 2.0582568645477295,
+        "student_grad_norm": 3.7480430603027344
+      },
+      {
+        "step": 125,
+        "loss": 1.9756591320037842,
+        "teacher_entropy": 1.9510892629623413,
+        "student_grad_norm": 4.776533603668213
+      },
+      {
+        "step": 126,
+        "loss": 1.980729579925537,
+        "teacher_entropy": 1.9646402597427368,
+        "student_grad_norm": 3.1524789333343506
+      },
+      {
+        "step": 127,
+        "loss": 1.969322681427002,
+        "teacher_entropy": 1.9413261413574219,
+        "student_grad_norm": 4.20646858215332
+      },
+      {
+        "step": 128,
+        "loss": 1.87123441696167,
+        "teacher_entropy": 1.82902991771698,
+        "student_grad_norm": 5.592375755310059
+      },
+      {
+        "step": 129,
+        "loss": 1.7486883401870728,
+        "teacher_entropy": 1.7314653396606445,
+        "student_grad_norm": 2.063502073287964
+      },
+      {
+        "step": 130,
+        "loss": 1.7126189470291138,
+        "teacher_entropy": 1.673192024230957,
+        "student_grad_norm": 4.315993309020996
+      },
+      {
+        "step": 131,
+        "loss": 1.7077686786651611,
+        "teacher_entropy": 1.682723045349121,
+        "student_grad_norm": 3.3966434001922607
+      },
+      {
+        "step": 132,
+        "loss": 1.5950884819030762,
+        "teacher_entropy": 1.5720795392990112,
+        "student_grad_norm": 2.845289468765259
+      },
+      {
+        "step": 133,
+        "loss": 1.592694640159607,
+        "teacher_entropy": 1.5643925666809082,
+        "student_grad_norm": 3.5079057216644287
+      },
+      {
+        "step": 134,
+        "loss": 1.3027331829071045,
+        "teacher_entropy": 1.2848244905471802,
+        "student_grad_norm": 1.7691394090652466
+      },
+      {
+        "step": 135,
+        "loss": 1.3686507940292358,
+        "teacher_entropy": 1.3407663106918335,
+        "student_grad_norm": 2.499199628829956
+      },
+      {
+        "step": 136,
+        "loss": 1.2611026763916016,
+        "teacher_entropy": 1.236517071723938,
+        "student_grad_norm": 2.240624189376831
+      },
+      {
+        "step": 137,
+        "loss": 1.2823641300201416,
+        "teacher_entropy": 1.2659631967544556,
+        "student_grad_norm": 0.9132787585258484
+      },
+      {
+        "step": 138,
+        "loss": 1.3061619997024536,
+        "teacher_entropy": 1.2853153944015503,
+        "student_grad_norm": 1.7320144176483154
+      },
+      {
+        "step": 139,
+        "loss": 1.3259871006011963,
+        "teacher_entropy": 1.308151125907898,
+        "student_grad_norm": 1.858074426651001
+      },
+      {
+        "step": 140,
+        "loss": 1.3895829916000366,
+        "teacher_entropy": 1.3747104406356812,
+        "student_grad_norm": 0.6723639965057373
+      },
+      {
+        "step": 141,
+        "loss": 1.519059181213379,
+        "teacher_entropy": 1.499030590057373,
+        "student_grad_norm": 1.6601970195770264
+      },
+      {
+        "step": 142,
+        "loss": 1.5954058170318604,
+        "teacher_entropy": 1.5798722505569458,
+        "student_grad_norm": 1.1934571266174316
+      },
+      {
+        "step": 143,
+        "loss": 1.69634211063385,
+        "teacher_entropy": 1.6790567636489868,
+        "student_grad_norm": 1.0145387649536133
+      },
+      {
+        "step": 144,
+        "loss": 1.7610902786254883,
+        "teacher_entropy": 1.7397069931030273,
+        "student_grad_norm": 1.396567463874817
+      },
+      {
+        "step": 145,
+        "loss": 1.86704683303833,
+        "teacher_entropy": 1.8463383913040161,
+        "student_grad_norm": 1.1861927509307861
+      },
+      {
+        "step": 146,
+        "loss": 1.841017484664917,
+        "teacher_entropy": 1.8202890157699585,
+        "student_grad_norm": 0.9660703539848328
+      },
+      {
+        "step": 147,
+        "loss": 2.0290098190307617,
+        "teacher_entropy": 2.00652813911438,
+        "student_grad_norm": 1.9484935998916626
+      },
+      {
+        "step": 148,
+        "loss": 2.021183967590332,
+        "teacher_entropy": 2.001317024230957,
+        "student_grad_norm": 1.9459694623947144
+      },
+      {
+        "step": 149,
+        "loss": 2.122243881225586,
+        "teacher_entropy": 2.098374605178833,
+        "student_grad_norm": 1.7269606590270996
+      },
+      {
+        "step": 150,
+        "loss": 2.1031460762023926,
+        "teacher_entropy": 2.084394693374634,
+        "student_grad_norm": 0.6592864394187927
+      },
+      {
+        "step": 151,
+        "loss": 2.136082649230957,
+        "teacher_entropy": 2.114264965057373,
+        "student_grad_norm": 1.1551247835159302
+      },
+      {
+        "step": 152,
+        "loss": 2.1101627349853516,
+        "teacher_entropy": 2.0936691761016846,
+        "student_grad_norm": 1.2077232599258423
+      },
+      {
+        "step": 153,
+        "loss": 2.1802749633789062,
+        "teacher_entropy": 2.1611721515655518,
+        "student_grad_norm": 0.5758989453315735
+      },
+      {
+        "step": 154,
+        "loss": 2.173117160797119,
+        "teacher_entropy": 2.1516733169555664,
+        "student_grad_norm": 1.0288653373718262
+      },
+      {
+        "step": 155,
+        "loss": 2.0133399963378906,
+        "teacher_entropy": 1.9981168508529663,
+        "student_grad_norm": 0.8013752102851868
+      },
+      {
+        "step": 156,
+        "loss": 2.009852647781372,
+        "teacher_entropy": 1.984026312828064,
+        "student_grad_norm": 1.4219303131103516
+      },
+      {
+        "step": 157,
+        "loss": 1.9569017887115479,
+        "teacher_entropy": 1.9377552270889282,
+        "student_grad_norm": 0.6909484267234802
+      },
+      {
+        "step": 158,
+        "loss": 1.931159496307373,
+        "teacher_entropy": 1.9001866579055786,
+        "student_grad_norm": 0.4782126247882843
+      },
+      {
+        "step": 159,
+        "loss": 1.8851568698883057,
+        "teacher_entropy": 1.8618396520614624,
+        "student_grad_norm": 1.2450028657913208
+      },
+      {
+        "step": 160,
+        "loss": 1.8742694854736328,
+        "teacher_entropy": 1.8415940999984741,
+        "student_grad_norm": 0.9462160468101501
+      }
+    ]
+  }
 }

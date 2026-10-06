@@ -52,7 +52,7 @@
 
 綁定的檔案都沒變，紀錄就一直有效；只要其中一個改了，那份紀錄就過期。發布新版時只重跑過期的紀錄（`scripts/record_evidence.py` 會列出並重新產生），其餘沿用，紀錄裡的日期與電腦也不變，所以各節紀錄的日期不一定相同。
 
-- **CPU 紀錄的電腦：**Linux x86_64（kernel 6.18、glibc 2.41）、Intel Xeon Platinum 8573C，Python 3.12.14、PyTorch 2.9.1+cpu，用 2 個執行緒。
+- **CPU 紀錄的電腦：**既有批次主要在 Intel Xeon Platinum 8573C 上執行（Linux x86_64、kernel 6.18、glibc 2.41、Python 3.12.14）；2026-10-06 本輪改文後的重跑使用 AMD EPYC 9V74。兩者都是 PyTorch 2.9.1+cpu、2 個執行緒。每節的實際機器、日期與版本，以該節保存的 JSON 為準；不能把不同機器的計時直接比較。
 - **GPU 紀錄：**GPU 上的實測只有兩項：第 20 章的 ONNX／TensorRT 核對，以及 GPU 上的存檔續訓（見下方〈已完成的檢查〉）。兩項都由手動啟動的 GitHub Actions（GitHub 提供的自動執行程式服務）工作流程，在 Modal 雲端的一張 NVIDIA L4 上執行（PyTorch 2.9.1+cu128），紀錄同樣綁定所執行的程式。
 
 網站建置前，`scripts/validate_curriculum_evidence.py` 會確認以上每份 CPU 與 GPU 紀錄綁定的程式都沒有改過；配對表中 52 節的紀錄另外要和該節 notebook 存的輸出一字不差，該節頁面也要寫著這份紀錄的日期、CPU 型號與 PyTorch 版本。任何一項不符，網站就無法發布。
@@ -80,7 +80,7 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 
 核心測試檢查容易出錯的地方，例如空圖、錯誤標註、兩個物件落在同一格、座標縮放取整後的還原，以及重複預測框的配對。checkpoint 測試在 CPU 上跑一次中斷、存檔、讀回、續訓，要求結果和不中斷的訓練相同；也確認舊格式 checkpoint 若沒有保存 RNG 狀態（亂數產生器當下的進度），仍能用來推論，但不能用來續訓。
 
-`check_lesson_runtime.py` 在你自己的電腦上用 CPU 逐節執行，記錄每節印出的文字（stdout）、錯誤訊息與是否通過，並和 `artifacts/checks/curriculum/` 裡的執行紀錄比對。報告寫在 `artifacts/runs/lesson-runtime.json`；各節程式畫的圖和寫出的其他檔案，也都存在 git 不追蹤的位置（例如第 17 章的 `artifacts/lesson-17/`），所以跑完後 repo 裡 git 追蹤的檔案都不會改變。網站上第 17、18、19 章的結果圖，只在產生執行紀錄時，由 `scripts/verify_curriculum.py` 從這些位置複製到 `docs/assets/diagrams/`。換一台電腦，計時和部分數字可能和紀錄不同，報告會標出輸出和紀錄不同的節；輸出不同本身不算失敗，只要程式在 120 秒內完整跑完、沒有報錯，該節仍算 PASS。每節印一行英文結果，例如 `07-training: PASS; output identical to the recorded run`；輸出和紀錄不同時，PASS 後面改印 `output differs from the recorded run`，後面括號裡的說明是固定文字，不是比對後的判斷。報告只標出哪一節不同，不標出哪幾行不同：想知道差在哪裡，把 `lesson-runtime.json` 裡該節的 stdout 和該節頁尾的「實際執行紀錄」逐行對照；計時與訓練後的數字不同是正常的，其他行不同就要回頭查程式。執行 `.venv-model/bin/python scripts/check_lesson_runtime.py --section 07-training` 就只檢查這一節。`check_lesson_runtime.py` 不經過 Colab，所以測不到 Colab 上的實際執行，包括 Colab 可能分配給你的 GPU。
+`check_lesson_runtime.py` 在你自己的電腦上用 CPU 逐節執行，記錄每節印出的文字（stdout）、錯誤訊息與是否通過，並和 `artifacts/checks/curriculum/` 裡的執行紀錄比對。報告寫在 `artifacts/runs/lesson-runtime.json`；各節程式畫的圖和寫出的其他檔案，也都存在 git 不追蹤的位置（例如第 17 章的 `artifacts/lesson-17/`），所以跑完後 repo 裡 git 追蹤的檔案都不會改變。網站上第 4.1、4.2 節與第 17、18、19 章的結果圖，只在產生執行紀錄時，由 `scripts/verify_curriculum.py` 從這些位置複製到 `docs/assets/diagrams/`。換一台電腦，計時和部分數字可能和紀錄不同，報告會標出輸出和紀錄不同的節；輸出不同本身不算失敗，只要程式在 120 秒內完整跑完、沒有報錯，該節仍算 PASS。每節印一行英文結果，例如 `07-training: PASS; output identical to the recorded run`；輸出和紀錄不同時，PASS 後面改印 `output differs from the recorded run`，後面括號裡的說明是固定文字，不是比對後的判斷。報告只標出哪一節不同，不標出哪幾行不同：想知道差在哪裡，把 `lesson-runtime.json` 裡該節的 stdout 和該節頁尾的「實際執行紀錄」逐行對照；計時與訓練後的數字不同是正常的，其他行不同就要回頭查程式。執行 `.venv-model/bin/python scripts/check_lesson_runtime.py --section 07-training` 就只檢查這一節。`check_lesson_runtime.py` 不經過 Colab，所以測不到 Colab 上的實際執行，包括 Colab 可能分配給你的 GPU。
 
 ## 已完成的檢查
 
@@ -92,6 +92,14 @@ PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
 - **第 18、19 章影片檔與追蹤：**把 12 幀畫面（影片中連續的 12 張圖）寫成無損 AVI 影片檔再讀回：讀回的 RGB 畫素和模型預測，都和直接用記憶體裡的畫面時相同；讀到檔尾、提前停止或開檔失敗時，程式都會關閉影片（`capture.release()`）。最後把模型的實際預測接上[第 19 章的追蹤器（tracker）](lessons/19-tracking.md)。沒有測實體攝影機。
 
 ## 誰檢查過內容
+
+### 2026-10-06：依新版四題重審全部 52 節
+
+本輪凍結 `64a25d4`，六位新讀者按各自實際補讀的前文逐段閱讀，保存 995 個閱讀單元、212 次四題檢查（包括 52 次頁末），再開放下一段。概念介紹、名稱、缺圖與訓練證據問題分別處理；改寫後另作非作者技術核對，以及全路線銜接和實際桌機／手機檢查。原始筆記、修正決策、技術來源與視覺範圍保存在[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/full-review-2026-10-06)。
+
+四題仍有漏抓：22.1 的 DINO 命名方法介紹被首次讀者當成「後面會教」，未列問題；另有部分答案的逐項引文不足、把推論標成正文明說。獨立紀錄查核保留這些缺陷，教材已補當下必要的介紹，原始答案沒有回寫。故不能把本輪統稱為嚴格盲讀規則全部合格，也不能由回答了四題保證沒有漏項。
+
+手機的第 4、20 章仍有圖內細字偏小，必要分工與數字可由相鄰正文讀出；本輪沒有把所有圖字概括判成手機可讀。第 4 章過長的必要公式已拆行，新的第 17–19 章結果圖用直式呈現。AI 審閱與測試仍不等同真人學生學習效果。
 
 既有主線上一輪依 repo 的 `clear-tutorial` skill 重審，審查者都是 AI。以下是那一輪的範圍，不涵蓋本次新支線。新支線的逐段閱讀、技術與銜接審閱另保存在[本次紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/vision-v0.6.0)。先前的完整頁面審查仍保留，不改標成逐段盲讀。
 
@@ -105,7 +113,7 @@ AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有�
 
 教材介紹的版本到 YOLO26 為止，不包含之後的版本，也不涵蓋 YOLOv6、v7、v9 的機制（範圍見[課程大綱](planning/outline.md)）；只寫找得到原文或公開程式碼可以查證的設計，不為無法確認的版本編造架構。每個已介紹的 YOLO 版本，都以原論文或官方程式碼的某個固定版本為準（commit：程式碼某一次提交的版本編號，對應的內容固定不變），而不是會隨時變動的最新版。
 
-審查紀錄每頁一份，存在 repository 的 `reviews/` 資料夾，記下查核的方法、每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查看過的內容（頁面文字、頁面上的 SVG 圖，課程頁還包括該節程式和它 import 的模組）都用 SHA-256 記在 `reviews/coverage.json`。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（例如 `lessons-v0.6.0`）不算在內。
+審查紀錄每頁一份，存在 repository 的 `reviews/` 資料夾，記下查核的方法、每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查看過的內容（頁面文字、頁面上的 SVG、PNG 等圖，課程頁還包括該節程式和它 import 的模組）都用 SHA-256 記在 `reviews/coverage.json`。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（例如 `lessons-v0.6.0`）不算在內。
 
 這些都是編輯審查，沒有做過真人學生的學習實驗：沒有請真人學生實際用本教材學習，再測量學習效果。
 

@@ -4,7 +4,7 @@
 
 怎麼用這頁：
 
-- 表格大致照課程順序分成七組。術語欄寫英文名稱，課文有中文名稱時一併寫出；用瀏覽器的頁內搜尋（Ctrl+F；Mac 是 ⌘+F）找中文或英文都可以。
+- 表格依主線與選讀支線分成八組。術語欄寫英文名稱，課文有中文名稱時一併寫出；用瀏覽器的頁內搜尋（Ctrl+F；Mac 是 ⌘+F）找中文或英文都可以。
 - 「詳見」欄的數字是節次，和[完整閱讀路線](learning-path.md)上的編號相同；點下去會回到第一次教這個詞的那一節。有多個連結時，第一個以外的是補充的節：教得更詳細、教它另一種用法，或教同一列的另一個詞。
 - 術語後面標 ※ 的，在書裡還有別的意思，見頁末[〈同名不同義〉](#homonyms)。
 
@@ -54,9 +54,12 @@
 
 | 術語 | 先用一句話記住 | 留意的地方 | 詳見 |
 | --- | --- | --- | --- |
+| CNN（Convolutional Neural Network，卷積神經網路）、VGG | CNN 用同一套卷積權重讀取各位置的局部圖樣；VGG 是以堆疊小卷積為主的經典 CNN，名稱來自 Visual Geometry Group | 第 1 章只有四層卷積，借用 VGG 的設計習慣，沒有重現完整 VGG16 | [1](lessons/01-small-cnn.md) |
+| ResNet（Residual Network，殘差網路） | 用 shortcut 保存輸入，再加上主分支學到的修正，讓加深的網路不必每次從頭重建整個輸出 | 第 3 章分開 identity、projection 與控制比較；有 shortcut 不代表一定更準 | [3.1](lessons/03-identity.md)、[3.2](lessons/03-projection.md)、[3.3](lessons/03-comparison.md) |
+| ReLU（Rectified Linear Unit，修正線性單元） | 負值變 0，正值保留，讓多層網路能表示單次乘加做不到的非線性關係 | 放在相加後會刪掉負值，因此「shortcut 原樣通過」不等於「整個 block 對任何輸入都原樣通過」 | [1](lessons/01-small-cnn.md)、[3.1](lessons/03-identity.md) |
 | feature map（特徵圖） | 卷積層輸出的 `[C,H,W]` 數值；每個 channel 是一張 H×W 的圖，每個位置有 C 個特徵值 | 特徵圖的一格不是一個畫素（pixel）：64×64 的輸入算到 8×8 的特徵圖時，相鄰兩格在輸入圖上相隔 8 個畫素（見 stride） | [1](lessons/01-small-cnn.md) |
 | stride（步幅） | ① 卷積或 pooling（池化）的 stride：視窗每次移動幾格，stride 2 讓長寬約減半。② 特徵圖的 stride（第 1 章算感受野時叫它「間距」）：相鄰特徵位置在模型輸入圖上相隔幾個 pixel，等於前面各層 stride 相乘；例如 64×64 經三次 stride 2 得到 8×8，stride 是 8 | pixel 距離除以 stride，才是特徵圖上的格數；用過 letterbox 時，要先換成輸入畫布的座標 | [1](lessons/01-small-cnn.md)、[10](lessons/10-multiscale.md) |
-| backbone（主幹） | 模型前段負責從圖片提取特徵、輸出特徵圖的那一串層 | 只輸出特徵圖；框要用 xyxy 還是 ltrb 這類寫法，由 head 與 decode 決定 | [1](lessons/01-small-cnn.md) |
+| backbone（主幹） | 模型中負責從圖片提取特徵的部分；CNN 可輸出特徵圖，ViT 可輸出整圖與逐 patch 的向量 | 這些是中間表示；分類答案或框的寫法由後續 head 決定，偵測框還要依對應規則 decode | [1](lessons/01-small-cnn.md)、[21.3](lessons/21-transformer.md) |
 | neck | 夾在 backbone 與 head 之間，整理或融合特徵 | 小模型可省略獨立的 neck | [5](lessons/05-assignment.md)、[11.2](lessons/11-fusion.md) |
 | head ※ | 把特徵轉成任務輸出（例如類別分數、框）的末端 | 最後每個 channel 代表什麼，必須和 target 對得上 | [1](lessons/01-small-cnn.md) |
 | residual block（殘差區塊）、shortcut（捷徑） | 在主分支旁接一條 shortcut，把輸入加回主分支的輸出：\(y=x+F(x)\) | 相加前兩條路的 shape 必須完全相同；shape 不同時，先用 projection（可學的 1×1 卷積）對齊 | [3.1](lessons/03-identity.md)、[3.2](lessons/03-projection.md) |
@@ -132,6 +135,21 @@
 | tracking（追蹤） | 替每個物件發一個編號（track ID），跨幀（frame：影片裡的一張畫面）讓同一個物件一直拿同一個編號 | 偵測框正確，不保證 ID 不交換 | [19](lessons/19-tracking.md) |
 | FP32、FP16 | 32 位元、16 位元浮點數。FP32 就是一般的 float32，約 7 位有效數字；FP16 比較省記憶體，在支援的 GPU 上常比較快，但只有約 3 位有效數字 | 換成 FP16 後要重新評估：分數靠近門檻時，可能改變框的去留 | [20](lessons/20-deployment.md) |
 
+## ViT 與自監督特徵
+
+| 術語 | 先用一句話記住 | 留意的地方 | 詳見 |
+| --- | --- | --- | --- |
+| ViT（Vision Transformer，視覺 Transformer） | 把圖片切成 patch，將每塊轉成 token，再用 attention 交換資訊的讀圖架構 | 第 21 章是小型分類模型；架構完整不等於具有原版大規模預訓練模型的能力 | [21.1](lessons/21-patches.md)、[21.3](lessons/21-transformer.md) |
+| patch embedding（小塊向量表示）、position embedding（位置向量） | patch embedding 把小塊的像素值轉成可學的特徵；位置向量告訴模型這個 token 在序列的哪個槽位 | 切塊只是重排像素，投影才有可學權重；位置槽位不是物件類別或框答案 | [21.1](lessons/21-patches.md) |
+| CLS token（classification token，分類彙整 token） | 一個可學的額外 token，經 attention 讀取圖片內容，形成整圖表示 | 它不是從某個 patch 切出，也不是正確類別；最終向量還要交給分類 head 才得到類別分數 | [21.1](lessons/21-patches.md)、[21.3](lessons/21-transformer.md) |
+| LayerNorm／LN（Layer Normalization，層正規化） | 在本書的 ViT 中，各 token 分別整理自身特徵的尺度，再用可學倍率與偏移調整 | 不把不同圖片混在一起，也不把所有 tokens 平均成一個；Pre-LN 是先正規化，再進修正路徑，shortcut 保留原值 | [21.2](lessons/21-attention.md)、[21.3](lessons/21-transformer.md) |
+| MLP（Multi-Layer Perceptron，多層感知器）、GELU（Gaussian Error Linear Unit，高斯誤差線性單元） | 本例的 MLP 用兩個線性層組合一個 token 的特徵，中間的 GELU 提供平滑的非線性變化 | MLP 這一步不讀其他 patch；跨位置交換由 attention 負責 | [21.2](lessons/21-attention.md)、[21.3](lessons/21-transformer.md) |
+| self-supervised learning／SSL（自監督學習） | 從資料本身製造學習目標，例如同一張原圖的兩份 view，而不使用人工類別答案作這一階段的目標 | 不代表不用人設計資料操作，也不代表後續任務不需要標籤 | [22.1](lessons/22-views.md)、[22.4](lessons/22-features.md) |
+| DINO（self-distillation with no labels，無標籤的自蒸餾）※ | 用教師副本的輸出教學生副本，在沒有人工類別標籤的階段訓練影像特徵 | ViT 是本例的讀圖架構，DINO 是訓練方法；保留的特徵能否供後續任務使用，仍需評估 | [22.1](lessons/22-views.md)、[22.3](lessons/22-distillation.md) |
+| EMA（Exponential Moving Average，指數移動平均） | 保留較多舊值，再加入一小部分新值，使更新變慢 | teacher 的新值來自 student 權重；center 的新值來自 teacher 輸出，是不同量的兩種更新 | [22.3](lessons/22-distillation.md) |
+| collapse（表示塌縮） | 不同輸入都得到相同或幾乎相同的表示，丟失後續任務需要的差異 | 同圖兩個 view 很一致，仍可能塌縮；不能只看一致性 loss 低就說特徵有用 | [22.2](lessons/22-collapse.md) |
+| linear probe（線性探測） | 凍結 backbone，另用有標籤的 train 特徵訓練一個線性分類器，檢查特徵能讀出什麼 | 這階段使用標籤；第 22 章也比較同起點的隨機特徵，本次簡單題沒有顯示自監督特徵較好 | [22.4](lessons/22-features.md) |
+
 ## 同名不同義：同一個詞在書裡的不同意思 { #homonyms }
 
 表格裡標 ※ 的詞都整理在這裡；表格沒有單獨列出的 activation、padding 也一併收進來。看到這些詞時，先確認是哪一節、哪一種意思。
@@ -146,3 +164,4 @@
 - **decode**：第 6 章起的 decode 是把模型輸出換回框與分數；第 18 章的影片解碼，是把壓縮的影片檔還原成一張張畫素陣列。
 - **activation**：第 3 章，以及第 14 章介紹官方 Conv 層時，指激勵函數（activation function，例如 ReLU）；11.2、12.2 節與第 14 章談記憶體時，指各層算出、要暫存在記憶體裡的中間張量。
 - **padding**：第 1 章卷積的 padding（填充）是在輸入四周補值，例如補一圈 0；4.2 節 letterbox 的補邊（padding）是為了湊滿固定大小的畫布。
+- **DINO**：第 22、23 章指 2021 年起的自監督影像特徵方法及其後續版本；與另一個同名的 DETR 系列偵測器不同，不把兩者的來源、目的或結果混用。

@@ -206,7 +206,19 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
     .venv-model/bin/python scripts/record_evidence.py --run --push <分支>
     ```
 
-    `--run` 先核對 Python 3.12 與 `requirements-model.txt`、`requirements-video.txt` 的固定版本，不符就停下；接著只重跑過期的部分：逐節程式交給 `verify_curriculum.py`（它同時更新 notebook 的輸出與頁尾的執行紀錄區塊，並把第 17–19 章實驗畫的圖複製到 `docs/assets/diagrams/`），補充紀錄交給各自的實驗腳本（除了影片檔與 Fashion-MNIST 的紀錄，各腳本也會重畫 `docs/assets/diagrams/` 裡對應的圖）。重產 Fashion-MNIST 的紀錄時，`--run` 會先執行 `scripts/download_data.py fetch fashion-mnist`，在 `data/downloads/fashion-mnist/` 備齊四個原始檔（共 30.88 MB）：已有、而且大小與 SHA-256 都和 `data/manifest.json` 相符的檔就沿用，缺的才下載，這時記錄的電腦要能連網；有不符的舊檔則會停下，訊息會指名那個檔，移走後重新執行上面的指令。最後用 `validate_curriculum_evidence.py --scope cpu` 檢查，並在輸出最後的 `Changed files:` 列出改動的檔案。`--push <分支>` 把這些檔案 commit 並推到該分支；不方便推送時，改用 `--bundle <檔名>.tar.gz` 把它們打包。兩種的帶回方法見下一步。就在平常編輯的電腦記錄時，只要 `--run`。換一台電腦也能重產，新紀錄會記下新的電腦，但計時與訓練後的小數可能和舊紀錄不同。
+    `--run` 先核對 Python 3.12 與 `requirements-model.txt`、`requirements-video.txt` 的固定版本，不符就停下；接著只重跑過期的部分：逐節程式交給 `verify_curriculum.py`（它同時更新 notebook 的輸出與頁尾的執行紀錄區塊，並把第 4.1、4.2 節與第 17–19 章實驗畫的圖複製到 `docs/assets/diagrams/`，並從同次原始 SVG 生成第 17–19 章的直式閱讀圖；第 21.4、22.3 的完整曲線及第 23.2 的預測框也依最新正式 JSON 更新，圖內保存來源指紋），補充紀錄交給各自的實驗腳本（除了影片檔與 Fashion-MNIST 的紀錄，各腳本也會重畫 `docs/assets/diagrams/` 裡對應的圖）。重產 Fashion-MNIST 的紀錄時，`--run` 會先執行 `scripts/download_data.py fetch fashion-mnist`，在 `data/downloads/fashion-mnist/` 備齊四個原始檔（共 30.88 MB）：已有、而且大小與 SHA-256 都和 `data/manifest.json` 相符的檔就沿用，缺的才下載，這時記錄的電腦要能連網；有不符的舊檔則會停下，訊息會指名那個檔，移走後重新執行上面的指令。最後用 `validate_curriculum_evidence.py --scope cpu` 檢查，並在輸出最後的 `Changed files:` 列出改動的檔案。`--push <分支>` 把這些檔案 commit 並推到該分支；不方便推送時，改用 `--bundle <檔名>.tar.gz` 把它們打包。兩種的帶回方法見下一步。就在平常編輯的電腦記錄時，只要 `--run`。換一台電腦也能重產，新紀錄會記下新的電腦，但計時與訓練後的小數可能和舊紀錄不同。
+
+
+    第 8 章的框號圖另取 **1600 步補充實驗** 的紀錄，不是 `08-own-data` 主例六張圖的一次更新。這份補充紀錄改變時，先依同次 PNG 與 JSON 刷新 `08-custom-predictions-readable.svg` 的素材、框和圖下判定，再生成框號圖：
+
+    ```bash
+    python3 scripts/reflow_result_figures.py --kind custom \
+      --source docs/assets/diagrams/08-custom-predictions-readable.svg \
+      --record artifacts/checks/curriculum/custom-data-learning.json \
+      --output docs/assets/diagrams/08-custom-predictions-labelled.svg
+    ```
+
+    這個命令會逐框核對基本圖和指定紀錄的座標；不相符就停下，不會替舊圖加上新紀錄的編號。只重跑 `08-own-data` 主例不會刷新這份 1600 步圖。
 
 6. **從別處帶回紀錄時，連重畫的圖一起帶回。** 第 5 步改動的檔案都列在 `Changed files:` 底下：`artifacts/checks/` 的紀錄、`docs/assets/diagrams/` 裡重畫的圖，以及頁面與 notebook（頁尾的執行紀錄區塊與最後一格的輸出）。用了 `--push` 時，在平常編輯的電腦執行 `git pull --no-rebase`，就帶回整份清單；兩邊都有新的 commit 時，`--no-rebase` 指定把它們合併起來。這台電腦在第 3 步之後若又改過同一個檔，git 不會直接蓋掉，而是合併兩邊的修改；合併不了就停下，列出有問題的檔案。
 
@@ -225,7 +237,7 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 
     逐段原始紀錄放在 `reviews/clear-tutorial/`，既有每頁審查繼續保留；來源說法核對論文原文、官方程式固定 commit／tag 或函式庫官方文件，記下版本與支持的位置。操作頁的指令也對照實作，必要時實際試跑。若收到過早提示或缺少明訂前文，記為閱讀安排限制，不能把它算作乾淨盲讀。〈[驗證範圍](../status.md)〉、〈[全套實驗與審查](../validation/curriculum.md)〉及 README 只寫實際完成的審查範圍。所有審查者都是 AI，不能說成真人學生驗收。
 
-    審查涵蓋頁面文字、頁面上的 SVG，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`：課程頁是 `reviews/<節>.md`；其他頁取 `docs/` 底下的路徑，把 `/` 換成 `-`，例如 `docs/preparation/publish.md` 的審查是 `reviews/preparation-publish.md`。寫好後記下它涵蓋的內容；頁面路徑從 repo 根目錄算起，可以一次給好幾頁：
+    審查涵蓋頁面文字、頁面上的 SVG、PNG 等圖，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`：課程頁是 `reviews/<節>.md`；其他頁取 `docs/` 底下的路徑，把 `/` 換成 `-`，例如 `docs/preparation/publish.md` 的審查是 `reviews/preparation-publish.md`。寫好後記下它涵蓋的內容；頁面路徑從 repo 根目錄算起，可以一次給好幾頁：
 
     ```bash
     python3 scripts/review_coverage.py --write docs/preparation/publish.md

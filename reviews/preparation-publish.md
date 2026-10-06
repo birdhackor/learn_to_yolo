@@ -316,3 +316,11 @@
 局部核四處實驗數量42→52；沿用既有手動發布。
 
 本次僅重查以上變更，既有正文的歷史審閱保留；沒有把全頁或全書重新標成首次盲讀。[導讀／實際網站審閱](clear-tutorial/vision-v0.6.0/guide-visual-review.md)、[新增支線第三輪及實際前置](clear-tutorial/vision-v0.6.0/transitions-review.md)、[首讀修後複查](clear-tutorial/vision-v0.6.0/vit-recheck.md)記錄各自範圍。全版52本notebook的本機cell執行另見[實跑](clear-tutorial/vision-v0.6.0/local-notebook-runtime.json)；不是Google Colab登入執行。來源與圖／程式指紋更新於[coverage.json](coverage.json)。
+
+## 2026-10-06：最新版 clear-tutorial 全套重審
+
+本次全52節的實際方法、處置、證據與限制見[本輪報告](clear-tutorial/full-review-2026-10-06/README.md)。本頁為維護說明，沒有當作52節中的首次盲讀目標。作者逐項核對命令、目前機器與保存紀錄、圖／coverage的更新流程；非作者技術報告另核其實際涉及的維護delta。
+
+本頁對應處置為 R012, R038，見[決策表](clear-tutorial/full-review-2026-10-06/decisions.json)。[基礎技術報告](clear-tutorial/full-review-2026-10-06/rechecks/technical-foundations.json)與[最後維護delta核回](clear-tutorial/full-review-2026-10-06/rechecks/technical-detector-evolution.json)保存各自時點；[第三輪](clear-tutorial/full-review-2026-10-06/rechecks/transitions-visual.json)與[最後綁定](clear-tutorial/full-review-2026-10-06/final-bindings.json)區分實際查核範圍。
+
+沒有真人學生驗收，四題亦不能保證不漏報；本次 DINO 漏報、引用缺陷及手機細字限制已明列。[驗證結果](clear-tutorial/full-review-2026-10-06/verification.json)保存實際命令結果；此頁最新來源綁定於[coverage.json](coverage.json)，歷史審閱保留。

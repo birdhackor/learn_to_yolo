@@ -1,0 +1,132 @@
+{
+  "checked_at_utc": "2026-10-06T05:25:33.597363+00:00",
+  "passed": true,
+  "script_sha256": "a501a662bbda014314cb168c8bee1d91adc9ef38157d445f8a0cafd9cc3864e5",
+  "checks": {
+    "17-capstone": {
+      "source_sha256": "7d12af3e0528517ed041e393972575262092f4957d2737a2b76012c06d5d8262",
+      "derived_sha256": "6eac9a98335264447ca56e079c5594058eee8000fa808406b116646ccfbd4a64",
+      "derived_rebuild_byte_identical": true,
+      "embedded_image_bytes_and_attributes_identical": true,
+      "all_box_coordinates_styles_identical": true,
+      "image_count": 9,
+      "drawn_box_count": 28,
+      "all_class_score_labels_preserved": true
+    },
+    "18-video": {
+      "source_sha256": "9de1c32116ea96145b98dba4d3a3bc5da9211efffa20d684f548873412a71d6e",
+      "derived_sha256": "ed0307e3fb439654597071046dac00bedeef19ed2f8496b591a3643bfe194732",
+      "derived_rebuild_byte_identical": true,
+      "embedded_image_bytes_and_attributes_identical": true,
+      "all_box_coordinates_styles_identical": true,
+      "image_count": 3,
+      "drawn_box_count": 0,
+      "all_timestamps_frame_numbers_counts_measured_times_identical": true,
+      "captions": [
+        "第 0 幀：來源時間 0.00 秒",
+        "處理 1.50 ms｜框 1 個",
+        "第 5 幀：來源時間 0.25 秒",
+        "處理 0.98 ms｜框 0 個",
+        "第 11 幀：來源時間 0.55 秒",
+        "處理 0.70 ms｜框 0 個"
+      ]
+    },
+    "19-tracking": {
+      "source_sha256": "b49961cef2c248e1b163e652d77c89ff9e7670c5ce0a5f164ffeae36740bafe3",
+      "derived_sha256": "b963a3c9bbd8c9728685749ccf0c80247204dd928ce9e0a5c5275e991625e605",
+      "derived_rebuild_byte_identical": true,
+      "embedded_image_bytes_and_attributes_identical": true,
+      "all_box_coordinates_styles_identical": true,
+      "image_count": 0,
+      "drawn_box_count": 12,
+      "all_frame_labels_ID_colors_positions_identical": true,
+      "colored_ID_square_count": 22,
+      "max_age_preserved_in_title_and_description": true,
+      "independent_matching_run_max_age_1_and_2_and_recall_checked": true
+    },
+    "08-custom-predictions": {
+      "source_sha256": "0f935cc449e1f52af61c02a9897e41c68bac866848f008680d325c2a5a1ec157",
+      "derived_sha256": "5e9ea0a6edb6b46cbbc8cc0b8952600ebd0f90a42a09d94e30454f626187380a",
+      "record_sha256": "fb22ce8356fbd747f967c3b82df53bd55de840d826d44fc73abfdba315f8e584",
+      "derived_rebuild_byte_identical": true,
+      "original_embedded_images_and_all_saved_boxes_preserved": true,
+      "custom_geometry_verified_against_report_by_derivation_assertions": true,
+      "all_numbered_connector_endpoints_on_corresponding_original_box": true,
+      "numbers_follow_report_score_order_and_reset_per_image": true,
+      "examples": [
+        {
+          "validation_index": 1,
+          "sha256": "41f076b8cf60559bed6b225490935843f755683075900ec70402e1e047e83456",
+          "predictions": 2,
+          "matches": {
+            "predictions": [
+              {
+                "label": 0,
+                "score": 0.9999966621398926,
+                "match": "TP",
+                "iou_same_class_gt": 0.5845538703473311,
+                "iou_any_gt": 0.5845538703473311
+              },
+              {
+                "label": 2,
+                "score": 0.15817508101463318,
+                "match": "FP",
+                "iou_same_class_gt": null,
+                "iou_any_gt": 0.24119305556156825
+              }
+            ],
+            "missed_gt_labels": []
+          }
+        },
+        {
+          "validation_index": 2,
+          "sha256": "2de27767bb69bb11e821952624f59a3e5b9261e66bfa8bb8d287ac037c192b2f",
+          "predictions": 1,
+          "matches": {
+            "predictions": [
+              {
+                "label": 1,
+                "score": 0.4621165990829468,
+                "match": "FP",
+                "iou_same_class_gt": 0.4058014688587195,
+                "iou_any_gt": 0.4058014688587195
+              }
+            ],
+            "missed_gt_labels": [
+              1
+            ]
+          }
+        },
+        {
+          "validation_index": 3,
+          "sha256": "e25fc73b8d1740957b4c770c339613f3fc2ee39b5b61c985ca035a85fdb9d8e1",
+          "predictions": 1,
+          "matches": {
+            "predictions": [
+              {
+                "label": 2,
+                "score": 0.9946288466453552,
+                "match": "FP",
+                "iou_same_class_gt": 0.4206645747425075,
+                "iou_any_gt": 0.4206645747425075
+              }
+            ],
+            "missed_gt_labels": [
+              2
+            ]
+          }
+        },
+        {
+          "validation_index": 0,
+          "sha256": "0bfe7c7ee219494ede0e70f6f8f0289d30742c3b1d3fc2d5342c61ee0f1e26f5",
+          "predictions": 0,
+          "matches": {
+            "predictions": [],
+            "missed_gt_labels": []
+          }
+        }
+      ]
+    }
+  },
+  "limits": "逐項檢查 XML、內嵌 PNG 位元組、座標、ID 與時間；沒有以 XML 檢查代替桌面或手機的瀏覽器視覺驗證。"
+}

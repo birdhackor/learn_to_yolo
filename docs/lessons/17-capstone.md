@@ -152,9 +152,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 這張表只能比較同一組資料上的兩次訓練。對照[第 7 章 held-out 那一節](07-heldout.md)末段的 160 步實驗：它的訓練設定和本節 baseline 相同，只是資料 seed 不同（7／700／7000），validation mAP50 是 0.80；換成本節的 1100／2200／3300，baseline 只有 0.44。這示範了小資料切分的波動有多大，所以本節只比較同一組資料上的 baseline 與改動版，不拿別頁的數字比高低。
 
-![相同 validation 圖片的真實兩次訓練結果：上 baseline，中改動版（box 權重 10），下方另外檢查 baseline 的一個背景 FP](../assets/diagrams/17-capstone.svg)
+![相同 validation 圖片的真實兩次訓練結果：上組 baseline，下組改動版（box 權重 10），下方另外檢查 baseline 的一個背景 FP](../assets/diagrams/17-capstone-readable.svg)
 
-圖的讀法：上面兩列是同樣四張 validation 圖片，第一列是 baseline（圖上寫「基準」），第二列是改動版。綠框是 GT（真值），橘框是預測；每個橘框左上角的深色小標籤寫「class:score」。兩列都只畫 score≥0.25 的框；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
+圖的讀法：上面兩組是同樣四張 validation 圖片：上組是 baseline（圖上寫「基準」），下組是改動版；各組依序列出 #14、#5、#4、#7。網頁把原本橫排的圖上下排列，所有圖片、框與分數沿用同次實跑。綠框是 GT（真值），橘框是預測；每個橘框左上角的深色小標籤寫「class:score」。兩組都只畫 score≥0.25 的框；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
 
 這四張不是挑最好看的，而是依 baseline「沒被 IoU≥0.5 覆蓋的 GT 數」由多到少挑出（validation 圖片編號從 0 起算；同數時取編號較大者）。判斷框是否配對成功，要看 IoU，不能只看框很接近或 score 很高。圖中的兩例都是 class 0、score 約 0.99–1.00 的高分框，可直接對照：
 
@@ -162,9 +162,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 | --- | --- | --- |
 | #4／baseline（兩框） | 0.4918、0.3034 | 兩個定位 FP |
 | #14／baseline | 0.2275 | 定位 FP |
-| #14／改動版 | 0.4917 | 仍是定位 FP |
+| #14／改動版 | 0.4928 | 仍是定位 FP |
 
-這幾個框的同類最佳 IoU 都低於配對門檻 0.5。尤其 #14 的改動版看起來已很接近，仍差一點；原始值是 0.4917，四捨五入寫成 0.49。表中每個 # 都指圖片，不是框的排序編號；圖與表的數值來自本次紀錄的 `false_positive_cases`。
+這幾個框的同類最佳 IoU 都低於配對門檻 0.5。尤其 #14 的改動版看起來已很接近，仍差一點；原始值是 0.4928，四捨五入寫成 0.49。表中每個 # 都指圖片，不是框的排序編號；圖與表的數值來自本次紀錄的 `false_positive_cases`。
 
 最下方是前面提過的 #10，改用候選截斷門檻 0.05 來畫，橘框是 score≥0.05 的全部候選。紫色虛線框標出那個背景 FP（圖上寫「背景誤報」；誤報就是 FP），那裡只有背景雜訊，沒有物件。它的標籤 1:0.07 表示 class 1、score 0.068（四捨五入成 0.07）。
 
@@ -174,17 +174,27 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 選定模型接著在獨立的 test 上評估一次：mAP50 0.4452、precision 0.6364、recall 0.5385，都比它在 validation 上低。0.4452 是另外 16 張圖的分數，不能拿來和 baseline 在 validation 的 0.4444 比。test 只用來回報選定模型的成績一次，所以刻意不測 baseline，免得看了 test 又想回頭改選擇。test 也只有 13 個物件：recall 0.5385=7/13，多找到或漏掉一個物件，recall 就差 1/13≈0.077。這麼小的切分波動很大，不能把 0.7014 宣稱為穩定的效果，也不能由這一次斷定改動版在新圖片上一定比較好。
 
-兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 1.03 秒（baseline）與 1.12 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
+兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.50 秒（baseline）與 0.44 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
 
-選定模型的端到端時間（從輸入到畫好框的整段）中位數約 2.96 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
+選定模型的端到端時間（從輸入到畫好框的整段）中位數約 2.00 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
 
 計時路徑留下的候選數記在 `timed_image_candidates`，程式用斷言要求它大於 0。它不一定等於挑圖時數到的候選數：挑圖用的是前面 16 張 validation 圖一起評估的結果，像素值是 0～1 之間的小數；計時的路徑則一次只算一張，而且圖先轉成 0～255 的整數再轉回來，像素值會有極小的差異。score 剛好在 0.05 附近的候選，可能因此在一條路徑上留下、在另一條路徑上被刪掉。
 
 ## 交付、停止條件與下一個檢查
 
-在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/17-capstone.py`，會得到 `artifacts/lesson-17/report.json` 與 validation 圖 `artifacts/lesson-17/validation.svg`（輸出的最後一行也會印出這張圖的路徑）；上方的圖就是執行紀錄那一次產生的同一張圖。本機命令要先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件；Colab 則先執行本節的環境格（notebook 的第一個程式格）。
+在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/17-capstone.py`，會得到 `artifacts/lesson-17/report.json` 與 validation 圖 `artifacts/lesson-17/validation.svg`（輸出的最後一行也會印出這張圖的路徑）；上方的圖由執行紀錄那一次產生的圖重排成直式，內容相同；程式輸出的 `validation.svg` 仍是原本的橫排版。本機命令要先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件；Colab 則先執行本節的環境格（notebook 的第一個程式格）。
 
 完整程式用斷言（assert）檢查訓練與計時：每次訓練（10 步的暖機與兩次 160 步）的每一步 loss 都是有限值，而且最後一步的 loss 比第一步低；計時的那張圖至少留下一個候選；baseline 的 validation mAP50 要大於 0.05。這個 0.05 是「至少學到一點東西」的下限，和候選截斷門檻 0.05 無關。暖機的步數也受這條「比第一步低」的檢查限制：只跑 1 步時，最後一步就是第一步，檢查一定失敗；只跑 2 步時，拿來比的是更新 1 次後的另一批圖，訓練正常也可能不成立。暖機跑 10 步，比的是更新 9 次之後的 loss，這種誤判少很多，但不能完全排除：最後一步用的仍是和第一步不同的 8 張圖，只更新 9 次時，loss 降低的幅度不一定大過這兩批圖本身難易不同造成的差距。
+
+loss 有限或下降，還不能直接證明每一步都把梯度傳到模型。因此本次另用[可重跑的補充檢查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py)觀察同一份完整程式：在每次 Adam 更新前，確認每個參數都有有限梯度、全部梯度合起來的 L2 長度大於 0；更新後確認權重有限，並比較各次訓練開始與結束的權重副本。
+
+| 訓練 | 每一步的梯度 L2 長度範圍 | 訓練前後最大的單一權重差 |
+| --- | --- | --- |
+| 暖機 10 步 | 0.1461～1.1577 | 0.0922 |
+| baseline 160 步 | 0.0748～1.4340 | 0.6971 |
+| 改動版 160 步 | 0.0988～2.7302 | 0.8617 |
+
+三次都通過，表示這次實跑的更新路徑有接通，權重確實改變；不表示新圖片一定答對。這是另一次觀察訓練更新的執行，[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json)保存每一步結果與來源指紋；上述額外檢查沒有寫進原 notebook，耗時也包含檢查開銷，不能拿來替換前面的正常訓練計時。
 
 若這些斷言沒有通過，先查資料、target 與訓練更新，不要繼續宣稱完成。但若錯誤訊息標出的出錯行是暖機那一行 `fit(train_x, train_y, baseline_weight, steps=10)`，先排除上一段說的誤判。錯誤訊息會一層層列出出錯時每個函式執行到的那一行，要看的是標著 `in main` 的那一層；notebook 還會把那一行的前後幾行一起印出，只在出錯行的行號前加上箭頭（例如 `-->`），所以暖機那一行要被箭頭指著才算，只是出現在訊息裡不算。排除的方法是在這一行的開頭加上 `#`，讓它變成不執行的註解，再跑一次。`fit()` 每次開始都重設 seed 7，所以拿掉暖機不會改變兩次 160 步訓練的結果，只是 baseline 先跑，它的訓練時間會多算第一次訓練的準備時間。若這樣所有斷言都通過，就是暖機那次的誤判：兩次正式訓練都通過了同樣的檢查。若仍在斷言停下，就是真的問題，照前面說的去查資料、target 與訓練更新。這條快速路徑共訓練 330 步（10 步不計時的暖機，加上兩次各 160 步），通過後即可停止；正式的比較應該增加資料、換不同的模型 seed，並加入和需求相關的真實場景。
 
@@ -226,7 +236,7 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/17-capstone.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/17-capstone.json)
 
 ??? example "展開本次實際輸出"
 
@@ -296,8 +306,8 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "kind": "localization",
             "class": 0,
             "score": 1.0,
-            "best_any_iou": 0.4917936623096466,
-            "best_same_class_iou": 0.4917936623096466
+            "best_any_iou": 0.49179601669311523,
+            "best_same_class_iou": 0.49179601669311523
           },
           {
             "image": 4,
@@ -305,24 +315,24 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "kind": "localization",
             "class": 0,
             "score": 0.9999768733978271,
-            "best_any_iou": 0.30342045426368713,
-            "best_same_class_iou": 0.30342045426368713
+            "best_any_iou": 0.3034302294254303,
+            "best_same_class_iou": 0.3034302294254303
           },
           {
             "image": 5,
             "prediction": 0,
             "kind": "localization",
             "class": 1,
-            "score": 0.2380521446466446,
-            "best_any_iou": 0.2817327380180359,
-            "best_same_class_iou": 0.2817327380180359
+            "score": 0.2382209151983261,
+            "best_any_iou": 0.2817534804344177,
+            "best_same_class_iou": 0.2817534804344177
           },
           {
             "image": 10,
             "prediction": 1,
             "kind": "background",
             "class": 1,
-            "score": 0.0679774135351181,
+            "score": 0.06800812482833862,
             "best_any_iou": 0.0,
             "best_same_class_iou": 0.0
           },
@@ -331,9 +341,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "prediction": 0,
             "kind": "localization",
             "class": 0,
-            "score": 0.986950695514679,
-            "best_any_iou": 0.22750937938690186,
-            "best_same_class_iou": 0.22750937938690186
+            "score": 0.9869535565376282,
+            "best_any_iou": 0.22750438749790192,
+            "best_same_class_iou": 0.22750438749790192
           }
         ]
       },
@@ -356,16 +366,16 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "prediction": 1,
             "kind": "localization",
             "class": 0,
-            "score": 0.9965797066688538,
-            "best_any_iou": 0.2567991614341736,
-            "best_same_class_iou": 0.2567991614341736
+            "score": 0.9965824484825134,
+            "best_any_iou": 0.25703832507133484,
+            "best_same_class_iou": 0.25703832507133484
           },
           {
             "image": 10,
             "prediction": 1,
             "kind": "background",
             "class": 1,
-            "score": 0.0718860924243927,
+            "score": 0.0727023109793663,
             "best_any_iou": 0.0,
             "best_same_class_iou": 0.0
           },
@@ -374,9 +384,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
             "prediction": 0,
             "kind": "localization",
             "class": 0,
-            "score": 0.9985275268554688,
-            "best_any_iou": 0.4916878342628479,
-            "best_same_class_iou": 0.4916878342628479
+            "score": 0.9985516667366028,
+            "best_any_iou": 0.49281632900238037,
+            "best_same_class_iou": 0.49281632900238037
           }
         ]
       },
@@ -392,11 +402,11 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
       },
       "parameters": 15511,
       "train_seconds": [
-        1.0319139630009886,
-        1.1217075799941085
+        0.5010287510012859,
+        0.4415318439987459
       ],
       "train_timing_scope": "only the training loop of each run, after one untimed 10-step warm-up fit; CPU, 2 threads",
-      "chosen_end_to_end_median_ms": 2.9623954760609195,
+      "chosen_end_to_end_median_ms": 1.999052499741083,
       "timed_validation_image": 2,
       "timed_image_candidates": 2,
       "timing_scope": "uint8 RGB -> tensor -> model -> decode/NMS at score .05 -> drawing, on the validation image with the most candidates; CPU, batch 1, 2 threads; median of 12 runs after 3 warm-up runs; no file I/O",

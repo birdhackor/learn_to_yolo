@@ -22,11 +22,11 @@
 
 ??? note "DINOv2 的幾個名詞，讀官方資料時再查"
 
-    **iBOT 的 patch 任務：**把 student 輸入的部分 patch 藏起來，讓它預測 teacher 在那些位置的輸出分佈；teacher 看未遮住的圖。它和整圖 CLS 任務分工，DINOv2 為兩者使用分開的 head。
+    **iBOT 的 patch 任務：**iBOT 是 Image BERT Pre-Training with Online Tokenizer（用線上 tokenizer 做影像 BERT 預訓練）的縮寫。這個名稱中的 tokenizer 指 teacher 為圖片位置產生訓練目標，會跟著訓練更新；本節關心它的 patch 任務：把 student 輸入的部分 patch 藏起來，讓它預測 teacher 在那些位置的輸出分佈；teacher 看未遮住的圖。它和整圖 CLS 任務分工，DINOv2 為兩者使用分開的 head。
 
     **Sinkhorn–Knopp：**對一批 teacher 輸出一起做平衡。本節只指出 DINOv2 的訓練配方用它取代原始 DINO 的 teacher softmax-centering，沒有實作這個算法。
 
-    **KoLeo：**對圖級特徵加上鼓勵分散的約束，避免它們全擠在一起。本節沒有重現這项 loss。
+    **KoLeo：**名稱來自 Kozachenko–Leonenko 熵估計；這裡用作鼓勵特徵分散的正則項。對圖級特徵加上鼓勵分散的約束，避免它們全擠在一起。本節沒有重現這項 loss。
 
     **Register tokens：**額外加入、沒有直接對應圖片 patch 的 token。它們來自後續〈Vision Transformers Need Registers〉，官方同時提供有 register 與沒有 register 的 DINOv2 模型；不能把所有 DINOv2 都寫成有 register。
 
@@ -138,7 +138,7 @@ DINOv3 的 Gram anchoring 用參考模型的 patch 關係約束 student。上面
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-dino-versions.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-dino-versions.json)
 
 ??? example "展開本次實際輸出"
 

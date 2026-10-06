@@ -1,0 +1,587 @@
+{
+  "review_phase": "第二輪：獨立技術與證據核對（非首次閱讀盲讀）",
+  "reviewer": "technical_applications；未參與本輪教材撰寫，可依授權讀實作、實測JSON與原始來源",
+  "checked_at_utc": "2026-10-06T05:28:17.015947+00:00",
+  "code_commit": "64a25d4fbcff5577965c29efbbcb5d9898ba95d9",
+  "code_commit_scope": "工作樹有教材修改；實際核對版本以source_fingerprints為準，未覆寫原首次閱讀紀錄。",
+  "status": "指定技術範圍通過",
+  "scope": [
+    "17三次fit的梯度／權重與正常CPU數字",
+    "18/19直式圖保留像素、ID、時間與參數",
+    "08四張custom圖原保存框與新編號／連線",
+    "06 VOC／COCO名稱補充",
+    "20 CPU與既有L4證據、簡化範圍和原始來源"
+  ],
+  "issues": [
+    {
+      "id": "applications-17-stale-iou",
+      "page": "docs/lessons/17-capstone.md",
+      "severity": "增加理解負擔／數字來源不一致",
+      "found": "正文#14改動版寫0.4917，但正常CPU與probe紀錄均為0.49281632900238037，應四捨五入0.4928。",
+      "status": "已核對修正"
+    },
+    {
+      "id": "applications-17-footer-accidental-replacement",
+      "page": "docs/lessons/17-capstone.md",
+      "severity": "必要：原始執行輸出不能改成非實測數字",
+      "found": "修正正文時0.4917子字串替換亦把頁尾baseline #4的0.49179601669311523改成0.49289601669311523；已立即回報。",
+      "status": "已核對修正"
+    },
+    {
+      "id": "applications-20-refresh-cpu-numbers",
+      "page": "docs/lessons/20-deployment.md",
+      "severity": "必要：新紀錄與正文計時／推算必須對齊",
+      "found": "更新CPU執行紀錄後，原正文舊計時0.255/0.112、3.279/3.043、B2 0.099與衍生比值已不屬於最新那次；B1 raw誤差亦改成4.77e-7。",
+      "status": "已核對修正"
+    }
+  ],
+  "summary_zh_tw": [
+    "17獨立CPU觀察10+160+160步，逐步檢查所有參數梯度存在且有限、合併梯度L2有限且非零、更新後權重有限。梯度全數列、範圍與最終權重差和既有補充存證完全相同。每次另跑不含probe的fit，最終state_dict逐位元相同；觀察不改輸入、optimizer狀態或更新。這些數字支持該次更新路徑，不能推出泛化。",
+    "正文的有限非零指每步梯度整體範數，不宣稱每個梯度元素非零。獨立觀察還核得各參數張量的梯度範數3300次都非零。正常訓練／推論計時只核正常curriculum記錄，沒有拿probe耗時替換。",
+    "17/18/19網站衍生圖由現有來源重新生成，逐位元等於網站SVG；原圖的內嵌PNG、框與標籤保留。18另訓練CPU160步，0/5/11幀所有RGB疊圖像素與來源SVG完全相同，12幀框數也符合正常存證。",
+    "19獨立計算max_age=1與2；上一框法3次、速度法分別1次與0次，末幀ID和11/12偵測recall均符合正文。衍生圖保留22個彩色ID方塊、12格標籤、座標以及max_age；水平位置與上下分行的教學說明符合實作。",
+    "08四張內嵌PNG的SHA-256逐張等於1600步原紀錄，全部保存預測框和GT不動；重新生成時逐框核JSON geometry，4條編號連線端點皆落在相應原框，每張按score排序自#0重設。這次沒有重新訓練1600步。",
+    "20只核CPU／L4證據與source hashes，不重跑GPU。L4兩個engine的最大raw差7.6293945e-6、框差3.8146973e-6、B1中位數約0.147ms符合表；FP16只是允許選層精度，沒有逐層精度稽核、INT8或AP品質證據。"
+  ],
+  "tests": [
+    {
+      "command": ".venv-model/bin/python -m pytest -q tests/test_result_figure_reflow.py",
+      "exit_code": 0,
+      "result": "3 passed in 0.90s",
+      "scope": "alternate capstone weight、tracking max_age=1、video實測幀資料"
+    },
+    {
+      "command": ".venv-model/bin/python reviews/clear-tutorial/full-review-2026-10-06/reproduction/technical_applications_check_independent_capstone.py",
+      "exit_code": 0,
+      "record": "reviews/clear-tutorial/full-review-2026-10-06/rechecks/technical-applications-capstone-independent.json"
+    },
+    {
+      "command": ".venv-model/bin/python reviews/clear-tutorial/full-review-2026-10-06/reproduction/technical_applications_check_figures.py",
+      "exit_code": 0,
+      "record": "reviews/clear-tutorial/full-review-2026-10-06/rechecks/technical-applications-figures.json"
+    },
+    {
+      "command": "runpy載入18-video.py；CPU fit_detector()、run_stream()後比對嵌入SVG的0/5/11幀RGB畫素",
+      "exit_code": 0,
+      "record": "reviews/clear-tutorial/full-review-2026-10-06/rechecks/technical-applications-video-independent.json"
+    }
+  ],
+  "capstone_gradient_values": [
+    {
+      "role": "warmup",
+      "steps": 10,
+      "box_weight": 5,
+      "all_parameter_gradients_present_and_finite_every_step": true,
+      "combined_gradient_norm_finite_nonzero_every_step": true,
+      "all_weights_finite_after_every_step": true,
+      "gradient_l2_min": 0.14610575139522552,
+      "gradient_l2_max": 1.157747745513916,
+      "weight_max_abs_change": 0.09215283393859863,
+      "observed_matches_plain_final_state_bitwise": true,
+      "zero_parameter_gradient_norm_occurrences": 0,
+      "parameters_per_step": 10
+    },
+    {
+      "role": "baseline",
+      "steps": 160,
+      "box_weight": 5,
+      "all_parameter_gradients_present_and_finite_every_step": true,
+      "combined_gradient_norm_finite_nonzero_every_step": true,
+      "all_weights_finite_after_every_step": true,
+      "gradient_l2_min": 0.0747700035572052,
+      "gradient_l2_max": 1.4339734315872192,
+      "weight_max_abs_change": 0.697117269039154,
+      "observed_matches_plain_final_state_bitwise": true,
+      "zero_parameter_gradient_norm_occurrences": 0,
+      "parameters_per_step": 10
+    },
+    {
+      "role": "changed",
+      "steps": 160,
+      "box_weight": 10,
+      "all_parameter_gradients_present_and_finite_every_step": true,
+      "combined_gradient_norm_finite_nonzero_every_step": true,
+      "all_weights_finite_after_every_step": true,
+      "gradient_l2_min": 0.09883590787649155,
+      "gradient_l2_max": 2.730221748352051,
+      "weight_max_abs_change": 0.8617051839828491,
+      "observed_matches_plain_final_state_bitwise": true,
+      "zero_parameter_gradient_norm_occurrences": 0,
+      "parameters_per_step": 10
+    }
+  ],
+  "normal_cpu_values": {
+    "17": {
+      "baseline_validation": {
+        "ap_per_class": {
+          "0": 0.3333333333333333,
+          "1": 0.5555555555555556
+        },
+        "map": 0.4444444444444444,
+        "precision": 0.6428571428571429,
+        "recall": 0.5294117647058824
+      },
+      "changed_validation": {
+        "ap_per_class": {
+          "0": 0.625,
+          "1": 0.7777777777777778
+        },
+        "map": 0.7013888888888888,
+        "precision": 0.8,
+        "recall": 0.7058823529411765
+      },
+      "chosen_test": {
+        "ap_per_class": {
+          "0": 0.2571428571428571,
+          "1": 0.6333333333333333
+        },
+        "map": 0.4452380952380952,
+        "precision": 0.6363636363636364,
+        "recall": 0.5384615384615384
+      },
+      "parameters": 15511,
+      "train_seconds": [
+        0.5010287510012859,
+        0.4415318439987459
+      ],
+      "chosen_end_to_end_median_ms": 1.999052499741083
+    },
+    "18": {
+      "frames": 12,
+      "source_fps": 20,
+      "source_duration_s": 0.6,
+      "source_last_timestamp_s": 0.55,
+      "gif_frame_duration_ms": 50,
+      "source_size_hw": [
+        64,
+        96
+      ],
+      "object_visible_per_frame": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "model_input_hw": [
+        64,
+        64
+      ],
+      "boxes_per_frame": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "warmup_frames": 1,
+      "median_ms": {
+        "preprocess": 0.18829999953595689,
+        "model": 0.1891370002340409,
+        "postprocess": 0.35733650020119967,
+        "drawing": 0.0501294998684898,
+        "total": 0.8414824997089454
+      },
+      "camera_adapter": "provided, not executed",
+      "limits": "synthetic lazy producer; no capture/codec/display/network queue latency measured"
+    },
+    "20": {
+      "onnx": "artifacts/lesson-20/grid.onnx",
+      "opset": 17,
+      "providers": [
+        "CPUExecutionProvider"
+      ],
+      "input_shape": [
+        "batch",
+        3,
+        64,
+        64
+      ],
+      "batches_checked": [
+        1,
+        2,
+        3
+      ],
+      "max_abs_raw_errors": [
+        4.76837158203125e-07,
+        4.76837158203125e-07,
+        4.76837158203125e-07
+      ],
+      "decoded_boxes_scores_labels_match": true,
+      "restored_boxes_per_source": [
+        16,
+        16,
+        16
+      ],
+      "dynamic_spatial": false,
+      "spatial80_rejected": true,
+      "median_ms": {
+        "torch_raw_batch1": 0.1509749990873388,
+        "ort_raw_batch1": 0.036599500162992626,
+        "torch_preprocess_to_restored_boxes": 2.3252515002241125,
+        "ort_preprocess_to_restored_boxes": 2.1557750005740672,
+        "paired_torch_minus_ort_preprocess_to_restored_boxes": 0.17311249939666595,
+        "ort_raw_batch2": 0.04289900061849039
+      },
+      "end_to_end_paired_rounds": 40,
+      "ort_raw_batch2_images_per_second": 46621.132687598256,
+      "versions": {
+        "torch": "2.9.1+cpu",
+        "onnx": "1.19.1",
+        "onnxruntime": "1.23.2"
+      },
+      "limits": "CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented"
+    }
+  },
+  "20_cpu_derived_values": {
+    "raw_speedup": 4.125056309921858,
+    "raw_share_percent": 6.492846002799591,
+    "paired_percent": 7.444893568716374,
+    "b1_images_per_s": 27322.777511894663,
+    "b2_images_per_s": 46621.132687598256,
+    "batch_throughput_gain": 1.706310153398653,
+    "two_images_saved_ms": 0.030299999707494862
+  },
+  "record_and_code_checks": {
+    "17-capstone": {
+      "record": "artifacts/checks/curriculum/17-capstone.json",
+      "record_sha256": "83e7b50a0f343b047fd097b843dc74f6606a471cbfc6a0f31861014eb31531de",
+      "executed_at_utc": "2026-10-06T05:18:16.985546+00:00",
+      "current_source_hashes_match": true,
+      "source_hashes": {
+        "lesson_cases/17-capstone.py": "a5969a35c9409bae299c070229defef69a40e340d53c3aecd563f087fea12cf8",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "notebook_code_and_stdout_match": true,
+      "page_evidence_block_exact": true
+    },
+    "18-video": {
+      "record": "artifacts/checks/curriculum/18-video.json",
+      "record_sha256": "1c89887caf34b04d72abd56a0274ca57a1b3ed9b94b1c00ed4b13548c39fa3fd",
+      "executed_at_utc": "2026-10-06T05:07:03.452844+00:00",
+      "current_source_hashes_match": true,
+      "source_hashes": {
+        "lesson_cases/18-video.py": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "notebook_code_and_stdout_match": true,
+      "page_evidence_block_exact": true
+    },
+    "19-tracking": {
+      "record": "artifacts/checks/curriculum/19-tracking.json",
+      "record_sha256": "a1cdc7e516ba09ea2927af60777f10e7b9b0d9d5fa42973f0f99d86ad392cc47",
+      "executed_at_utc": "2026-10-06T05:18:18.209460+00:00",
+      "current_source_hashes_match": true,
+      "source_hashes": {
+        "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa"
+      },
+      "notebook_code_and_stdout_match": true,
+      "page_evidence_block_exact": true
+    },
+    "20-deployment": {
+      "record": "artifacts/checks/curriculum/20-deployment.json",
+      "record_sha256": "43bb6a26d2ee1da124acfbcbeb5519b0611113ccd419d092eeeca4d92dd0cc95",
+      "executed_at_utc": "2026-10-06T05:23:07.699292+00:00",
+      "current_source_hashes_match": true,
+      "source_hashes": {
+        "lesson_cases/20-deployment.py": "bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
+      },
+      "notebook_code_and_stdout_match": true,
+      "page_evidence_block_exact": true
+    },
+    "deployment-gpu": {
+      "record_sha256": "460c7ac5fd8ff28f4b867584d362e7172f4ed3b45a3b3ae5387af18de42383df",
+      "all_recorded_dependency_hashes_match_current_bytes": true,
+      "recorded_source_hashes": {
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/checkpoint.py": "2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/deployment_gpu.py": "2318d8e8d8c97cad7511e4f43ced748cee0c63ccc7cf56a7dc437c67cc543f7d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+        "miniyolo/train.py": "aa5567f11be6ca7aee97bd082b9d5964414b12b73453763c915c7ffb409c4276"
+      },
+      "scope": "讀取既有存證與來源；未重跑此完整1600步、L4或影片檔案流程。"
+    },
+    "custom-data-learning": {
+      "record_sha256": "fb22ce8356fbd747f967c3b82df53bd55de840d826d44fc73abfdba315f8e584",
+      "all_recorded_dependency_hashes_match_current_bytes": true,
+      "recorded_source_hashes": {
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/checkpoint.py": "2144e2afa4d89382a7b3cd253755bb851e35fdc0847ee7179dee02dbbf4ca49b",
+        "miniyolo/custom_data.py": "7dd9999f03dbc32ce1ec951c58121c8f746d381b0244e4c2a82cca59e7ca7e55",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/figures.py": "155222c5bb0d6942bcc231d5c32c6f1a4db662293c8cf909560f1f9b75a3ea15",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+        "miniyolo/train.py": "aa5567f11be6ca7aee97bd082b9d5964414b12b73453763c915c7ffb409c4276",
+        "scripts/detect_image.py": "69738c487cfad24bea2009384712ca0ba958ac1fd394e2226ae33d7de9682c6a",
+        "scripts/run_custom_data_learning.py": "b8b3b442e4e2349173a2eb8198b33f966d1e75d80c8b1edb07d1af4d3b5e99e5"
+      },
+      "scope": "讀取既有存證與來源；未重跑此完整1600步、L4或影片檔案流程。"
+    },
+    "video-file": {
+      "record_sha256": "e03980d47e7e4f87c0c4243f63754ad56a905cfacc4cf2ebc30bfd07b1394d58",
+      "all_recorded_dependency_hashes_match_current_bytes": true,
+      "recorded_source_hashes": {
+        "lesson_cases/18-video.py": "0aa6c1713098e244dd3651c6f319844ad0e17b10ee28a187e8a224ee6e9024a0",
+        "lesson_cases/19-tracking.py": "e1fc77ce9e6e8e09a34f4dedf8543155154ab58709eaf1ab61756793f7a14efa",
+        "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
+        "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
+        "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+        "miniyolo/inference.py": "995ac8f942d0c1e43d94f2efb3b7adcb91a9feb6b9bab923615209f0c190c313",
+        "miniyolo/losses.py": "81fa9331c9a2aebe2e9c6c453a5313e64566bb20c3fe77ca45ec9df53424d4e4",
+        "miniyolo/metrics.py": "53ce982e37cbd96c784f75c7d30faf99d52f79ab83ca7b8114eb21b4327330e0",
+        "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
+        "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+        "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
+        "scripts/verify_video_file.py": "ec77505526972a57b74cf757e303ccfea7459dfba2ffd9857b7634129070dcec"
+      },
+      "scope": "讀取既有存證與來源；未重跑此完整1600步、L4或影片檔案流程。"
+    }
+  },
+  "source_fingerprints": {
+    "AGENTS.md": "485c5a68c3cac8993cb58cfe57ae5821d5e36eb763a7ff8db9bf0fe446fd15c3",
+    ".agents/skills/clear-tutorial/SKILL.md": "f57236602cae9046f5fa7e40b3a05bc98477eaa177f219e8101732b58c66f93b",
+    ".agents/skills/clear-tutorial/references/review-protocol.md": "a4a0c7d3696ed7ec77856edac8623c3fa9ccd0a1f5efe5aa717c0b1d11368f1c",
+    "docs/lessons/06-evaluation.md": "5aed13f3146228766348ede8c5a363d654bdaf101f1902ca657d63fecdd812da",
+    "docs/lessons/08-own-data.md": "ef050c0c65a82fccc36229777740644d08179eb49b95782b9321456e686109f3",
+    "docs/lessons/17-capstone.md": "ef7aa5ffe8aad6bdf2c9455ed4db26e377fd85b479d3c71889f0baa18b0efa50",
+    "docs/lessons/18-video.md": "e1a9a944e3a930058622d32c8dd61b6261167c41eb5a2a9b81760d218d9d20a7",
+    "docs/lessons/19-tracking.md": "e7033d7d2d80822deb1bbbf57c4a7ed75aa39396818b568596bed64a8635aa09",
+    "docs/lessons/20-deployment.md": "ecfaae4a21c218bc2ecb4e358bbf45b30eb5af9f35ce36ccdddf4ad013339d86",
+    "scripts/reflow_result_figures.py": "77ad7cf68193a44b2547d0de7a3ad5acf69a0f652b3c69c116d7e0288aacc62d",
+    "scripts/verify_curriculum.py": "ce9e35325a446adce5236fe9d05bfd22b812972dfa3c7ddb1ca518bad8782217",
+    "tests/test_result_figure_reflow.py": "c7ce46a60a516840a0fc1b8c827491d7722e6a78cb6488ee14870da7aefdc3a5",
+    "reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py": "9e233852a7b8929a2b075d87b878aeaf66e06a20bddc2186118dcc64c610dabf",
+    "reviews/clear-tutorial/full-review-2026-10-06/reproduction/technical_applications_check_independent_capstone.py": "1db9f43b058822f03dd69b2a4517db0813ad092613b0acfce2070bac745c4741",
+    "reviews/clear-tutorial/full-review-2026-10-06/reproduction/technical_applications_check_figures.py": "a501a662bbda014314cb168c8bee1d91adc9ef38157d445f8a0cafd9cc3864e5",
+    "reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json": "98cb76281dc03b807f0744e4c9347d078deaa7b052336a9fef64ca473e19e3ef",
+    "reviews/clear-tutorial/full-review-2026-10-06/rechecks/technical-applications-capstone-independent.json": "dffab46cf9f2a5a355fe4e75edc896ca4566f7d09627f9015b1fa9a05d4680ab",
+    "reviews/clear-tutorial/full-review-2026-10-06/rechecks/technical-applications-figures.json": "213a9b589fe6f5f0a2d0dcbb18433901d6b17e596ab479509e334c138d66284c",
+    "reviews/clear-tutorial/full-review-2026-10-06/rechecks/technical-applications-video-independent.json": "17d7a46618a59c95cb5fd8b3b5ecd3bbfd2834420014f70c36c2107c32d4483c",
+    "docs/assets/diagrams/17-capstone.svg": "7d12af3e0528517ed041e393972575262092f4957d2737a2b76012c06d5d8262",
+    "docs/assets/diagrams/17-capstone-readable.svg": "6eac9a98335264447ca56e079c5594058eee8000fa808406b116646ccfbd4a64",
+    "docs/assets/diagrams/18-video.svg": "9de1c32116ea96145b98dba4d3a3bc5da9211efffa20d684f548873412a71d6e",
+    "docs/assets/diagrams/18-video-readable.svg": "ed0307e3fb439654597071046dac00bedeef19ed2f8496b591a3643bfe194732",
+    "docs/assets/diagrams/19-tracking.svg": "b49961cef2c248e1b163e652d77c89ff9e7670c5ce0a5f164ffeae36740bafe3",
+    "docs/assets/diagrams/19-tracking-readable.svg": "b963a3c9bbd8c9728685749ccf0c80247204dd928ce9e0a5c5275e991625e605",
+    "docs/assets/diagrams/08-custom-predictions-readable.svg": "0f935cc449e1f52af61c02a9897e41c68bac866848f008680d325c2a5a1ec157",
+    "docs/assets/diagrams/08-custom-predictions-labelled.svg": "5e9ea0a6edb6b46cbbc8cc0b8952600ebd0f90a42a09d94e30454f626187380a"
+  },
+  "original_sources": {
+    "fetched_at_utc": "2026-10-06T05:22:10.817811+00:00",
+    "sources": [
+      {
+        "file": "work/technical-applications/sources/sort.py",
+        "url": "https://raw.githubusercontent.com/abewley/sort/2236dff5019565958b84df7d871d41cc1db58ac7/sort.py",
+        "final_url": "https://raw.githubusercontent.com/abewley/sort/2236dff5019565958b84df7d871d41cc1db58ac7/sort.py",
+        "http_status": 200,
+        "bytes": 11739,
+        "sha256": "f5b10481ff9055b70f9e3f5d0126d5269ee91b16764a267a01f78ec3a2b931de"
+      },
+      {
+        "file": "work/technical-applications/sources/sort.html",
+        "url": "https://arxiv.org/abs/1602.00763v2",
+        "final_url": "https://arxiv.org/abs/1602.00763v2",
+        "http_status": 200,
+        "bytes": 42789,
+        "sha256": "9c680b357500ad5d8630145e2d252e083baee7ca14301ac7aa1d0ea25bed4cef"
+      },
+      {
+        "file": "work/technical-applications/sources/deep_sort_tracker.py",
+        "url": "https://raw.githubusercontent.com/nwojke/deep_sort/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/tracker.py",
+        "final_url": "https://raw.githubusercontent.com/nwojke/deep_sort/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/tracker.py",
+        "http_status": 200,
+        "bytes": 5291,
+        "sha256": "b214c584e8b0151533c74297e377d3f700869c9b2ed3d30573ac6bbf6adfe65f"
+      },
+      {
+        "file": "work/technical-applications/sources/deep_sort_linear_assignment.py",
+        "url": "https://raw.githubusercontent.com/nwojke/deep_sort/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/linear_assignment.py",
+        "final_url": "https://raw.githubusercontent.com/nwojke/deep_sort/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/linear_assignment.py",
+        "http_status": 200,
+        "bytes": 7790,
+        "sha256": "ea042c8bad0687f1d04c10c592c5c43d11c4082339de9b4fe982629807fe1cab"
+      },
+      {
+        "file": "work/technical-applications/sources/byte_tracker.py",
+        "url": "https://raw.githubusercontent.com/FoundationVision/ByteTrack/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/byte_tracker.py",
+        "final_url": "https://raw.githubusercontent.com/FoundationVision/ByteTrack/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/byte_tracker.py",
+        "http_status": 200,
+        "bytes": 11940,
+        "sha256": "7cecdcdd7998103969a4ba1772f4c9fb5560fd5eef05ca03e0d2df28346ca50b"
+      },
+      {
+        "file": "work/technical-applications/sources/byte_matching.py",
+        "url": "https://raw.githubusercontent.com/FoundationVision/ByteTrack/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/matching.py",
+        "final_url": "https://raw.githubusercontent.com/FoundationVision/ByteTrack/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/matching.py",
+        "http_status": 200,
+        "bytes": 6200,
+        "sha256": "2f54bf0c183f577087391901562ae2bcd3c01633a3e077bd5d4168fafbd899a6"
+      },
+      {
+        "file": "work/technical-applications/sources/coco.html",
+        "url": "https://arxiv.org/abs/1405.0312",
+        "final_url": "https://arxiv.org/abs/1405.0312",
+        "http_status": 200,
+        "bytes": 43101,
+        "sha256": "342b1d08c5294e4be7d1fcb6740581aca5c8bb6061b9dd7798df1ca79f626f74"
+      },
+      {
+        "file": "work/technical-applications/sources/cocoeval.py",
+        "url": "https://raw.githubusercontent.com/cocodataset/cocoapi/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py",
+        "final_url": "https://raw.githubusercontent.com/cocodataset/cocoapi/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py",
+        "http_status": 200,
+        "bytes": 24143,
+        "sha256": "e514af401848d5a4cc5d3512bd93d2c317f92272c6d30f218e0f00b7b4110534"
+      },
+      {
+        "file": "work/technical-applications/sources/voc.html",
+        "url": "https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/index.html",
+        "final_url": "https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/index.html",
+        "http_status": 200,
+        "bytes": 15670,
+        "sha256": "1415692b54e4a6f5b1462d9051daeab6bf82997489928349f28f81c12c53bad9"
+      },
+      {
+        "file": "work/technical-applications/sources/NvInfer.h",
+        "url": "https://raw.githubusercontent.com/NVIDIA/TensorRT/b8db91e15be2cae4465ac17fab19e0f969e45407/include/NvInfer.h",
+        "final_url": "https://raw.githubusercontent.com/NVIDIA/TensorRT/b8db91e15be2cae4465ac17fab19e0f969e45407/include/NvInfer.h",
+        "http_status": 200,
+        "bytes": 369456,
+        "sha256": "1bfa6bd2e8638f7ad78c40a0eafcd9b34f75b281ee56ee90bd9b14ed0914e388"
+      },
+      {
+        "file": "work/technical-applications/sources/sampleOptions.cpp",
+        "url": "https://raw.githubusercontent.com/NVIDIA/TensorRT/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/common/sampleOptions.cpp",
+        "final_url": "https://raw.githubusercontent.com/NVIDIA/TensorRT/b8db91e15be2cae4465ac17fab19e0f969e45407/samples/common/sampleOptions.cpp",
+        "http_status": 200,
+        "bytes": 143550,
+        "sha256": "5e74b2376628c84c803804e0b0647903eae512156bf88d1f9486640348f7353b"
+      },
+      {
+        "file": "work/technical-applications/sources/pytorch29onnx.html",
+        "url": "https://docs.pytorch.org/docs/2.9/onnx.html",
+        "final_url": "https://docs.pytorch.org/docs/2.9/onnx.html",
+        "http_status": 200,
+        "bytes": 133255,
+        "sha256": "95258c84b648345f3c563823373f0b0ff072f96c8c3cd2edf8f817a61d17edaf"
+      },
+      {
+        "file": "work/technical-applications/sources/cuda10.pdf",
+        "url": "https://developer.download.nvidia.com/compute/cuda/1.0/NVIDIA_CUDA_Programming_Guide_1.0.pdf",
+        "final_url": "https://developer.download.nvidia.com/compute/cuda/1.0/NVIDIA_CUDA_Programming_Guide_1.0.pdf",
+        "http_status": 200,
+        "bytes": 1142700,
+        "sha256": "1e61ec4144c02ac530201241c8f490b490afa31526186435d4cc5fe09290a4da"
+      },
+      {
+        "file": "work/technical-applications/sources/tf32.html",
+        "url": "https://blogs.nvidia.com/blog/tensorfloat-32-precision-format/",
+        "final_url": "https://blogs.nvidia.com/blog/category/explainer/",
+        "http_status": 200,
+        "bytes": 113722,
+        "sha256": "40cd146bd2cebe6b36d7994eb1a80c9c3338235421b5c4de2c4bfc0ebe2c1435"
+      },
+      {
+        "file": "work/technical-applications/sources/tf32-developer.html",
+        "url": "https://developer.nvidia.com/blog/accelerating-ai-training-with-tf32-tensor-cores/",
+        "final_url": "https://developer.nvidia.com/blog/accelerating-ai-training-with-tf32-tensor-cores/",
+        "http_status": 200,
+        "bytes": 270835,
+        "sha256": "8e3b9ec0485eb4f1e2faecd2f5821876e838e3d1da69bab264c23105f46dc0a0"
+      }
+    ]
+  },
+  "source_support": [
+    {
+      "claim": "VOC／COCO／SORT完整名稱",
+      "locations": [
+        "voc.html標題Visual Object Classes",
+        "coco.html Title: Microsoft COCO: Common Objects in Context",
+        "sort.html Title: Simple Online and Realtime Tracking"
+      ]
+    },
+    {
+      "claim": "19 SORT門檻與DeepSORT、ByteTrack分工",
+      "locations": [
+        "sort.py:154–192解指派後剔除低IoU（有唯一配對捷徑）",
+        "deep_sort_tracker.py:93–127外觀gating/cascade及最後IoU輪；linear_assignment.py:130按time_since_update排序",
+        "byte_tracker.py:194–270首輪tracked+lost、次輪unmatched Tracked配低分、unconfirmed只剩餘高分；byte_matching.py:43 lapjv cost_limit"
+      ]
+    },
+    {
+      "claim": "20 TensorRT FP16棄用、TF32與strong typing",
+      "locations": [
+        "NvInfer.h:8848–8850 FP16 fallback及10.12棄用；8868–8871 TF32 mantissa10、FP32加總與預設允許",
+        "sampleOptions.cpp:1268–1282 strong typing停用FP16等flags；2604 noTF32",
+        "pytorch29onnx.html torch.onnx.export signature及dynamic_axes/dynamic_shapes說明"
+      ]
+    },
+    {
+      "claim": "CUDA／TF32名稱補充",
+      "locations": [
+        "cuda10.pdf首頁Compute Unified Device Architecture（pdftotext有解析警告但首頁正文成功抽出）",
+        "tf32-developer.html NVIDIA Technical Blog元資料與本文TensorFloat32 (TF32)"
+      ],
+      "rejected_source": "tf32.html原blog連結導向explainer分類頁，沒有用它支持TF32名稱。"
+    }
+  ],
+  "derived_figure_pipeline": "verify_curriculum每次真正執行17/18/19成功後先copy原圖，順序呼叫對應reflow，再attach notebook/page，最後存record。一般cache與--render-only不自動重做site-only衍生圖；本輪以目前來源及工具手動重建核一致。08 label函式也獨立重建核對。瀏覽器排版另有人檢查。",
+  "not_verified": [
+    "本輪不是首次逐段盲讀、沒有改稱原首次閱讀通過",
+    "桌面／手機瀏覽器視覺與第三輪銜接由另一位審查者負責，本輪未做",
+    "未重跑08完整1600步",
+    "未重跑L4訓練／TensorRT、trtexec命令、逐層精度或INT8",
+    "沒有現在下載遠端Modal engine或獨立確認該app狀態，只讀存證裡storage_sha256_verified和停止確認",
+    "沒有實體相機、live/network queue、變動幀率PTS或有損MP4驗證",
+    "未評估正式MOT的IDF1/HOTA，未做多seed／真照片泛化"
+  ]
+}

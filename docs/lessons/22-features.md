@@ -14,7 +14,7 @@ teacher 在這裡提供的是每張原圖的 32 維特徵，不是 K=16 個投�
 
 ## 第一種讀法：找最像的訓練圖
 
-下文並列兩份固定的 backbone：**SSL** 是 160 步後的 teacher；**random** 保留它訓練起點、尚未更新的權重。兩份都用同一批圖片評分，讓我們檢查自監督訓練有沒有帶來差別。
+下文並列兩份固定的 backbone：**SSL** 是 Self-Supervised Learning（自監督學習）的縮寫，這裡的「SSL 特徵」指經過 160 步自監督更新後的 teacher backbone 所產生的特徵；**random** 保留它訓練起點、尚未更新的權重。兩份都用同一批圖片評分，讓我們檢查自監督訓練有沒有帶來差別。
 
 先把 128 張 train 圖各轉成一個特徵向量，存成 reference bank（參考庫），並在此時才附上它們的紅藍標籤。對一張新的 test 圖取出特徵，把它和參考庫逐一比較，找到最相近的一張，借用那張 train 圖的顏色答案。這叫 **1-nearest-neighbor（1-NN，一個最近鄰）**；它沒有需要訓練的分類頭。
 
@@ -40,6 +40,8 @@ accuracy, neighbors = nearest_neighbor_accuracy(
 
 為了整理不同特徵維度的尺度，先只用 train 特徵估計每維平均與標準差，再把 train／validation／test 都照這份統計標準化。標準差最小取 0.01，避免幾乎不變的維度除以過小數字。不能用 test 特徵重新估平均與標準差，否則評分資料也參與了讀取器的設定。
 
+具體來說，第 \(d\) 維特徵 \(f_d\) 變成 \((f_d-\mu_d)/\max(s_d,0.01)\)：\(\mu_d\) 與 \(s_d\) 都由 128 張 train 圖的同一維算出，標準差使用除以 128 的版本（程式的 `unbiased=False`）。評分新圖片時仍沿用這份 train 統計；這和 21.3 的 LayerNorm 對每個 token 自己的特徵維度做整理不同。
+
 標準化後，以 Adam、學習率 0.02、全 train batch，固定訓練 120 步。此時只有新線性頭更新；backbone 保持凍結。這是有標籤的下游訓練，不能把整段都說成「完全沒用 label」。自監督的是取得 backbone 那一段。
 
 ## 必須和同起點的隨機特徵一起看
@@ -63,7 +65,7 @@ accuracy, neighbors = nearest_neighbor_accuracy(
 
 ![來自實際JSON的160步自監督loss曲線，以及凍結teacher與random特徵的統計和下游比較](../assets/diagrams/22-features.svg)
 
-圖上半部是同一設定下的 160 步跨 view loss。它並非一路下降：center 和 teacher 也持續改變，目標不是固定答案，因此不能照監督分類的直覺，只用頭尾或單調性解讀。曲線記錄的是優化過程；下半部的獨立 test 評分才回答色彩用途。
+圖上半部取自 [22.3 這次執行的完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-distillation.json)，是 160 步跨 view loss；下半部取自本節另一次同設定重訓後的 test 特徵與評分，兩部分不是同一次執行。它並非一路下降：center 和 teacher 也持續改變，目標不是固定答案，因此不能照監督分類的直覺，只用頭尾或單調性解讀。曲線記錄的是優化過程；下半部的獨立 test 評分才回答色彩用途。
 
 圖中的 feature std 是「跨 64 張 test 圖，分別算每個 CLS 維度的標準差，再平均 32 個維度」；mean pair cosine 是不同 test 圖兩兩向量正規化後的平均相似度，不包含同圖與自己比較。本次 random 的 std／cosine 約 0.084／0.992，SSL 約 0.330／0.856。這些統計能幫忙檢查是否所有圖都成為同一向量，但一個不為零的 std 仍不能替代下游評分：random 的向量雖比較相近，也足以解出這個色彩任務。
 
@@ -89,7 +91,7 @@ accuracy, neighbors = nearest_neighbor_accuracy(
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-features.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-features.json)
 
 ??? example "展開本次實際輸出"
 
@@ -115,7 +117,7 @@ accuracy, neighbors = nearest_neighbor_accuracy(
       "task": "red vs blue rectangle color, both classes share position/size generation",
       "feature_source": "frozen teacher CLS [N,32]; no projection head in downstream",
       "ssl_first_loss": 1.9427120685577393,
-      "ssl_last_loss": 1.8742752075195312,
+      "ssl_last_loss": 1.8742694854736328,
       "controls": "same data, TinyViT initial backbone, probe head seed900, optimizer/lr/120steps; train-only feature standardization",
       "validation_use": "report only; no hyperparameter selection",
       "test_use": "evaluation only",
@@ -145,14 +147,14 @@ accuracy, neighbors = nearest_neighbor_accuracy(
             "test_accuracy": 1.0,
             "steps": 120,
             "head_seed": 900,
-            "final_loss": 0.00017759109323378652
+            "final_loss": 0.0001775920100044459
           },
           "diagnostics_test": {
-            "feature_std": 0.32950541377067566,
-            "normalized_feature_std": 0.057700853794813156,
-            "mean_pair_cosine": 0.855993390083313,
-            "mean_output_entropy": 1.7631711959838867,
-            "marginal_output_entropy": 2.2008676528930664
+            "feature_std": 0.32950639724731445,
+            "normalized_feature_std": 0.057701025158166885,
+            "mean_pair_cosine": 0.8559923768043518,
+            "mean_output_entropy": 1.7631640434265137,
+            "marginal_output_entropy": 2.2008631229400635
           },
           "backbone_unchanged": true,
           "backbone_has_no_grad": true
@@ -182,18 +184,18 @@ accuracy, neighbors = nearest_neighbor_accuracy(
             "test_accuracy": 1.0,
             "steps": 120,
             "head_seed": 900,
-            "final_loss": 0.0025564320385456085
+            "final_loss": 0.0025564345996826887
           },
           "diagnostics_test": {
-            "feature_std": 0.0842096358537674,
+            "feature_std": 0.08420964330434799,
             "normalized_feature_std": 0.014960691332817078,
-            "mean_pair_cosine": 0.9917243123054504
+            "mean_pair_cosine": 0.9917242527008057
           },
           "backbone_unchanged": true,
           "backbone_has_no_grad": true
         }
       },
-      "elapsed_seconds": 5.610021456988761,
+      "elapsed_seconds": 3.5319445360000827,
       "limitation": "a simple color task may already be solved by random features; equal accuracy is not evidence of SSL improvement or natural-image transfer"
     }
     ```

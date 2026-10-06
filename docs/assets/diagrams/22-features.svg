@@ -1,16 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="520" height="822" viewBox="0 0 520 822" role="img" aria-labelledby="title desc"><title id="title">160步實際自監督loss與test特徵統計</title><desc id="desc">曲線來自22distillation相同設定的真實history，testCLS統計來自22features；random與SSL的1NN及linearprobe全部64比64。</desc><!-- Curve: actual 22-distillation.json history; all160 points; min1.2611021995544434 at step136; max2.7611329555511475 at step19; ylim1.1..2.9; source SHA256 9215b4a6c28ea813fb2d1081769e83af53fe3670d38a1cc91e715cd0f89ed5cd. Frozen test statistics: actual 22-features.json; no PCA or semantic cluster claim. --><rect width="520" height="822" rx="16" fill="#f7f9fc"/><g font-family="Noto Sans CJK TC, sans-serif" font-size="24" fill="#152c43"><text x="24" y="38" font-size="27" fill="#152c43" font-weight="bold">loss 與特徵用途分開看</text><text x="24" y="76" font-size="23" fill="#152c43" font-weight="normal">實際 JSON；相同設定的160步曲線</text><svg x="0" y="116" width="520" height="360" viewBox="0 0 520 360">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns2="http://creativecommons.org/ns#" xmlns:ns4="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" width="520" height="822" viewBox="0 0 520 822" role="img" aria-labelledby="title desc"><title id="title">160步實際自監督loss與test特徵統計</title><desc id="desc">上半曲線取目前22.3的160步紀錄；下半test CLS統計取22.4另一次同設定自監督訓練後的評分。不是同一次執行，random與SSL的1-NN及linear probe全部64比64。</desc><metadata>{"source": "artifacts/checks/curriculum/22-distillation.json", "sha256": "5c68da56ba6bf772dc32f0a75ed51b809bb60294710ba6c8467c432444629059", "loss_history": [{"step": 1, "loss": 1.9427120685577393, "teacher_entropy": 1.7583107948303223, "student_grad_norm": 24.119152069091797}, {"step": 2, "loss": 2.081080436706543, "teacher_entropy": 1.818734049797058, "student_grad_norm": 19.931062698364258}, {"step": 3, "loss": 1.9025626182556152, "teacher_entropy": 1.7943931818008423, "student_grad_norm": 8.352400779724121}, {"step": 4, "loss": 1.85591721534729, "teacher_entropy": 1.816506266593933, "student_grad_norm": 2.0145201683044434}, {"step": 5, "loss": 1.9442307949066162, "teacher_entropy": 1.9219557046890259, "student_grad_norm": 1.9723823070526123}, {"step": 6, "loss": 2.0041005611419678, "teacher_entropy": 1.9958001375198364, "student_grad_norm": 1.0857844352722168}, {"step": 7, "loss": 2.1034843921661377, "teacher_entropy": 2.0944995880126953, "student_grad_norm": 0.9814468622207642}, {"step": 8, "loss": 2.1971688270568848, "teacher_entropy": 2.177748441696167, "student_grad_norm": 1.730310320854187}, {"step": 9, "loss": 2.287005662918091, "teacher_entropy": 2.2595717906951904, "student_grad_norm": 1.5779331922531128}, {"step": 10, "loss": 2.365196704864502, "teacher_entropy": 2.3302524089813232, "student_grad_norm": 1.2393393516540527}, {"step": 11, "loss": 2.460238456726074, "teacher_entropy": 2.4148876667022705, "student_grad_norm": 1.1563392877578735}, {"step": 12, "loss": 2.5373635292053223, "teacher_entropy": 2.4816839694976807, "student_grad_norm": 1.1580517292022705}, {"step": 13, "loss": 2.6091818809509277, "teacher_entropy": 2.5457284450531006, "student_grad_norm": 1.3077465295791626}, {"step": 14, "loss": 2.663907766342163, "teacher_entropy": 2.5979206562042236, "student_grad_norm": 1.439818263053894}, {"step": 15, "loss": 2.7056431770324707, "teacher_entropy": 2.6383748054504395, "student_grad_norm": 1.338244915008545}, {"step": 16, "loss": 2.7396843433380127, "teacher_entropy": 2.673654317855835, "student_grad_norm": 1.3702894449234009}, {"step": 17, "loss": 2.7495369911193848, "teacher_entropy": 2.6924550533294678, "student_grad_norm": 1.276145339012146}, {"step": 18, "loss": 2.757844924926758, "teacher_entropy": 2.706425905227661, "student_grad_norm": 1.1640623807907104}, {"step": 19, "loss": 2.7611327171325684, "teacher_entropy": 2.7158477306365967, "student_grad_norm": 1.0775938034057617}, {"step": 20, "loss": 2.751124858856201, "teacher_entropy": 2.712369680404663, "student_grad_norm": 0.9466719627380371}, {"step": 21, "loss": 2.736546516418457, "teacher_entropy": 2.7033474445343018, "student_grad_norm": 0.8183696866035461}, {"step": 22, "loss": 2.7057132720947266, "teacher_entropy": 2.675723075866699, "student_grad_norm": 0.8694872856140137}, {"step": 23, "loss": 2.676494598388672, "teacher_entropy": 2.650524139404297, "student_grad_norm": 0.8574523329734802}, {"step": 24, "loss": 2.6356372833251953, "teacher_entropy": 2.6139228343963623, "student_grad_norm": 0.8015700578689575}, {"step": 25, "loss": 2.591087818145752, "teacher_entropy": 2.573558807373047, "student_grad_norm": 0.7015277743339539}, {"step": 26, "loss": 2.538546562194824, "teacher_entropy": 2.5228378772735596, "student_grad_norm": 0.7272613048553467}, {"step": 27, "loss": 2.49436092376709, "teacher_entropy": 2.4824719429016113, "student_grad_norm": 0.7265601754188538}, {"step": 28, "loss": 2.4419498443603516, "teacher_entropy": 2.431584119796753, "student_grad_norm": 0.7211903929710388}, {"step": 29, "loss": 2.3924479484558105, "teacher_entropy": 2.3849217891693115, "student_grad_norm": 0.6104873418807983}, {"step": 30, "loss": 2.343902111053467, "teacher_entropy": 2.339747190475464, "student_grad_norm": 0.4257735013961792}, {"step": 31, "loss": 2.292515277862549, "teacher_entropy": 2.289881467819214, "student_grad_norm": 0.23734524846076965}, {"step": 32, "loss": 2.245745897293091, "teacher_entropy": 2.2436203956604004, "student_grad_norm": 0.19044288992881775}, {"step": 33, "loss": 2.196470260620117, "teacher_entropy": 2.194314956665039, "student_grad_norm": 0.22195252776145935}, {"step": 34, "loss": 2.152822494506836, "teacher_entropy": 2.15026593208313, "student_grad_norm": 0.2625352144241333}, {"step": 35, "loss": 2.1145105361938477, "teacher_entropy": 2.111844301223755, "student_grad_norm": 0.17322780191898346}, {"step": 36, "loss": 2.0646910667419434, "teacher_entropy": 2.0611932277679443, "student_grad_norm": 0.310037761926651}, {"step": 37, "loss": 2.0199594497680664, "teacher_entropy": 2.0159127712249756, "student_grad_norm": 0.3295869827270508}, {"step": 38, "loss": 1.9831702709197998, "teacher_entropy": 1.9786790609359741, "student_grad_norm": 0.2721945643424988}, {"step": 39, "loss": 1.9520066976547241, "teacher_entropy": 1.9470263719558716, "student_grad_norm": 0.31464987993240356}, {"step": 40, "loss": 1.9199289083480835, "teacher_entropy": 1.9148727655410767, "student_grad_norm": 0.2847740650177002}, {"step": 41, "loss": 1.8985273838043213, "teacher_entropy": 1.8933486938476562, "student_grad_norm": 0.3116942048072815}, {"step": 42, "loss": 1.8740699291229248, "teacher_entropy": 1.8678640127182007, "student_grad_norm": 0.3754553496837616}, {"step": 43, "loss": 1.869220495223999, "teacher_entropy": 1.8632168769836426, "student_grad_norm": 0.30204495787620544}, {"step": 44, "loss": 1.8688340187072754, "teacher_entropy": 1.862500786781311, "student_grad_norm": 0.34290990233421326}, {"step": 45, "loss": 1.8632299900054932, "teacher_entropy": 1.856302261352539, "student_grad_norm": 0.3601429760456085}, {"step": 46, "loss": 1.8818899393081665, "teacher_entropy": 1.8751826286315918, "student_grad_norm": 0.37429970502853394}, {"step": 47, "loss": 1.9109104871749878, "teacher_entropy": 1.904672622680664, "student_grad_norm": 0.37275630235671997}, {"step": 48, "loss": 1.9391794204711914, "teacher_entropy": 1.9332462549209595, "student_grad_norm": 0.36150944232940674}, {"step": 49, "loss": 1.972870111465454, "teacher_entropy": 1.967563271522522, "student_grad_norm": 0.3396485447883606}, {"step": 50, "loss": 2.01782488822937, "teacher_entropy": 2.013075113296509, "student_grad_norm": 0.30729418992996216}, {"step": 51, "loss": 2.0684304237365723, "teacher_entropy": 2.064194679260254, "student_grad_norm": 0.29907459020614624}, {"step": 52, "loss": 2.117398262023926, "teacher_entropy": 2.1138017177581787, "student_grad_norm": 0.23364482820034027}, {"step": 53, "loss": 2.1691880226135254, "teacher_entropy": 2.1659421920776367, "student_grad_norm": 0.2126927226781845}, {"step": 54, "loss": 2.2154593467712402, "teacher_entropy": 2.2120211124420166, "student_grad_norm": 0.3202632963657379}, {"step": 55, "loss": 2.2525975704193115, "teacher_entropy": 2.2493457794189453, "student_grad_norm": 0.3324551582336426}, {"step": 56, "loss": 2.2864866256713867, "teacher_entropy": 2.2835466861724854, "student_grad_norm": 0.303113728761673}, {"step": 57, "loss": 2.3096227645874023, "teacher_entropy": 2.3072140216827393, "student_grad_norm": 0.24814258515834808}, {"step": 58, "loss": 2.3344647884368896, "teacher_entropy": 2.332493543624878, "student_grad_norm": 0.24408850073814392}, {"step": 59, "loss": 2.355161666870117, "teacher_entropy": 2.3529980182647705, "student_grad_norm": 0.3103717863559723}, {"step": 60, "loss": 2.370577335357666, "teacher_entropy": 2.3683931827545166, "student_grad_norm": 0.3331156373023987}, {"step": 61, "loss": 2.381347417831421, "teacher_entropy": 2.3794777393341064, "student_grad_norm": 0.25609177350997925}, {"step": 62, "loss": 2.387369155883789, "teacher_entropy": 2.3856399059295654, "student_grad_norm": 0.27109628915786743}, {"step": 63, "loss": 2.4011244773864746, "teacher_entropy": 2.3994033336639404, "student_grad_norm": 0.24263189733028412}, {"step": 64, "loss": 2.4087929725646973, "teacher_entropy": 2.4069089889526367, "student_grad_norm": 0.36338239908218384}, {"step": 65, "loss": 2.406036615371704, "teacher_entropy": 2.404083251953125, "student_grad_norm": 0.37799835205078125}, {"step": 66, "loss": 2.4138050079345703, "teacher_entropy": 2.412046194076538, "student_grad_norm": 0.24500073492527008}, {"step": 67, "loss": 2.418539524078369, "teacher_entropy": 2.4169223308563232, "student_grad_norm": 0.2390502244234085}, {"step": 68, "loss": 2.4134023189544678, "teacher_entropy": 2.4116482734680176, "student_grad_norm": 0.35907402634620667}, {"step": 69, "loss": 2.4156713485717773, "teacher_entropy": 2.4141950607299805, "student_grad_norm": 0.22997155785560608}, {"step": 70, "loss": 2.4024906158447266, "teacher_entropy": 2.400984764099121, "student_grad_norm": 0.1948058158159256}, {"step": 71, "loss": 2.388026237487793, "teacher_entropy": 2.3868229389190674, "student_grad_norm": 0.20980075001716614}, {"step": 72, "loss": 2.3731930255889893, "teacher_entropy": 2.372058629989624, "student_grad_norm": 0.24455903470516205}, {"step": 73, "loss": 2.3515501022338867, "teacher_entropy": 2.350250005722046, "student_grad_norm": 0.12638549506664276}, {"step": 74, "loss": 2.330469846725464, "teacher_entropy": 2.3289709091186523, "student_grad_norm": 0.2532972991466522}, {"step": 75, "loss": 2.3080105781555176, "teacher_entropy": 2.3062703609466553, "student_grad_norm": 0.2477089911699295}, {"step": 76, "loss": 2.2831220626831055, "teacher_entropy": 2.2813243865966797, "student_grad_norm": 0.3213496208190918}, {"step": 77, "loss": 2.258849859237671, "teacher_entropy": 2.2573418617248535, "student_grad_norm": 0.1443956047296524}, {"step": 78, "loss": 2.231126308441162, "teacher_entropy": 2.2292630672454834, "student_grad_norm": 0.17831483483314514}, {"step": 79, "loss": 2.202118396759033, "teacher_entropy": 2.2004668712615967, "student_grad_norm": 0.1785096526145935}, {"step": 80, "loss": 2.1788344383239746, "teacher_entropy": 2.17690110206604, "student_grad_norm": 0.14581754803657532}, {"step": 81, "loss": 2.1553125381469727, "teacher_entropy": 2.1528632640838623, "student_grad_norm": 0.19540190696716309}, {"step": 82, "loss": 2.138744354248047, "teacher_entropy": 2.1364099979400635, "student_grad_norm": 0.19020968675613403}, {"step": 83, "loss": 2.1237096786499023, "teacher_entropy": 2.1211493015289307, "student_grad_norm": 0.3437348008155823}, {"step": 84, "loss": 2.108384132385254, "teacher_entropy": 2.1060945987701416, "student_grad_norm": 0.18590882420539856}, {"step": 85, "loss": 2.098933696746826, "teacher_entropy": 2.0965540409088135, "student_grad_norm": 0.2664676010608673}, {"step": 86, "loss": 2.089052677154541, "teacher_entropy": 2.0865447521209717, "student_grad_norm": 0.18692688643932343}, {"step": 87, "loss": 2.0808167457580566, "teacher_entropy": 2.0781798362731934, "student_grad_norm": 0.224662184715271}, {"step": 88, "loss": 2.0943045616149902, "teacher_entropy": 2.0917646884918213, "student_grad_norm": 0.1663675159215927}, {"step": 89, "loss": 2.1005983352661133, "teacher_entropy": 2.098109483718872, "student_grad_norm": 0.133398175239563}, {"step": 90, "loss": 2.1219844818115234, "teacher_entropy": 2.119609832763672, "student_grad_norm": 0.154519721865654}, {"step": 91, "loss": 2.124997615814209, "teacher_entropy": 2.122326135635376, "student_grad_norm": 0.26635849475860596}, {"step": 92, "loss": 2.1475698947906494, "teacher_entropy": 2.144871473312378, "student_grad_norm": 0.32362645864486694}, {"step": 93, "loss": 2.1876425743103027, "teacher_entropy": 2.1842596530914307, "student_grad_norm": 0.2681971490383148}, {"step": 94, "loss": 2.206089496612549, "teacher_entropy": 2.2025976181030273, "student_grad_norm": 0.5001435875892639}, {"step": 95, "loss": 2.233356475830078, "teacher_entropy": 2.2298457622528076, "student_grad_norm": 0.4444851875305176}, {"step": 96, "loss": 2.278080463409424, "teacher_entropy": 2.2746737003326416, "student_grad_norm": 0.29492563009262085}, {"step": 97, "loss": 2.3161470890045166, "teacher_entropy": 2.3123667240142822, "student_grad_norm": 0.633708119392395}, {"step": 98, "loss": 2.3596816062927246, "teacher_entropy": 2.355154514312744, "student_grad_norm": 1.0337107181549072}, {"step": 99, "loss": 2.4115450382232666, "teacher_entropy": 2.408045530319214, "student_grad_norm": 0.8069365620613098}, {"step": 100, "loss": 2.4311025142669678, "teacher_entropy": 2.427748680114746, "student_grad_norm": 0.5704710483551025}, {"step": 101, "loss": 2.4783973693847656, "teacher_entropy": 2.475048780441284, "student_grad_norm": 0.2987401485443115}, {"step": 102, "loss": 2.513211250305176, "teacher_entropy": 2.509774923324585, "student_grad_norm": 0.6722922921180725}, {"step": 103, "loss": 2.535339832305908, "teacher_entropy": 2.529527425765991, "student_grad_norm": 1.0347542762756348}, {"step": 104, "loss": 2.5593855381011963, "teacher_entropy": 2.5549192428588867, "student_grad_norm": 0.28853335976600647}, {"step": 105, "loss": 2.5763792991638184, "teacher_entropy": 2.571012496948242, "student_grad_norm": 0.4135083556175232}, {"step": 106, "loss": 2.5865542888641357, "teacher_entropy": 2.5813167095184326, "student_grad_norm": 0.7439265847206116}, {"step": 107, "loss": 2.5857551097869873, "teacher_entropy": 2.57993745803833, "student_grad_norm": 0.3556484282016754}, {"step": 108, "loss": 2.576298236846924, "teacher_entropy": 2.5700440406799316, "student_grad_norm": 0.49707335233688354}, {"step": 109, "loss": 2.5572526454925537, "teacher_entropy": 2.5492522716522217, "student_grad_norm": 0.9413085579872131}, {"step": 110, "loss": 2.5255818367004395, "teacher_entropy": 2.517380475997925, "student_grad_norm": 0.447108656167984}, {"step": 111, "loss": 2.4974007606506348, "teacher_entropy": 2.4896936416625977, "student_grad_norm": 0.45172742009162903}, {"step": 112, "loss": 2.462949275970459, "teacher_entropy": 2.454721450805664, "student_grad_norm": 0.49322015047073364}, {"step": 113, "loss": 2.4248523712158203, "teacher_entropy": 2.416330099105835, "student_grad_norm": 0.37593671679496765}, {"step": 114, "loss": 2.3965237140655518, "teacher_entropy": 2.3887102603912354, "student_grad_norm": 0.5396955609321594}, {"step": 115, "loss": 2.361220359802246, "teacher_entropy": 2.3534417152404785, "student_grad_norm": 0.8832778930664062}, {"step": 116, "loss": 2.3168587684631348, "teacher_entropy": 2.3092005252838135, "student_grad_norm": 0.692370593547821}, {"step": 117, "loss": 2.300137996673584, "teacher_entropy": 2.2940256595611572, "student_grad_norm": 0.40413564443588257}, {"step": 118, "loss": 2.2625958919525146, "teacher_entropy": 2.256260871887207, "student_grad_norm": 0.4911240041255951}, {"step": 119, "loss": 2.2415196895599365, "teacher_entropy": 2.232449769973755, "student_grad_norm": 1.7138365507125854}, {"step": 120, "loss": 2.222959041595459, "teacher_entropy": 2.20481276512146, "student_grad_norm": 3.2683303356170654}, {"step": 121, "loss": 2.1770663261413574, "teacher_entropy": 2.1697261333465576, "student_grad_norm": 0.9328284859657288}, {"step": 122, "loss": 2.1558079719543457, "teacher_entropy": 2.1435134410858154, "student_grad_norm": 2.8169589042663574}, {"step": 123, "loss": 2.1296277046203613, "teacher_entropy": 2.104308843612671, "student_grad_norm": 4.518523216247559}, {"step": 124, "loss": 2.0781679153442383, "teacher_entropy": 2.0582568645477295, "student_grad_norm": 3.7480430603027344}, {"step": 125, "loss": 1.9756591320037842, "teacher_entropy": 1.9510892629623413, "student_grad_norm": 4.776533603668213}, {"step": 126, "loss": 1.980729579925537, "teacher_entropy": 1.9646402597427368, "student_grad_norm": 3.1524789333343506}, {"step": 127, "loss": 1.969322681427002, "teacher_entropy": 1.9413261413574219, "student_grad_norm": 4.20646858215332}, {"step": 128, "loss": 1.87123441696167, "teacher_entropy": 1.82902991771698, "student_grad_norm": 5.592375755310059}, {"step": 129, "loss": 1.7486883401870728, "teacher_entropy": 1.7314653396606445, "student_grad_norm": 2.063502073287964}, {"step": 130, "loss": 1.7126189470291138, "teacher_entropy": 1.673192024230957, "student_grad_norm": 4.315993309020996}, {"step": 131, "loss": 1.7077686786651611, "teacher_entropy": 1.682723045349121, "student_grad_norm": 3.3966434001922607}, {"step": 132, "loss": 1.5950884819030762, "teacher_entropy": 1.5720795392990112, "student_grad_norm": 2.845289468765259}, {"step": 133, "loss": 1.592694640159607, "teacher_entropy": 1.5643925666809082, "student_grad_norm": 3.5079057216644287}, {"step": 134, "loss": 1.3027331829071045, "teacher_entropy": 1.2848244905471802, "student_grad_norm": 1.7691394090652466}, {"step": 135, "loss": 1.3686507940292358, "teacher_entropy": 1.3407663106918335, "student_grad_norm": 2.499199628829956}, {"step": 136, "loss": 1.2611026763916016, "teacher_entropy": 1.236517071723938, "student_grad_norm": 2.240624189376831}, {"step": 137, "loss": 1.2823641300201416, "teacher_entropy": 1.2659631967544556, "student_grad_norm": 0.9132787585258484}, {"step": 138, "loss": 1.3061619997024536, "teacher_entropy": 1.2853153944015503, "student_grad_norm": 1.7320144176483154}, {"step": 139, "loss": 1.3259871006011963, "teacher_entropy": 1.308151125907898, "student_grad_norm": 1.858074426651001}, {"step": 140, "loss": 1.3895829916000366, "teacher_entropy": 1.3747104406356812, "student_grad_norm": 0.6723639965057373}, {"step": 141, "loss": 1.519059181213379, "teacher_entropy": 1.499030590057373, "student_grad_norm": 1.6601970195770264}, {"step": 142, "loss": 1.5954058170318604, "teacher_entropy": 1.5798722505569458, "student_grad_norm": 1.1934571266174316}, {"step": 143, "loss": 1.69634211063385, "teacher_entropy": 1.6790567636489868, "student_grad_norm": 1.0145387649536133}, {"step": 144, "loss": 1.7610902786254883, "teacher_entropy": 1.7397069931030273, "student_grad_norm": 1.396567463874817}, {"step": 145, "loss": 1.86704683303833, "teacher_entropy": 1.8463383913040161, "student_grad_norm": 1.1861927509307861}, {"step": 146, "loss": 1.841017484664917, "teacher_entropy": 1.8202890157699585, "student_grad_norm": 0.9660703539848328}, {"step": 147, "loss": 2.0290098190307617, "teacher_entropy": 2.00652813911438, "student_grad_norm": 1.9484935998916626}, {"step": 148, "loss": 2.021183967590332, "teacher_entropy": 2.001317024230957, "student_grad_norm": 1.9459694623947144}, {"step": 149, "loss": 2.122243881225586, "teacher_entropy": 2.098374605178833, "student_grad_norm": 1.7269606590270996}, {"step": 150, "loss": 2.1031460762023926, "teacher_entropy": 2.084394693374634, "student_grad_norm": 0.6592864394187927}, {"step": 151, "loss": 2.136082649230957, "teacher_entropy": 2.114264965057373, "student_grad_norm": 1.1551247835159302}, {"step": 152, "loss": 2.1101627349853516, "teacher_entropy": 2.0936691761016846, "student_grad_norm": 1.2077232599258423}, {"step": 153, "loss": 2.1802749633789062, "teacher_entropy": 2.1611721515655518, "student_grad_norm": 0.5758989453315735}, {"step": 154, "loss": 2.173117160797119, "teacher_entropy": 2.1516733169555664, "student_grad_norm": 1.0288653373718262}, {"step": 155, "loss": 2.0133399963378906, "teacher_entropy": 1.9981168508529663, "student_grad_norm": 0.8013752102851868}, {"step": 156, "loss": 2.009852647781372, "teacher_entropy": 1.984026312828064, "student_grad_norm": 1.4219303131103516}, {"step": 157, "loss": 1.9569017887115479, "teacher_entropy": 1.9377552270889282, "student_grad_norm": 0.6909484267234802}, {"step": 158, "loss": 1.931159496307373, "teacher_entropy": 1.9001866579055786, "student_grad_norm": 0.4782126247882843}, {"step": 159, "loss": 1.8851568698883057, "teacher_entropy": 1.8618396520614624, "student_grad_norm": 1.2450028657913208}, {"step": 160, "loss": 1.8742694854736328, "teacher_entropy": 1.8415940999984741, "student_grad_norm": 0.9462160468101501}]}</metadata><rect width="520" height="822" rx="16" fill="#f7f9fc" /><g font-family="Noto Sans CJK TC, sans-serif" font-size="24" fill="#152c43"><text x="24" y="38" font-size="27" fill="#152c43" font-weight="bold">loss 與特徵用途分開看</text><text x="24" y="76" font-size="23" fill="#152c43" font-weight="normal">實際 JSON；相同設定的160步曲線</text><svg x="0" y="116" width="520" height="360" viewBox="0 0 520 360">
  <metadata>
-  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-   <cc:Work>
-    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+  <rdf:RDF>
+   <ns2:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
     <dc:date>2026-10-05T12:01:08.035811</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
-     <cc:Agent>
+     <ns2:Agent>
       <dc:title>Matplotlib v3.10.7, https://matplotlib.org/</dc:title>
-     </cc:Agent>
+     </ns2:Agent>
     </dc:creator>
-   </cc:Work>
+   </ns2:Work>
   </rdf:RDF>
  </metadata>
  <defs>
@@ -18,39 +18,23 @@
  </defs>
  <g id="figure_1">
   <g id="patch_1">
-   <path d="M 0 360 
-L 520 360 
-L 520 0 
-L 0 0 
-L 0 360 
-z
-" style="fill: none"/>
+   <path d="M 0 360  L 520 360  L 520 0  L 0 0  L 0 360  z " style="fill: none" />
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 78 277.2 
-L 499.2 277.2 
-L 499.2 18 
-L 78 18 
-L 78 277.2 
-z
-" style="fill: none"/>
+    <path d="M 78 277.2  L 499.2 277.2  L 499.2 18  L 78 18  L 78 277.2  z " style="fill: none" />
    </g>
    <g id="matplotlib.axis_1">
     <g id="xtick_1">
      <g id="line2d_1">
-      <path d="M 78 277.2 
-L 78 18 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 78 277.2  L 78 18  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_2">
       <defs>
-       <path id="mb03439c719" d="M 0 0 
-L 0 3.5 
-" style="stroke: #000000; stroke-width: 0.8"/>
+       <path id="mb03439c719" d="M 0 0  L 0 3.5  " style="stroke: #000000; stroke-width: 0.8" />
       </defs>
       <g>
-       <use xlink:href="#mb03439c719" x="78" y="277.2" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mb03439c719" x="78" y="277.2" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_1">
@@ -59,13 +43,11 @@ L 0 3.5
     </g>
     <g id="xtick_2">
      <g id="line2d_3">
-      <path d="M 181.313208 277.2 
-L 181.313208 18 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 181.313208 277.2  L 181.313208 18  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_4">
       <g>
-       <use xlink:href="#mb03439c719" x="181.313208" y="277.2" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mb03439c719" x="181.313208" y="277.2" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_2">
@@ -74,13 +56,11 @@ L 181.313208 18
     </g>
     <g id="xtick_3">
      <g id="line2d_5">
-      <path d="M 287.275472 277.2 
-L 287.275472 18 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 287.275472 277.2  L 287.275472 18  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_6">
       <g>
-       <use xlink:href="#mb03439c719" x="287.275472" y="277.2" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mb03439c719" x="287.275472" y="277.2" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_3">
@@ -89,13 +69,11 @@ L 287.275472 18
     </g>
     <g id="xtick_4">
      <g id="line2d_7">
-      <path d="M 393.237736 277.2 
-L 393.237736 18 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 393.237736 277.2  L 393.237736 18  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_8">
       <g>
-       <use xlink:href="#mb03439c719" x="393.237736" y="277.2" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mb03439c719" x="393.237736" y="277.2" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_4">
@@ -104,13 +82,11 @@ L 393.237736 18
     </g>
     <g id="xtick_5">
      <g id="line2d_9">
-      <path d="M 499.2 277.2 
-L 499.2 18 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 499.2 277.2  L 499.2 18  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_10">
       <g>
-       <use xlink:href="#mb03439c719" x="499.2" y="277.2" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mb03439c719" x="499.2" y="277.2" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_5">
@@ -124,18 +100,14 @@ L 499.2 18
    <g id="matplotlib.axis_2">
     <g id="ytick_1">
      <g id="line2d_11">
-      <path d="M 78 262.8 
-L 499.2 262.8 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 78 262.8  L 499.2 262.8  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_12">
       <defs>
-       <path id="mdb9a5aace6" d="M 0 0 
-L -3.5 0 
-" style="stroke: #000000; stroke-width: 0.8"/>
+       <path id="mdb9a5aace6" d="M 0 0  L -3.5 0  " style="stroke: #000000; stroke-width: 0.8" />
       </defs>
       <g>
-       <use xlink:href="#mdb9a5aace6" x="78" y="262.8" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mdb9a5aace6" x="78" y="262.8" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_7">
@@ -144,13 +116,11 @@ L -3.5 0
     </g>
     <g id="ytick_2">
      <g id="line2d_13">
-      <path d="M 78 205.2 
-L 499.2 205.2 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 78 205.2  L 499.2 205.2  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_14">
       <g>
-       <use xlink:href="#mdb9a5aace6" x="78" y="205.2" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mdb9a5aace6" x="78" y="205.2" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_8">
@@ -159,13 +129,11 @@ L 499.2 205.2
     </g>
     <g id="ytick_3">
      <g id="line2d_15">
-      <path d="M 78 147.6 
-L 499.2 147.6 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 78 147.6  L 499.2 147.6  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_16">
       <g>
-       <use xlink:href="#mdb9a5aace6" x="78" y="147.6" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mdb9a5aace6" x="78" y="147.6" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_9">
@@ -174,13 +142,11 @@ L 499.2 147.6
     </g>
     <g id="ytick_4">
      <g id="line2d_17">
-      <path d="M 78 90 
-L 499.2 90 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 78 90  L 499.2 90  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_18">
       <g>
-       <use xlink:href="#mdb9a5aace6" x="78" y="90" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mdb9a5aace6" x="78" y="90" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_10">
@@ -189,13 +155,11 @@ L 499.2 90
     </g>
     <g id="ytick_5">
      <g id="line2d_19">
-      <path d="M 78 32.4 
-L 499.2 32.4 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square"/>
+      <path d="M 78 32.4  L 499.2 32.4  " clip-path="url(#pab755adc23)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.2; stroke-width: 0.8; stroke-linecap: square" />
      </g>
      <g id="line2d_20">
       <g>
-       <use xlink:href="#mdb9a5aace6" x="78" y="32.4" style="stroke: #000000; stroke-width: 0.8"/>
+       <use ns4:href="#mdb9a5aace6" x="78" y="32.4" style="stroke: #000000; stroke-width: 0.8" />
       </g>
      </g>
      <g id="text_11">
@@ -207,183 +171,19 @@ L 499.2 32.4
     </g>
    </g>
    <g id="line2d_21">
-    <path d="M 78 155.849462 
-L 80.649057 135.924383 
-L 83.298113 161.630983 
-L 85.94717 168.347887 
-L 88.596226 155.630766 
-L 91.245283 147.009519 
-L 93.89434 132.698248 
-L 96.543396 119.207689 
-L 99.192453 106.271219 
-L 101.841509 95.011709 
-L 104.490566 81.325662 
-L 107.139623 70.219583 
-L 109.788679 59.877809 
-L 112.437736 51.997282 
-L 115.086792 45.987383 
-L 117.735849 41.085455 
-L 120.384906 39.666673 
-L 123.033962 38.470331 
-L 125.683019 37.996854 
-L 128.332075 39.43802 
-L 130.981132 41.537267 
-L 133.630189 45.977289 
-L 136.279245 50.184778 
-L 138.928302 56.068231 
-L 141.577358 62.48332 
-L 144.226415 70.049295 
-L 146.875472 76.412027 
-L 149.524528 83.959222 
-L 152.173585 91.087495 
-L 154.822642 98.078096 
-L 157.471698 105.4778 
-L 160.120755 112.212591 
-L 162.769811 119.308248 
-L 165.418868 125.593561 
-L 168.067925 131.110483 
-L 170.716981 138.284486 
-L 173.366038 144.725805 
-L 176.015094 150.023481 
-L 178.664151 154.511018 
-L 181.313208 159.13022 
-L 183.962264 162.212022 
-L 186.611321 165.733913 
-L 189.260377 166.43218 
-L 191.909434 166.487884 
-L 194.558491 167.294881 
-L 197.207547 164.607832 
-L 199.856604 160.428873 
-L 202.50566 156.358163 
-L 205.154717 151.506704 
-L 207.803774 145.033216 
-L 210.45283 137.746019 
-L 213.101887 130.69465 
-L 215.750943 123.236925 
-L 218.4 116.573888 
-L 221.049057 111.22595 
-L 223.698113 106.345926 
-L 226.34717 103.014356 
-L 228.996226 99.437105 
-L 231.645283 96.456789 
-L 234.29434 94.236932 
-L 236.943396 92.68604 
-L 239.592453 91.818876 
-L 242.241509 89.838144 
-L 244.890566 88.733812 
-L 247.539623 89.130796 
-L 250.188679 88.012148 
-L 252.837736 87.330343 
-L 255.486792 88.0701 
-L 258.135849 87.74336 
-L 260.784906 89.641386 
-L 263.433962 91.724222 
-L 266.083019 93.86017 
-L 268.732075 96.976785 
-L 271.381132 100.012342 
-L 274.030189 103.246477 
-L 276.679245 106.830423 
-L 279.328302 110.325586 
-L 281.977358 114.317812 
-L 284.626415 118.494951 
-L 287.275472 121.847841 
-L 289.924528 125.234995 
-L 292.573585 127.620779 
-L 295.222642 129.785841 
-L 297.871698 131.992685 
-L 300.520755 133.353582 
-L 303.169811 134.776414 
-L 305.818868 135.962389 
-L 308.467925 134.020143 
-L 311.116981 133.113874 
-L 313.766038 130.034303 
-L 316.415094 129.600343 
-L 319.064151 126.349969 
-L 321.713208 120.579469 
-L 324.362264 117.923112 
-L 327.011321 113.996736 
-L 329.660377 107.556413 
-L 332.309434 102.074854 
-L 334.958491 95.805883 
-L 337.607547 88.337549 
-L 340.256604 85.521238 
-L 342.90566 78.710779 
-L 345.554717 73.697614 
-L 348.203774 70.511064 
-L 350.85283 67.048483 
-L 353.501887 64.601381 
-L 356.150943 63.136182 
-L 358.8 63.251264 
-L 361.449057 64.613054 
-L 364.098113 67.355585 
-L 366.74717 71.916216 
-L 369.396226 75.97429 
-L 372.045283 80.935304 
-L 374.69434 86.421224 
-L 377.343396 90.500585 
-L 379.992453 95.584268 
-L 382.641509 101.972337 
-L 385.290566 104.380197 
-L 387.939623 109.786226 
-L 390.588679 112.821199 
-L 393.237736 115.493967 
-L 395.886792 122.102518 
-L 398.535849 125.163686 
-L 401.184906 128.933611 
-L 403.833962 136.343752 
-L 406.483019 151.105411 
-L 409.132075 150.375181 
-L 411.781132 152.017019 
-L 414.430189 166.141351 
-L 417.079245 183.788004 
-L 419.728302 188.982013 
-L 422.377358 189.680349 
-L 425.026415 205.907362 
-L 427.675472 206.251937 
-L 430.324528 248.006216 
-L 432.973585 238.514629 
-L 435.622642 254.001283 
-L 438.271698 250.939771 
-L 440.920755 247.513256 
-L 443.569811 244.658098 
-L 446.218868 235.500341 
-L 448.867925 216.855787 
-L 451.516981 205.8617 
-L 454.166038 191.326976 
-L 456.815094 182.003069 
-L 459.464151 166.745325 
-L 462.113208 170.493431 
-L 464.762264 143.422517 
-L 467.411321 144.549474 
-L 470.060377 129.996812 
-L 472.709434 132.746862 
-L 475.358491 128.003893 
-L 478.007547 131.736292 
-L 480.656604 121.640062 
-L 483.30566 122.670683 
-L 485.954717 145.678629 
-L 488.603774 146.180669 
-L 491.25283 153.805524 
-L 493.901887 157.512209 
-L 496.550943 164.136621 
-L 499.2 165.70437 
-" clip-path="url(#pab755adc23)" style="fill: none; stroke: #4672b1; stroke-width: 2.2; stroke-linecap: square"/>
+    <path d="M 78.000000 155.849462 L 80.649057 135.924417 L 83.298113 161.630983 L 85.947170 168.347921 L 88.596226 155.630766 L 91.245283 147.009519 L 93.894340 132.698248 L 96.543396 119.207689 L 99.192453 106.271185 L 101.841509 95.011674 L 104.490566 81.325662 L 107.139623 70.219652 L 109.788679 59.877809 L 112.437736 51.997282 L 115.086792 45.987383 L 117.735849 41.085455 L 120.384906 39.666673 L 123.033962 38.470331 L 125.683019 37.996889 L 128.332075 39.438020 L 130.981132 41.537302 L 133.630189 45.977289 L 136.279245 50.184778 L 138.928302 56.068231 L 141.577358 62.483354 L 144.226415 70.049295 L 146.875472 76.412027 L 149.524528 83.959222 L 152.173585 91.087495 L 154.822642 98.078096 L 157.471698 105.477800 L 160.120755 112.212591 L 162.769811 119.308282 L 165.418868 125.593561 L 168.067925 131.110483 L 170.716981 138.284486 L 173.366038 144.725839 L 176.015094 150.023481 L 178.664151 154.511036 L 181.313208 159.130237 L 183.962264 162.212057 L 186.611321 165.733930 L 189.260377 166.432249 L 191.909434 166.487901 L 194.558491 167.294881 L 197.207547 164.607849 L 199.856604 160.428890 L 202.505660 156.358163 L 205.154717 151.506704 L 207.803774 145.033216 L 210.452830 137.746019 L 213.101887 130.694650 L 215.750943 123.236925 L 218.400000 116.573854 L 221.049057 111.225950 L 223.698113 106.345926 L 226.347170 103.014322 L 228.996226 99.437070 L 231.645283 96.456720 L 234.294340 94.236864 L 236.943396 92.685972 L 239.592453 91.818842 L 242.241509 89.838075 L 244.890566 88.733812 L 247.539623 89.130727 L 250.188679 88.012079 L 252.837736 87.330309 L 255.486792 88.070066 L 258.135849 87.743326 L 260.784906 89.641351 L 263.433962 91.724222 L 266.083019 93.860204 L 268.732075 96.976785 L 271.381132 100.012342 L 274.030189 103.246477 L 276.679245 106.830423 L 279.328302 110.325620 L 281.977358 114.317812 L 284.626415 118.494951 L 287.275472 121.847841 L 289.924528 125.234995 L 292.573585 127.620813 L 295.222642 129.785806 L 297.871698 131.992685 L 300.520755 133.353548 L 303.169811 134.776414 L 305.818868 135.962389 L 308.467925 134.020143 L 311.116981 133.113840 L 313.766038 130.034235 L 316.415094 129.600343 L 319.064151 126.349935 L 321.713208 120.579469 L 324.362264 117.923112 L 327.011321 113.996667 L 329.660377 107.556413 L 332.309434 102.074819 L 334.958491 95.805849 L 337.607547 88.337514 L 340.256604 85.521238 L 342.905660 78.710779 L 345.554717 73.697580 L 348.203774 70.511064 L 350.852830 67.048483 L 353.501887 64.601381 L 356.150943 63.136182 L 358.800000 63.251264 L 361.449057 64.613054 L 364.098113 67.355619 L 366.747170 71.916216 L 369.396226 75.974290 L 372.045283 80.935304 L 374.694340 86.421259 L 377.343396 90.500585 L 379.992453 95.584268 L 382.641509 101.972337 L 385.290566 104.380128 L 387.939623 109.786192 L 390.588679 112.821165 L 393.237736 115.493898 L 395.886792 122.102449 L 398.535849 125.163652 L 401.184906 128.933611 L 403.833962 136.343820 L 406.483019 151.105085 L 409.132075 150.374940 L 411.781132 152.017534 L 414.430189 166.142244 L 417.079245 183.788879 L 419.728302 188.982872 L 422.377358 189.681310 L 425.026415 205.907259 L 427.675472 206.251972 L 430.324528 248.006422 L 432.973585 238.514286 L 435.622642 254.001215 L 438.271698 250.939565 L 440.920755 247.512672 L 443.569811 244.657858 L 446.218868 235.500049 L 448.867925 216.855478 L 451.516981 205.861562 L 454.166038 191.326736 L 456.815094 182.003000 L 459.464151 166.745256 L 462.113208 170.493482 L 464.762264 143.422586 L 467.411321 144.549509 L 470.060377 129.996881 L 472.709434 132.746965 L 475.358491 128.004099 L 478.007547 131.736566 L 480.656604 121.640405 L 483.305660 122.671129 L 485.954717 145.679041 L 488.603774 146.181219 L 491.252830 153.806142 L 493.901887 157.513033 L 496.550943 164.137411 L 499.200000 165.705194" clip-path="url(#pab755adc23)" style="fill: none; stroke: #4672b1; stroke-width: 2.2; stroke-linecap: square" />
    </g>
    <g id="patch_3">
-    <path d="M 78 277.2 
-L 78 18 
-" style="fill: none; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: square"/>
+    <path d="M 78 277.2  L 78 18  " style="fill: none; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: square" />
    </g>
    <g id="patch_4">
-    <path d="M 78 277.2 
-L 499.2 277.2 
-" style="fill: none; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: square"/>
+    <path d="M 78 277.2  L 499.2 277.2  " style="fill: none; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter; stroke-linecap: square" />
    </g>
   </g>
  </g>
  <defs>
   <clipPath id="pab755adc23">
-   <rect x="78" y="18" width="421.2" height="259.2"/>
+   <rect x="78" y="18" width="421.2" height="259.2" />
   </clipPath>
  </defs>
 </svg>

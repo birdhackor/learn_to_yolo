@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 400" role="img" aria-labelledby="title desc">
+  <title id="title">往返成功不保證框貼齊實際縮圖邊界</title>
+  <desc id="desc">高37、寬83的原圖縮成高29、寬64，上方補17畫素。這是畫布下緣的局部放大圖，y向下。縮放後內容的下緣是46；框若用理想比例64除以83，原圖下緣37映到約45.53，藍色虛線比內容下緣高約半個畫素。框若用實際垂直比例29除以37，下緣正好是46，綠線與內容邊界重合。兩種比例各自乘了再除都能還原原框，差別是畫布上的框是否貼齊縮圖邊界。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="420" height="400" rx="12" fill="#f8fafc"/>
+  <g font-family="sans-serif" fill="#0f172a" font-size="20">
+    <text x="20" y="32" font-size="23">畫布下緣局部放大</text>
+    <text x="20" y="63">縮圖高 29，上方補 17</text>
+    <rect x="94" y="100" width="298" height="180" fill="#dbeafe"/>
+    <rect x="94" y="280" width="298" height="32" fill="#e2e8f0"/>
+    <path d="M74 96V309" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="22" y="104">y ↓</text>
+    <text x="38" y="128">45</text>
+    <text x="38" y="286">46</text>
+    <path d="M68 122H80M68 280H80" stroke="#475569" stroke-width="2"/>
+    <text x="110" y="145">縮放後的原圖內容</text>
+    <path d="M94 206H392" stroke="#2563eb" stroke-width="3" stroke-dasharray="8 5"/>
+    <text x="110" y="191" fill="#1d4ed8">理想框下緣 ≈ 45.53</text>
+    <path d="M94 280H392" stroke="#15803d" stroke-width="4"/>
+    <text x="110" y="264" fill="#166534">實際框與縮圖下緣 = 46</text>
+    <text x="110" y="306" fill="#475569">下方補邊</text>
+    <text x="20" y="346">兩種比例各自都能去、回還原。</text>
+    <text x="20" y="380">貼齊縮圖邊界，要用實際比例。</text>
+  </g>
+</svg>

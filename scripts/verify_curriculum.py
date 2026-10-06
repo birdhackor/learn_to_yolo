@@ -18,12 +18,17 @@ import subprocess
 import sys
 import time
 
+from reflow_result_figures import capstone_panel, tracking_panel, video_panel
+from refresh_training_curves import detection_predictions, dino_curve, vit_curve
+
 ROOT = Path(__file__).resolve().parents[1]
 MARKER = "\n<!-- curriculum-evidence:start -->"
 FOLDER = ROOT / "artifacts/checks/curriculum"
 THREADS = "2"
 # Lesson programs write their figures under artifacts/; the recorded run copies them to the site.
 SITE_FIGURES = {
+    "04-localization": ("artifacts/04-localization.png", "docs/assets/diagrams/04-localization-model.png"),
+    "04-coordinates": ("artifacts/04-coordinates.png", "docs/assets/diagrams/04-coordinates-panel.png"),
     "17-capstone": ("artifacts/lesson-17/validation.svg", "docs/assets/diagrams/17-capstone.svg"),
     "18-video": ("artifacts/lesson-18/panel.svg", "docs/assets/diagrams/18-video.svg"),
     "19-tracking": ("artifacts/lesson-19/ids.svg", "docs/assets/diagrams/19-tracking.svg"),
@@ -149,13 +154,28 @@ def main():
         if not result["passed"]:
             print(result["stderr"], flush=True)
             raise SystemExit(f"STOP: {lesson_id} failed; its record was not written and later sections were not run.")
+        if lesson_id == "22-distillation":
+            runtime = json.loads((ROOT / "artifacts/runs/dino/22-distillation.json").read_text())
+            result["figure_data"] = {"self_distillation_history": runtime["history"]}
         if lesson_id in SITE_FIGURES:
             produced, site = SITE_FIGURES[lesson_id]
             shutil.copyfile(ROOT / produced, ROOT / site)
+            if lesson_id == "17-capstone":
+                capstone_panel(ROOT / produced, ROOT / "docs/assets/diagrams/17-capstone-readable.svg")
+            elif lesson_id == "18-video":
+                video_panel(ROOT / produced, ROOT / "docs/assets/diagrams/18-video-readable.svg")
+            elif lesson_id == "19-tracking":
+                tracking_panel(ROOT / produced, ROOT / "docs/assets/diagrams/19-tracking-readable.svg")
         # Update THIS section before the next one starts; the record is written last, so a section
         # whose figure, notebook or page could not be updated stays out of date and runs again.
         attach(section, result)
         (FOLDER / f"{lesson_id}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+        if lesson_id == "21-training":
+            vit_curve(Path("artifacts/checks/curriculum/21-training.json"), ROOT / "docs/assets/diagrams/21-training-loss.svg")
+        elif lesson_id == "22-distillation":
+            dino_curve(Path("artifacts/checks/curriculum/22-distillation.json"), ROOT / "docs/assets/diagrams/22-features.svg")
+        elif lesson_id == "23-detection-bridge":
+            detection_predictions(Path("artifacts/checks/curriculum/23-detection-bridge.json"), ROOT / "docs/assets/diagrams/23-detection-predictions.svg")
         print(f"{lesson_id}: PASS; record, notebook and page evidence updated", flush=True)
     write_index(lessons)
     kept = len(lessons) - len(selected)

@@ -103,13 +103,13 @@ timing = {key: float(np.median([r['ms'][key] for r in results])) for key in resu
 
 | 階段 | 中位數（毫秒） | 包含 |
 | --- | --- | --- |
-| 前處理 | 0.276 | uint8→tensor、縮放、padding |
-| 模型 | 0.310 | 一次 forward |
-| 後處理 | 0.439 | score 篩選、NMS、框還原 |
-| 畫框 | 0.070 | PIL 影像與文字框 |
-| 全流程 | 1.100 | 上述各項的逐幀總時間 |
+| 前處理 | 0.188 | uint8→tensor、縮放、padding |
+| 模型 | 0.189 | 一次 forward |
+| 後處理 | 0.357 | score 篩選、NMS、框還原 |
+| 畫框 | 0.050 | PIL 影像與文字框 |
+| 全流程 | 0.841 | 上述各項的逐幀總時間 |
 
-四項中位數相加是 0.276+0.310+0.439+0.070=1.095，比全流程的 1.100 少。這不是漏算：每一幀內，四段相加正好等於這一幀的總時間。差異來自「先各取中位數再相加」，因為各項的中位數可能來自不同的幀。例如三幀的前處理是 1、2、5 毫秒，模型是 5、1、2 毫秒：兩項的中位數都是 2，相加得 4；但三幀的總時間是 6、3、7，中位數是 6。
+四項中位數相加是 0.188+0.189+0.357+0.050=0.784，比全流程的 0.841 少。這不是漏算：每一幀內，四段相加正好等於這一幀的總時間。差異來自「先各取中位數再相加」，因為各項的中位數可能來自不同的幀。例如三幀的前處理是 1、2、5 毫秒，模型是 5、1、2 毫秒：兩項的中位數都是 2，相加得 4；但三幀的總時間是 6、3、7，中位數是 6。
 
 這些數字也沒有包含影片解碼（把壓縮的影片檔還原成一張張畫素陣列；和第 6～7 章把模型輸出轉成框的 decode 不同）、網路、磁碟、螢幕更新，或相機那端的佇列。
 
@@ -122,7 +122,7 @@ timing = {key: float(np.median([r['ms'][key] for r in results])) for key in resu
 
 這兩個量也都和來源幀率（來源每秒產生幾幀）不同。
 
-表中全流程 1.100 毫秒，換算成 1000 毫秒 ÷ 1.100 毫秒≈每秒 909 幀。這是用典型單幀計算時間粗略換算的數字。實際持續處理速率要用處理完的幀數除以總耗時量，未必等於中位數的倒數；接上相機後還有其他時間要算。接上相機後，每秒實際處理完幾幀，還受影片解碼、相機幀率與排隊限制，而且不會超過相機的幀率。本例也量不到排隊：合成來源只是把時間戳標成每 50 毫秒一幀，程式沒有用 `time.sleep`（讓程式暫停指定的秒數）真的去等；下一幀一要，就立刻產生。
+表中全流程 0.841 毫秒，換算成 1000 毫秒 ÷ 0.841 毫秒≈每秒 1189 幀。這是用典型單幀計算時間粗略換算的數字。實際持續處理速率要用處理完的幀數除以總耗時量，未必等於中位數的倒數；接上相機後還有其他時間要算。接上相機後，每秒實際處理完幾幀，還受影片解碼、相機幀率與排隊限制，而且不會超過相機的幀率。本例也量不到排隊：合成來源只是把時間戳標成每 50 毫秒一幀，程式沒有用 `time.sleep`（讓程式暫停指定的秒數）真的去等；下一幀一要，就立刻產生。
 
 再看處理比來源慢的情況。30 FPS 的相機每 1000/30≈33.3 毫秒送來一幀。假設處理一幀要 50 毫秒，而且來不及處理的幀全部排隊（佇列沒有上限），延遲就會越來越大，看到的結果越來越舊。這時處理速率卻穩定在每秒 20 幀，光看它看不出問題。所以要決定：保留全部幀、丟掉舊幀只處理最新的一幀，或降低解析度。降低解析度的目標，是讓每幀處理時間低於來源間隔 33.3 毫秒。要量實際的畫面年齡（結果完成時，這一幀已經是多久以前拍的），必須同時記下擷取時間、排隊時間與完成時間。
 
@@ -149,11 +149,11 @@ timing = {key: float(np.median([r['ms'][key] for r in results])) for key in resu
 
 ## 真實預測，也保留失敗
 
-[![實際連續幀輸出，黃色是模型預測](../assets/diagrams/18-video.svg)](../assets/diagrams/18-video.svg)
+[![實際連續幀輸出，黃色是模型預測](../assets/diagrams/18-video-readable.svg)](../assets/diagrams/18-video-readable.svg)
 
-圖上的小字可點開原尺寸圖放大查看。
+三格上下排列，讓正文內就能讀到幀號、分數與時間；像素、預測框及數值沿用同一次程式輸出，只改排列。
 
-圖中三格依序是第 0、5、11 幀，也就是第一幀、中間幀與最後一幀。紅方塊是畫面裡的物件本身，不是畫上去的真值（GT）框；黃框是模型預測，框上的白字是它的 score。每格下方第一行是幀號與來源時間戳；第二行的「處理 … ms」是這一幀全流程的處理時間（單次量測，不是中位數），「框 … 個」是這一幀的框數。
+圖中三格由上到下依序是第 0、5、11 幀，也就是第一幀、中間幀與最後一幀。紅方塊是畫面裡的物件本身，不是畫上去的真值（GT）框；黃框是模型預測，框上的白字是它的 score。每格下方第一行是幀號與來源時間戳；第二行的「處理 … ms」是這一幀全流程的處理時間（單次量測，不是中位數），「框 … 個」是這一幀的框數。
 
 單幀的處理時間也看這一幀要做多少事。第 0 幀有框：後處理要跑 NMS，畫框這一段也要真的畫出框、寫上分數；第 5、11 幀沒有框，這兩件事都不用做。所以比較單幀時間之前，先看各幀有沒有框。這是每幀工作量的差別，和暖機要先做掉的一次性準備是兩回事。
 
@@ -173,7 +173,7 @@ timing = {key: float(np.median([r['ms'][key] for r in results])) for key in resu
 
 ## 接真影片的同一個入口
 
-完整程式提供 `opencv_frames(source)` 這個 adapter，把影片檔或相機的畫面轉成一幀幀的 `Frame`。它用 OpenCV（Python 裡叫 `cv2`）讀影片。本課固定用 `opencv-python-headless`，這是不含開視窗功能的版本，適合 Colab 這類雲端環境。OpenCV 的四個套件 `opencv-python`、`opencv-contrib-python`、`opencv-python-headless`、`opencv-contrib-python-headless` 共用 `cv2` 這個名字，同一環境只能裝一種。已經裝了別的 OpenCV 套件時（Colab 通常已經預裝），先用 `python -m pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless` 全部移除，再只裝本課的這一個；在 Colab 的 code cell 裡，指令前面要加 `!`。
+完整程式提供 `opencv_frames(source)` 這個 adapter，把影片檔或相機的畫面轉成一幀幀的 `Frame`。它用 OpenCV（Open Source Computer Vision Library，開源電腦視覺函式庫；Python 裡叫 `cv2`）讀影片。本課固定用 `opencv-python-headless`，這是不含開視窗功能的版本，適合 Colab 這類雲端環境。OpenCV 的四個套件 `opencv-python`、`opencv-contrib-python`、`opencv-python-headless`、`opencv-contrib-python-headless` 共用 `cv2` 這個名字，同一環境只能裝一種。已經裝了別的 OpenCV 套件時（Colab 通常已經預裝），先用 `python -m pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless` 全部移除，再只裝本課的這一個；在 Colab 的 code cell 裡，指令前面要加 `!`。
 
 adapter 裡有三個重點：
 
@@ -248,7 +248,7 @@ with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時�
 
 ??? note "進階：用無損影片檔驗證 adapter"
 
-    先說明幾個名詞。FFV1 是一種無損影片編碼：交給它的像素會原樣存回來。本實驗用 OpenCV 寫入 8 位元 BGR 畫面，OpenCV 讓 FFV1 直接存 RGB 類的格式，所以讀回後每個畫素都不變，能逐值比對；若先把畫面轉成 YUV 4:2:0（把顏色資訊縮成四分之一解析度的格式）再編碼，即使用 FFV1，顏色也已經變了。AVI 是裝影片的檔案格式（容器）。MP4 常用的 H.264 除了有損壓縮會丟掉一些細節，通常也會先轉成 YUV 4:2:0，所以讀回的畫素會略有不同。
+    先說明幾個名詞。FFV1（FFmpeg Video Codec 1）是一種無損影片編碼：交給它的像素會原樣存回來。本實驗用 OpenCV 寫入 8 位元 BGR 畫面，OpenCV 讓 FFV1 直接存 RGB 類的格式，所以讀回後每個畫素都不變，能逐值比對；若先把畫面轉成 YUV 4:2:0（把顏色資訊縮成四分之一解析度的格式）再編碼，即使用 FFV1，顏色也已經變了。AVI（Audio Video Interleave，音訊與影片交錯儲存）是裝影片的檔案格式（容器）。MP4 常用的 H.264 除了有損壓縮會丟掉一些細節，通常也會先轉成 YUV 4:2:0，所以讀回的畫素會略有不同。
 
     同一個 adapter 已用 12 幀的 FFV1 無損 AVI 檔實測：把前面 `synthetic_frames` 產生的畫面轉成 BGR 寫入檔案，再用 adapter 讀回成 RGB，畫素與原本完全相同；模型的框、分數、類別與疊圖也都相同。12 幀的時間戳仍是 0 至 0.55 秒。程式也核對了三種情況：讀到檔尾、中途關閉 generator、檔案打不開，OpenCV 的影片物件都已關閉。[檔案實測紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/video-file.json)保留了影片的 SHA-256（檔案指紋）與結果。這次沒有測實體相機，也不能保證有損 MP4 編解碼後的畫素完全相同。
 
@@ -311,7 +311,7 @@ with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/18-video.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/18-video.json)
 
 ??? example "展開本次實際輸出"
 
@@ -360,11 +360,11 @@ with closing(video['opencv_frames']('clip.mp4')) as frames:  # 離開 with 時�
       ],
       "warmup_frames": 1,
       "median_ms": {
-        "preprocess": 0.2764804958133027,
-        "model": 0.30956500268075615,
-        "postprocess": 0.43933201231993735,
-        "drawing": 0.06989399844314903,
-        "total": 1.1000390077242628
+        "preprocess": 0.18829999953595689,
+        "model": 0.1891370002340409,
+        "postprocess": 0.35733650020119967,
+        "drawing": 0.0501294998684898,
+        "total": 0.8414824997089454
       },
       "camera_adapter": "provided, not executed",
       "limits": "synthetic lazy producer; no capture/codec/display/network queue latency measured"

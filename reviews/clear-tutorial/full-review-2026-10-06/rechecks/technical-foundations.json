@@ -1,0 +1,1146 @@
+{
+  "reviewer": "foundations",
+  "round": "第二輪：非作者技術與證據核對",
+  "written_at_utc": "2026-10-06T05:08:56.213644+00:00",
+  "independence": "我未撰寫教材。本輪可以讀實作、原文與已完成的首次閱讀紀錄，屬技術複查；不宣稱是新的盲讀。",
+  "conclusion": "指定改寫、新 PNG、圖同步與 raster 指紋機制未發現仍需修正的技術或證據問題。三項查核中發現的維護說明問題已修改並核回。本結論只涵蓋列出的實際範圍，不代表第三輪、網站視覺或整套教材驗收完成。",
+  "actual_scope": {
+    "page_changes": [
+      "docs/index.md",
+      "docs/glossary.md",
+      "docs/lessons/00-warmup.md",
+      "docs/lessons/01-small-cnn.md",
+      "docs/lessons/03-identity.md",
+      "docs/lessons/03-comparison.md",
+      "docs/lessons/04-localization.md",
+      "docs/lessons/04-coordinates.md"
+    ],
+    "maintenance_paragraphs": [
+      "docs/status.md",
+      "docs/validation/curriculum.md",
+      "docs/preparation/architecture.md",
+      "docs/preparation/publish.md",
+      "README.md"
+    ],
+    "code": [
+      "lesson_cases/00-warmup.py",
+      "lesson_cases/01-small-cnn.py",
+      "lesson_cases/03-identity.py",
+      "lesson_cases/03-comparison.py",
+      "lesson_cases/04-localization.py",
+      "lesson_cases/04-coordinates.py",
+      "scripts/verify_curriculum.py",
+      "scripts/review_coverage.py",
+      "scripts/run_learning_extensions.py",
+      "scripts/evidence_records.py",
+      "miniyolo/provenance.py",
+      "miniyolo/geometry.py",
+      "miniyolo/vision_transformer.py",
+      "miniyolo/self_distillation.py",
+      "tests/test_review_coverage.py"
+    ],
+    "figures_viewed": [
+      "docs/assets/diagrams/04-localization-model.png",
+      "docs/assets/diagrams/04-coordinates-panel.png"
+    ],
+    "records": [
+      "artifacts/checks/curriculum/00-warmup.json",
+      "artifacts/checks/curriculum/01-small-cnn.json",
+      "artifacts/checks/curriculum/03-identity.json",
+      "artifacts/checks/curriculum/03-comparison.json",
+      "artifacts/checks/curriculum/04-localization.json",
+      "artifacts/checks/curriculum/04-coordinates.json",
+      "artifacts/checks/curriculum/01-small-cnn-learning.json",
+      "artifacts/checks/curriculum/03-comparison-learning.json",
+      "artifacts/checks/curriculum/04-localization-learning.json",
+      "artifacts/checks/curriculum/index.json"
+    ],
+    "notebooks": [
+      "notebooks/00-warmup.ipynb",
+      "notebooks/01-small-cnn.ipynb",
+      "notebooks/03-identity.ipynb",
+      "notebooks/03-comparison.ipynb",
+      "notebooks/04-localization.ipynb",
+      "notebooks/04-coordinates.ipynb"
+    ],
+    "frozen_pages_compared": [
+      "docs/index.md",
+      "docs/glossary.md",
+      "docs/lessons/00-warmup.md",
+      "docs/lessons/01-small-cnn.md",
+      "docs/lessons/03-identity.md",
+      "docs/lessons/03-comparison.md",
+      "docs/lessons/04-localization.md",
+      "docs/lessons/04-coordinates.md"
+    ],
+    "raw_first_read_records_used": {
+      "foundations": "本人的原始紀錄及先前 final-report；本輪逐項取用 13、21、24、25、27、37、51 行。",
+      "detector": "僅已完成 04-localization、04-coordinates 的紀錄；逐項取用 64、72 行。未讀其他尚在進行的首次讀者紀錄。"
+    }
+  },
+  "current_file_sha256": {
+    "docs/index.md": "d791a4b199260a9611fa2a0d87ab7abd02a64012786fa85de4ec0e4f510a6bf7",
+    "docs/glossary.md": "3020572f31deb99571ff8cb7748edd50cf05c83f7e5357686aa81d7182ab5539",
+    "docs/lessons/00-warmup.md": "e682f0c181e5dda0d3e386b51a42d811810cc3edce068bcecfadabc00c1cf666",
+    "docs/lessons/01-small-cnn.md": "ccdf07d0137b41c898297ca8eb7e68f0b39a29b1cc77b089815abecedf20258a",
+    "docs/lessons/03-identity.md": "14bc842433ebdb1147f8a9e123292a6e82aabe2fc0d3fb043650b578b1b0e943",
+    "docs/lessons/03-comparison.md": "3d2cbfc81b73dd5b5bd8c01f4a2413c70bedc7c90b912088d23e79326e3dd938",
+    "docs/lessons/04-localization.md": "769ca0b5cd8a4d461da6d1180f2cf2fa83cbe628cd72f9c308192e4d61eeb46b",
+    "docs/lessons/04-coordinates.md": "d41a4c663f4df95d8c43c0fb8ae5e73e67632ca9d2bdaa921eb4ab2f1333efd5",
+    "docs/status.md": "9842918ae445296472c17424ecf20e31a6b12539e7512c1567046616c1687128",
+    "docs/validation/curriculum.md": "5e0aad3cb1ca8ae020ec041af3010cc06fc73cacfef96206d158f07681b74e6d",
+    "docs/preparation/architecture.md": "cc25399d40ba1e97c1c9af74e9658775b7c52e7b96be72c906f7d94556a7073f",
+    "docs/preparation/publish.md": "dd951592f9d1b91f5a1d3779da2943f66ed08319553f12bf93e9440de07fc4d9",
+    "README.md": "524d87dc74cf649b7e7fbf18f7331804c8241f48d7cd09685407758dafe820fd",
+    "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b",
+    "lesson_cases/01-small-cnn.py": "f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16",
+    "lesson_cases/03-identity.py": "5b90ff32f504ebb96a831727e2dcd10b98640398148146f301a5e51bab0fc26d",
+    "lesson_cases/03-comparison.py": "8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b",
+    "lesson_cases/04-localization.py": "08848d3095ceb88d3c487caccb31672901bb8d45b20fcea720155473dc06b0f7",
+    "lesson_cases/04-coordinates.py": "17ff0de7342281381fa8610313a40bf00e6cb927dc0eb82ace04ff3f750c968b",
+    "scripts/verify_curriculum.py": "cc513ca1667165f5b284a7ff822b2c5329b688a233024a8fa94f289efbaf4d4a",
+    "scripts/review_coverage.py": "2652c7cd2129d534f873ef804c541de9ffc61adca4ac262a622d436489f914ca",
+    "scripts/run_learning_extensions.py": "b84e3317f95374df87d759e562db9b100ee14628b9cf5bb111238cd4a2e8e6cf",
+    "scripts/evidence_records.py": "fc9b39511c1be1bc08f5e9ad4b4224a13f778d0e022074cea675f8b684dcbcf4",
+    "miniyolo/provenance.py": "21769813c36b45f513c9f0d6125194f3baa5ae265278ffd44a796d298d124ed3",
+    "miniyolo/geometry.py": "6a6b57d3493888e99dae4a012dab78127b8b543a0e01d8107963a3d6e63d8483",
+    "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394",
+    "miniyolo/self_distillation.py": "15d60e80fe19a14d980cd44999143a4da18847f19737fb1d762f85c90f8f11d0",
+    "tests/test_review_coverage.py": "1fec3a7c94f917feebc1988dae1256a9622a1be2176ac2541249227394e14276",
+    "docs/assets/diagrams/04-localization-model.png": "e8c40ea5811e8507bce9efb3726ffc353d09d4d40be0cc547eec5b1b8aa137cc",
+    "docs/assets/diagrams/04-coordinates-panel.png": "2593eb23216d5d1ffd97575f030ae0e515eaf9260f51e95ee74336848cf17256",
+    "artifacts/checks/curriculum/00-warmup.json": "b151c9c8bfa127299fa43b9e0c0269810f0a0765d1fc4fa92aa5437ae09e5e74",
+    "artifacts/checks/curriculum/01-small-cnn.json": "d7290b2611e109f10d6396496b04e4b68f5ffc23d5a173be440367f5cbe4710c",
+    "artifacts/checks/curriculum/03-identity.json": "2d356a11166eec360cffaa0c63d8e4cff0cd2236ae568d61b7973a6be64a723e",
+    "artifacts/checks/curriculum/03-comparison.json": "c711386e800beca920ad9108df97011642fc37ecd249c7fdc61a8c9d79121618",
+    "artifacts/checks/curriculum/04-localization.json": "a5e5d8c3121d4fa77d75ca27e8fee44c97cd105bbcbc607f39dd473bdeb42487",
+    "artifacts/checks/curriculum/04-coordinates.json": "be1cea125f55de9019d07802fa6c58ab7a151f38c991063d465703bbbaa180b5",
+    "artifacts/checks/curriculum/01-small-cnn-learning.json": "624d4ad4237dedf2740064013234cbcc141d63b959bd808f18536599892bde7b",
+    "artifacts/checks/curriculum/03-comparison-learning.json": "06b1a3ed98a77af00a528dec9a240e42325bdea32ff6efc8ab6db38f5524533c",
+    "artifacts/checks/curriculum/04-localization-learning.json": "2896307a4c01b6701d4ddd264562d2a329fe77c2d1bcad8b347d9481a8ab5a39",
+    "artifacts/checks/curriculum/index.json": "e4e2f637e0e30f3d00c657207227640f3253e1947f78c6e2a3b3a49439c3aa9d",
+    "notebooks/00-warmup.ipynb": "605e3094dd93f33ea0fd5f488990bea289b8d8d9285b75875f26c1fb5e9db5c1",
+    "notebooks/01-small-cnn.ipynb": "39844e61a720af0529da5e6e1c0259b661c614c919c0f234e90fb8c82b470c2a",
+    "notebooks/03-identity.ipynb": "2b3a70a0ba96a708732b64cf14cc1e8af30ac009ac870c26cde7c19ee8e30907",
+    "notebooks/03-comparison.ipynb": "43c698bb0d030850e966ca9a40f944ea9e8d397705e81f291e8806e6e4bbd19e",
+    "notebooks/04-localization.ipynb": "831a73624afdaf5409f0b915560097d350d228fa1fa3abff006012ed4f9c8abe",
+    "notebooks/04-coordinates.ipynb": "ac5bd915d6e235837f6ebede602125f0656e1078a8fb44fc288ec6d80c355976"
+  },
+  "frozen_file_sha256": {
+    "docs/index.md": "88b94b0b0e3053ee0368cf4845682f98f2032306f81083a8cc63cba10c19265f",
+    "docs/glossary.md": "f1f6fbb72f85924b45fd2aaaf663880a308957a7fb6782e84ba13394a8e67b2e",
+    "docs/lessons/00-warmup.md": "c684fa4d8be079722f7354d6ea6ebfcdaffa93c42f158f1f2cd2d3fa83bbd43f",
+    "docs/lessons/01-small-cnn.md": "bda85f837cbdcccf9adf2f6b013bc65df44d6646eb6bf92a26082a5d4d3949b2",
+    "docs/lessons/03-identity.md": "03590fb7129bd5ffd9a2dbd36d5036f82f4a32d8fc21247363033e6cb57d70a8",
+    "docs/lessons/03-comparison.md": "2729851afb052a9167e3a4ffd487238d4e34b27c22daec9318ae2a82fc6ead88",
+    "docs/lessons/04-localization.md": "7857e6e2c9c8f420d8b0cb89cbb25572754033ae19094c6a3a0b70c2899a96f3",
+    "docs/lessons/04-coordinates.md": "52dc6033e8be491c98d0ba0228125354bf5875803e3c0e178a095b8d14c576be"
+  },
+  "first_read_name_rechecks": [
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 13,
+        "source": {
+          "id": "00-warmup/02",
+          "page_id": "00-warmup",
+          "source": "docs/lessons/00-warmup.md",
+          "line_start": 25,
+          "line_end": 64,
+          "images": [],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "本例用 SGD（隨機梯度下降）",
+        "reason": "中文含義、優化器角色與本例更新公式已清楚，所以不阻礙計算；重要縮寫 SGD 仍沒有英文完整名稱。",
+        "severity": "optional",
+        "needed": "首次出現補 Stochastic Gradient Descent，再保留現有中文與公式。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/00-warmup.md",
+        "line": 49,
+        "quote": "optimizer（優化器）拿梯度修改參數。本例用 **SGD（Stochastic Gradient Descent，隨機梯度下降）**，學習率 \\(\\eta=0.1\\) 控制每步走多遠。SGD 在一般訓練中可隨機抽取資料來算梯度；本例只有一筆固定資料，沒有這個抽樣步驟。\\(\\eta\\) 讀作 eta。更新是往梯度的反方向走："
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 21,
+        "source": {
+          "id": "01-small-cnn/00",
+          "page_id": "01-small-cnn",
+          "source": "docs/lessons/01-small-cnn.md",
+          "line_start": 1,
+          "line_end": 14,
+          "images": [
+            {
+              "source": "docs/assets/diagrams/01-cnn-materials.svg",
+              "path": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/previews/docs__assets__diagrams__01-cnn-materials.svg.png",
+              "kind": "raw source preview; website not verified"
+            }
+          ],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "CNN（卷積神經網路）",
+        "reason": "中文名稱與讀圖片分類的角色明確；縮寫 CNN 尚無英文完整名稱，屬名稱補充，不阻礙當下材料與任務。",
+        "severity": "optional",
+        "needed": "首次正文補 Convolutional Neural Network。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/01-small-cnn.md",
+        "line": 5,
+        "quote": "上一節讓一個權重學會把 2 變成 4。現在換成圖片：**看到紅矩形，回答 0；看到藍矩形，回答 1。** 我們要做的 **CNN（Convolutional Neural Network，卷積神經網路）**怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。"
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 24,
+        "source": {
+          "id": "01-small-cnn/03",
+          "page_id": "01-small-cnn",
+          "source": "docs/lessons/01-small-cnn.md",
+          "line_start": 46,
+          "line_end": 75,
+          "images": [
+            {
+              "source": "docs/assets/diagrams/01-cnn-flow.svg",
+              "path": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/previews/docs__assets__diagrams__01-cnn-flow.svg.png",
+              "kind": "raw source preview; website not verified"
+            }
+          ],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "ReLU 把負值變 0，正值保留",
+        "reason": "ReLU規則、非線性角色與例子完整，無操作障礙；重要縮寫仍未給英文完整名稱。",
+        "severity": "optional",
+        "needed": "首次出現補 Rectified Linear Unit 與中文名稱，沿用既有規則與例子。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/01-small-cnn.md",
+        "line": 56,
+        "quote": "**ReLU（Rectified Linear Unit，修正線性單元）**把負值變 0，正值保留：\\(\\mathrm{ReLU}(x)=\\max(0,x)\\)。例如 `[-2,3]` 變成 `[0,3]`。"
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 25,
+        "source": {
+          "id": "01-small-cnn/04",
+          "page_id": "01-small-cnn",
+          "source": "docs/lessons/01-small-cnn.md",
+          "line_start": 76,
+          "line_end": 122,
+          "images": [],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "每張圖的卷積與線性層約做 **479248 次乘加（MAC）**",
+        "reason": "乘加中文、統計範圍与限制已有說明，不影響理解；MAC未給英文完整名稱。",
+        "severity": "optional",
+        "needed": "首次補 Multiply–Accumulate 或正文採用的完整英文名稱。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/01-small-cnn.md",
+        "line": 121,
+        "quote": "模型合計 **1158 個參數**，每張圖的卷積與線性層約做 **479248 次乘加（MAC，multiply–accumulate）**：每次把一個值乘上權重，再累加到答案。這是計算量粗估，不包含 ReLU、pooling 與資料搬移，也不能直接換成執行秒數。手算表放在頁尾；先看更新後的結果。"
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 27,
+        "source": {
+          "id": "01-small-cnn/06",
+          "page_id": "01-small-cnn",
+          "source": "docs/lessons/01-small-cnn.md",
+          "line_start": 141,
+          "line_end": 159,
+          "images": [
+            {
+              "source": "docs/assets/diagrams/01-small-cnn-learning-readable.svg",
+              "path": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/previews/docs__assets__diagrams__01-small-cnn-learning-readable.svg.png",
+              "kind": "raw source preview; website not verified"
+            }
+          ],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "這次使用 Adam、學習率 0.01。Adam 也是 optimizer，會利用過去的梯度調整更新。",
+        "reason": "Adam的優化器角色與使用過去梯度的當下意義已有教，不阻礙看實驗；名稱尚無完整英文與中文意義。",
+        "severity": "optional",
+        "needed": "首次補 Adam（Adaptive Moment Estimation，自適應矩估計），保留現有夠用角色說明。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/01-small-cnn.md",
+        "line": 143,
+        "quote": "接著用同一種模型、同樣 8 張圖、同一個 seed，**重新從初始權重開始**更新 40 次。這次使用 **Adam（Adaptive Moment Estimation，自適應矩估計）**、學習率 0.01。Adam 也是 optimizer，會用過去梯度及其平方的平均，調整各參數的更新量。步數和 optimizer 同時改了，所以不能把差異只歸功於步數。"
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 37,
+        "source": {
+          "id": "03-identity/00",
+          "page_id": "03-identity",
+          "source": "docs/lessons/03-identity.md",
+          "line_start": 1,
+          "line_end": 14,
+          "images": [],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "# 3.1 ResNet identity shortcut：先確定真的能原樣通過",
+        "reason": "導覽已稱ResNet為殘差網路，正文也解釋殘差block角色、捷徑目的與identity；縮寫ResNet仍未給英文完整名稱。",
+        "severity": "optional",
+        "needed": "首次正文補 ResNet（Residual Network，殘差網路）。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/03-identity.md",
+        "line": 5,
+        "quote": "照理說，網路加深不該變差：多加的幾層只要學成「輸出＝輸入」，深網路就能算出和原本淺網路一樣的結果，訓練誤差不該更高。但 [ResNet（Residual Network，殘差網路）原始論文](https://arxiv.org/abs/1512.03385)的圖 1 顯示，在 CIFAR-10 圖片分類資料上，56 層的普通（plain）網路連訓練誤差（訓練資料上的錯誤率）都比 20 層的高。論文把這種「更深反而連訓練誤差都較高」的現象稱為退化（degradation）。這不是 overfit（訓練資料學得好、新資料卻變差）：這裡連訓練資料都學得比較差，屬於[第 2 章](02-diagnostics.md)說的最佳化問題。"
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/foundations.jsonl",
+        "jsonl_line": 51,
+        "source": {
+          "id": "03-comparison/00",
+          "page_id": "03-comparison",
+          "source": "docs/lessons/03-comparison.md",
+          "line_start": 1,
+          "line_end": 12,
+          "images": [],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "BatchNorm（批次正規化）",
+        "reason": "中文、用途与train用batch平均标准差已说明，且本地不使用，不妨礙主比較；名稱BatchNorm仍沒有英文完整名稱。",
+        "severity": "optional",
+        "needed": "首次補 Batch Normalization，保留已有中文與夠用解釋。",
+        "type": "名稱補充"
+      },
+      "current_support": {
+        "file": "docs/lessons/03-comparison.md",
+        "line": 9,
+        "quote": "設計來源是 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)對 plain 與 residual 的研究。本節用 4 個 channel、3 個 block 與人工色塊，和原版的主要差別是：沒有 BatchNorm（Batch Normalization，批次正規化）；深度淺得多；每個 block 末端沒有 activation（原版 plain 接在第二個卷積之後，residual 接在相加之後）；用 PyTorch 預設初始化（原版是 He 初始化，見〈結果怎麼讀〉）；只用固定 learning rate 的簡單 SGD（原版另有 momentum、weight decay，learning rate 也會逐步調小）；stem 只有一個 3×3 卷積，也沒有分段下採樣（全程 16×16）。BatchNorm（批次正規化）在原版每個卷積後都有，訓練時它用同一批資料算出的平均與標準差，把每個 channel 的數值調到穩定的尺度；activation 是層與層之間的非線性函數，本節指 ReLU。本節是局部的機制對照，不是重現論文在 ImageNet（約 128 萬張訓練照片、1000 類）上的結果。論文的 plain 網路也有 BatchNorm；本節沒有它，所以結果只代表本設定，加回後會怎樣，本節沒有測。"
+      },
+      "recheck": "已在相關正文補上完整名稱，保留既有用途、規則及限制；名稱補充未被升級為整節概念缺失。",
+      "status": "已修正並核回"
+    }
+  ],
+  "first_read_figure_rechecks": [
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "jsonl_line": 64,
+        "source": {
+          "id": "04-localization/05",
+          "page_id": "04-localization",
+          "source": "docs/lessons/04-localization.md",
+          "line_start": 119,
+          "line_end": 126,
+          "images": [],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "並輸出 `artifacts/04-localization.png` 的 GT／pred 疊圖；pred 來自只更新 3 步的模型，品質沒有保證。",
+        "reason": "已懂三步只查梯度/更新且质量無保證，也看過人工IoU框。正文说产生模型疊图却只有檔名，没有实际展示；只讀網頁无法看到本次預測框與两張材料，需自行執行找檔，增加結果解讀負担。",
+        "severity": "burden",
+        "needed": "此處直接嵌入保存的三步GT/pred疊圖，標清與前段人工IoU圖不同。",
+        "type": "圖解"
+      },
+      "current_support": {
+        "file": "docs/lessons/04-localization.md",
+        "line": 125,
+        "quote": "這張是程式實際產生的疊圖：左邊紅方塊、右邊藍方塊，綠框 GT 是真值，黃框 pred 是第三次更新後模型算出的框。先比四條邊：黃框和綠框仍有明顯偏差，尤其右圖的左界。它讓你核對「框 head 真的輸出位置」，並看出三步更新還不足以把這兩個訓練框擬合好；它不是前一張人工 IoU 算例，也不能代表未見圖片的表現。"
+      },
+      "status": "已修正並核回",
+      "verification": "已檢視目前 PNG，並在獨立暫存目錄重跑原 case；圖檔與網站 PNG 逐位元組相同。這是技術核回，不回寫原始首次閱讀判斷。"
+    },
+    {
+      "first_read_record": {
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "jsonl_line": 72,
+        "source": {
+          "id": "04-coordinates/05",
+          "page_id": "04-coordinates",
+          "source": "docs/lessons/04-coordinates.md",
+          "line_start": 110,
+          "line_end": 146,
+          "images": [],
+          "page_end": false,
+          "target": true
+        }
+      },
+      "original_issue": {
+        "quote": "例如對照圖 stretch 那一格，紅色物件上下緣的暗紅細線",
+        "reason": "已懂加权平均会产生0–1中间值与>.5规则，但此处要求看stretch实际暗红边；已提供SVG只画原图与letterbox，没有stretch格，而实际三格图仅artifacts路径。只读网页看不到所指細線，需要自己跑图。",
+        "severity": "burden",
+        "needed": "嵌入已保存的原圖/stretch/letterbox三格對照圖，讓插值邊與白虛線補邊區可直接看見。",
+        "type": "圖解"
+      },
+      "current_support": {
+        "file": "docs/lessons/04-coordinates.md",
+        "line": 41,
+        "quote": "從左到右比較同一塊紅色物件：原圖是寬 80、高 40；stretch 把它直接拉成 64×64，紅色矩形也被拉高；letterbox 先等比例縮到寬 64、高 32，再上下各補 16 列。三格的綠框都跟著圖片轉換。最右格的白色虛線只標出原圖縮放後的範圍，範圍外的黑色就是補邊。這是完整程式的實際輸出，用來核對前一張幾何示意；沒有模型預測或訓練結果。"
+      },
+      "status": "已修正並核回",
+      "verification": "已檢視目前 PNG，並在獨立暫存目錄重跑原 case；圖檔與網站 PNG 逐位元組相同。這是技術核回，不回寫原始首次閱讀判斷。"
+    }
+  ],
+  "issues_found_and_resolved": [
+    {
+      "id": "TF-01",
+      "type": "維護說明／圖同步",
+      "severity": "增加理解負擔",
+      "necessity": "需與新機制同步",
+      "observed_quote": "網站上第 17、18、19 章的結果圖，只在產生執行紀錄時，由 `scripts/verify_curriculum.py` 從這些位置複製到 `docs/assets/diagrams/`。",
+      "problem": "查核初期仍漏列新增的 4.1、4.2 圖，發布頁亦只列 17–19；維護者無法從這份說明知道新圖的同步入口。",
+      "actual_recheck": [
+        {
+          "file": "docs/status.md",
+          "line": 83,
+          "quote": "`check_lesson_runtime.py` 在你自己的電腦上用 CPU 逐節執行，記錄每節印出的文字（stdout）、錯誤訊息與是否通過，並和 `artifacts/checks/curriculum/` 裡的執行紀錄比對。報告寫在 `artifacts/runs/lesson-runtime.json`；各節程式畫的圖和寫出的其他檔案，也都存在 git 不追蹤的位置（例如第 17 章的 `artifacts/lesson-17/`），所以跑完後 repo 裡 git 追蹤的檔案都不會改變。網站上第 4.1、4.2 節與第 17、18、19 章的結果圖，只在產生執行紀錄時，由 `scripts/verify_curriculum.py` 從這些位置複製到 `docs/assets/diagrams/`。換一台電腦，計時和部分數字可能和紀錄不同，報告會標出輸出和紀錄不同的節；輸出不同本身不算失敗，只要程式在 120 秒內完整跑完、沒有報錯，該節仍算 PASS。每節印一行英文結果，例如 `07-training: PASS; output identical to the recorded run`；輸出和紀錄不同時，PASS 後面改印 `output differs from the recorded run`，後面括號裡的說明是固定文字，不是比對後的判斷。報告只標出哪一節不同，不標出哪幾行不同：想知道差在哪裡，把 `lesson-runtime.json` 裡該節的 stdout 和該節頁尾的「實際執行紀錄」逐行對照；計時與訓練後的數字不同是正常的，其他行不同就要回頭查程式。執行 `.venv-model/bin/python scripts/check_lesson_runtime.py --section 07-training` 就只檢查這一節。`check_lesson_runtime.py` 不經過 Colab，所以測不到 Colab 上的實際執行，包括 Colab 可能分配給你的 GPU。"
+        },
+        {
+          "file": "docs/preparation/publish.md",
+          "line": 209,
+          "quote": "    `--run` 先核對 Python 3.12 與 `requirements-model.txt`、`requirements-video.txt` 的固定版本，不符就停下；接著只重跑過期的部分：逐節程式交給 `verify_curriculum.py`（它同時更新 notebook 的輸出與頁尾的執行紀錄區塊，並把第 4.1、4.2 節與第 17–19 章實驗畫的圖複製到 `docs/assets/diagrams/`，並從同次原始 SVG 生成第 18、19 章的直式閱讀圖），補充紀錄交給各自的實驗腳本（除了影片檔與 Fashion-MNIST 的紀錄，各腳本也會重畫 `docs/assets/diagrams/` 裡對應的圖）。重產 Fashion-MNIST 的紀錄時，`--run` 會先執行 `scripts/download_data.py fetch fashion-mnist`，在 `data/downloads/fashion-mnist/` 備齊四個原始檔（共 30.88 MB）：已有、而且大小與 SHA-256 都和 `data/manifest.json` 相符的檔就沿用，缺的才下載，這時記錄的電腦要能連網；有不符的舊檔則會停下，訊息會指名那個檔，移走後重新執行上面的指令。最後用 `validate_curriculum_evidence.py --scope cpu` 檢查，並在輸出最後的 `Changed files:` 列出改動的檔案。`--push <分支>` 把這些檔案 commit 並推到該分支；不方便推送時，改用 `--bundle <檔名>.tar.gz` 把它們打包。兩種的帶回方法見下一步。就在平常編輯的電腦記錄時，只要 `--run`。換一台電腦也能重產，新紀錄會記下新的電腦，但計時與訓練後的小數可能和舊紀錄不同。"
+        }
+      ],
+      "status": "作者修改後已獨立核回"
+    },
+    {
+      "id": "TF-02",
+      "type": "維護說明／審查指紋",
+      "severity": "增加理解負擔",
+      "necessity": "需與 raster 擴充同步",
+      "observed_quote": "頁面文字、頁面上的 SVG 圖，課程頁還包括該節程式和它 import 的模組",
+      "problem": "查核初期 coverage 介紹仍限定 SVG，與新 PNG 指紋涵蓋不一致。",
+      "actual_recheck": [
+        {
+          "file": "docs/status.md",
+          "line": 108,
+          "quote": "審查紀錄每頁一份，存在 repository 的 `reviews/` 資料夾，記下查核的方法、每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查看過的內容（頁面文字、頁面上的 SVG、PNG 等圖，課程頁還包括該節程式和它 import 的模組）都用 SHA-256 記在 `reviews/coverage.json`。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（例如 `lessons-v0.6.0`）不算在內。"
+        },
+        {
+          "file": "docs/validation/curriculum.md",
+          "line": 113,
+          "quote": "審查紀錄存在 `reviews/`。`reviews/coverage.json` 用 SHA-256 記下每份審查看的是哪個版本：頁面文字、頁面上的 SVG、PNG 等圖，以及課程頁的程式與它 import 的模組；頁尾自動產生的執行紀錄區塊與 Colab 連結裡的 tag 不算在內。Pages 工作流程建置網站之前，`scripts/validate_lessons.py` 會核對這些 SHA-256；有任何一頁在審查之後又改過，網站就不會發布。這項檢查會核對正文的內容指紋，卻不會自動核算正文數字與重產紀錄是否一致：紀錄重產後，由維護者在 `docs/` 與 `README.md` 搜尋紀錄的檔名與舊數字，對照新紀錄逐一核對，改了正文就重審那一頁（見〈[發布與帳號設定](../preparation/publish.md)〉）。課程頁的審查紀錄連在上方〈逐節執行清單〉的表格裡，其他頁如下："
+        },
+        {
+          "file": "docs/preparation/publish.md",
+          "line": 228,
+          "quote": "    審查涵蓋頁面文字、頁面上的 SVG、PNG 等圖，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`：課程頁是 `reviews/<節>.md`；其他頁取 `docs/` 底下的路徑，把 `/` 換成 `-`，例如 `docs/preparation/publish.md` 的審查是 `reviews/preparation-publish.md`。寫好後記下它涵蓋的內容；頁面路徑從 repo 根目錄算起，可以一次給好幾頁："
+        },
+        {
+          "file": "docs/preparation/architecture.md",
+          "line": 83,
+          "quote": "網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，都在固定實驗跑完後存成文字、表格與 SVG、PNG 等圖，再建置進網頁；各節頁尾的「實際執行紀錄」由 `scripts/verify_curriculum.py` 從 `artifacts/checks/curriculum/<節>.json` 寫入。notebook 只在最後一格存執行紀錄的文字輸出，不存圖片的 base64，避免 Git 與 Colab 變慢。"
+        },
+        {
+          "file": "README.md",
+          "line": 88,
+          "quote": "5. 重新審查改過的頁面。不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查對不上目前內容的頁面：頁面文字、頁面上的 SVG、PNG 等圖，或課程頁的程式與它 import 的模組有變，都算改過；頁尾的執行紀錄區塊與 Colab 連結裡的 tag 不算。第 4 步會重畫部分實驗圖，所以審查放在紀錄之後。依 [clear-tutorial](.agents/skills/clear-tutorial/SKILL.md) 依序做逐段首次閱讀、非作者技術核對、另一位讀者銜接複查，保留原始卡點與實際核回。以下是第二輪的技術細節：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，並從初學讀者的角度看說明；頁面引用論文、官方程式或函式庫文件的說法，另打開原始來源逐句核對（論文看原文，官方程式看固定的 commit 或 tag，函式庫看官方文件），並在審查紀錄列出查閱的來源與版本。其他頁對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。修正要由另一位 AI 檢查，紀錄要列出每個發現與它的處理。審查紀錄放在 `reviews/`（課程頁是 `reviews/<節>.md`；其他頁用路徑命名，例如 `docs/validation/curriculum.md` 是 `reviews/validation-curriculum.md`），寫好後執行 `python3 scripts/review_coverage.py --write <頁面路徑>`，記下它涵蓋的內容。還有頁面沒有審查、或審查對不上目前內容時，`validate_lessons.py` 會失敗。審查之後又改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），就從第 1 步重來，因為 notebook 與執行紀錄都可能因此過期；只改了頁面文字或圖，就重新審查 `review_coverage.py` 列出的頁面（同一張圖可能出現在好幾頁），再對它們執行一次 `--write`。`review_coverage.py` 保存正文內容（包含數字）的指紋，但不自動核算正文與重產紀錄的數值是否一致：第 3、4 步重產了紀錄時，要在 `docs/` 與 `README.md` 搜尋這些紀錄的檔名與舊的數字，對照新紀錄逐一核對，改了正文就重審那一頁。"
+        }
+      ],
+      "status": "作者修改後已獨立核回"
+    },
+    {
+      "id": "TF-03",
+      "type": "證據／機器歸屬",
+      "severity": "選讀改善",
+      "necessity": "應準確界定批次",
+      "observed_quote": "**CPU 紀錄的電腦：**Linux x86_64（kernel 6.18、glibc 2.41）、Intel Xeon Platinum 8573C，Python 3.12.14、PyTorch 2.9.1+cpu，用 2 個執行緒。",
+      "problem": "新 04 JSON 已來自 AMD，但 status 初期單列 Intel；各節 JSON 與頁尾已準確，因此未阻礙實驗解讀。",
+      "actual_recheck": [
+        {
+          "file": "docs/status.md",
+          "line": 55,
+          "quote": "- **CPU 紀錄的電腦：**既有批次主要在 Intel Xeon Platinum 8573C 上執行（Linux x86_64、kernel 6.18、glibc 2.41、Python 3.12.14）；2026-10-06 本輪改文後的重跑使用 AMD EPYC 9V74。兩者都是 PyTorch 2.9.1+cpu、2 個執行緒。每節的實際機器、日期與版本，以該節保存的 JSON 為準；不能把不同機器的計時直接比較。"
+        }
+      ],
+      "status": "已分開既有與本輪批次，保留逐節 JSON 作準並說明不同機器計時不能直接比較。"
+    }
+  ],
+  "remaining_issues": [],
+  "technical_checks": [
+    {
+      "topic": "新命名與 YOLO 開場",
+      "support": [
+        {
+          "file": "docs/index.md",
+          "line": 11,
+          "quote": "**YOLO（You Only Look Once，只看一次）**是一系列物件偵測模型，讓圖片經過一次網路的前向計算，就同時預測物件的類別與位置；之後仍可能需要篩選或去除重複框。本教材用 PyTorch（深度學習函式庫）寫很小的模型，讓你親手看懂它們怎麼算、怎麼學，以及不同版本為什麼改設計。我們把這些教學用偵測器稱為 **MiniYOLO**。"
+        },
+        {
+          "file": "docs/lessons/00-warmup.md",
+          "line": 49,
+          "quote": "optimizer（優化器）拿梯度修改參數。本例用 **SGD（Stochastic Gradient Descent，隨機梯度下降）**，學習率 \\(\\eta=0.1\\) 控制每步走多遠。SGD 在一般訓練中可隨機抽取資料來算梯度；本例只有一筆固定資料，沒有這個抽樣步驟。\\(\\eta\\) 讀作 eta。更新是往梯度的反方向走："
+        },
+        {
+          "file": "docs/lessons/01-small-cnn.md",
+          "line": 143,
+          "quote": "接著用同一種模型、同樣 8 張圖、同一個 seed，**重新從初始權重開始**更新 40 次。這次使用 **Adam（Adaptive Moment Estimation，自適應矩估計）**、學習率 0.01。Adam 也是 optimizer，會用過去梯度及其平方的平均，調整各參數的更新量。步數和 optimizer 同時改了，所以不能把差異只歸功於步數。"
+        }
+      ],
+      "judgment": "名稱與數學／程式機制一致。SGD 是否抽樣由資料迴圈決定，本例固定一筆；Adam 使用平均梯度與平方梯度，未宣稱這次差異只因增加步數。"
+    },
+    {
+      "topic": "小 CNN、identity 與控制比較",
+      "judgment": "核對資料位置與類別、模型與參數、梯度與真實更新。CNN 的兩色共用位置，不能只靠位置全答對；比較節兩模型同起始 state_dict、固定相同資料與 SGD，副本暖機不改真正模型。人工零分支與隨機分支更新分開；三步結果及計時不排名架構。40 步延伸有清楚固定資料及分母。"
+    },
+    {
+      "topic": "3 步定位圖",
+      "support": [
+        {
+          "file": "lesson_cases/04-localization.py",
+          "line": 52,
+          "quote": "    for step in range(3):"
+        },
+        {
+          "file": "lesson_cases/04-localization.py",
+          "line": 67,
+          "quote": "        predicted_boxes = to_xyxy(normalized_boxes) * 32"
+        },
+        {
+          "file": "docs/lessons/04-localization.md",
+          "line": 125,
+          "quote": "這張是程式實際產生的疊圖：左邊紅方塊、右邊藍方塊，綠框 GT 是真值，黃框 pred 是第三次更新後模型算出的框。先比四條邊：黃框和綠框仍有明顯偏差，尤其右圖的左界。它讓你核對「框 head 真的輸出位置」，並看出三步更新還不足以把這兩個訓練框擬合好；它不是前一張人工 IoU 算例，也不能代表未見圖片的表現。"
+        }
+      ],
+      "judgment": "框取自完成第三次 optimizer.step 後另一次 eval 前向；輸出是正規化 cxcywh 解碼到畫素 xyxy。綠框使用同一 pixel_boxes，黃框與 JSON 當次輸出一致；未混入人工 IoU 例或 Adam 40 步產物。兩圖顏色與位置綁定，正文已限制訓練／泛化及 GAP 比較結論。"
+    },
+    {
+      "topic": "座標圖",
+      "support": [
+        {
+          "file": "lesson_cases/04-coordinates.py",
+          "line": 80,
+          "quote": "        ax.imshow(current.permute(1, 2, 0).numpy(), extent=(0, width, height, 0))"
+        },
+        {
+          "file": "docs/lessons/04-coordinates.md",
+          "line": 41,
+          "quote": "從左到右比較同一塊紅色物件：原圖是寬 80、高 40；stretch 把它直接拉成 64×64，紅色矩形也被拉高；letterbox 先等比例縮到寬 64、高 32，再上下各補 16 列。三格的綠框都跟著圖片轉換。最右格的白色虛線只標出原圖縮放後的範圍，範圍外的黑色就是補邊。這是完整程式的實際輸出，用來核對前一張幾何示意；沒有模型預測或訓練結果。"
+        }
+      ],
+      "judgment": "80×40 原圖的半開框 [10,5,50,25]，stretch 變 [8,8,40,40]，letterbox 變 [8,20,40,36]；補邊範圍與虛線相符。已看見 stretch 暗紅插值邊、letterbox 的 0/1 主例；37×83 額外核對實際整數縮放尺度與不對稱補邊。沒有模型訓練或預測主張。"
+    },
+    {
+      "topic": "figure 同步",
+      "support": [
+        {
+          "file": "scripts/verify_curriculum.py",
+          "line": 29,
+          "quote": "    \"04-localization\": (\"artifacts/04-localization.png\", \"docs/assets/diagrams/04-localization-model.png\"),"
+        },
+        {
+          "file": "scripts/verify_curriculum.py",
+          "line": 158,
+          "quote": "            shutil.copyfile(ROOT / produced, ROOT / site)"
+        }
+      ],
+      "judgment": "成功執行後、附入 notebook／頁面並保存 JSON 前複製對應網站 PNG。--render-only 不重跑或複製圖，與發布說明一致。既有 current record 不因單純 runner 改字自動過期；這次作者已指定重跑 04，獨立再生驗證了目前產物。沒有把單靠紀錄 fingerprint 當作圖來源的證明。"
+    },
+    {
+      "topic": "review_coverage raster 指紋",
+      "actual_digest": [
+        {
+          "page": "docs/lessons/04-localization.md",
+          "raster_entries": {
+            "docs/assets/diagrams/04-localization-model.png": "e8c40ea5811e8507bce9efb3726ffc353d09d4d40be0cc547eec5b1b8aa137cc"
+          }
+        },
+        {
+          "page": "docs/lessons/04-coordinates.md",
+          "raster_entries": {
+            "docs/assets/diagrams/04-coordinates-panel.png": "2593eb23216d5d1ffd97575f030ae0e515eaf9260f51e95ee74336848cf17256"
+          }
+        }
+      ],
+      "test": {
+        "command": ".venv-model/bin/python -m pytest -p no:cacheprovider tests/test_review_coverage.py",
+        "result": "1 passed in 0.01s"
+      },
+      "judgment": "digest 讀目前內嵌 markdown 圖的實際 byte SHA-256，包含 svg/png/jpg/jpeg/webp；真實兩頁 PNG 已出現在 digest。新測試保持正文不變、只改圖片內容，精確要求舊審查失效；這是指紋變更回歸檢查。未執行 --write。"
+    },
+    {
+      "topic": "glossary 新增項",
+      "support": [
+        {
+          "file": "docs/glossary.md",
+          "line": 62,
+          "quote": "| backbone（主幹） | 模型中負責從圖片提取特徵的部分；CNN 可輸出特徵圖，ViT 可輸出整圖與逐 patch 的向量 | 這些是中間表示；分類答案或框的寫法由後續 head 決定，偵測框還要依對應規則 decode | [1](lessons/01-small-cnn.md)、[21.3](lessons/21-transformer.md) |"
+        },
+        {
+          "file": "miniyolo/vision_transformer.py",
+          "line": 149,
+          "quote": "        return {\"cls\": tokens[:, 0], \"patches\": tokens[:, 1:], \"tokens\": tokens}"
+        },
+        {
+          "file": "miniyolo/self_distillation.py",
+          "line": 143,
+          "quote": "        target.mul_(momentum).add_(source, alpha=1 - momentum)"
+        },
+        {
+          "file": "miniyolo/self_distillation.py",
+          "line": 134,
+          "quote": "        self.center.mul_(self.center_momentum).add_(batch_center, alpha=1 - self.center_momentum)"
+        }
+      ],
+      "judgment": "八組數量正確；backbone 定義可涵蓋 CNN 與目前 TinyViT。PatchEmbedding 為共用可學投影、CLS／位置可學、LayerNorm 沿特徵維度、MLP 分 token 操作，與新增術語一致。Teacher 權重與 center logits 的 EMA 分清，SSL 階段不接人工類別，linear probe 另用標籤。未將選讀支線當作本輪完整訓練重審。"
+    }
+  ],
+  "record_binding_and_attachment_checks": [
+    {
+      "section": "00-warmup",
+      "executed_at_utc": "2026-10-06T05:03:38.603782+00:00",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_and_dependency_binding_current": true,
+      "notebook_source_output_and_page_evidence_identical": true,
+      "sha256": "b151c9c8bfa127299fa43b9e0c0269810f0a0765d1fc4fa92aa5437ae09e5e74"
+    },
+    {
+      "section": "01-small-cnn",
+      "executed_at_utc": "2026-10-06T05:03:41.040647+00:00",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_and_dependency_binding_current": true,
+      "notebook_source_output_and_page_evidence_identical": true,
+      "sha256": "d7290b2611e109f10d6396496b04e4b68f5ffc23d5a173be440367f5cbe4710c"
+    },
+    {
+      "section": "03-identity",
+      "executed_at_utc": "2026-10-06T05:03:42.904837+00:00",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_and_dependency_binding_current": true,
+      "notebook_source_output_and_page_evidence_identical": true,
+      "sha256": "2d356a11166eec360cffaa0c63d8e4cff0cd2236ae568d61b7973a6be64a723e"
+    },
+    {
+      "section": "03-comparison",
+      "executed_at_utc": "2026-10-06T05:03:44.730043+00:00",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_and_dependency_binding_current": true,
+      "notebook_source_output_and_page_evidence_identical": true,
+      "sha256": "c711386e800beca920ad9108df97011642fc37ecd249c7fdc61a8c9d79121618"
+    },
+    {
+      "section": "04-localization",
+      "executed_at_utc": "2026-10-06T04:57:02.628513+00:00",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_and_dependency_binding_current": true,
+      "notebook_source_output_and_page_evidence_identical": true,
+      "sha256": "a5e5d8c3121d4fa77d75ca27e8fee44c97cd105bbcbc607f39dd473bdeb42487"
+    },
+    {
+      "section": "04-coordinates",
+      "executed_at_utc": "2026-10-06T04:57:50.202846+00:00",
+      "machine": {
+        "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "architecture": "x86_64",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logical_cpus": 5,
+        "threads": 2,
+        "python": "3.12.14",
+        "torch": "2.9.1+cpu",
+        "torch_cpu_capability": "AVX512"
+      },
+      "case_and_dependency_binding_current": true,
+      "notebook_source_output_and_page_evidence_identical": true,
+      "sha256": "be1cea125f55de9019d07802fa6c58ab7a151f38c991063d465703bbbaa180b5"
+    }
+  ],
+  "independent_execution": {
+    "environment": "Python 3.12.14、PyTorch 2.9.1+cpu、CPU 2 執行緒；暫存目錄獨立執行，未覆寫 repo 證據或圖。",
+    "short_cases": [
+      {
+        "section": "00-warmup",
+        "exit_code": 0,
+        "stdout": "x_shape=(1, 1), weight_shape=(1, 1)\nprediction=2.00, loss=4.00, gradient=-8.00\nweight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16\neval still tracks gradients; replacement optimizer points to replacement model\n",
+        "stderr": "",
+        "stdout_exactly_matches_record": true,
+        "executed_at_utc": "2026-10-06T05:03:13.440998+00:00"
+      },
+      {
+        "section": "01-small-cnn",
+        "exit_code": 0,
+        "stdout": "Conv2d: (8, 4, 32, 32)\nConv2d: (8, 4, 32, 32)\nMaxPool2d: (8, 4, 16, 16)\nConv2d: (8, 8, 16, 16)\nConv2d: (8, 8, 16, 16)\nMaxPool2d: (8, 8, 8, 8)\nparameters=1158; multiply-accumulates/image=479248\nstep=0, loss=0.6942\nstep=1, loss=0.6941\nstep=2, loss=0.6940\npredictions=[1, 1, 1, 1, 1, 1, 1, 1], labels=[0, 1, 0, 1, 0, 1, 0, 1], error_indices=[0, 2, 4, 6]\nThree-step smoke test only; accuracy here is not held-out performance.\npanel=artifacts/01-small-cnn.png\n",
+        "stderr": "",
+        "stdout_exactly_matches_record": true,
+        "executed_at_utc": "2026-10-06T05:03:16.976094+00:00"
+      },
+      {
+        "section": "03-identity",
+        "exit_code": 0,
+        "stdout": "x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]\ninput_gradient=[1.0, 1.0, 1.0, 1.0]; negatives_preserved=True\nstep=0, shape=(2, 4, 8, 8), loss=1.0816\nstep=1, shape=(2, 4, 8, 8), loss=1.0724\nrandom branch updated; this does not measure ResNet classification quality\n",
+        "stderr": "",
+        "stdout_exactly_matches_record": true,
+        "executed_at_utc": "2026-10-06T05:03:18.821258+00:00"
+      },
+      {
+        "section": "03-comparison",
+        "exit_code": 0,
+        "stdout": "plain step=0, loss=0.6938, stem_grad_norm=0.000984\nplain step=1, loss=0.6937, stem_grad_norm=0.001001\nplain step=2, loss=0.6936, stem_grad_norm=0.001011\nplain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0098\nresidual step=0, loss=0.6921, stem_grad_norm=0.146701\nresidual step=1, loss=0.6888, stem_grad_norm=0.147590\nresidual step=2, loss=0.6855, stem_grad_norm=0.146128\nresidual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0091\nSame initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.\n",
+        "stderr": "",
+        "stdout_exactly_matches_record": false,
+        "executed_at_utc": "2026-10-06T05:03:20.936497+00:00"
+      },
+      {
+        "section": "04-localization",
+        "exit_code": 0,
+        "stdout": "two different positions -> same global mean=0.0625\nstep=0, classification=0.7173, box=0.0185, total=0.8099\nstep=1, classification=0.7146, box=0.0127, total=0.7779\nstep=2, classification=0.7123, box=0.0091, total=0.7576\nfirst_target_cxcywh=[0.3125, 0.375, 0.375, 0.375], class_shape=(2, 2), box_shape=(2, 4)\npredicted pixel xyxy=[[7.4885783195495605, 7.199568748474121, 20.595396041870117, 19.995590209960938], [9.941701889038086, 8.684192657470703, 23.892370223999023, 22.775699615478516]]\noverlay=artifacts/04-localization.png; no held-out detection claim\n",
+        "stderr": "",
+        "stdout_exactly_matches_record": true,
+        "executed_at_utc": "2026-10-06T05:03:24.736943+00:00",
+        "figure_sha256": {
+          "/workspace/work/full-curriculum-review/foundations/technical-cpu/04-localization/artifacts/04-localization.png": "e8c40ea5811e8507bce9efb3726ffc353d09d4d40be0cc547eec5b1b8aa137cc",
+          "/workspace/learn_to_yolo/docs/assets/diagrams/04-localization-model.png": "e8c40ea5811e8507bce9efb3726ffc353d09d4d40be0cc547eec5b1b8aa137cc",
+          "/workspace/learn_to_yolo/artifacts/04-localization.png": "e8c40ea5811e8507bce9efb3726ffc353d09d4d40be0cc547eec5b1b8aa137cc"
+        },
+        "figure_bytes_match_site": true,
+        "figure_bytes_match_original_artifact": true
+      },
+      {
+        "section": "04-coordinates",
+        "exit_code": 0,
+        "stdout": "integer annotation converted to float; finite exact round trip passed\noriginal_hw=(40, 80), resized_hw=(32, 64)\noriginal=[[10.0, 5.0, 50.0, 25.0]], letterbox=[[8.0, 20.0, 40.0, 36.0]], restored=[[10.0, 5.0, 50.0, 25.0]]\nred_pixel_box=[8, 20, 40, 36], equal to the letterbox box\nstretch=[[8.0, 8.0, 40.0, 40.0]], padding=[0.0, 16.0, 0.0, 16.0]\nodd rounding: resized_hw=(29, 64), scales=[0.7710843086242676, 0.7837837934494019, 0.7710843086242676, 0.7837837934494019]\nodd original=[[7.0, 3.0, 70.0, 31.0]], restored=[[7.0, 2.9999992847442627, 70.0, 31.000001907348633]]\nodd-size and empty-box round trips passed; geometry only, no training required\ntransform_panel=artifacts/04-coordinates.png\n",
+        "stderr": "",
+        "stdout_exactly_matches_record": true,
+        "executed_at_utc": "2026-10-06T05:03:27.712669+00:00",
+        "figure_sha256": {
+          "/workspace/work/full-curriculum-review/foundations/technical-cpu/04-coordinates/artifacts/04-coordinates.png": "2593eb23216d5d1ffd97575f030ae0e515eaf9260f51e95ee74336848cf17256",
+          "/workspace/learn_to_yolo/docs/assets/diagrams/04-coordinates-panel.png": "2593eb23216d5d1ffd97575f030ae0e515eaf9260f51e95ee74336848cf17256",
+          "/workspace/learn_to_yolo/artifacts/04-coordinates.png": "2593eb23216d5d1ffd97575f030ae0e515eaf9260f51e95ee74336848cf17256"
+        },
+        "figure_bytes_match_site": true,
+        "figure_bytes_match_original_artifact": true
+      }
+    ],
+    "short_case_comparison_note": "對照查核當時保存紀錄，03-comparison 只有計時差異，其餘五節 stdout 全同。作者之後再生六節紀錄，已另核回目前綁定與附入內容。",
+    "learning_extensions": [
+      {
+        "section": "01-small-cnn",
+        "exit_code": 0,
+        "stderr": "",
+        "executed_at_utc": "2026-10-06T05:04:52.912300+00:00",
+        "models_exactly_match_record": false,
+        "models": {
+          "cnn": {
+            "steps": 40,
+            "samples": 8,
+            "optimizer": "Adam",
+            "learning_rate": 0.01,
+            "parameters": 1158,
+            "initial_loss": 0.6941587328910828,
+            "last_pre_update_loss": 0.0,
+            "train_accuracy": 1.0,
+            "validation_accuracy": null,
+            "predicted_classes": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "labels": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "weight_delta_l2": 5.172512964448589,
+            "min_gradient_l2": 1.4261901739757797e-18,
+            "max_gradient_l2": 0.7967735528945923
+          }
+        }
+      },
+      {
+        "section": "03-comparison",
+        "exit_code": 0,
+        "stderr": "",
+        "executed_at_utc": "2026-10-06T05:04:56.562910+00:00",
+        "models_exactly_match_record": false,
+        "models": {
+          "plain": {
+            "steps": 40,
+            "samples": 8,
+            "optimizer": "SGD",
+            "learning_rate": 0.1,
+            "parameters": 986,
+            "initial_loss": 0.6937928199768066,
+            "last_pre_update_loss": 0.6929482817649841,
+            "train_accuracy": 0.5,
+            "validation_accuracy": 0.5,
+            "predicted_classes": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "labels": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "weight_delta_l2": 0.05199241439202605,
+            "min_gradient_l2": 0.006749606691300869,
+            "max_gradient_l2": 0.028000233694911003
+          },
+          "residual": {
+            "steps": 40,
+            "samples": 8,
+            "optimizer": "SGD",
+            "learning_rate": 0.1,
+            "parameters": 986,
+            "initial_loss": 0.6921380162239075,
+            "last_pre_update_loss": 0.030957713723182678,
+            "train_accuracy": 1.0,
+            "validation_accuracy": 1.0,
+            "predicted_classes": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "labels": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "weight_delta_l2": 1.341095328691734,
+            "min_gradient_l2": 0.1799885630607605,
+            "max_gradient_l2": 0.6661813259124756
+          }
+        }
+      },
+      {
+        "section": "04-localization",
+        "exit_code": 0,
+        "stderr": "",
+        "executed_at_utc": "2026-10-06T05:05:00.354078+00:00",
+        "models_exactly_match_record": false,
+        "models": {
+          "localizer": {
+            "steps": 40,
+            "samples": 2,
+            "optimizer": "Adam",
+            "learning_rate": 0.01,
+            "parameters": 4222,
+            "initial_loss": 0.809883177280426,
+            "last_pre_update_loss": 0.43021315336227417,
+            "train_accuracy": 1.0,
+            "validation_accuracy": null,
+            "predicted_classes": [
+              0,
+              1
+            ],
+            "labels": [
+              0,
+              1
+            ],
+            "weight_delta_l2": 2.709759167729086,
+            "min_gradient_l2": 0.14580537378787994,
+            "max_gradient_l2": 0.8997884392738342,
+            "predicted_pixel_boxes": [
+              [
+                4.4778666496276855,
+                4.770169734954834,
+                18.130430221557617,
+                18.93273162841797
+              ],
+              [
+                16.327011108398438,
+                10.584871292114258,
+                29.18212127685547,
+                23.119131088256836
+              ]
+            ],
+            "training_box_ious": [
+              0.6944889426231384,
+              0.7752397656440735
+            ],
+            "box_loss_weight": 5
+          }
+        }
+      }
+    ],
+    "learning_comparison_note": "三項 40 步 CPU 延伸均通過；與先前 Intel 證據比較只出現微小浮點差異。CNN 最大數值差 1.2532e-7；comparison 最大差 1.1921e-7；localizer 最大差 6.7711e-5 px。分類判斷、評估分母、正文列出的四捨五入數值與結論相同。",
+    "exercises": [
+      {
+        "exercise": "00-warmup eta=.25",
+        "weight": 3.0,
+        "prediction": 6.0,
+        "loss": 4.0,
+        "gradient": -8.0
+      },
+      {
+        "exercise": "00-warmup no optimizer.step",
+        "weight": 1.0,
+        "prediction": 2.0,
+        "loss": 4.0,
+        "gradient": -8.0
+      },
+      {
+        "exercise": "01-small-cnn",
+        "status": "通過",
+        "stdout": "Conv2d: (8, 8, 32, 32)\nConv2d: (8, 8, 32, 32)\nMaxPool2d: (8, 8, 16, 16)\nConv2d: (8, 16, 16, 16)\nConv2d: (8, 16, 16, 16)\nMaxPool2d: (8, 16, 8, 8)\nparameters=4330; multiply-accumulates/image=1695776\nstep=0, loss=0.6937\nstep=1, loss=0.6935\nstep=2, loss=0.6934\npredictions=[0, 0, 0, 0, 0, 0, 0, 0], labels=[0, 1, 0, 1, 0, 1, 0, 1], error_indices=[1, 3, 5, 7]\nThree-step smoke test only; accuracy here is not held-out performance.\npanel=artifacts/01-small-cnn.png\n"
+      },
+      {
+        "exercise": "03-comparison",
+        "status": "通過",
+        "stdout": "plain step=0, loss=0.6960, stem_grad_norm=0.036030\nplain step=1, loss=0.6945, stem_grad_norm=0.037604\nplain step=2, loss=0.6931, stem_grad_norm=0.038848\nplain: params=410, MACs/image=101384, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0036\nresidual step=0, loss=0.7245, stem_grad_norm=0.160922\nresidual step=1, loss=0.7187, stem_grad_norm=0.157635\nresidual step=2, loss=0.7133, stem_grad_norm=0.153132\nresidual: params=410, MACs/image=101384, shortcut_adds/image=1024, validation_accuracy=0.50, 3_step_seconds=0.0036\nSame initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.\n"
+      },
+      {
+        "exercise": "03-identity",
+        "status": "通過",
+        "stdout": "x=[-2.0, -1.0, 0.0, 1.0], y=[0.0, 0.0, 0.0, 1.0]\ninput_gradient=[0.0, 0.0, 0.0, 1.0]; negatives_preserved=False\nstep=0, shape=(2, 4, 8, 8), loss=0.5366\nstep=1, shape=(2, 4, 8, 8), loss=0.5240\nrandom branch updated; this does not measure ResNet classification quality\n",
+        "variation": "相加後 ReLU"
+      },
+      {
+        "exercise": "03-identity",
+        "status": "預期的 RuntimeError",
+        "stdout": "x=[-2.0, -1.0, 0.0, 1.0], y=[-2.0, -1.0, 0.0, 1.0]\ninput_gradient=[1.0, 1.0, 1.0, 1.0]; negatives_preserved=True\nThe size of tensor a (8) must match the size of tensor b (4) at non-singleton dimension 3\n",
+        "variation": "第一個卷積 stride=2"
+      },
+      {
+        "exercise": "04-localization 紙筆題",
+        "IoU": 0.3333333432674408,
+        "MSE": 0.0087890625
+      },
+      {
+        "exercise": "04-coordinates 直立圖",
+        "transformed": [
+          [
+            20.0,
+            8.0,
+            36.0,
+            40.0
+          ]
+        ],
+        "restored": [
+          [
+            5.0,
+            10.0,
+            25.0,
+            50.0
+          ]
+        ],
+        "padding": [
+          16.0,
+          0.0,
+          16.0,
+          0.0
+        ],
+        "resized_hw": [
+          64,
+          32
+        ]
+      }
+    ]
+  },
+  "primary_sources_opened": [
+    {
+      "name": "yolo",
+      "url": "https://arxiv.org/pdf/1506.02640",
+      "bytes": 5296750,
+      "sha256": "54bcd2dd05dc618849e8a94d8b88fe3eeb37f80e96e200600d38f1f733931678",
+      "text_conversion_exit": 0,
+      "error": "Internal Error: xref num 321 not found but needed, try to reconstruct\n",
+      "version": "1506.02640v5",
+      "location": "摘要、Figure 1、§2.3",
+      "quote": "A single neural network predicts bounding boxes and class probabilities directly from full images in one evaluation.",
+      "claim": "首頁一次前向同時預測類別與位置；正文保留可能需要去重與篩選。",
+      "fixed_version_url": "https://arxiv.org/pdf/1506.02640v5",
+      "scope": "只核對列出的具體段落，未聲稱重審整篇論文。"
+    },
+    {
+      "name": "vgg",
+      "url": "https://arxiv.org/pdf/1409.1556",
+      "bytes": 200010,
+      "sha256": "83728f9efc21081792902b4c17a4657022d1e4a92ec81655c2427f4ef0755e50",
+      "text_conversion_exit": 0,
+      "error": "",
+      "version": "1409.1556v6",
+      "location": "作者單位、§2.1、§2.3",
+      "quote": "Visual Geometry Group, Department of Engineering Science, University of Oxford",
+      "claim": "VGG 名稱來源與堆疊小 3×3 卷積；四卷積加 GAP 的本例沒有稱完整 VGG16。",
+      "fixed_version_url": "https://arxiv.org/pdf/1409.1556v6",
+      "scope": "只核對列出的具體段落，未聲稱重審整篇論文。"
+    },
+    {
+      "name": "resnet",
+      "url": "https://arxiv.org/pdf/1512.03385",
+      "bytes": 819383,
+      "sha256": "1e0651b6810ecba34a3dbc5b5b0209226f889004607c1f203540a48d64e5a93a",
+      "text_conversion_exit": 0,
+      "error": "",
+      "version": "1512.03385v1",
+      "location": "Figure 1、Figure 2、§3.4",
+      "quote": "Training error (left) and test error (right) on CIFAR-10 with 20-layer and 56-layer “plain” networks. The deeper network has higher training error, and thus test error.",
+      "claim": "退化原例、相加後 ReLU、卷積後 BN、初始化與 SGD 設定均與指定段落一致；簡化 block 另有明確界線。",
+      "fixed_version_url": "https://arxiv.org/pdf/1512.03385v1",
+      "scope": "只核對列出的具體段落，未聲稱重審整篇論文。"
+    },
+    {
+      "name": "adam",
+      "url": "https://arxiv.org/pdf/1412.6980",
+      "bytes": 584641,
+      "sha256": "eab9c73ae2ceda884b94830bda99312254bac4806f6c9f045cbab90721ecda31",
+      "text_conversion_exit": 0,
+      "error": "Internal Error: xref num 342 not found but needed, try to reconstruct\n",
+      "version": "1412.6980v9",
+      "location": "§1、§2、Algorithm 1",
+      "quote": "The algorithm updates exponential moving averages of the gradient",
+      "claim": "Adam 名稱由 adaptive moment estimation 而來；新增對過去梯度及平方平均的敘述沒有混同 SGD。",
+      "fixed_version_url": "https://arxiv.org/pdf/1412.6980v9",
+      "scope": "只核對列出的具體段落，未聲稱重審整篇論文。"
+    },
+    {
+      "name": "vit",
+      "url": "https://arxiv.org/pdf/2010.11929",
+      "bytes": 3743814,
+      "sha256": "8ce7b83971a14508ca711a27c875c9b6914c4f6767cf3150fb1ca6c07aa056d6",
+      "text_conversion_exit": 0,
+      "error": "Internal Error: xref num 708 not found but needed, try to reconstruct\n",
+      "version": "2010.11929v2",
+      "location": "§3.1、式1–4",
+      "quote": "The MLP contains two layers with a GELU non-linearity.",
+      "claim": "新增 glossary 的 patch 投影、位置向量、CLS、Pre-LN、MLP／GELU，與原文及目前 TinyViT 一致。",
+      "fixed_version_url": "https://arxiv.org/pdf/2010.11929v2",
+      "scope": "只核對列出的具體段落，未聲稱重審整篇論文。"
+    },
+    {
+      "name": "dino",
+      "url": "https://arxiv.org/pdf/2104.14294",
+      "bytes": 30930829,
+      "sha256": "aa464cfd59a428890190bea1065823a491a853478b4fb2a25f5eb44d442ce296",
+      "text_conversion_exit": 0,
+      "error": "",
+      "version": "2104.14294v2",
+      "location": "摘要、Figure 2、§3.1、§3.2 評估協定",
+      "quote": "self-distillation with no labels",
+      "claim": "新增 glossary 分開架構、訓練方法、teacher 權重 EMA、center 輸出 EMA 與凍結特徵後的 linear probe；沒有把簡化實驗當原版能力。",
+      "fixed_version_url": "https://arxiv.org/pdf/2104.14294v2",
+      "scope": "只核對列出的具體段落，未聲稱重審整篇論文。"
+    }
+  ],
+  "unverified": [
+    "Zensical 實際桌面／手機頁面、公式換頁與圖片縮放的可讀性；本輪看的是目前原始 PNG，沒有把原圖視覺檢查當成網站呈現驗證。",
+    "新 ViT／DINO 支線的完整訓練、全部評估與 checkpoint；本輪只核 glossary 對應的機制和少量紀錄敘述，不代替該組技術審查。",
+    "完整 52 節 CPU 套件、全部測試、GPU 訓練、Colab 實際環境與發布工作流程；本輪只執行六個短 case、三個 40 步 CPU 延伸、指定練習與一項 raster 測試。",
+    "figure copyfile 失敗路徑、整個 --render-only 指令、完整發布與跨機器搬運；只核對實作、目前圖 byte 一致與發布說明。",
+    "本次全套三輪審查範圍的最終公開總結，作者仍待各組完成後補列；目前只確認既有段落有明確歷史範圍，未聲稱本輪全部已完成。"
+  ],
+  "preservation": "沒有修改教材、case、coverage 或原始首次閱讀紀錄；只保存自己的暫存查核產物與這份新增報告。"
+}

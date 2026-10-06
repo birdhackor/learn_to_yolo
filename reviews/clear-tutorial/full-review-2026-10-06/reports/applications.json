@@ -1,0 +1,322 @@
+{
+  "reader": "applications",
+  "review_date": "2026-10-06",
+  "phase": "獨立首次順序閱讀；未作技術實作或修正後複查",
+  "reading_scope": {
+    "completed_units": 169,
+    "target_units": 29,
+    "prefix_units": 140,
+    "page_ranges": [
+      "index/00–02",
+      "learning-path/00–06",
+      "00-warmup/00–09",
+      "01-small-cnn/00–08",
+      "02-diagnostics/00–06",
+      "03-identity/00–06",
+      "03-projection/00–06",
+      "03-comparison/00–07",
+      "04-localization/00–07",
+      "04-coordinates/00–06",
+      "05-assignment/00–05",
+      "06-decode-nms/00–05",
+      "06-evaluation/00–06",
+      "07-data/00–05",
+      "07-targets/00–04",
+      "07-loss/00–06",
+      "07-training/00–05",
+      "07-inference/00–03",
+      "07-heldout/00–05",
+      "08-own-images/00–07",
+      "08-own-data/00–05",
+      "17-capstone/00–05",
+      "18-video/00–06",
+      "19-tracking/00–06",
+      "20-deployment/00–08"
+    ],
+    "target_pages": [
+      "docs/lessons/17-capstone.md",
+      "docs/lessons/18-video.md",
+      "docs/lessons/19-tracking.md",
+      "docs/lessons/20-deployment.md"
+    ],
+    "prefix_note_scope": "導航與先備頁逐單元真正閱讀、簡短保存理解；未將其當成同等完整的主要審閱驗收。",
+    "raw_records": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/applications.jsonl",
+    "disclosures": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/applications-disclosures.jsonl",
+    "gate_state": "cursor=169，awaiting=false，最後next回覆READING COMPLETE"
+  },
+  "issues": [
+    {
+      "id": "applications-17-evidence",
+      "original_location": {
+        "unit_id": "17-capstone/04",
+        "source": "docs/lessons/17-capstone.md",
+        "source_lines": [
+          183,
+          199
+        ],
+        "record_line": 145
+      },
+      "original_quote": "每次訓練（10 步的暖機與兩次 160 步）的每一步 loss 都是有限值，而且最後一步的 loss 比第一步低",
+      "original_severity": "burden",
+      "type": "證據",
+      "known_and_missing": "已交代optimizer.step、有限loss、下降與獨立AP比較；所列正文檢查沒有可核對的有限非零梯度及訓練前後參數差量值，不能只由有限loss或step呼叫替這兩項作證。",
+      "later_clarification": "17-capstone/05只說練習與診斷交付，沒有補這兩項。後續影片/部署沒有補此capstone兩次fit的證據。",
+      "final_severity": "burden",
+      "minimal_fix": "補兩次fit的有限非零梯度及前後參數差檢查與本次結果；若沒有檢查，明說未驗證。",
+      "limit": "這是正文可核對證據的缺項，不是本輪查證程式沒有執行更新或沒有此檢查；本輪不讀實作。主要決策方法仍可理解。",
+      "recheck": "未修正、未複查"
+    },
+    {
+      "id": "applications-18-names",
+      "original_location": {
+        "unit_id": "18-video/04",
+        "source": "docs/lessons/18-video.md",
+        "source_lines": [
+          174,
+          265
+        ],
+        "record_line": 151
+      },
+      "original_quote": "它用 OpenCV（Python 裡叫 `cv2`）讀影片。",
+      "supporting_quotes": [
+        "FFV1 是一種無損影片編碼：交給它的像素會原樣存回來。",
+        "AVI 是裝影片的檔案格式（容器）。"
+      ],
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "OpenCV讀影片、cv2名稱及FFV1無損/AVI容器角色已清楚；完整名稱未展開，不阻礙主要方法。",
+      "later_clarification": "18-video/05–06沒有補名稱。",
+      "final_severity": "optional",
+      "minimal_fix": "首次OpenCV與選讀FFV1/AVI旁補完整名稱。",
+      "recheck": "未修正、未複查"
+    },
+    {
+      "id": "applications-19-id-name",
+      "original_location": {
+        "unit_id": "19-tracking/00",
+        "source": "docs/lessons/19-tracking.md",
+        "source_lines": [
+          1,
+          23
+        ],
+        "record_line": 154
+      },
+      "original_quote": "追蹤給的編號（track ID）卻互換了。",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "track ID是軌跡紀錄編號、ID switch計數規則已教；ID完整名稱未展開。",
+      "later_clarification": "後段手算與圖加深角色但沒有補完整名稱。",
+      "final_severity": "optional",
+      "minimal_fix": "首次track ID補ID完整名稱，保留編號解釋。",
+      "recheck": "未修正、未複查"
+    },
+    {
+      "id": "applications-19-sort-name",
+      "original_location": {
+        "unit_id": "19-tracking/03",
+        "source": "docs/lessons/19-tracking.md",
+        "source_lines": [
+          58,
+          94
+        ],
+        "record_line": 157
+      },
+      "original_quote": "SORT 先用匈牙利演算法配完，再剔除 IoU 低於門檻的配對",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "已說正式系統先配後剔除，與本節列舉對數優先不同；SORT完整名稱未展開。",
+      "later_clarification": {
+        "unit_id": "19-tracking/05",
+        "quote": "SORT：用 Kalman filter 預測位置，再用匈牙利演算法依 IoU 配對。",
+        "effect": "補完整追蹤器的角色銜接，但仍沒有展開名稱；不回寫/03當時已知。"
+      },
+      "final_severity": "optional",
+      "minimal_fix": "在19/03首次SORT旁補完整名稱。",
+      "recheck": "未修正、未複查"
+    },
+    {
+      "id": "applications-19-metric-names",
+      "original_location": {
+        "unit_id": "19-tracking/05",
+        "source": "docs/lessons/19-tracking.md",
+        "source_lines": [
+          128,
+          169
+        ],
+        "record_line": 159
+      },
+      "original_quote": "多物件追蹤的正式評估常用 IDF1 與 HOTA",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "IDF1整段身份對應、HOTA分偵測與關聯的角色已說明；兩個縮寫缺完整名稱。",
+      "later_clarification": "19-tracking/06明說真接線無GT不能報這些成績；未補名稱。",
+      "final_severity": "optional",
+      "minimal_fix": "在19/05補IDF1與HOTA完整名稱，維持已有角色解釋。",
+      "recheck": "未修正、未複查"
+    },
+    {
+      "id": "applications-20-names",
+      "original_location": {
+        "unit_id": "20-deployment/06",
+        "source": "docs/lessons/20-deployment.md",
+        "source_lines": [
+          230,
+          272
+        ],
+        "record_line": 167
+      },
+      "original_quote": "CUDA（NVIDIA 讓程式在 GPU 上計算的平台）",
+      "original_severity": "optional",
+      "type": "名稱補充",
+      "known_and_missing": "CUDA平台/stream/enqueue與TF32先捨入乘再FP32累加的格式角色已教，完整名稱未展開。",
+      "later_clarification": "20-deployment/08補具體CUDA版本和TF32關閉設定，未補完整名稱。",
+      "final_severity": "optional",
+      "minimal_fix": "在CUDA與TF32首次出現補完整名稱，保留目前解釋。",
+      "recheck": "未修正、未複查"
+    }
+  ],
+  "four_question_record_locations": {
+    "file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/applications.jsonl",
+    "pointer": "每筆notes.checkpoints；每個checkpoint含四份answers與逐項claims精確引文。",
+    "17-capstone": {
+      "first_use": [
+        {
+          "unit_id": "17-capstone/00",
+          "record_line": 141,
+          "focus": "整個單一改動結業方法"
+        },
+        {
+          "unit_id": "17-capstone/02",
+          "record_line": 143,
+          "focus": "GT覆蓋/FP分類到可測假設"
+        }
+      ],
+      "page_end": {
+        "unit_id": "17-capstone/05",
+        "record_line": 146
+      }
+    },
+    "18-video": {
+      "first_use": [
+        {
+          "unit_id": "18-video/00",
+          "record_line": 147,
+          "focus": "整個逐幀影片方法"
+        },
+        {
+          "unit_id": "18-video/01",
+          "record_line": 148,
+          "focus": "generator串流供應"
+        },
+        {
+          "unit_id": "18-video/02",
+          "record_line": 149,
+          "focus": "分段計時/throughput/含queue latency"
+        },
+        {
+          "unit_id": "18-video/04",
+          "record_line": 151,
+          "focus": "真來源adapter/安全釋放"
+        }
+      ],
+      "page_end": {
+        "unit_id": "18-video/06",
+        "record_line": 153
+      }
+    },
+    "19-tracking": {
+      "first_use": [
+        {
+          "unit_id": "19-tracking/00",
+          "record_line": 154,
+          "focus": "整個tracking比較"
+        },
+        {
+          "unit_id": "19-tracking/03",
+          "record_line": 157,
+          "focus": "允許不配且先對數的列舉關聯"
+        },
+        {
+          "unit_id": "19-tracking/05",
+          "record_line": 159,
+          "focus": "正式補強與指標範圍"
+        }
+      ],
+      "page_end": {
+        "unit_id": "19-tracking/06",
+        "record_line": 160
+      }
+    },
+    "20-deployment": {
+      "first_use": [
+        {
+          "unit_id": "20-deployment/00",
+          "record_line": 161,
+          "focus": "整個部署匯出/一致性方法"
+        },
+        {
+          "unit_id": "20-deployment/02",
+          "record_line": 163,
+          "focus": "三層驗證"
+        },
+        {
+          "unit_id": "20-deployment/04",
+          "record_line": 165,
+          "focus": "成對計時與batch服務取捨"
+        },
+        {
+          "unit_id": "20-deployment/06",
+          "record_line": 167,
+          "focus": "TensorRT建置/精度/同步"
+        }
+      ],
+      "page_end": {
+        "unit_id": "20-deployment/08",
+        "record_line": 169
+      }
+    }
+  },
+  "final_conclusion": {
+    "overall": "在真正讀過導航與先備後，17–20的主要概念、分工、學習目的、輸入產物及限制可以依順序理解；未發現阻礙主要概念或必要圖解缺漏。保留一項capstone訓練證據負擔與五項名稱補充，不能宣稱已完成技術與網站視覺驗收。",
+    "severity_counts": {
+      "blocking": 0,
+      "burden": 1,
+      "optional": 5
+    },
+    "17-capstone": "單項受控改動、validation規則/test用途、coverage與TP不同、loss加權與AP尺、診斷計時界線清楚；待補有限非零梯度和參數差證據。",
+    "18-video": "逐幀流程、generator惰性、索引/時間戳、漏檢/掉幀、FPS/throughput/latency、實檔安全adapter与假來源不量queue界線清楚。",
+    "19-tracking": "一對一/不配、對數優先列舉、速度乘幀間隔、max_age壽命、人工3→0控制與真接線未做身份評分界線清楚。",
+    "20-deployment": "檔案/raw/原框三層、非空防空空通過、dynamic batch/空間限制、共享前後處理、成對速度與服務等待、低精度允許/實際型別、GPU同步及CPU/L4不同權重範圍清楚。",
+    "status": "首次閱讀有原始紀錄；修正後複查、第二輪技術與第三輪前後銜接尚未完成。AI閱讀結果不等同實際目標學生理解測試。"
+  },
+  "visual_review": {
+    "all_current_listed_pngs_viewed": true,
+    "unique_listed_pngs": 29,
+    "target_pngs": [
+      "17-capstone.svg.png",
+      "18-video.svg.png",
+      "19-tracking.svg.png",
+      "20-deployment.svg.png"
+    ],
+    "target_findings": "capstone雙列GT/預測與低分背景FP；影片0/5/11來源時間/單次ms/框數；tracking雙列六幀ID色與上下分排只是避字；部署橘外部/藍模型/meta旁路/紫三層均實際查看且對應當段說明。",
+    "necessary_missing_visuals": [],
+    "not_verified": "原始SVG轉PNG預覽不是網站桌機或手機驗證；實際正文大小、放大依賴、數學排版與頁面切換均未驗證。"
+  },
+  "access_declaration": {
+    "actually_read": "指定reader-instructions、frozen clear-tutorial SKILL與review-protocol、gate每次當前披露正文、所列PNG、自己的notes/state以及協調者提供的自身原始jsonl；僅列過自己的applications工作目錄以定位state。",
+    "sequence": "每次next只開一單元，讀完及查看當前PNG後手寫note並record，再開下一個。沒有提前生成後文判斷或回寫早期未知。",
+    "record_corrections": "20/00首次record因精確引文漏Markdown粗體標記被拒；在開放下一單元前只修正當前引文標記後record成功，未改當時判斷。",
+    "not_accessed": "未讀作者對話、manifest、未披露正文、封存packet、程式實作、其他讀者報告、外部解釋或舊審閱結論；未搜尋或列repository。",
+    "not_performed": "未修改教材或其他讀者紀錄、未啟動訓練、未執行課程程式、未查原始JSON/論文或GPU/相機實測。",
+    "isolation": "共用檔案系統靠遵守指定範圍隔離；不宣稱技術上無法存取其他檔案。",
+    "unverified": [
+      "技術實作與所有assert的實際行為",
+      "數值與code commit/指紋的第二輪核對",
+      "外部實測紀錄和原始來源",
+      "網站桌機/手機/數學/導航",
+      "CPU/GPU重新執行與TensorRT逐層精度",
+      "真實相機/服務完整延遲/正式AP與MOT指標",
+      "修正後複查與另一讀者前後銜接"
+    ]
+  }
+}

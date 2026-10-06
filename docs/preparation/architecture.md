@@ -80,7 +80,7 @@ https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/not
 
 ## 純閱讀模式如何保留成果
 
-網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，都在固定實驗跑完後存成文字、表格與 SVG 圖，再建置進網頁；各節頁尾的「實際執行紀錄」由 `scripts/verify_curriculum.py` 從 `artifacts/checks/curriculum/<節>.json` 寫入。notebook 只在最後一格存執行紀錄的文字輸出，不存圖片的 base64，避免 Git 與 Colab 變慢。
+網站不在讀者瀏覽時執行 Python。訓練曲線、框圖、shape 表與結果說明，都在固定實驗跑完後存成文字、表格與 SVG、PNG 等圖，再建置進網頁；各節頁尾的「實際執行紀錄」由 `scripts/verify_curriculum.py` 從 `artifacts/checks/curriculum/<節>.json` 寫入。notebook 只在最後一格存執行紀錄的文字輸出，不存圖片的 base64，避免 Git 與 Colab 變慢。
 
 大權重、原始資料、影片與 notebook 都不放進 Pages artifact。LFS 檔在 Git 裡只是 pointer（只記雜湊與大小的小文字檔），不能當圖片或下載內容；需要閱讀的圖使用普通 Git 的小型資源。`validate_preparation.py` 確認 `docs/` 裡每個檔案都小於 5 MiB，沒有權重檔（`.pt`、`.pth`、`.onnx`）、打包檔（`.zip`、`.tar`、`.gz`）或 LFS pointer；`validate_site.py` 在建置結果裡再擋一次這些類型與 `.ipynb`。發布流程只上傳 `site/`。
 

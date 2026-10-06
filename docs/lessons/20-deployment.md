@@ -92,7 +92,7 @@ ort_raw = session.run(['raw_grid'], {'images': batch[:b].numpy()})[0]
 第二、三層比的是 PyTorch 和 ORT 兩邊；第一層只檢查 ONNX 檔本身。三層各抓不同的錯：
 
 1. **第一層：checker。** `onnx.checker` 檢查 ONNX 檔的結構是否符合規格，例如用到的運算在 opset 17 裡是否存在、每個運算的輸入輸出個數對不對、運算必填的屬性（寫在運算裡的固定設定，例如本例 AveragePool 的池化視窗大小 `kernel_shape`）是否齊全、格式是否正確。本節照預設呼叫，不會核對每個運算收到的資料型別（dtype，例如 float32）與 shape 合不合規，要加 `full_check=True` 才會；它也不檢查數值，所以不能證明算出來的數和 PyTorch 一樣。
-2. **第二層：比 raw。** 用 ORT 執行 B=1、2、3，和 PyTorch 的 raw 逐值比較，斷言（assert）要求 `atol=1e-5, rtol=1e-5`。頁尾紀錄中，B=1 的最大絕對差約 `1.19e-7`，B=2、3 都約 `4.77e-7`，也就是最大約 \(4.77\times10^{-7}\)＝0.000000477，低於容許差；report 的 `max_abs_raw_errors` 記下了這三個數。
+2. **第二層：比 raw。** 用 ORT 執行 B=1、2、3，和 PyTorch 的 raw 逐值比較，斷言（assert）要求 `atol=1e-5, rtol=1e-5`。頁尾紀錄中，B=1 的最大絕對差約 `4.77e-7`，B=2、3 都約 `4.77e-7`，也就是最大約 \(4.77\times10^{-7}\)＝0.000000477，低於容許差；report 的 `max_abs_raw_errors` 記下了這三個數。
 3. **第三層：比還原後的框。** 兩份 raw 各自經過同一套 decode、NMS 與還原，再比較每張原圖上的結果：框座標（原圖畫素）`atol=1e-4, rtol=1e-5`；分數 `atol=1e-6, rtol=1e-5`；類別必須完全相同。框座標以畫素計、數值比較大，所以容許差比 raw 寬。
 
 raw 已經很接近，為什麼還要第三層？因為 decode 和 NMS 裡有門檻：數值只要跨過門檻，候選的去留就會改變。舉一個假設的情境（不是實測結果）：某個候選在 PyTorch 的分數是 0.0500001，在 ORT 是 0.0499999。候選截斷門檻是 0.05，於是 PyTorch 留下它、ORT 丟掉它，兩邊留下的候選就不一樣，最後的框數也可能不同；可是兩邊的 raw 只差一點點，第二層照樣通過。NMS 也一樣：兩個框的 IoU 若剛好在 0.5 附近，可能一邊刪掉、一邊保留。所以第三層不能省略。
@@ -140,11 +140,11 @@ H、W 若要可變，需要重新匯出，確認池化、候選生成與 decode 
 
 | 項目 | PyTorch | ORT |
 |---|---|---|
-| raw，batch 1 | 0.255 | 0.112 |
-| 端到端，batch 1 | 3.279 | 3.043 |
-| raw，batch 2 | 未量 | 0.099 |
+| raw，batch 1 | 0.151 | 0.037 |
+| 端到端，batch 1 | 2.325 | 2.156 |
+| raw，batch 2 | 未量 | 0.043 |
 
-表中沒有列出同一輪 PyTorch 減 ORT 的差，它記在頁尾紀錄的 `median_ms` 欄。這一欄放的是所有計時的中位數（表中的數字也在這裡），和上面同名的 `median_ms` 函式不是同一個東西。同一輪的差是欄裡的 `paired_torch_minus_ort_preprocess_to_restored_boxes`，由 `paired_median_ms` 算出，正值表示 ORT 比較快。本次是 0.249043 毫秒。它是 40 個差的中位數，一般不等於表中端到端兩格相減，所以要直接讀這一項。
+表中沒有列出同一輪 PyTorch 減 ORT 的差，它記在頁尾紀錄的 `median_ms` 欄。這一欄放的是所有計時的中位數（表中的數字也在這裡），和上面同名的 `median_ms` 函式不是同一個東西。同一輪的差是欄裡的 `paired_torch_minus_ort_preprocess_to_restored_boxes`，由 `paired_median_ms` 算出，正值表示 ORT 比較快。本次是 0.173112 毫秒。它是 40 個差的中位數，一般不等於表中端到端兩格相減，所以要直接讀這一項。
 
 ??? note "為什麼不能拿表中兩格相減"
 
@@ -160,19 +160,19 @@ H、W 若要可變，需要重新匯出，確認池化、候選生成與 decode 
 
 怎麼讀這張表：
 
-- raw：ORT 約快 2.3 倍，也就是 ORT 的時間約是 PyTorch 的 1/2.3（用頁尾紀錄的完整數字算：0.254697÷0.112345≈2.27）。ORT 為什麼比較快，本節沒有驗證。
-- 以獨立量到的 raw 中位數估算，模型約占 PyTorch 端到端時間的 7.8%（0.255÷3.279）；兩者相減約 3.02 毫秒。前處理、decode／NMS 與還原在兩條管線裡用的是同一套程式，但本節沒有逐階段計時，所以這只能粗估模型時間的占比。
-- 端到端：兩條管線的程式只有中間的模型那一步不同。本次成對量的差約 0.249 毫秒，raw 中位數的差則約 0.142 毫秒（0.254697−0.112345）。量 raw 時，同一個模型連續呼叫，一次緊接著一次；管線裡，模型前後夾著前處理和後處理，每次輪到模型時，電腦剛做完別的工作。執行條件與計時波動會影響各階段，所以這兩個差不必相等，也無法把整段差異全歸到模型。各階段受到多少影響，本節沒有逐項量測。用成對差除以 PyTorch 端到端的中位數，0.249043÷3.278578≈7.6%，可粗估這次觀察到的整段時間差。
-- 這次 raw 時間約快 2.3 倍，端到端成對測量卻只觀察到約 7.6% 的時間差：前後處理不能忽略。這是一台電腦上一次執行的結果。成對量只能抵消兩條管線一起受到的變化；電腦同時忙著跑別的程式時，如果干擾剛好拖慢其中一條，結果仍可能改變，甚至變成 ORT 端到端比較慢，這不代表哪裡做錯。比較穩定的是 ORT 的 raw 明顯比較快，以及模型只占端到端的一小部分。
+- raw：ORT 約快 4.1 倍，也就是 ORT 的時間約是 PyTorch 的 1/4.1（用頁尾紀錄的完整數字算：0.150975÷0.036600≈4.13）。ORT 為什麼比較快，本節沒有驗證。
+- 以獨立量到的 raw 中位數估算，模型約占 PyTorch 端到端時間的 6.5%（0.151÷2.325）；兩者相減約 2.17 毫秒。前處理、decode／NMS 與還原在兩條管線裡用的是同一套程式，但本節沒有逐階段計時，所以這只能粗估模型時間的占比。
+- 端到端：兩條管線的程式只有中間的模型那一步不同。本次成對量的差約 0.173 毫秒，raw 中位數的差則約 0.114 毫秒（0.150975−0.036600）。量 raw 時，同一個模型連續呼叫，一次緊接著一次；管線裡，模型前後夾著前處理和後處理，每次輪到模型時，電腦剛做完別的工作。執行條件與計時波動會影響各階段，所以這兩個差不必相等，也無法把整段差異全歸到模型。各階段受到多少影響，本節沒有逐項量測。用成對差除以 PyTorch 端到端的中位數，0.173112÷2.325252≈7.4%，可粗估這次觀察到的整段時間差。
+- 這次 raw 時間約快 4.1 倍，端到端成對測量卻只觀察到約 7.4% 的時間差：前後處理不能忽略。這是一台電腦上一次執行的結果。成對量只能抵消兩條管線一起受到的變化；電腦同時忙著跑別的程式時，如果干擾剛好拖慢其中一條，結果仍可能改變，甚至變成 ORT 端到端比較慢，這不代表哪裡做錯。比較穩定的是 ORT 的 raw 明顯比較快，以及模型只占端到端的一小部分。
 
 重新執行時，`artifacts/lesson-20/report.json` 會記下當次兩個 backend 的端到端中位數、同一輪相減的差的中位數（`paired_torch_minus_ort_preprocess_to_restored_boxes`）與輪數（`end_to_end_paired_rounds`，40）。只看 raw 的加速倍數（speedup＝原本時間÷新時間），不能直接宣傳成產品的總加速。
 
 **部署前也要決定 batch 的服務策略。** 服務（serving）是把模型放在伺服器上，接收使用者送來的圖片、回傳結果；策略是指每來一張就馬上算，還是等湊滿幾張再一起算。B=2 的 batch latency（延遲）是一次算完兩張所需的時間；用 batch latency 的中位數粗估 raw throughput（吞吐量），是 2÷batch latency（以秒計），單位是張／秒；持續處理時的實際吞吐量要用總張數除以總耗時。用上表 ORT 的數字：
 
-- 一次一張：0.112 毫秒，約 8,901 張／秒（1000÷0.112345）。
-- 一次兩張：0.099 毫秒，約 20,218 張／秒（2000÷0.098924）。這是模型 raw 的吞吐量，不含前後處理，也不含等湊滿一批的時間。
+- 一次一張：0.037 毫秒，約 27,323 張／秒（1000÷0.0365995）。
+- 一次兩張：0.043 毫秒，約 46,621 張／秒（2000÷0.042899）。這是模型 raw 的吞吐量，不含前後處理，也不含等湊滿一批的時間。
 
-兩張一起算，吞吐量約是 2.3 倍；但吞吐量不能當成單張請求的服務延遲。假設每 10 毫秒才來一張圖（這只是假設的情境），第一張得等第二張到了才能一起算，就多等約 10 毫秒；一起算省下的計算時間卻只有約 0.13 毫秒（兩張分開算是 2×0.112 毫秒，一起算是 0.099 毫秒）。所以流量低時，等湊滿 batch 可能反而讓單張的回應變慢。產品要的是即時回應，還是大量離線處理的吞吐，會影響要不要湊 batch。
+兩張一起算，吞吐量約是 1.7 倍；但吞吐量不能當成單張請求的服務延遲。假設每 10 毫秒才來一張圖（這只是假設的情境），第一張得等第二張到了才能一起算，就多等約 10 毫秒；一起算省下的計算時間卻只有約 0.030 毫秒（用完整紀錄算，兩張分開是 2×0.036600 毫秒，一起是 0.042899 毫秒）。所以流量低時，等湊滿 batch 可能反而讓單張的回應變慢。產品要的是即時回應，還是大量離線處理的吞吐，會影響要不要湊 batch。
 
 **自己執行**：`PYTHONPATH=. python lesson_cases/20-deployment.py`，需要安裝 `onnx==1.19.1` 與 `onnxruntime==1.23.2`。本機執行前，先依 [README 環境步驟](https://github.com/birdhackor/learn_to_yolo#readme)安裝固定版本的套件，並在 repository 根目錄執行；Colab 則先跑本節的環境格。頁尾紀錄用的是 ONNX 1.19.1、ORT 1.23.2、PyTorch 2.9.1 CPU 版，report 的 `versions` 欄也記下了這些版本。成功條件是：真的產生 `artifacts/lesson-20/grid.onnx`、checker 通過、ORT 實際執行三種 batch、raw 與原圖框的比對都通過，而且每一圈的每張原圖都至少解出一個框。只是能 import 套件或印出 provider 名稱，不算完成。
 
@@ -234,7 +234,7 @@ TensorRT 能讓模型在 NVIDIA GPU 上跑得更快，方法之一是改用位�
 | 格式 | 是什麼 | 精度與範圍 |
 |---|---|---|
 | FP32 | 32 位元浮點數，就是前面一直用的 float32 | 約 7 位有效數字 |
-| TF32 | Ampere 架構（NVIDIA 顯示卡的一個世代）起的 NVIDIA GPU（L4 也包含在內）做卷積、矩陣乘法時可用的格式：相乘前先把 FP32 的輸入捨入成 TF32，乘積仍用 FP32 加總 | 範圍和 FP32 相同；尾數只有 10 位（FP32 有 23 位），精度和 FP16 相當 |
+| TF32（TensorFloat-32，張量浮點 32 格式） | Ampere 架構（NVIDIA 顯示卡的一個世代）起的 NVIDIA GPU（L4 也包含在內）做卷積、矩陣乘法時可用的格式：相乘前先把 FP32 的輸入捨入成 TF32，乘積仍用 FP32 加總 | 範圍和 FP32 相同；尾數只有 10 位（FP32 有 23 位），精度和 FP16 相當 |
 | FP16 | 16 位元浮點數，比較省記憶體，在支援的 GPU 上常比較快 | 約 3 位有效數字；能表示的最大值是 65504 |
 | INT8 | 8 位元整數。把數值改用整數表示，叫量化 | 有號 8 位元只有 −128～127 這 256 個整數；要先經校準或量化感知訓練等流程決定縮放。校準會用有代表性的圖片量各層數值的分布；量化感知訓練則在訓練中模擬量化誤差 |
 
@@ -258,7 +258,7 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
 
 使用時要注意：
 
-1. 先記下 GPU、driver（顯示卡驅動程式）、CUDA（NVIDIA 讓程式在 GPU 上計算的平台）與 TensorRT 的版本，以及實際的精度設定，之後才能重現與比較。
+1. 先記下 GPU、driver（顯示卡驅動程式）、CUDA（Compute Unified Device Architecture，統一計算裝置架構；NVIDIA 讓程式在 GPU 上計算的平台）與 TensorRT 的版本，以及實際的精度設定，之後才能重現與比較。
 2. 用相容的版本，讀取已通過 ORT 比對的 ONNX。
 3. 依安裝的 TensorRT 版本，確認命令裡的 flag（旗標：命令或建置設定裡的開關，例如 `--fp16`、`--noTF32`）與 ONNX 運算子（Conv、Relu 這類運算）都受支援；不同版本支援的不一樣。例如 TensorRT 10.12 起，`--fp16`（Python 介面的 `BuilderFlag.FP16`）這種「允許 FP16、由 TensorRT 逐層挑精度」的做法已標為棄用（deprecated：目前還能用，之後的版本可能移除），官方改推 strongly typed network（強型別網路，trtexec 的 `--stronglyTyped`）：每個 tensor 的精度照 ONNX 檔裡宣告的型別決定，例如要 FP16 就先匯出 FP16 的 ONNX。本頁的命令與 L4 實測用的，都是 10.13 仍可使用的舊做法。
 4. engine 通常受 GPU 架構（顯示卡的世代設計）與 runtime（載入並執行 engine 的程式庫）版本限制，不要當成跨裝置通用的檔案。
@@ -314,7 +314,7 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/20-deployment.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/20-deployment.json)
 
 ??? example "展開本次實際輸出"
 
@@ -337,7 +337,7 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
         3
       ],
       "max_abs_raw_errors": [
-        1.1920928955078125e-07,
+        4.76837158203125e-07,
         4.76837158203125e-07,
         4.76837158203125e-07
       ],
@@ -350,15 +350,15 @@ trtexec --loadEngine=grid-fp16.engine --shapes=images:1x3x64x64
       "dynamic_spatial": false,
       "spatial80_rejected": true,
       "median_ms": {
-        "torch_raw_batch1": 0.2546969917602837,
-        "ort_raw_batch1": 0.11234500561840832,
-        "torch_preprocess_to_restored_boxes": 3.278577991295606,
-        "ort_preprocess_to_restored_boxes": 3.0430780025199056,
-        "paired_torch_minus_ort_preprocess_to_restored_boxes": 0.24904299061745405,
-        "ort_raw_batch2": 0.09892400703392923
+        "torch_raw_batch1": 0.1509749990873388,
+        "ort_raw_batch1": 0.036599500162992626,
+        "torch_preprocess_to_restored_boxes": 2.3252515002241125,
+        "ort_preprocess_to_restored_boxes": 2.1557750005740672,
+        "paired_torch_minus_ort_preprocess_to_restored_boxes": 0.17311249939666595,
+        "ort_raw_batch2": 0.04289900061849039
       },
       "end_to_end_paired_rounds": 40,
-      "ort_raw_batch2_images_per_second": 20217.539300789085,
+      "ort_raw_batch2_images_per_second": 46621.132687598256,
       "versions": {
         "torch": "2.9.1+cpu",
         "onnx": "1.19.1",

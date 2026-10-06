@@ -36,7 +36,7 @@ YOLO11 官方配置裡的 C3k2 模組就用了這個想法（C3k2 和更早的 C
 
     `SplitAggregate` 參考 C3k2／C2f 的做法，但簡化了下面幾項，所以不等同完整的 C3k2：
 
-    - **官方的 Conv**：這是 Ultralytics 自己包的一層，依序是卷積（不含 bias）→ BN（BatchNorm，批次正規化，第 3 章介紹過）→ 激勵函數（activation，例如 ReLU、SiLU；官方預設用 SiLU）。本例改用一般的 `nn.Conv2d`（含 bias），不加 BN；投影與融合後面也不加激勵函數，整個模組只有 bottleneck 的 F 中間有 ReLU。
+    - **官方的 Conv**：這是 Ultralytics 自己包的一層，依序是卷積（不含 bias）→ BN（BatchNorm，批次正規化，第 3 章介紹過）→ 激勵函數（activation，例如 ReLU、SiLU；SiLU 是 [11.1](11-csp.md) 選讀已介紹的 Sigmoid Linear Unit，sigmoid 線性單元，官方預設用它）。本例改用一般的 `nn.Conv2d`（含 bias），不加 BN；投影與融合後面也不加激勵函數，整個模組只有 bottleneck 的 F 中間有 ReLU。
     - **Bottleneck 中間的 channel 數**：官方 C3k2（`c3k=False` 時）的 Bottleneck 預設把中間縮成一半 channel（e=0.5）；本例沿用 C2f 的寫法（e=1.0），兩層都是 hidden→hidden。
     - **C3k 內部結構**：官方 C3k2 可以用 `c3k` 參數把內部小塊換成 C3k；本例沒有這個選項。
 
@@ -167,7 +167,7 @@ return self.fuse(torch.cat(paths, dim=1))  # 串接成 [2,16,8,8]，再融合回
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/14-feature-module.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/14-feature-module.json)
 
 ??? example "展開本次實際輸出"
 

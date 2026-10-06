@@ -2,13 +2,13 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/03-identity.ipynb){ .md-button }
 
-照理說，網路加深不該變差：多加的幾層只要學成「輸出＝輸入」，深網路就能算出和原本淺網路一樣的結果，訓練誤差不該更高。但 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)的圖 1 顯示，在 CIFAR-10 圖片分類資料上，56 層的普通（plain）網路連訓練誤差（訓練資料上的錯誤率）都比 20 層的高。論文把這種「更深反而連訓練誤差都較高」的現象稱為退化（degradation）。這不是 overfit（訓練資料學得好、新資料卻變差）：這裡連訓練資料都學得比較差，屬於[第 2 章](02-diagnostics.md)說的最佳化問題。
+照理說，網路加深不該變差：多加的幾層只要學成「輸出＝輸入」，深網路就能算出和原本淺網路一樣的結果，訓練誤差不該更高。但 [ResNet（Residual Network，殘差網路）原始論文](https://arxiv.org/abs/1512.03385)的圖 1 顯示，在 CIFAR-10 圖片分類資料上，56 層的普通（plain）網路連訓練誤差（訓練資料上的錯誤率）都比 20 層的高。論文把這種「更深反而連訓練誤差都較高」的現象稱為退化（degradation）。這不是 overfit（訓練資料學得好、新資料卻變差）：這裡連訓練資料都學得比較差，屬於[第 2 章](02-diagnostics.md)說的最佳化問題。
 
 一串普通卷積，每一層都把上一層的輸出整組換成新算出的數值。如果某一段目前不需要改變輸入，能否讓它直接通過，再慢慢學需要的修正？residual block（殘差區塊）的做法是：在主分支（branch）的卷積旁邊多接一條 shortcut（捷徑），把輸入原封不動加到主分支的輸出上，輸出變成「原本的值＋學到的修正」。
 
 identity（恆等）指輸出與輸入完全相同，就像 \(f(x)=x\)。identity shortcut 就是不做計算、沒有參數，只把輸入原樣送到加號的 shortcut。本節先確定輸入真的能原樣通過：主分支輸出全為 0 時，整個 block 也是 identity，連負數都不例外；接著看 shortcut 讓梯度多了哪一項。讀完你能手算 residual block 的輸出、shape 與參數數量，並說出梯度裡多出的那個 1 從哪裡來。
 
-前置只需會用[小 CNN 那一節](01-small-cnn.md)的公式算卷積輸出大小，並知道兩個 tensor 怎麼逐值相加；梯度部分會用到[暖身節](00-warmup.md)的連鎖律（chain rule）。兩條路 shape 不同的情況留到[下一節](03-projection.md)。本節的 block 是把論文的設計簡化後的教學版：原版每個卷積後還有 BatchNorm（把每個 channel 的數值調到穩定尺度的層，[Plain／residual 對照](03-comparison.md)會再說明），相加後還有一個 ReLU，本節都拿掉了（拿掉相加後 ReLU 的理由見下文）。
+前置只需會用[小 CNN 那一節](01-small-cnn.md)的公式算卷積輸出大小，並知道兩個 tensor 怎麼逐值相加；梯度部分會用到[暖身節](00-warmup.md)的連鎖律（chain rule）。兩條路 shape 不同的情況留到[下一節](03-projection.md)。本節的 block 是把論文的設計簡化後的教學版：原版每個卷積後還有 BatchNorm（Batch Normalization，批次正規化，把每個 channel 的數值調到穩定尺度的層，[Plain／residual 對照](03-comparison.md)會再說明），相加後還有一個 ReLU，本節都拿掉了（拿掉相加後 ReLU 的理由見下文）。
 
 可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/03-identity.py`。CPU 實驗分兩部分。本節兩層卷積都不加 bias（偏置）。第一部分手動把主分支的權重全部設成 0，讓主分支輸出全為 0（下文稱「人工零分支」），檢查輸出是否等於輸入、輸入的梯度是否都是 1。第二部分另建一個權重隨機的 block，訓練 2 步，只確認主分支末層的權重收得到梯度、真的會更新。兩部分都不是在比分類準確率。
 
@@ -186,7 +186,7 @@ identity shortcut 的收益有兩點：
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-identity.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-identity.json)
 
 ??? example "展開本次實際輸出"
 

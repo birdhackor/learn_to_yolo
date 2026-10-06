@@ -1,0 +1,12 @@
+{
+  "checked_at_utc": "2026-10-06T05:42:34.115215+00:00",
+  "frozen_source_files_exact": 143,
+  "reading_units": 995,
+  "four_question_checkpoints": 212,
+  "answers": 848,
+  "claims": 1680,
+  "record_before_next_disclosure": true,
+  "unchanged_notebook_code_cells": 53,
+  "lesson_model_and_skill_source_unchanged": true,
+  "scope": "Structural and byte comparisons only; does not establish semantic completeness or successful problem detection."
+}

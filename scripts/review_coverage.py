@@ -3,7 +3,7 @@
     python scripts/review_coverage.py                         # list pages whose review no longer matches
     python scripts/review_coverage.py --write PAGE [PAGE ...]  # after reviewing PAGE: record what was covered
 
-A review covers a page's text, the SVG figures the page shows, and, for a lesson page, the lesson
+A review covers a page's text, the SVG and raster figures the page shows, and, for a lesson page, the lesson
 program with every repository module it imports. The digest leaves out the generated execution-record
 block and the release tag in Colab links, so re-rendering records or pinning a new tag keeps a review
 valid; any other change to what the reader sees or to the code the page describes needs a new review.
@@ -52,7 +52,7 @@ def digest(page: Path) -> dict[str, str]:
     """SHA-256 of what a review of this page covers."""
     text = COLAB_TAG.sub(r"\1<tag>/", page.read_text().split(MARKER)[0])
     covered = {page.relative_to(ROOT).as_posix(): hashlib.sha256(text.encode()).hexdigest()}
-    for figure in sorted(set(re.findall(r"\]\(([^)\s]+\.svg)\)", text))):
+    for figure in sorted(set(re.findall(r"\]\(([^)\s]+\.(?:svg|png|jpe?g|webp))\)", text))):
         path = (page.parent / figure).resolve()
         covered[path.relative_to(ROOT).as_posix()] = provenance.file_sha256(path)
     case = ROOT / "lesson_cases" / f"{page.stem}.py"

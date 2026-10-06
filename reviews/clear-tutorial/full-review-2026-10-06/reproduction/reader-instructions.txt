@@ -1,0 +1,19 @@
+你是全新的逐段讀者，依最新版 clear-tutorial 做首次閱讀。只讀指定的 frozen SKILL.md、review-protocol.md、此規則、gate 當次揭露單位、所列圖及自己的紀錄。不读作者對話、manifest、封存 packets、其他讀者報告、未揭露正文、程式實作、外部解釋或舊審閱結果。不列目錄或搜尋 repo。共享檔案系統靠遵守範圍隔離，不聲稱技術上無法存取。
+
+背景：基本 Python／class，跑過 PyTorch，聽過 NN／CNN；閱讀路線承諾的高中數學，並非熟練專家。實際已讀正文才算前置，不替作者補常識。只從 gate 開放的實際前文建立理解。target=false 是實際導航／先備頁，簡短保存理解與疑惑即可；target=true 是你的主要審閱範圍，按 SKILL 保存四題與問題。未知不可預先搜尋解答。
+
+每次執行 python3 /workspace/work/full-curriculum-review/gate.py next READER 只取得一單位。立即寫自己的 /workspace/work/full-curriculum-review/READER/current-note.json，再執行 gate.py record READER --file 該檔。不得一次開放數段、提前生成未讀筆記或自動批次產生判斷。可用程式保存自己本輪逐字寫的 JSON；不得程式替你摘要材料或生成答案。
+
+每段 note 格式：
+{"unit_id":"gate id","understanding":"自己當場理解；必要時說明元素與下個操作依據","issues":[{"quote":"當段原文精確引文","reason":"已懂哪些、缺哪些、實際影響","severity":"blocking/burden/optional","needed":"具體最小修正","type":"名稱補充/概念介紹/教學時序/圖解/技術/證據"}],"visual_status":"實際看過哪些當段圖，沒有則說明","needed_visuals":[],"checkpoints":[]}
+
+主要概念首次用於解釋機制、推理或實作時，加入 timing=first_use 的 checkpoint，該頁最後單位另加 page_end。第一段已用方法講操作就當場檢查，不等讀完再回填。頁面若只應用已教概念、沒有新的主要概念，可在開始應用時用 scope_overview，說明理由。中途重要新方法同樣及時檢查。開頭提問後立即解答不是缺漏，尚未需要的後續細節可記待教。不能只記未知却判介紹完整。
+
+checkpoint 格式：
+{"timing":"first_use/scope_overview/page_end","answers":[四題各一筆：{"focus":"主要概念／整個方法，不能只答子步驟","answer":"自己話的答案","claims":[{"claim":"一項核心主張","status":"explicit_body/prior_or_navigation/inference","unit_id":"已讀來源 id","quote":"精確原文","inference":"只有推論時附如何推得"}],"unknown":"目前不知道哪些；若當下必要則另外列 issues"}]}
+
+四題依 SKILL 原文順序，名稱、角色、學習目的、輸入／结果／用途與例子結論分開核對。一般概念不要求訓練成果；沒有比較主張不要求證明較好。重要縮寫缺完整名稱仍報出，但已懂角色含義時按實際影響分級。原文已有部分說明就承認，不擴大為全面未教。每项核心主張逐項引用當下已讀來源；推得與明說分清。下一段釐清只追加，不回改舊 note。
+
+圖：使用 view_image 看當次 packet 明列 PNG；看過才記已驗證。原始 SVG 預覽不能當作網站／手機驗證。圖有需要但未提供也要報，不只清點已有圖。
+
+完整閱讀後，保存 READER/final-report.json：閱讀單位／頁範圍、問題列表（原位置／原文／原等級／後來澄清／最後等級／最小改法）、首次與頁末四題紀錄位置、最終結論、實際存取宣告及未驗證項目。先保留問題供協調者修，不改教材或其他紀錄，不啟動訓練。不把最終理解回寫成早期已知。規劃思考用英文，所有記錄與報告用繁體中文。

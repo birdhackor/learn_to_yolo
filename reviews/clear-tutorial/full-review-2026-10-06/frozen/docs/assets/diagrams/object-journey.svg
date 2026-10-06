@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 408 536" role="img" aria-labelledby="title description">
+  <title id="title">紅框中心決定負責預測的格子</title>
+  <desc id="description">按比例繪製：每 1 畫素畫成 3 個單位，一格 16 畫素畫成 48 個單位。64×64 圖片切成 4×4 格，每格 16 畫素。上方與左側的灰色數字是畫素座標 0、16、32、48、64，x 向右、y 向下。格子外側的紫色字是程式從 0 起算的索引：上方由左到右是欄 0 到欄 3，右側由上到下是列 0 到列 3。紅框是已知標註，不是模型預測：左上角 (8,12)、右下角 (24,28)，跨過列 0～1、欄 0～1 共 4 格。中心黑點 (16,20) 壓在 x=16 的直格線上；左側小註寫「x=16 壓在格線上，歸右邊這格」。所以負責格是淺藍色虛線格，也就是第 2 列、第 2 欄，程式索引列 1、欄 1。框可以跨格，負責的格子只看中心。</desc>
+  <style>
+    text{font-family:sans-serif;fill:#172554;font-size:20px}
+    text.title{font-weight:700;font-size:22px}
+    text.tick{fill:#475569;font-size:16px}
+    text.idx{fill:#6d28d9;font-size:16px}
+    tspan.idx{fill:#6d28d9}
+    text.note{font-size:16px}
+    .grid{stroke:#94a3b8;stroke-width:1;fill:none}
+  </style>
+  <rect width="408" height="536" rx="12" fill="#fff"/>
+  <text x="20" y="34" class="title">一個紅框，誰來負責？</text>
+  <text x="20" y="64">64×64 圖片，切成 4×4 格，每格 16 畫素</text>
+
+  <!-- 按比例：圖片座標 (x,y) 畫在 SVG 的 (156+3x, 136+3y)。 -->
+  <rect x="156" y="136" width="192" height="192" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+  <rect id="responsible-cell" x="204" y="184" width="48" height="48" fill="#bfdbfe" stroke="#2563eb" stroke-width="2" stroke-dasharray="5 3"/>
+  <path class="grid" d="M204 136V328M252 136V328M300 136V328M156 184H348M156 232H348M156 280H348"/>
+  <rect id="red-box" x="180" y="172" width="48" height="48" fill="#dc2626" fill-opacity=".12" stroke="#dc2626" stroke-width="2.5"/>
+
+  <!-- 格子外側：程式從 0 起算的索引（紫色），欄在上、列在右。 -->
+  <text class="idx" text-anchor="middle" x="180" y="96">欄 0</text>
+  <text class="idx" text-anchor="middle" x="228" y="96">欄 1</text>
+  <text class="idx" text-anchor="middle" x="276" y="96">欄 2</text>
+  <text class="idx" text-anchor="middle" x="324" y="96">欄 3</text>
+  <text class="idx" x="357" y="166">列 0</text>
+  <text class="idx" x="357" y="214">列 1</text>
+  <text class="idx" x="357" y="262">列 2</text>
+  <text class="idx" x="357" y="310">列 3</text>
+
+  <!-- 畫素座標刻度（灰色）；x、y 方向標在軸的末端，和刻度數字隔開。 -->
+  <text class="tick" text-anchor="middle" x="156" y="124">0</text>
+  <text class="tick" text-anchor="middle" x="204" y="124">16</text>
+  <text class="tick" text-anchor="middle" x="252" y="124">32</text>
+  <text class="tick" text-anchor="middle" x="300" y="124">48</text>
+  <text class="tick" text-anchor="middle" x="348" y="124">64</text>
+  <text class="tick" text-anchor="end" x="147" y="141.6">0</text>
+  <text class="tick" text-anchor="end" x="147" y="189.6">16</text>
+  <text class="tick" text-anchor="end" x="147" y="237.6">32</text>
+  <text class="tick" text-anchor="end" x="147" y="285.6">48</text>
+  <text class="tick" text-anchor="end" x="147" y="333.6">64</text>
+  <text class="tick" x="372" y="124">x →</text>
+  <text class="tick" text-anchor="middle" x="138" y="361">y</text>
+  <text class="tick" text-anchor="middle" x="138" y="384">↓</text>
+
+  <!-- 小註：中心壓在 x=16 的直格線上，引線接到黑點。 -->
+  <rect x="8" y="168" width="110" height="78" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text class="note" x="15" y="189">x=16</text>
+  <text class="note" x="15" y="212">壓在格線上，</text>
+  <text class="note" x="15" y="235">歸右邊這格</text>
+  <path d="M118 206L197.5 196.8" fill="none" stroke="#334155" stroke-width="1.5"/>
+  <circle id="box-center" cx="204" cy="196" r="4.5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+
+  <rect x="20" y="408" width="14" height="14" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="44" y="422">左上 (8,12)、右下 (24,28)</text>
+  <circle cx="27" cy="448" r="4.5" fill="#172554"/>
+  <text x="44" y="454">中心 (16,20)</text>
+  <rect x="20" y="472" width="14" height="14" fill="#bfdbfe" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="3 2"/>
+  <text x="44" y="486">負責格：第 2 列、第 2 欄</text>
+  <text x="44" y="515">程式從 0 起算的索引：<tspan class="idx">列 1、欄 1</tspan></text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 436" role="img" aria-labelledby="title desc">
+ <title id="title">64×64 圖片上的兩個固定矩形</title>
+ <desc id="desc">按比例繪製：每 1 畫素畫成 4 個單位，一格 16 畫素畫成 64 個單位。左側深色正方形是 64×64 的輸入影像；上方與左側的灰色數字是畫素座標 0、16、32、48、64，x 向右、y 向下；淡灰色細線把影像切成 4×4 格，每格 16 畫素。紅色方塊是紅框 xyxy [8,12,24,28] 的紅色畫素，藍色方塊是藍框 xyxy [40,36,56,52] 的藍色畫素。框採半開區間：紅框左上角 (8,12) 畫白色實心點，表示含在內；右下角 (24,28) 畫空心圓，表示不含；所以紅色畫素是 x ∈ [8,24)、y ∈ [12,28)，x 是 8 到 23、y 是 12 到 27，面積 16×16。紅框中心 (16,20) 畫成深藍色點，正好壓在 x=16 的直格線上。右側依序列出兩個框的 xyxy、紅色畫素的範圍、三種標記的圖例，以及索引順序 image[channel, y, x] 與 RGB 影像存成 3×64×64 float32。左下註明輸入 64×64 畫素放大 4 倍顯示、淡線是 4×4 格；最下方註明圖中顏色只是顯示用，實際 (R,G,B) 值是背景 (0,0,0)、紅 (1,0,0)、藍 (0,0,1)。</desc>
+ <rect width="720" height="436" fill="#f8fafc"/>
+ <!-- 按比例：圖片座標 (x,y) 畫素畫在 (64+4x, 60+4y)；1 畫素＝4 個單位，一格 16 畫素＝64 個單位。 -->
+ <!-- 數值取自 lesson_cases/07-data.py：image[0, 12:28, 8:24]＝1（紅）、image[2, 36:52, 40:56]＝1（藍），其餘為 0。 -->
+ <rect x="64" y="60" width="256" height="256" fill="#0f172a"/>
+ <rect id="red-pixels" x="96" y="108" width="64" height="64" fill="#ef4444"/>
+ <rect id="blue-pixels" x="224" y="204" width="64" height="64" fill="#3b82f6"/>
+ <path id="grid" d="M128 60V316M192 60V316M256 60V316M64 124H320M64 188H320M64 252H320" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-opacity=".55"/>
+ <path id="ticks" d="M64 54V60M128 54V60M192 54V60M256 54V60M320 54V60M58 60H64M58 124H64M58 188H64M58 252H64M58 316H64" stroke="#475569" stroke-width="1.5"/>
+ <!-- 紅框左上角 (8,12)：含（實心）；右下角 (24,28)：不含（空心）；中心 (16,20)。 -->
+ <circle id="included-corner" cx="96" cy="108" r="5.5" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+ <circle id="excluded-corner" cx="160" cy="172" r="5.5" fill="#0f172a" stroke="#f8fafc" stroke-width="2.5"/>
+ <circle id="red-center" cx="128" cy="140" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+ <!-- 圖例小圖：畫在和圖中相同的底色上。 -->
+ <rect x="356" y="210" width="26" height="26" rx="3" fill="#0f172a"/>
+ <rect x="369" y="223" width="11" height="11" fill="#ef4444"/>
+ <circle cx="369" cy="223" r="4.5" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+ <rect x="356" y="244" width="26" height="26" rx="3" fill="#0f172a"/>
+ <rect x="358" y="246" width="11" height="11" fill="#ef4444"/>
+ <circle cx="369" cy="257" r="4.5" fill="#0f172a" stroke="#f8fafc" stroke-width="2"/>
+ <rect x="356" y="278" width="26" height="26" rx="3" fill="#ef4444"/>
+ <circle cx="369" cy="291" r="4.5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+ <!-- 顯示色色塊。 -->
+ <rect x="350" y="400" width="18" height="18" fill="#0f172a"/>
+ <rect x="474" y="400" width="18" height="18" fill="#ef4444"/>
+ <rect x="582" y="400" width="18" height="18" fill="#3b82f6"/>
+ <g font-family="sans-serif" fill="#0f172a">
+  <g font-size="16" fill="#475569">
+   <g text-anchor="middle"><text x="64" y="46">0</text><text x="128" y="46">16</text><text x="192" y="46">32</text><text x="256" y="46">48</text><text x="320" y="46">64</text></g>
+   <g text-anchor="end"><text x="52" y="65.6">0</text><text x="52" y="129.6">16</text><text x="52" y="193.6">32</text><text x="52" y="257.6">48</text><text x="52" y="321.6">64</text></g>
+   <text x="344" y="46">x →</text>
+   <text x="20" y="149" text-anchor="middle">y</text>
+   <text x="20" y="175" text-anchor="middle">↓</text>
+  </g>
+  <text x="356" y="86" font-size="20" fill="#b91c1c">紅框 xyxy = [8,12,24,28]</text>
+  <text x="356" y="118" font-size="20" fill="#1d4ed8">藍框 xyxy = [40,36,56,52]</text>
+  <g font-size="19">
+   <text x="356" y="160">框採半開區間，紅色畫素：</text>
+   <text x="356" y="190">x ∈ [8,24)、y ∈ [12,28)，面積 16×16</text>
+   <text x="392" y="230">左上 (8,12)：含</text>
+   <text x="392" y="264">右下 (24,28)：不含</text>
+   <text x="392" y="298">中心 (16,20)</text>
+   <text x="356" y="340">image[channel, y, x]</text>
+   <text x="356" y="370">RGB → 3×64×64 float32</text>
+  </g>
+  <g font-size="17" fill="#334155">
+   <text x="64" y="344">輸入 64×64 畫素，放大 4 倍顯示</text>
+   <text x="64" y="370">淡線：4×4 格，每格 16 畫素</text>
+   <text x="64" y="415">顏色只是顯示用，實際 (R,G,B) 值：</text>
+   <text x="374" y="415">背景 (0,0,0)</text>
+   <text x="498" y="415">紅 (1,0,0)</text>
+   <text x="606" y="415">藍 (0,0,1)</text>
+  </g>
+ </g>
+</svg>

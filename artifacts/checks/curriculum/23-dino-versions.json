@@ -1,14 +1,14 @@
 {
   "id": "23-dino-versions",
   "passed": true,
-  "executed_at_utc": "2026-10-05T11:48:38.964305+00:00",
+  "executed_at_utc": "2026-10-06T05:18:35.127316+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/23-dino-versions.py": "1d5195424eb0c903d76824d20d7eef107cfb5e14ce518b6ad52dae78bd85235c"
   },
-  "process_wall_seconds": 3.3498,
+  "process_wall_seconds": 1.0504,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "{\n  \"mode\": \"hand-specified normalized patch relations; no optimizer, no downloads\",\n  \"anchor_features\": [\n    [\n      1.0,\n      0.0\n    ],\n    [\n      0.0,\n      1.0\n    ],\n    [\n      0.7071067690849304,\n      0.7071067690849304\n    ]\n  ],\n  \"anchor_gram\": [\n    [\n      1.0,\n      0.0,\n      0.7071067690849304\n    ],\n    [\n      0.0,\n      1.0,\n      0.7071067690849304\n    ],\n    [\n      0.7071067690849304,\n      0.7071067690849304,\n      0.9999999403953552\n    ]\n  ],\n  \"rotated_feature_mse\": 1.0,\n  \"rotated_gram_mse\": 0.0,\n  \"constant_gram\": [\n    [\n      1.0,\n      1.0,\n      1.0\n    ],\n    [\n      1.0,\n      1.0,\n      1.0\n    ],\n    [\n      1.0,\n      1.0,\n      1.0\n    ]\n  ],\n  \"constant_gram_mse\": 0.26034948229789734,\n  \"scope\": \"Mean squared Gram difference illustrates relation preservation; not the complete DINOv3 loss or schedule.\"\n}\n",
   "stderr": "",

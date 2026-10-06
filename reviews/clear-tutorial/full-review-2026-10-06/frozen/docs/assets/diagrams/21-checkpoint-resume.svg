@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="984" viewBox="0 0 480 984" role="img" aria-labelledby="title desc">
+<title id="title">第30步存檔再還原續訓</title><desc id="desc">手工程序圖。上路連續60步，下路第30步後保存模型optimizer RNG，以新物件載入後完成31到60步，實測最終模型和optimizer最大差皆0。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#475569"/></marker></defs>
+<style>text{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;fill:#172554;font-size:24px} .small{font-size:22px}.head{font-size:28px;font-weight:700}.line{fill:none;stroke:#475569;stroke-width:3;marker-end:url(#arrow)} image{image-rendering:pixelated}</style>
+<rect width="480" height="984" rx="12" fill="#f8fafc"/>
+<text x="240" y="40" text-anchor="middle" style="font-size:26px">同一起點，兩條訓練路徑</text>
+<rect x="44" y="72" width="392" height="64" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="112.0" text-anchor="middle" style="font-size:24px">共同起點：seed 7</text>
+<path d="M240 144V166" class="line"/>
+<rect x="44" y="176" width="392" height="64" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="216.0" text-anchor="middle" style="font-size:24px">上路：連續更新 1～60</text>
+<path d="M240 248V270" class="line"/>
+<rect x="44" y="280" width="392" height="64" rx="10" fill="#dcfce7" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="320.0" text-anchor="middle" style="font-size:24px">保留最後狀態，作比較</text>
+<text x="240" y="390" text-anchor="middle" style="font-size:26px">下路：從第 30 步接回</text>
+<rect x="44" y="416" width="392" height="64" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="456.0" text-anchor="middle" style="font-size:24px">同一起點，更新 1～30</text>
+<path d="M240 488V510" class="line"/>
+<rect x="44" y="520" width="392" height="98" rx="10" fill="#fef3c7" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="561.0" text-anchor="middle" style="font-size:24px">第 30 步後存檔</text>
+<text x="240.0" y="593.0" text-anchor="middle" style="font-size:24px">模型 ＋ optimizer ＋ RNG</text>
+<path d="M240 626V648" class="line"/>
+<rect x="44" y="658" width="392" height="64" rx="10" fill="#e0f2fe" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="698.0" text-anchor="middle" style="font-size:24px">新物件載入，更新 31～60</text>
+<path d="M240 730V752" class="line"/>
+<rect x="44" y="762" width="392" height="98" rx="10" fill="#dcfce7" stroke="#64748b" stroke-width="2"/>
+<text x="240.0" y="803.0" text-anchor="middle" style="font-size:22px">與上路最後狀態比較</text>
+<text x="240.0" y="835.0" text-anchor="middle" style="font-size:22px">模型最大差 0 · optimizer 差 0</text>
+<text x="240" y="910" text-anchor="middle" style="font-size:24px">loss 序列與最後 RNG 也相同</text>
+<text x="240" y="958" text-anchor="middle" style="font-size:22px">手工流程示意 · 比較值來自實測</text>
+</svg>

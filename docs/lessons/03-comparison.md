@@ -6,7 +6,7 @@ Residual 有直接路徑，是否就一定比 plain 更準？讀完你會知道�
 
 這裡的 plain 指沒有 shortcut、把 block 一個接一個疊起來的普通網路，每個 block 只輸出 \(F(x)\)；residual（殘差）網路則是每個 block 輸出 \(x+F(x)\)，也就是 [identity shortcut 那節](03-identity.md)的 residual block。「residual 是否一定更準」不能只比較兩個不同模型最後的 loss 來回答，因為很多條件都可能影響結果：容量（模型能表示多複雜規則的能力，大致隨層數、channel 數增加）、初始化、資料、訓練步數，以及計分方式（用 loss、accuracy 或其他指標判斷好壞）。所以本節只改「是否加入同 shape 的 shortcut」，做一次每個數字都能回頭核對來源的小比較。
 
-設計來源是 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)對 plain 與 residual 的研究。本節用 4 個 channel、3 個 block 與人工色塊，和原版的主要差別是：沒有 BatchNorm；深度淺得多；每個 block 末端沒有 activation（原版 plain 接在第二個卷積之後，residual 接在相加之後）；用 PyTorch 預設初始化（原版是 He 初始化，見〈結果怎麼讀〉）；只用固定 learning rate 的簡單 SGD（原版另有 momentum、weight decay，learning rate 也會逐步調小）；stem 只有一個 3×3 卷積，也沒有分段下採樣（全程 16×16）。BatchNorm（批次正規化）在原版每個卷積後都有，訓練時它用同一批資料算出的平均與標準差，把每個 channel 的數值調到穩定的尺度；activation 是層與層之間的非線性函數，本節指 ReLU。本節是局部的機制對照，不是重現論文在 ImageNet（約 128 萬張訓練照片、1000 類）上的結果。論文的 plain 網路也有 BatchNorm；本節沒有它，所以結果只代表本設定，加回後會怎樣，本節沒有測。
+設計來源是 [ResNet 原始論文](https://arxiv.org/abs/1512.03385)對 plain 與 residual 的研究。本節用 4 個 channel、3 個 block 與人工色塊，和原版的主要差別是：沒有 BatchNorm（Batch Normalization，批次正規化）；深度淺得多；每個 block 末端沒有 activation（原版 plain 接在第二個卷積之後，residual 接在相加之後）；用 PyTorch 預設初始化（原版是 He 初始化，見〈結果怎麼讀〉）；只用固定 learning rate 的簡單 SGD（原版另有 momentum、weight decay，learning rate 也會逐步調小）；stem 只有一個 3×3 卷積，也沒有分段下採樣（全程 16×16）。BatchNorm（批次正規化）在原版每個卷積後都有，訓練時它用同一批資料算出的平均與標準差，把每個 channel 的數值調到穩定的尺度；activation 是層與層之間的非線性函數，本節指 ReLU。本節是局部的機制對照，不是重現論文在 ImageNet（約 128 萬張訓練照片、1000 類）上的結果。論文的 plain 網路也有 BatchNorm；本節沒有它，所以結果只代表本設定，加回後會怎樣，本節沒有測。
 
 可以用頁首的按鈕在 Colab 執行，或在本機執行 `PYTHONPATH=. python lesson_cases/03-comparison.py`。兩種方式跑的是同一份完整程式：Colab 裡「本節可修改的完整實驗」下方那格，內容就是 `lesson_cases/03-comparison.py`；網頁上只摘錄了其中幾段。CPU、16×16 輸入、訓練 8 張／validation 4 張，兩個模型各用 SGD 更新 3 步。3 步只確認梯度傳得到 stem、參數有更新，而且斷言全部通過、每一行都印得出來，不拿來替架構排名；兩者學不學得會，要看後面〈訓練 40 步〉那段：同樣的模型與資料，更新 40 次。
 
@@ -217,7 +217,7 @@ residual 每個 block 多了把輸入直接加回的路徑，特徵與梯度都�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
 
 ??? example "展開本次實際輸出"
 
@@ -225,11 +225,11 @@ residual 每個 block 多了把輸入直接加回的路徑，特徵與梯度都�
     plain step=0, loss=0.6938, stem_grad_norm=0.000984
     plain step=1, loss=0.6937, stem_grad_norm=0.001001
     plain step=2, loss=0.6936, stem_grad_norm=0.001011
-    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0111
+    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0072
     residual step=0, loss=0.6921, stem_grad_norm=0.146701
     residual step=1, loss=0.6888, stem_grad_norm=0.147590
     residual step=2, loss=0.6855, stem_grad_norm=0.146128
-    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0104
+    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0070
     Same initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.
     ```
 

@@ -92,7 +92,7 @@ AP=\sum_k (r_k-r_{k-1})\,\hat p(r_k)
 ap = sum((recall_next - recall_previous) * precision_envelope_next)  # 公式虛擬碼，名稱表示各段寬度與高度
 ```
 
-這不是把相鄰點用直線連起來、算梯形面積的做法，也不是舊 VOC 的 11 點平均。舊 VOC 只在 recall=0, 0.1, …, 1 這 11 個位置讀包絡高度再平均：主例在 0 到 0.6 的 7 個位置高 0.5，在 0.7 到 1 的 4 個位置高 0，平均 3.5/11≈0.318，不是 1/3。若比較不同工具，先確認 AP 定義。
+這不是把相鄰點用直線連起來、算梯形面積的做法，也不是舊 Pascal VOC（Visual Object Classes，視覺物件類別）評比的 11 點平均；VOC 是公開的物件偵測資料集與評分基準。舊 VOC 只在 recall=0, 0.1, …, 1 這 11 個位置讀包絡高度再平均：主例在 0 到 0.6 的 7 個位置高 0.5，在 0.7 到 1 的 4 個位置高 0，平均 3.5/11≈0.318，不是 1/3。若比較不同工具，先確認 AP 定義。
 
 ??? note "選讀：AP 為什麼通常不等於最後的 P×R？"
 
@@ -102,7 +102,7 @@ ap = sum((recall_next - recall_previous) * precision_envelope_next)  # 公式虛
 
 AP50 的 50 表示上述配對使用 IoU≥0.5。多類別時先分別算每類的 AP，再平均成 mAP（mean AP：m 是 mean，即各類別 AP 的平均）；每一類都用 IoU≥0.5 配對時，這個平均就是 mAP50。例如兩個有 GT 的類別 AP50 為 1/3 及 1，mAP50 就是 2/3。沒有 GT 的類別，本節把 AP 記為 None，不放進平均；有 GT 但沒有預測，AP=0。整個資料都沒有 GT 時，mAP 也記為 None，避免把「沒東西可測」當作滿分。
 
-COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻的平均；每個門檻在 recall=0, 0.01, …, 1 這 101 個位置讀包絡高度再平均，也對所有有 GT 的類別取平均，所以照本節的用語，它其實是 mAP（COCO 官方不區分 AP 與 mAP）。另外還有其他規則（見下方摺疊區）。因此不能把本節單一門檻、all-points 的數字直接當成 COCO AP。較高的 IoU 門檻要求更準的框：如果同一模型的 AP50 很高，但在 IoU 0.75 這類嚴格門檻下的 AP 很低，表示框大致找到了物件、位置卻不夠準，可能是定位問題。
+COCO（Common Objects in Context，情境中的常見物件）是另一個公開物件偵測資料集。它常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻的平均；每個門檻在 recall=0, 0.01, …, 1 這 101 個位置讀包絡高度再平均，也對所有有 GT 的類別取平均，所以照本節的用語，它其實是 mAP（COCO 官方不區分 AP 與 mAP）。另外還有其他規則（見下方摺疊區）。因此不能把本節單一門檻、all-points 的數字直接當成 COCO AP。較高的 IoU 門檻要求更準的框：如果同一模型的 AP50 很高，但在 IoU 0.75 這類嚴格門檻下的 AP 很低，表示框大致找到了物件、位置卻不夠準，可能是定位問題。
 
 本書這套配對規則是教學簡化版。常見的官方規則來自 Pascal VOC 與 COCO：它們是兩個常用的公開物件偵測資料集，各附官方評分程式。論文常拿它們的分數互相比較，這種固定資料與規則的公開評比叫 benchmark（基準測試）。規則文字見 [Pascal VOC 官方評估說明](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00054000000000000000)（VOC2012 開發套件文件的 4.4 節；AP 的算法在同一份文件的 3.4.1 節）與 [COCO detection evaluation](https://cocodataset.org/#detection-eval)；配對順序、VOC 標成 difficult（難以辨認）的物件怎麼計數、候選數上限這類細節，以官方評分程式為準。本書和它們差在哪裡，以及這些細節在程式裡的出處，見下方摺疊區。
 
@@ -157,7 +157,7 @@ COCO 常報的 AP，是在 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-evaluation.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/06-evaluation.json)
 
 ??? example "展開本次實際輸出"
 

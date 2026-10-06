@@ -41,7 +41,9 @@ feature_map = patch_feature_map(patches)                     # [B,32,4,4]
 
 寬高被限制在 0.05 到 0.75，截邊還可能改變最後的中心與尺寸。這是適合本例 8～16 像素矩形的簡化輸出，不能原樣拿去表示所有大框。框路只有一個槽，不用「第幾個 patch 輸出哪個框」來解碼；它看整個 grid 後，一次回歸全圖唯一物件。
 
-真值也先除以 32。本例 test 0 的 `[9,4,25,12]` 變成 `[0.28125,0.125,0.78125,0.375]`。訓練使用顏色交叉熵，加上預測／真值 normalized xyxy 的 Smooth L1（小誤差用平方、較大誤差用線性）再乘 10：
+真值也先除以 32。本例 test 0 的 `[9,4,25,12]` 變成 `[0.28125,0.125,0.78125,0.375]`。訓練使用顏色交叉熵，加上預測／真值 normalized xyxy 的 Smooth L1（平滑 L1 loss）再乘 10。對單一座標誤差 \(e\)，本例使用預設切換門檻 \(\beta=1\)：\(|e|<1\) 時計 \(0.5e^2\)，否則計 \(|e|-0.5\)，最後對 batch 與四個座標取平均。因為本例兩邊都是 0～1 的座標，誤差大小最多為 1，實際落在平方區或兩段相接的邊界；「較大誤差用線性」是這個 loss 的一般性質，不代表本例會用到那一段。
+
+總 loss 為：
 
 \[
 L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
@@ -87,7 +89,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-detection-bridge.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-detection-bridge.json)
 
 ??? example "展開本次實際輸出"
 
@@ -111,7 +113,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
         }
       },
       "ssl_first_loss": 1.9427120685577393,
-      "ssl_last_loss": 1.8742752075195312,
+      "ssl_last_loss": 1.8742694854736328,
       "feature_shapes": {
         "patches": [
           128,
@@ -132,15 +134,15 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
       "loss": "cross_entropy(class) + 10*smooth_l1(normalized_xyxy)",
       "first_head_step": {
         "step": 1,
-        "loss": 0.8860687017440796,
-        "class_loss": 0.6687705516815186,
-        "box_loss": 0.021729812026023865
+        "loss": 0.8860688209533691,
+        "class_loss": 0.6687704920768738,
+        "box_loss": 0.021729834377765656
       },
       "last_head_step": {
         "step": 200,
-        "loss": 0.0009670326253399253,
+        "loss": 0.0009669912979006767,
         "class_loss": 1.56007481564302e-05,
-        "box_loss": 9.514318662695587e-05
+        "box_loss": 9.513905388303101e-05
       },
       "backbone_unchanged": true,
       "backbone_has_no_grad": true,
@@ -150,7 +152,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
           "count": 128,
           "class_correct": 128,
           "class_accuracy": 1.0,
-          "mean_iou": 0.8593764305114746,
+          "mean_iou": 0.8593783974647522,
           "iou_ge_0_5_count": 128,
           "class_correct_and_iou_ge_0_5_count": 128
         },
@@ -158,7 +160,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
           "count": 64,
           "class_correct": 64,
           "class_accuracy": 1.0,
-          "mean_iou": 0.6160324811935425,
+          "mean_iou": 0.616032600402832,
           "iou_ge_0_5_count": 49,
           "class_correct_and_iou_ge_0_5_count": 49
         },
@@ -166,7 +168,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
           "count": 64,
           "class_correct": 64,
           "class_accuracy": 1.0,
-          "mean_iou": 0.6056987643241882,
+          "mean_iou": 0.605698823928833,
           "iou_ge_0_5_count": 54,
           "class_correct_and_iou_ge_0_5_count": 54
         }
@@ -182,14 +184,14 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
             12
           ],
           "predicted_xyxy_pixel": [
-            13.051470756530762,
+            13.051433563232422,
             0.0,
-            23.608638763427734,
-            13.815780639648438
+            23.608627319335938,
+            13.815743446350098
           ],
           "truth_class": "blue",
           "predicted_class": "blue",
-          "iou": 0.4459247589111328
+          "iou": 0.4459264874458313
         },
         {
           "test_index": 1,
@@ -201,14 +203,14 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
             27
           ],
           "predicted_xyxy_pixel": [
-            13.031095504760742,
-            15.765176773071289,
-            22.852426528930664,
-            26.953554153442383
+            13.031064987182617,
+            15.76512336730957,
+            22.852384567260742,
+            26.95350456237793
           ],
           "truth_class": "blue",
           "predicted_class": "blue",
-          "iou": 0.35220029950141907
+          "iou": 0.35220107436180115
         },
         {
           "test_index": 2,
@@ -220,10 +222,10 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
             17
           ],
           "predicted_xyxy_pixel": [
-            17.466455459594727,
-            2.604665756225586,
+            17.466459274291992,
+            2.6046667098999023,
             28.128145217895508,
-            15.542051315307617
+            15.542059898376465
           ],
           "truth_class": "red",
           "predicted_class": "red",
@@ -239,17 +241,17 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
             31
           ],
           "predicted_xyxy_pixel": [
-            12.647476196289062,
-            19.411514282226562,
-            26.247318267822266,
+            12.647469520568848,
+            19.411531448364258,
+            26.247325897216797,
             32.0
           ],
           "truth_class": "red",
           "predicted_class": "red",
-          "iou": 0.6325743794441223
+          "iou": 0.632573664188385
         }
       ],
-      "elapsed_seconds": 6.428522803005762,
+      "elapsed_seconds": 3.7607786120006494,
       "evaluation": "one prediction paired with one truth per image; class argmax, paired IoU, joint class-correct and IoU>=.5; no AP/mAP",
       "limitation": "tiny frozen self-supervised ViT plus supervised single-object head; not DINO detector, not official DINOv2 backbone, no architecture ranking or natural-image transfer claim"
     }

@@ -1,0 +1,259 @@
+{
+  "recorded_at_utc": "2026-10-06T05:57:50.100019+00:00",
+  "base_commit": "64a25d4fbcff5577965c29efbbcb5d9898ba95d9",
+  "final_source_bindings": "final-bindings.json",
+  "target_lesson_pages": 52,
+  "rewritten_lesson_pages": [
+    "docs/lessons/00-warmup.md",
+    "docs/lessons/01-small-cnn.md",
+    "docs/lessons/03-comparison.md",
+    "docs/lessons/03-identity.md",
+    "docs/lessons/04-coordinates.md",
+    "docs/lessons/04-localization.md",
+    "docs/lessons/06-evaluation.md",
+    "docs/lessons/08-own-data.md",
+    "docs/lessons/11-csp.md",
+    "docs/lessons/12-assignment.md",
+    "docs/lessons/13-dual-assignment.md",
+    "docs/lessons/14-feature-module.md",
+    "docs/lessons/16-dfl-free.md",
+    "docs/lessons/17-capstone.md",
+    "docs/lessons/18-video.md",
+    "docs/lessons/19-tracking.md",
+    "docs/lessons/20-deployment.md",
+    "docs/lessons/21-attention.md",
+    "docs/lessons/21-patches.md",
+    "docs/lessons/21-training.md",
+    "docs/lessons/21-transformer.md",
+    "docs/lessons/22-distillation.md",
+    "docs/lessons/22-features.md",
+    "docs/lessons/22-views.md",
+    "docs/lessons/23-detection-bridge.md",
+    "docs/lessons/23-dino-versions.md"
+  ],
+  "appended_historical_reviews": [
+    "docs/lessons/00-warmup.md",
+    "docs/lessons/01-small-cnn.md",
+    "docs/lessons/02-diagnostics.md",
+    "docs/lessons/03-identity.md",
+    "docs/lessons/03-projection.md",
+    "docs/lessons/03-comparison.md",
+    "docs/lessons/04-localization.md",
+    "docs/lessons/04-coordinates.md",
+    "docs/lessons/05-assignment.md",
+    "docs/lessons/06-decode-nms.md",
+    "docs/lessons/06-evaluation.md",
+    "docs/lessons/07-data.md",
+    "docs/lessons/07-targets.md",
+    "docs/lessons/07-loss.md",
+    "docs/lessons/07-training.md",
+    "docs/lessons/07-inference.md",
+    "docs/lessons/07-heldout.md",
+    "docs/lessons/08-own-images.md",
+    "docs/lessons/08-own-data.md",
+    "docs/lessons/09-anchors.md",
+    "docs/lessons/09-anchor-clustering.md",
+    "docs/lessons/10-multiscale.md",
+    "docs/lessons/11-csp.md",
+    "docs/lessons/11-fusion.md",
+    "docs/lessons/11-augmentation.md",
+    "docs/lessons/11-iou-loss.md",
+    "docs/lessons/12-anchor-free.md",
+    "docs/lessons/12-decoupled-head.md",
+    "docs/lessons/12-assignment.md",
+    "docs/lessons/12-dfl.md",
+    "docs/lessons/13-dual-assignment.md",
+    "docs/lessons/13-nms-free.md",
+    "docs/lessons/14-feature-module.md",
+    "docs/lessons/15-attention-bridge.md",
+    "docs/lessons/15-area-attention.md",
+    "docs/lessons/16-dfl-free.md",
+    "docs/lessons/16-inference-head.md",
+    "docs/lessons/16-training.md",
+    "docs/lessons/17-capstone.md",
+    "docs/lessons/18-video.md",
+    "docs/lessons/19-tracking.md",
+    "docs/lessons/20-deployment.md",
+    "docs/lessons/21-patches.md",
+    "docs/lessons/21-attention.md",
+    "docs/lessons/21-transformer.md",
+    "docs/lessons/21-training.md",
+    "docs/lessons/22-views.md",
+    "docs/lessons/22-collapse.md",
+    "docs/lessons/22-distillation.md",
+    "docs/lessons/22-features.md",
+    "docs/lessons/23-dino-versions.md",
+    "docs/lessons/23-detection-bridge.md",
+    "docs/index.md",
+    "docs/learning-path.md",
+    "docs/glossary.md",
+    "docs/status.md",
+    "docs/validation/curriculum.md",
+    "docs/preparation/publish.md",
+    "docs/preparation/architecture.md"
+  ],
+  "current_site_review_coverage": 69,
+  "first_read_structure": "rechecks/final-structural-check.json",
+  "independent_record_adjudication": "rechecks/record-adjudication.md",
+  "command_results": [
+    {
+      "name": "preparation",
+      "cmd": "python3 scripts/validate_preparation.py",
+      "chunk_id": "110c92",
+      "wall_time_seconds": 2.2964e-05,
+      "exit_code": 0,
+      "original_token_count": 22,
+      "output": "Dataset manifest, section pairing, notebook code and website publication boundaries: OK\n"
+    },
+    {
+      "name": "evidence",
+      "cmd": "python3 scripts/validate_curriculum_evidence.py",
+      "chunk_id": "9bba8e",
+      "wall_time_seconds": 0.521932048,
+      "exit_code": 0,
+      "original_token_count": 18,
+      "output": "52 lesson records and 12 supplementary records match the current code\n"
+    },
+    {
+      "name": "site",
+      "cmd": "python3 scripts/validate_site.py",
+      "chunk_id": "3f91d9",
+      "wall_time_seconds": 1.002945468,
+      "session_id": 52719,
+      "original_token_count": 0,
+      "output": "",
+      "completion": {
+        "exit_code": 0,
+        "output": "{\"builder\":\"zensical\",\"version\":\"0.0.67\",\"html_pages\":70,\"lesson_pages\":52,\"all_local_links_and_anchors\":\"passed\",\"colab_pairs\":\"passed\",\"markdown_rendering\":\"passed\",\"all_lessons_indexed\":true,\"artifact_files\":190,\"artifact_bytes\":10033501,\"artifact_boundaries\":\"passed\"}"
+      }
+    },
+    {
+      "name": "record-status",
+      "cmd": "python3 scripts/verify_curriculum.py --check",
+      "chunk_id": "ce6b4a",
+      "wall_time_seconds": 1.7887e-05,
+      "exit_code": 1,
+      "original_token_count": 241,
+      "output": "Traceback (most recent call last):\n  File \"/workspace/learn_to_yolo/scripts/verify_curriculum.py\", line 186, in <module>\n    main()\n  File \"/workspace/learn_to_yolo/scripts/verify_curriculum.py\", line 135, in main\n    stale = [s[\"id\"] for s in lessons if current_record(s) is None]\n                                         ^^^^^^^^^^^^^^^^^\n  File \"/workspace/learn_to_yolo/scripts/verify_curriculum.py\", line 76, in current_record\n    and record.get(\"dependencies_sha256\") == dependencies(section)\n                                             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/learn_to_yolo/scripts/verify_curriculum.py\", line 64, in dependencies\n    from miniyolo.provenance import repo_dependencies\n  File \"/workspace/learn_to_yolo/miniyolo/__init__.py\", line 3, in <module>\n    from .data import ShapeDataset, collate\n  File \"/workspace/learn_to_yolo/miniyolo/data.py\", line 3, in <module>\n    import torch\nModuleNotFoundError: No module named 'torch'\n",
+      "resolution": "System Python lacks torch; rerun in the documented .venv-model passed. This is an invocation error, not a stale-record finding."
+    },
+    {
+      "name": "whitespace",
+      "cmd": "git diff --check",
+      "chunk_id": "d49f5f",
+      "wall_time_seconds": 1.955e-05,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "name": "remote-main",
+      "cmd": "git ls-remote origin refs/heads/main",
+      "chunk_id": "f2dec1",
+      "wall_time_seconds": 0.325059491,
+      "exit_code": 0,
+      "original_token_count": 15,
+      "output": "64a25d4fbcff5577965c29efbbcb5d9898ba95d9\trefs/heads/main\n"
+    },
+    {
+      "name": "record-status-correct-environment",
+      "cmd": ".venv-model/bin/python scripts/verify_curriculum.py --check",
+      "chunk_id": "6a2c73",
+      "wall_time_seconds": 1.001366629,
+      "session_id": 34762,
+      "original_token_count": 0,
+      "output": "",
+      "completion": {
+        "exit_code": 0,
+        "output": "All 52 records match the current code.\n"
+      }
+    },
+    {
+      "name": "pytest",
+      "cmd": ".venv-model/bin/python -m pytest tests/ -q",
+      "exit_code": 0,
+      "output": "101 passed in 5.12s",
+      "origin": "Earlier completed task execution, session 27348; not rerun during final metadata closure."
+    },
+    {
+      "name": "strict-build",
+      "cmd": ".venv-docs/bin/zensical build --clean --strict",
+      "exit_code": 0,
+      "output": "No issues found\nBuild finished in 2.10s",
+      "origin": "Final source-site build, session 72012."
+    },
+    {
+      "name": "structure",
+      "cmd": "python3 reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_structure.py",
+      "exit_code": 0,
+      "output": "143 frozen sources, 995 reading units, 212 four-question checkpoints, 848 answers, 1680 claims; 53 unchanged notebook code-cell sets."
+    },
+    {
+      "name": "lessons",
+      "cmd": "python3 scripts/validate_lessons.py",
+      "chunk_id": "93aec4",
+      "wall_time_seconds": 0.463019981,
+      "exit_code": 0,
+      "original_token_count": 27,
+      "output": "52 lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK\n"
+    },
+    {
+      "name": "final-whitespace",
+      "cmd": "git diff --check",
+      "chunk_id": "e2dd94",
+      "wall_time_seconds": 1.4802e-05,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "name": "review-coverage",
+      "cmd": "python3 scripts/review_coverage.py --write <59 actually reviewed pages>",
+      "exit_code": 0,
+      "output": "All 69 pages match their reviews."
+    },
+    {
+      "name": "staged-whitespace",
+      "cmd": "git diff --cached --check -- . :(exclude)reviews/clear-tutorial/full-review-2026-10-06/frozen/docs/assets/diagrams/22-features.svg",
+      "exit_code": 0,
+      "output": "",
+      "full_check": {
+        "cmd": "git diff --cached --check",
+        "exit_code": 2,
+        "finding_count": 198,
+        "file": "reviews/clear-tutorial/full-review-2026-10-06/frozen/docs/assets/diagrams/22-features.svg",
+        "reason": "All findings are original Matplotlib trailing whitespace in the byte-exact frozen baseline SVG. Preserve archival source bytes; all remaining staged content passes. No whitespace configuration changed.",
+        "byte_exact_original_commit": "64a25d4fbcff5577965c29efbbcb5d9898ba95d9",
+        "original_file_sha256": "73b81c9c9853e845688921e2bfb8c532c704c4a0d84ddf021fc278b3590b547b"
+      }
+    }
+  ],
+  "browser": {
+    "pages": 56,
+    "viewport_page_checks": 112,
+    "unloaded_images": 0,
+    "outer_horizontal_overflow_pages": 0,
+    "math_error_pages": 0,
+    "runtime_error_pages": 0,
+    "typeset_math_containers_per_viewport": {
+      "desktop": 706,
+      "mobile": 706
+    },
+    "scope": "DOM checks and captures; actual visual reading scope/limits are in transitions-visual.json."
+  },
+  "review_limits": [
+    "AI readers, no real student learning-effect study.",
+    "The four questions missed the 22.1 named-DINO introduction gap; author correction and independent adjudication are separately attributed.",
+    "Original first-read answers include partial citation support and explicit/inference classification defects; preserved original notes are not retroactively marked fully compliant.",
+    "Source/code/evidence checks and DOM loading do not establish every possible teaching claim or every formula is readable.",
+    "Some figure lettering remains small on mobile; page-specific optional limits and adjacent-body support are recorded in transitions-visual.json.",
+    "No new GPU, full natural-image training, official DINO retraining, published-tag replacement or website deployment."
+  ],
+  "unchanged": [
+    "SKILL",
+    "lesson_cases",
+    "miniyolo",
+    "all notebook code cells",
+    "lessons-v0.6.0 release tag"
+  ]
+}

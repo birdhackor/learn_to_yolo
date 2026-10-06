@@ -1,0 +1,1042 @@
+{
+  "reader": "detector",
+  "review_date": "2026-10-06",
+  "workflow": "逐單元首次閱讀；每單元先手寫當場筆記並 gate record，才揭露下一單元；原筆記未回改。",
+  "reading_scope": {
+    "complete": true,
+    "unit_count": 140,
+    "prerequisite_unit_count": 58,
+    "target_unit_count": 82,
+    "prerequisite_page_count": 8,
+    "target_page_count": 13,
+    "unit_start": "index/00",
+    "unit_end": "08-own-data/05",
+    "pages": [
+      {
+        "page_id": "index",
+        "source": "docs/index.md",
+        "target": false,
+        "unit_start": "index/00",
+        "unit_end": "index/02",
+        "unit_count": 3,
+        "source_line_start": 1,
+        "source_line_end": 50,
+        "record_line_start": 1,
+        "record_line_end": 3
+      },
+      {
+        "page_id": "learning-path",
+        "source": "docs/learning-path.md",
+        "target": false,
+        "unit_start": "learning-path/00",
+        "unit_end": "learning-path/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 110,
+        "record_line_start": 4,
+        "record_line_end": 10
+      },
+      {
+        "page_id": "00-warmup",
+        "source": "docs/lessons/00-warmup.md",
+        "target": false,
+        "unit_start": "00-warmup/00",
+        "unit_end": "00-warmup/09",
+        "unit_count": 10,
+        "source_line_start": 1,
+        "source_line_end": 244,
+        "record_line_start": 11,
+        "record_line_end": 20
+      },
+      {
+        "page_id": "01-small-cnn",
+        "source": "docs/lessons/01-small-cnn.md",
+        "target": false,
+        "unit_start": "01-small-cnn/00",
+        "unit_end": "01-small-cnn/08",
+        "unit_count": 9,
+        "source_line_start": 1,
+        "source_line_end": 308,
+        "record_line_start": 21,
+        "record_line_end": 29
+      },
+      {
+        "page_id": "02-diagnostics",
+        "source": "docs/lessons/02-diagnostics.md",
+        "target": false,
+        "unit_start": "02-diagnostics/00",
+        "unit_end": "02-diagnostics/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 185,
+        "record_line_start": 30,
+        "record_line_end": 36
+      },
+      {
+        "page_id": "03-identity",
+        "source": "docs/lessons/03-identity.md",
+        "target": false,
+        "unit_start": "03-identity/00",
+        "unit_end": "03-identity/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 183,
+        "record_line_start": 37,
+        "record_line_end": 43
+      },
+      {
+        "page_id": "03-projection",
+        "source": "docs/lessons/03-projection.md",
+        "target": false,
+        "unit_start": "03-projection/00",
+        "unit_end": "03-projection/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 154,
+        "record_line_start": 44,
+        "record_line_end": 50
+      },
+      {
+        "page_id": "03-comparison",
+        "source": "docs/lessons/03-comparison.md",
+        "target": false,
+        "unit_start": "03-comparison/00",
+        "unit_end": "03-comparison/07",
+        "unit_count": 8,
+        "source_line_start": 1,
+        "source_line_end": 214,
+        "record_line_start": 51,
+        "record_line_end": 58
+      },
+      {
+        "page_id": "04-localization",
+        "source": "docs/lessons/04-localization.md",
+        "target": true,
+        "unit_start": "04-localization/00",
+        "unit_end": "04-localization/07",
+        "unit_count": 8,
+        "source_line_start": 1,
+        "source_line_end": 172,
+        "record_line_start": 59,
+        "record_line_end": 66
+      },
+      {
+        "page_id": "04-coordinates",
+        "source": "docs/lessons/04-coordinates.md",
+        "target": true,
+        "unit_start": "04-coordinates/00",
+        "unit_end": "04-coordinates/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 207,
+        "record_line_start": 67,
+        "record_line_end": 73
+      },
+      {
+        "page_id": "05-assignment",
+        "source": "docs/lessons/05-assignment.md",
+        "target": true,
+        "unit_start": "05-assignment/00",
+        "unit_end": "05-assignment/05",
+        "unit_count": 6,
+        "source_line_start": 1,
+        "source_line_end": 245,
+        "record_line_start": 74,
+        "record_line_end": 79
+      },
+      {
+        "page_id": "06-decode-nms",
+        "source": "docs/lessons/06-decode-nms.md",
+        "target": true,
+        "unit_start": "06-decode-nms/00",
+        "unit_end": "06-decode-nms/05",
+        "unit_count": 6,
+        "source_line_start": 1,
+        "source_line_end": 251,
+        "record_line_start": 80,
+        "record_line_end": 85
+      },
+      {
+        "page_id": "06-evaluation",
+        "source": "docs/lessons/06-evaluation.md",
+        "target": true,
+        "unit_start": "06-evaluation/00",
+        "unit_end": "06-evaluation/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 154,
+        "record_line_start": 86,
+        "record_line_end": 92
+      },
+      {
+        "page_id": "07-data",
+        "source": "docs/lessons/07-data.md",
+        "target": true,
+        "unit_start": "07-data/00",
+        "unit_end": "07-data/05",
+        "unit_count": 6,
+        "source_line_start": 1,
+        "source_line_end": 174,
+        "record_line_start": 93,
+        "record_line_end": 98
+      },
+      {
+        "page_id": "07-targets",
+        "source": "docs/lessons/07-targets.md",
+        "target": true,
+        "unit_start": "07-targets/00",
+        "unit_end": "07-targets/04",
+        "unit_count": 5,
+        "source_line_start": 1,
+        "source_line_end": 169,
+        "record_line_start": 99,
+        "record_line_end": 103
+      },
+      {
+        "page_id": "07-loss",
+        "source": "docs/lessons/07-loss.md",
+        "target": true,
+        "unit_start": "07-loss/00",
+        "unit_end": "07-loss/06",
+        "unit_count": 7,
+        "source_line_start": 1,
+        "source_line_end": 301,
+        "record_line_start": 104,
+        "record_line_end": 110
+      },
+      {
+        "page_id": "07-training",
+        "source": "docs/lessons/07-training.md",
+        "target": true,
+        "unit_start": "07-training/00",
+        "unit_end": "07-training/05",
+        "unit_count": 6,
+        "source_line_start": 1,
+        "source_line_end": 218,
+        "record_line_start": 111,
+        "record_line_end": 116
+      },
+      {
+        "page_id": "07-inference",
+        "source": "docs/lessons/07-inference.md",
+        "target": true,
+        "unit_start": "07-inference/00",
+        "unit_end": "07-inference/03",
+        "unit_count": 4,
+        "source_line_start": 1,
+        "source_line_end": 179,
+        "record_line_start": 117,
+        "record_line_end": 120
+      },
+      {
+        "page_id": "07-heldout",
+        "source": "docs/lessons/07-heldout.md",
+        "target": true,
+        "unit_start": "07-heldout/00",
+        "unit_end": "07-heldout/05",
+        "unit_count": 6,
+        "source_line_start": 1,
+        "source_line_end": 175,
+        "record_line_start": 121,
+        "record_line_end": 126
+      },
+      {
+        "page_id": "08-own-images",
+        "source": "docs/lessons/08-own-images.md",
+        "target": true,
+        "unit_start": "08-own-images/00",
+        "unit_end": "08-own-images/07",
+        "unit_count": 8,
+        "source_line_start": 1,
+        "source_line_end": 201,
+        "record_line_start": 127,
+        "record_line_end": 134
+      },
+      {
+        "page_id": "08-own-data",
+        "source": "docs/lessons/08-own-data.md",
+        "target": true,
+        "unit_start": "08-own-data/00",
+        "unit_end": "08-own-data/05",
+        "unit_count": 6,
+        "source_line_start": 1,
+        "source_line_end": 304,
+        "record_line_start": 135,
+        "record_line_end": 140
+      }
+    ]
+  },
+  "issues": [
+    {
+      "id": "P1",
+      "scope": "先備頁",
+      "type": "名稱補充",
+      "original_location": {
+        "unit_id": "00-warmup/02",
+        "source": "docs/lessons/00-warmup.md",
+        "source_line_start": 25,
+        "source_line_end": 64,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 13
+      },
+      "original_quote": "本例用 SGD（隨機梯度下降）",
+      "already_understood": "中文名稱、更新角色與數字已懂。",
+      "gap_at_first_read": "重要縮寫未提供英文全名。",
+      "actual_impact": "不阻礙此步計算，只缺名稱補充。",
+      "original_severity": "optional",
+      "later_clarification": {
+        "status": "未在後續已讀材料中補足此缺口"
+      },
+      "final_severity": "optional",
+      "minimum_fix": "首次出現補 Stochastic Gradient Descent。"
+    },
+    {
+      "id": "P2",
+      "scope": "先備頁",
+      "type": "名稱補充",
+      "original_location": {
+        "unit_id": "01-small-cnn/03",
+        "source": "docs/lessons/01-small-cnn.md",
+        "source_line_start": 46,
+        "source_line_end": 75,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 24
+      },
+      "original_quote": "ReLU 把負值變 0，正值保留",
+      "already_understood": "ReLU 的操作和非線性角色已懂。",
+      "gap_at_first_read": "未展開英文完整名稱與中文名稱。",
+      "actual_impact": "不影響讀懂卷積流程，屬名稱補充。",
+      "original_severity": "optional",
+      "later_clarification": {
+        "status": "未在後續已讀材料中補足此缺口"
+      },
+      "final_severity": "optional",
+      "minimum_fix": "首次出現補 Rectified Linear Unit（修正線性單元）。"
+    },
+    {
+      "id": "P3",
+      "scope": "先備頁",
+      "type": "名稱補充",
+      "original_location": {
+        "unit_id": "01-small-cnn/04",
+        "source": "docs/lessons/01-small-cnn.md",
+        "source_line_start": 76,
+        "source_line_end": 122,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 25
+      },
+      "original_quote": "次乘加（MAC）",
+      "already_understood": "乘加的中文含義與計量限制已懂。",
+      "gap_at_first_read": "首次成本使用未提供完整英文。",
+      "actual_impact": "首次閱讀不影響成本計算；名稱補充稍晚。",
+      "original_severity": "optional",
+      "later_clarification": {
+        "status": "後來補足英文全名，保留原首次紀錄",
+        "location": {
+          "unit_id": "01-small-cnn/08",
+          "source": "docs/lessons/01-small-cnn.md",
+          "source_line_start": 185,
+          "source_line_end": 308,
+          "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+          "record_line": 29
+        },
+        "available_quote": "multiply–accumulate，縮寫 MAC",
+        "original_note_evidence": "MAC 英文全名到這裡才補。",
+        "remaining": "首次出現仍需前移名稱；不回寫成首次已知。"
+      },
+      "final_severity": "optional",
+      "minimum_fix": "將末段 multiply–accumulate 全名前移到首次 MAC。"
+    },
+    {
+      "id": "D1",
+      "scope": "目標頁",
+      "type": "圖解",
+      "original_location": {
+        "unit_id": "04-localization/05",
+        "source": "docs/lessons/04-localization.md",
+        "source_line_start": 119,
+        "source_line_end": 126,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 64
+      },
+      "original_quote": "並輸出 `artifacts/04-localization.png` 的 GT／pred 疊圖；pred 來自只更新 3 步的模型，品質沒有保證。",
+      "already_understood": "已懂三步只驗梯度與參數更新，品質沒有保證；也已看人工 IoU 對照圖。",
+      "gap_at_first_read": "正文只給模型疊圖檔名，沒有嵌入該次三步實際 GT／pred 兩圖。",
+      "actual_impact": "只讀網頁不能直接看此模型預測與兩張材料，須自行執行找檔，增加結果解讀負擔。",
+      "original_severity": "burden",
+      "later_clarification": {
+        "status": "後續有其他 grid 模型的實測疊圖，未補本模型圖",
+        "locations": [
+          {
+            "unit_id": "07-training/05",
+            "source": "docs/lessons/07-training.md",
+            "source_line_start": 139,
+            "source_line_end": 218,
+            "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+            "record_line": 116
+          },
+          {
+            "unit_id": "07-inference/03",
+            "source": "docs/lessons/07-inference.md",
+            "source_line_start": 126,
+            "source_line_end": 179,
+            "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+            "record_line": 120
+          }
+        ],
+        "remaining": "160 步 GridDetector 圖板不能代替 04-localization 特定雙 head 三步輸出。"
+      },
+      "final_severity": "burden",
+      "minimum_fix": "此處嵌入保存的三步 GT／pred 疊圖，註明步數與其不同於人工 IoU 圖。"
+    },
+    {
+      "id": "D2",
+      "scope": "目標頁",
+      "type": "圖解",
+      "original_location": {
+        "unit_id": "04-coordinates/05",
+        "source": "docs/lessons/04-coordinates.md",
+        "source_line_start": 110,
+        "source_line_end": 146,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 72
+      },
+      "original_quote": "例如對照圖 stretch 那一格，紅色物件上下緣的暗紅細線",
+      "already_understood": "已懂插值加權平均會產生 0～1 中間值，以及 >0.5 檢查規則。",
+      "gap_at_first_read": "所提供 SVG 只有原圖與 letterbox，沒有正文要求看的 stretch 格；實際三格對照只給 artifacts 路徑。",
+      "actual_impact": "只讀網頁看不到所指暗紅細線，需自行跑圖才能核對正文觀察。",
+      "original_severity": "burden",
+      "later_clarification": {
+        "status": "未在後續已讀材料中補足此缺口"
+      },
+      "final_severity": "burden",
+      "minimum_fix": "嵌入保存的原圖／stretch／letterbox 三格實際對照，讓插值邊與白虛線補邊區直接可見。"
+    },
+    {
+      "id": "D3",
+      "scope": "目標頁",
+      "type": "名稱補充",
+      "original_location": {
+        "unit_id": "05-assignment/00",
+        "source": "docs/lessons/05-assignment.md",
+        "source_line_start": 1,
+        "source_line_end": 19,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 74
+      },
+      "original_quote": "格子（grid）與「中心所在的格負責」這兩個概念，參考 [YOLOv1 原始論文]",
+      "already_understood": "已知 YOLO 是偵測模型系列，格子與中心責任機制也清楚。",
+      "gap_at_first_read": "重要 YOLO 縮寫在首次機制使用時未展開英文全名。",
+      "actual_impact": "不影響分配計算；英文名稱稍後才補。",
+      "original_severity": "optional",
+      "later_clarification": {
+        "status": "後來提供英文全名，保留原首次紀錄",
+        "location": {
+          "unit_id": "07-data/00",
+          "source": "docs/lessons/07-data.md",
+          "source_line_start": 1,
+          "source_line_end": 26,
+          "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+          "record_line": 93
+        },
+        "available_quote": "原文是 [You Only Look Once (2016)]",
+        "remaining": "英文已在後頁可得，但應前移到首次介紹；不回寫成當時已知。"
+      },
+      "final_severity": "optional",
+      "minimum_fix": "首次介紹 YOLO 時補 You Only Look Once 與中文意義。"
+    },
+    {
+      "id": "D4",
+      "scope": "目標頁",
+      "type": "名稱補充",
+      "original_location": {
+        "unit_id": "06-evaluation/04",
+        "source": "docs/lessons/06-evaluation.md",
+        "source_line_start": 101,
+        "source_line_end": 127,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 90
+      },
+      "original_quote": "常見的官方規則來自 Pascal VOC 與 COCO：它們是兩個常用的公開物件偵測資料集，各附官方評分程式。",
+      "already_understood": "公開資料集、官方評分與本書差異已充分解釋。",
+      "gap_at_first_read": "主要對照名稱 VOC 與 COCO 縮寫未展開英文全名。",
+      "actual_impact": "不阻礙 AP 計算，只缺名稱補充。",
+      "original_severity": "optional",
+      "later_clarification": {
+        "status": "未在後續已讀材料中補足此缺口"
+      },
+      "final_severity": "optional",
+      "minimum_fix": "補 VOC（Visual Object Classes）與 COCO（Common Objects in Context）全名及中文意義。"
+    },
+    {
+      "id": "D5",
+      "scope": "目標頁",
+      "type": "圖解",
+      "original_location": {
+        "unit_id": "08-own-data/05",
+        "source": "docs/lessons/08-own-data.md",
+        "source_line_start": 159,
+        "source_line_end": 304,
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 140
+      },
+      "original_quote": "綠虛線是 GT，橘框是模型預測，數字是 score。",
+      "already_understood": "正文與圖下紅 1.00 TP、黃 0.16 FP 的判定清楚。",
+      "gap_at_first_read": "來源 PNG 的紅圖有兩個橘框，框旁沒有類別、score 或編號，不能直接對應到圖下兩列。",
+      "actual_impact": "須由外觀與 IoU 推測哪個框為紅 TP、哪個為額外黃 FP，核心成功／誤報圖例有識別負擔；文字可理解所以不阻斷。",
+      "original_severity": "burden",
+      "later_clarification": {
+        "status": "未在後續已讀材料中補足此缺口"
+      },
+      "final_severity": "burden",
+      "minimum_fix": "兩橘框旁各標類別與 score，或 #0／#1 與圖下列一對一對應。"
+    }
+  ],
+  "issue_counts": {
+    "blocking": 0,
+    "burden": 3,
+    "optional": 5,
+    "target_only": {
+      "blocking": 0,
+      "burden": 3,
+      "optional": 2
+    },
+    "later_name_clarifications": 2
+  },
+  "checkpoint_records": {
+    "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+    "count": 55,
+    "page_end_count": 13,
+    "locations": [
+      {
+        "page_id": "04-localization",
+        "unit_id": "04-localization/00",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 59,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-localization",
+        "unit_id": "04-localization/01",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 60,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-localization",
+        "unit_id": "04-localization/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 61,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-localization",
+        "unit_id": "04-localization/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 62,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-localization",
+        "unit_id": "04-localization/04",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 63,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-localization",
+        "unit_id": "04-localization/07",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 66,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-coordinates",
+        "unit_id": "04-coordinates/00",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 67,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-coordinates",
+        "unit_id": "04-coordinates/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 69,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "04-coordinates",
+        "unit_id": "04-coordinates/06",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 73,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "05-assignment",
+        "unit_id": "05-assignment/00",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 74,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "05-assignment",
+        "unit_id": "05-assignment/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 76,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "05-assignment",
+        "unit_id": "05-assignment/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 77,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "05-assignment",
+        "unit_id": "05-assignment/05",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 79,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-decode-nms",
+        "unit_id": "06-decode-nms/00",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 80,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-decode-nms",
+        "unit_id": "06-decode-nms/01",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 81,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-decode-nms",
+        "unit_id": "06-decode-nms/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 82,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-decode-nms",
+        "unit_id": "06-decode-nms/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 83,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-decode-nms",
+        "unit_id": "06-decode-nms/05",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 85,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-evaluation",
+        "unit_id": "06-evaluation/00",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 86,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-evaluation",
+        "unit_id": "06-evaluation/01",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 87,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-evaluation",
+        "unit_id": "06-evaluation/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 88,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-evaluation",
+        "unit_id": "06-evaluation/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 89,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-evaluation",
+        "unit_id": "06-evaluation/04",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 90,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "06-evaluation",
+        "unit_id": "06-evaluation/06",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 92,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-data",
+        "unit_id": "07-data/00",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 93,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-data",
+        "unit_id": "07-data/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 95,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-data",
+        "unit_id": "07-data/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 96,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-data",
+        "unit_id": "07-data/05",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 98,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-targets",
+        "unit_id": "07-targets/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 99,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-targets",
+        "unit_id": "07-targets/04",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 103,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-loss",
+        "unit_id": "07-loss/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 104,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-loss",
+        "unit_id": "07-loss/01",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 105,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-loss",
+        "unit_id": "07-loss/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 106,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-loss",
+        "unit_id": "07-loss/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 107,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-loss",
+        "unit_id": "07-loss/06",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 110,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-training",
+        "unit_id": "07-training/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 111,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-training",
+        "unit_id": "07-training/01",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 112,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-training",
+        "unit_id": "07-training/04",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 115,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-training",
+        "unit_id": "07-training/05",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 116,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-inference",
+        "unit_id": "07-inference/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 117,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-inference",
+        "unit_id": "07-inference/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 119,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-inference",
+        "unit_id": "07-inference/03",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 120,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-heldout",
+        "unit_id": "07-heldout/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 121,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-heldout",
+        "unit_id": "07-heldout/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 123,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "07-heldout",
+        "unit_id": "07-heldout/05",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 126,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-images",
+        "unit_id": "08-own-images/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 127,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-images",
+        "unit_id": "08-own-images/01",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 128,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-images",
+        "unit_id": "08-own-images/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 130,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-images",
+        "unit_id": "08-own-images/07",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 134,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-data",
+        "unit_id": "08-own-data/00",
+        "timing": "scope_overview",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 135,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-data",
+        "unit_id": "08-own-data/01",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 136,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-data",
+        "unit_id": "08-own-data/02",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 137,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-data",
+        "unit_id": "08-own-data/03",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 138,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-data",
+        "unit_id": "08-own-data/04",
+        "timing": "first_use",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 139,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      },
+      {
+        "page_id": "08-own-data",
+        "unit_id": "08-own-data/05",
+        "timing": "page_end",
+        "record_file": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+        "record_line": 140,
+        "json_pointer": "/notes/checkpoints/0",
+        "question_count": 4
+      }
+    ],
+    "question_order": "名稱與角色／為何引入與學習目的／輸入、結果、使用與後續用途／例子支持與不可推論的結論"
+  },
+  "conclusion": {
+    "assessment": "主要偵測學習鏈能由實際前文建立理解，沒有阻斷問題；仍有三項具體圖解負擔，並有名稱補充或前移事項。應先保留這些問題供協調者修正，再由全新讀者重驗。",
+    "supported_understanding": "可分清單物件雙 head 定位、xyxy／cxcywh 與正規化、實際縮放及 padding 還原、中心格子分配與正負 mask、三項 loss 與全空分支、解碼與同類 NMS、跨圖同類配對與 all-points AP50，再將 Dataset、CNN、optimizer、checkpoint 與原圖 CLI 接起來。",
+    "evidence_boundaries": "人工 fixture 與 smoke 只核對答案或接線；三步參數更新不宣稱泛化。160 步 grid 與 1600 步自訂資料實測有成功和失敗圖、固定協議與小樣本限制；只支持受控合成任務，不能推照片、架構優劣或穩定微差。",
+    "inference_remaining": "紅圖兩橘預測框與圖下類別列的對應必須由外觀／IoU推測，已列圖解問題；沒有以這種推測宣稱正文已明說。"
+  },
+  "actual_access_declaration": {
+    "read": [
+      "指定 reader-instructions.txt",
+      "指定 frozen clear-tutorial/SKILL.md 及 references/review-protocol.md",
+      "gate 順序揭露的 140 個單元",
+      "當次明列的來源 PNG，以 view_image 檢視",
+      "自身 current-note、state.json、detector.jsonl 及 detector-disclosures.jsonl（協調者提供確切位置）"
+    ],
+    "not_read": [
+      "作者對話、manifest、封存 packets",
+      "其他讀者筆記、舊報告或修正中的教材",
+      "未揭露與未來章節正文",
+      "程式實作、保存的外部實測 JSON 或外部解釋、論文、官方文件"
+    ],
+    "actions": "僅讀與保存自己的逐段／最終紀錄；未改教材、未改其他紀錄、未啟動訓練，未搜尋或列出 repository。自己的 detector 目錄曾用 rg --files 列檔，以查自身紀錄位置。",
+    "isolation": "共享檔案系統靠遵守範圍隔離；不聲稱技術上無法存取。"
+  },
+  "unverified": [
+    "網站實際排版、MkDocs 渲染、手機尺寸的可讀性",
+    "未執行程式、訓練、Colab、CLI 或 checkpoint 載入；未驗證實作與時間數值",
+    "未打開文字連結的原始合併圖、外部保存報告、論文與官方評估程式",
+    "未驗證真照片效果、跨裝置一致性或 GPU／中斷續訓導航證據"
+  ],
+  "original_records": {
+    "notes": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector.jsonl",
+    "disclosures": "/workspace/learn_to_yolo/reviews/clear-tutorial/full-review-2026-10-06/first-read/detector-disclosures.jsonl"
+  }
+}

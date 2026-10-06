@@ -130,7 +130,7 @@ ReLU 沒有參數，不影響參數數。`nn.Conv2d` 預設帶 bias（每個輸�
 
     **YOLOv5**：YOLOv5 由 Ultralytics 公司另行開發，以開源程式碼發布。可對照固定版本的[官方 v6.0 common.py](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/common.py)（連結固定在 v6.0 tag 指向的 commit）：v6.0 是 YOLOv5 程式庫的版本號，不是 YOLOv6；common.py 是定義各種模組的程式檔。v6.0 的模型配置用的 CSP 模組是 C3，程式註解寫著「CSP Bottleneck with 3 convolutions」。C3 不用 chunk 切半，而是用兩個 1×1 卷積從同一個輸入各算出一支，每支的通道數是輸出通道數的一半（`e=0.5`），相當於本節的切半。其中一支再經過一個或多個 Bottleneck，然後兩支串接，由第三個 1×1 卷積融合；所以 C3 和本節一樣是先串接、再融合。Bottleneck 是先做 1×1、再做 3×3 卷積的小模組。建立 C3 時有個選項 `shortcut`，預設為 True，這時 Bottleneck 還會像第 3 章的 shortcut 那樣，把輸入逐值加到這兩層卷積算出的結果上。以 v6.0 的 [yolov5s 配置](https://github.com/ultralytics/yolov5/blob/956be8e642b5c10af4a1533e09084ca32ff4f21f/models/yolov5s.yaml)為例，backbone 的 C3 都用這個預設；backbone 之後的 C3 則設成 False，不做這個相加（YOLOv5 的設定檔把 neck 也寫在 `head:` 段落底下）。同一個檔案裡較早的 BottleneckCSP 與 YOLOv4 的 CSPDarknet53，則像論文那樣，在支路末端先接一層 1×1 卷積再串接。
 
-    YOLOv4、YOLOv5 相對 YOLOv3 的改進不只 CSP 一項，不能全部歸功於 CSP。本節簡化為 8 通道的一次切分、兩個小卷積，再串接並用 1×1 融合，不重現完整的 CSPDarknet 或 C3。原版的每個卷積後面都接 BatchNorm（一種把每個 channel 的數值重新標準化的層）與激勵函數：YOLOv5 的 C3 由 `Conv` 模組組成（不帶 bias 的卷積 → BatchNorm → SiLU），YOLOv4 的 CSPDarknet53 每層卷積後接 BatchNorm 與 Mish。BatchNorm 會減掉每個 channel 的平均值，卷積的 bias 加了也會被減掉，所以原版不帶 bias。本節不加 BatchNorm、改用 ReLU，卷積保留 `nn.Conv2d` 預設的 bias；1240 與 368 只算卷積的權重與 bias。
+    YOLOv4、YOLOv5 相對 YOLOv3 的改進不只 CSP 一項，不能全部歸功於 CSP。本節簡化為 8 通道的一次切分、兩個小卷積，再串接並用 1×1 融合，不重現完整的 CSPDarknet 或 C3。原版的每個卷積後面都接 BatchNorm（一種把每個 channel 的數值重新標準化的層）與激勵函數：YOLOv5 的 C3 由 `Conv` 模組組成（不帶 bias 的卷積 → BatchNorm → SiLU（Sigmoid Linear Unit，sigmoid 線性單元：把輸入 x 乘上 sigmoid(x)）），YOLOv4 的 CSPDarknet53 每層卷積後接 BatchNorm 與 Mish。BatchNorm 會減掉每個 channel 的平均值，卷積的 bias 加了也會被減掉，所以原版不帶 bias。本節不加 BatchNorm、改用 ReLU，卷積保留 `nn.Conv2d` 預設的 bias；1240 與 368 只算卷積的權重與 bias。
 
 ## 收益、代價與常見錯誤
 
@@ -164,7 +164,7 @@ ReLU 沒有參數，不影響參數數。`nn.Conv2d` 預設帶 bias（每個輸�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-csp.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-csp.json)
 
 ??? example "展開本次實際輸出"
 

@@ -74,7 +74,7 @@ student 做完 optimizer 更新後，再把 teacher 的每個參數 `θ_t` 朝�
 
 ## 跑一次真更新，並檢查能否接續
 
-本節完整程式在 CPU 上跑小型自監督訓練，使用 seed 101 生成的 128 張 train 圖，不下載權重，也不要求上一節的 checkpoint。每步抽 24 張圖，只以 AdamW 更新 student 的 backbone 與投影頭；學習率固定 0.0005，weight decay=0.01，梯度範數最大截為 3。兩個溫度固定為 `τ_s=0.15`、`τ_t=0.08`，兩個動量固定為 `m_t=0.95`、`m_c=0.9`。這些是小模型的設定，前面的 K=3、溫度 0.1 與 EMA 0.9 是另外標明的手工例子。
+本節完整程式在 CPU 上跑小型自監督訓練，使用 seed 101 生成的 128 張 train 圖，不下載權重，也不要求上一節的 checkpoint。每步抽 24 張圖，只以 AdamW 更新 student 的 backbone 與投影頭；學習率固定 0.0005，weight decay=0.01，梯度範數最大截為 3：把所有參數梯度的平方相加再開根號，若長度超過 3，就把全部梯度乘上約「3／原長度」的共同比例，縮小長度而保留方向；長度不超過 3 就不縮放。紀錄的 `student_grad_norm` 是裁剪前的長度，所以第一步的 24.1192 可以大於 3；optimizer 使用的是縮放後的梯度。兩個溫度固定為 `τ_s=0.15`、`τ_t=0.08`，兩個動量固定為 `m_t=0.95`、`m_c=0.9`。這些是小模型的設定，前面的 K=3、溫度 0.1 與 EMA 0.9 是另外標明的手工例子。
 
 下面是實作一個更新步驟的核心：
 
@@ -115,7 +115,7 @@ checkpoint 要保存的不只有 teacher backbone：student、teacher、optimize
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-distillation.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-distillation.json)
 
 ??? example "展開本次實際輸出"
 
@@ -156,13 +156,13 @@ checkpoint 要保存的不只有 teacher backbone：student、teacher、optimize
         "step": 1,
         "loss": 1.9427120685577393,
         "teacher_entropy": 1.7583107948303223,
-        "student_grad_norm": 24.119150161743164
+        "student_grad_norm": 24.119152069091797
       },
       "last_step": {
         "step": 160,
-        "loss": 1.8742752075195312,
-        "teacher_entropy": 1.8416004180908203,
-        "student_grad_norm": 0.9461426734924316
+        "loss": 1.8742694854736328,
+        "teacher_entropy": 1.8415940999984741,
+        "student_grad_norm": 0.9462160468101501
       },
       "backbone_weights_changed": true,
       "teacher_has_no_grad": true,
@@ -173,13 +173,13 @@ checkpoint 要保存的不只有 teacher backbone：student、teacher、optimize
         "final_step": 160
       },
       "diagnostics_train": {
-        "feature_std": 0.32309845089912415,
-        "normalized_feature_std": 0.056578539311885834,
-        "mean_pair_cosine": 0.8623811602592468,
-        "mean_output_entropy": 1.7878174781799316,
-        "marginal_output_entropy": 2.215689182281494
+        "feature_std": 0.32309943437576294,
+        "normalized_feature_std": 0.05657871067523956,
+        "mean_pair_cosine": 0.8623802661895752,
+        "mean_output_entropy": 1.7878104448318481,
+        "marginal_output_entropy": 2.2156848907470703
       },
-      "elapsed_training_and_resume_seconds": 7.333005840016995,
+      "elapsed_training_and_resume_seconds": 4.2405333849983435,
       "checkpoint_path": "artifacts/runs/dino/22-distillation-midpoint.pt",
       "simplifications": "2 global views; ordinary MLP and no weight normalization; fixed temperatures/LR/EMA; no multi-crop or official schedules",
       "limitation": "DINO2021 mechanism demonstration from scratch; loss/diagnostics are not downstream or natural-image capability proof"

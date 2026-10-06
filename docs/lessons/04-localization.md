@@ -56,8 +56,10 @@ class Localizer(nn.Module):
 另一種寫法 `cxcywh` 是中心、寬高，由 xyxy 換算：
 
 \[
-c_x=(x_1+x_2)/2,\quad c_y=(y_1+y_2)/2,\quad
-w=x_2-x_1,\quad h=y_2-y_1.
+\begin{aligned}
+c_x&=(x_1+x_2)/2,\quad c_y=(y_1+y_2)/2,\\
+w&=x_2-x_1,\quad h=y_2-y_1.
+\end{aligned}
 \]
 
 第 0 張紅色方塊的真值框是 xyxy `[4,6,16,18]` px，轉成 cxcywh 是 `[10,12,12,12]` px。圖是 32×32，把 x 與 w 除以圖寬 32、y 與 h 除以圖高 32，得到 `[0.3125,0.375,0.375,0.375]`；這四個值沒有單位，是正規化後的目標（target）。第 1 張藍色方塊的真值框是 xyxy `[16,10,28,22]` px，照同樣步驟，得到 `[0.6875,0.5,0.375,0.375]`。非正方形圖片要分別除以寬 W 和高 H，不能一律除以同一個數。
@@ -120,6 +122,10 @@ IoU 評估整個框的幾何重疊，和四個座標的 MSE 是不同的數字�
 
 完整程式應輸出：兩張人工特徵圖的平均都是 0.0625、第 0 張圖的 target `[0.3125,0.375,0.375,0.375]`、`class_shape=(2, 2)`、`box_shape=(2, 4)`（shape 以 tuple 印出，就是本頁寫的 `[2,2]`、`[2,4]`）。程式也用斷言確認框 head 權重的梯度不全為 0、更新後權重確實改變，並輸出 `artifacts/04-localization.png` 的 GT／pred 疊圖；pred 來自只更新 3 步的模型，品質沒有保證。本節的 IoU 圖則是**人工固定框**，專門提供可手算的 IoU。
 
+![固定兩張人工圖、SGD 更新三步後，模型輸出的框與真值框疊圖](../assets/diagrams/04-localization-model.png)
+
+這張是程式實際產生的疊圖：左邊紅方塊、右邊藍方塊，綠框 GT 是真值，黃框 pred 是第三次更新後模型算出的框。先比四條邊：黃框和綠框仍有明顯偏差，尤其右圖的左界。它讓你核對「框 head 真的輸出位置」，並看出三步更新還不足以把這兩個訓練框擬合好；它不是前一張人工 IoU 算例，也不能代表未見圖片的表現。
+
 頁尾的執行紀錄裡，三步的總 loss 約 0.8099→0.7576，分類 0.7173→0.7123，框 0.0185→0.0091。這些都是在該步更新「之前」量的：step=0、1、2 的總 loss 依序是 0.8099、0.7779、0.7576，所以 0.7576 是更新兩次後的值，第三次更新後沒有再量 loss。下方〈[訓練 40 步](#forty-steps)〉曲線的第 1 點，就是這裡的 step=0。這只是兩張訓練圖片的結果，沒有獨立的定位評估。
 
 收益是把分類與定位接在同一次 forward 裡。代價是本例展平的框 head 有 4100 個參數：1024 個輸入接 4 個輸出，1024×4 個權重＋4 個 bias＝4100。若同樣 4 個 channel 先平均再接 linear，只剩 4 個輸入，4×4＋4＝20 個參數，但失去直接的位置對應。只要 pooling 後不是 16×16，展平的框 head 就對不上：例如輸入改成 64×64，pooling 後是 `[B,4,32,32]`，展平得 4096 個數，框 head 卻只收 1024 個，執行時會報形狀不合的錯誤；分類 head 先平均，仍是 `[B,4]`，不受影響。少數尺寸（例如 33×33）pooling 後仍是 16×16，不會報錯，但最後一列與一欄被 pooling 丟掉，同樣不該這樣用。所以不能只改圖片尺寸、不改模型。
@@ -175,7 +181,7 @@ display(SVG(filename='artifacts/runs/learning/04-localization/learning.svg'))
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
 
 ??? example "展開本次實際輸出"
 
@@ -185,7 +191,7 @@ display(SVG(filename='artifacts/runs/learning/04-localization/learning.svg'))
     step=1, classification=0.7146, box=0.0127, total=0.7779
     step=2, classification=0.7123, box=0.0091, total=0.7576
     first_target_cxcywh=[0.3125, 0.375, 0.375, 0.375], class_shape=(2, 2), box_shape=(2, 4)
-    predicted pixel xyxy=[[7.488578796386719, 7.199568271636963, 20.595396041870117, 19.995590209960938], [9.941701889038086, 8.684192657470703, 23.892370223999023, 22.775699615478516]]
+    predicted pixel xyxy=[[7.4885783195495605, 7.199568748474121, 20.595396041870117, 19.995590209960938], [9.941701889038086, 8.684192657470703, 23.892370223999023, 22.775699615478516]]
     overlay=artifacts/04-localization.png; no held-out detection claim
     ```
 

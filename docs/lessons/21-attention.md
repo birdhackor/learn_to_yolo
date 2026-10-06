@@ -49,6 +49,8 @@ A 是每個 head 的讀取比例，不是可學參數；產生 Q/K/V 的投影�
 
 現在做一個機制檢查，不訓練模型。保持 CLS 在序列第 0 槽，把兩個 patch 的**內容向量**交換；原圖分類答案不變，仍要辨認紅或藍。這次比較完整、未訓練 TinyViT 的整圖特徵：tokens 經過兩個 Transformer blocks 和最後 LayerNorm 後，取出的 CLS 向量。下一節才拆開這條完整路徑；此刻只觀察這個 32 維整圖特徵有沒有改變，不計算分類 head 的紅藍分數或正確率。
 
+先知道這條完整路徑裡各部件的分工就夠了：Transformer block 用 attention 讓位置互相讀取，再用 **MLP（Multi-Layer Perceptron，多層感知器）**這個小型全連線網路修改每個 token 內的特徵。**LayerNorm（Layer Normalization，層正規化）**整理每個 token 自己的特徵尺度。MLP 與 LayerNorm 都對各 token 使用同一套規則，不在這一步混合不同位置；residual 則把同一位置的修正加回原值，和第 3.1 節相同。因此，交換 patch 順序後，這些步驟的輸出也跟著同樣交換；它們不會讓固定在第 0 槽的 CLS 多出位置線索。具體順序與公式留到下一節。
+
 不加位置向量時，交換只是把同一批內容換順序。每個 token 用相同的 QKV 投影，attention 又讀全部來源，因此來源順序換了，對 CLS 的加權總和不變；patch 輸出的順序則跟著交換。後續逐 token 的運算和 residual 也保留這個性質。
 
 加入位置向量後，若**槽位的位置向量留在原位**，交換兩塊內容會形成新的「內容＋位置」配對，CLS 輸出就可能改變。若把已加完位置的整個向量一起搬走，內容和位置配對沒有改，仍只是同一串向量重排；不能用那種操作測出位置的作用。
@@ -59,9 +61,9 @@ A 是每個 head 的讀取比例，不是可學參數；產生 Q/K/V 的投影�
 
 |比較|最大絕對差|
 |---|---:|
-|不加位置，交換前後的整圖特徵（CLS）|0.0000002384|
-|不加位置，patch 輸出與應有的交換順序|0.0000002384|
-|位置留在原槽，只交換內容，交換前後的整圖特徵（CLS）|0.001603365|
+|不加位置，交換前後的整圖特徵（CLS）|0.0000003576|
+|不加位置，patch 輸出與應有的交換順序|0.0000004768|
+|位置留在原槽，只交換內容，交換前後的整圖特徵（CLS）|0.001603425|
 
 前兩項小於程式採用的容許誤差 0.000002，視為 float32 捨入造成的差異；第三項則明顯超過它。這能展示位置向量如何改變運算的輸入，**不能據此說位置向量提升了紅藍分類正確率**：顏色答案本來就不依賴位置，也沒有在這裡做有／無位置的訓練對照。
 
@@ -93,12 +95,12 @@ attention 圖同樣有範圍：高權重表示這層這個 head 從某來源讀�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-attention.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-attention.json)
 
 ??? example "展開本次實際輸出"
 
     ```text
-    {"event": "attention", "manual_tokens": [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]], "first_query_scores_before_scale": [1.0, 0.0, 1.0, 0.0], "scale": 1.4142135623730951, "first_attention_row": [0.3348807692527771, 0.1651192307472229, 0.3348807692527771, 0.1651192307472229], "first_weighted_value": [0.6697615385055542, 0.5], "manual_weight_shape": [1, 1, 4, 4], "manual_loss": 0.1594690978527069, "q_k_v_gradient_abs_sums": [0.07701923698186874, 0.07701923698186874, 0.4417698085308075], "qkv_weights_changed": true, "vit_tokens_shape": [1, 17, 32], "vit_heads": 4, "vit_head_dim": 8, "vit_attention_shape": [1, 4, 17, 17], "vit_attention_scores": 1156, "vit_output_shape": [1, 17, 32], "vit_row_sum_max_error": 1.7881393432617188e-07, "swap_patch_sequence_indices": [1, 16], "without_position_cls_max_change": 2.384185791015625e-07, "without_position_patch_equivariance_max_error": 2.384185791015625e-07, "with_fixed_position_cls_max_change": 0.0016033649444580078, "limitation": "One SGD update validates the mechanism; random ViT attention weights are not explanations of a trained decision."}
+    {"event": "attention", "manual_tokens": [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]], "first_query_scores_before_scale": [1.0, 0.0, 1.0, 0.0], "scale": 1.4142135623730951, "first_attention_row": [0.3348807692527771, 0.1651192307472229, 0.3348807692527771, 0.1651192307472229], "first_weighted_value": [0.6697615385055542, 0.5], "manual_weight_shape": [1, 1, 4, 4], "manual_loss": 0.1594690978527069, "q_k_v_gradient_abs_sums": [0.07701923698186874, 0.07701923698186874, 0.4417698085308075], "qkv_weights_changed": true, "vit_tokens_shape": [1, 17, 32], "vit_heads": 4, "vit_head_dim": 8, "vit_attention_shape": [1, 4, 17, 17], "vit_attention_scores": 1156, "vit_output_shape": [1, 17, 32], "vit_row_sum_max_error": 1.7881393432617188e-07, "swap_patch_sequence_indices": [1, 16], "without_position_cls_max_change": 3.5762786865234375e-07, "without_position_patch_equivariance_max_error": 4.76837158203125e-07, "with_fixed_position_cls_max_change": 0.0016034245491027832, "limitation": "One SGD update validates the mechanism; random ViT attention weights are not explanations of a trained decision."}
     ```
 
 <!-- curriculum-evidence:end -->

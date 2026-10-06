@@ -194,9 +194,9 @@ validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當�
 
 先看曲線：藍線是每次更新前那批 8 張 minibatch 的 loss，起點約 1.56；表格起點 1.55017 則是全部 24 張 train 的 loss。紅色虛線是第 160 步，旁邊尖峰約在第 158 步；它標出短實驗在哪裡結束，後面才逐漸降到接近 0。
 
-![固定四張 validation 圖的實際預測與配對；綠虛線是 GT，橘框是預測](../assets/diagrams/08-custom-predictions-readable.svg)
+![固定四張 validation 圖的實際預測與配對；綠虛線是 GT，橘框是預測](../assets/diagrams/08-custom-predictions-labelled.svg)
 
-再看這四張 validation 圖：綠虛線是 GT，橘框是模型預測，數字是 score。判定仍按分數排序、一個同類 GT 最多配一次，IoU≥0.5 才是 TP；未配成的預測是 FP，沒被預測配到的 GT 是 FN。
+再看這四張 validation 圖：綠虛線是 GT，橘框是模型預測。每張圖的預測依 score 由高到低，從 #0 編號；框旁的編號與連線對應圖下同編號的類別、score 和配對結果，編號在不同圖會重新開始。判定仍按分數排序、一個同類 GT 最多配一次，IoU≥0.5 才是 TP；未配成的預測是 FP，沒被預測配到的 GT 是 FN。
 
 - 紅圖：紅框 score 約 1.00、IoU 約 0.58，是 TP；額外黃框 score 約 0.16，圖中沒有黃色 GT，是 FP（和紅色 GT 的 IoU 約 0.24）。
 - 藍圖：score 約 0.46，IoU 約 0.41，只有一個 FP，藍 GT 同時是 FN。
@@ -307,7 +307,7 @@ python scripts/detect_image.py --image my-data/images/example.png --checkpoint a
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-data.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-data.json)
 
 ??? example "展開本次實際輸出"
 

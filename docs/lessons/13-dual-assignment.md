@@ -116,7 +116,7 @@ loss = many_loss + one_loss
 
     這種搜尋要試 `P!/(P−G)!` 種配法。本例 A 先有 3 個候選可選，B 剩 2 個，共 3×2=6 種，就是高中學的排列數。候選與 GT 變多時，這個數字增加得非常快。例如 640×640 的輸入用 stride 8、16、32 三層特徵圖，各有 80×80、40×40、20×20 格，每格一個候選，共 8400 個候選；圖上有 10 個 GT 時，要試 8400×8399×…×8391≈1.7×10³⁹ 種，不可能一一列舉。
 
-    「每個 GT 配一個不同的候選，讓總品質最大」這類問題叫指派問題。匈牙利演算法（Hungarian algorithm）是指派問題的經典解法：不必列出全部組合，就能有效率地求出最佳解；DETR（另一類也不用 NMS 的偵測器）訓練時就用它做一對一配對。YOLOv10 沒有用它：論文說，一對一改成每個 GT 只取第一名（top-1，沿用 12.3 那種 task-aligned 的品質排名），效果和匈牙利配對相當，額外的訓練時間更少。
+    「每個 GT 配一個不同的候選，讓總品質最大」這類問題叫指派問題。匈牙利演算法（Hungarian algorithm）是指派問題的經典解法：不必列出全部組合，就能有效率地求出最佳解；DETR（DEtection TRansformer，偵測 Transformer；另一類也不用 NMS 的偵測器）訓練時就用它做一對一配對。YOLOv10 沒有用它：論文說，一對一改成每個 GT 只取第一名（top-1，沿用 12.3 那種 task-aligned 的品質排名），效果和匈牙利配對相當，額外的訓練時間更少。
 
 
 ## 推論只留哪一個？還有哪些限制？
@@ -171,7 +171,7 @@ loss = many_loss + one_loss
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
 
 ??? example "展開本次實際輸出"
 

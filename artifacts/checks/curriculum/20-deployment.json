@@ -1,14 +1,14 @@
 {
   "id": "20-deployment",
   "passed": true,
-  "executed_at_utc": "2026-10-05T07:19:28.337189+00:00",
+  "executed_at_utc": "2026-10-06T05:23:07.699292+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -27,9 +27,9 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 3.2441,
+  "process_wall_seconds": 2.2561,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
-  "stdout": "{\n  \"onnx\": \"artifacts/lesson-20/grid.onnx\",\n  \"opset\": 17,\n  \"providers\": [\n    \"CPUExecutionProvider\"\n  ],\n  \"input_shape\": [\n    \"batch\",\n    3,\n    64,\n    64\n  ],\n  \"batches_checked\": [\n    1,\n    2,\n    3\n  ],\n  \"max_abs_raw_errors\": [\n    1.1920928955078125e-07,\n    4.76837158203125e-07,\n    4.76837158203125e-07\n  ],\n  \"decoded_boxes_scores_labels_match\": true,\n  \"restored_boxes_per_source\": [\n    16,\n    16,\n    16\n  ],\n  \"dynamic_spatial\": false,\n  \"spatial80_rejected\": true,\n  \"median_ms\": {\n    \"torch_raw_batch1\": 0.2546969917602837,\n    \"ort_raw_batch1\": 0.11234500561840832,\n    \"torch_preprocess_to_restored_boxes\": 3.278577991295606,\n    \"ort_preprocess_to_restored_boxes\": 3.0430780025199056,\n    \"paired_torch_minus_ort_preprocess_to_restored_boxes\": 0.24904299061745405,\n    \"ort_raw_batch2\": 0.09892400703392923\n  },\n  \"end_to_end_paired_rounds\": 40,\n  \"ort_raw_batch2_images_per_second\": 20217.539300789085,\n  \"versions\": {\n    \"torch\": \"2.9.1+cpu\",\n    \"onnx\": \"1.19.1\",\n    \"onnxruntime\": \"1.23.2\"\n  },\n  \"limits\": \"CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented\"\n}\nreal ONNX export + checker + ORT CPU + restored-box parity completed\n",
+  "stdout": "{\n  \"onnx\": \"artifacts/lesson-20/grid.onnx\",\n  \"opset\": 17,\n  \"providers\": [\n    \"CPUExecutionProvider\"\n  ],\n  \"input_shape\": [\n    \"batch\",\n    3,\n    64,\n    64\n  ],\n  \"batches_checked\": [\n    1,\n    2,\n    3\n  ],\n  \"max_abs_raw_errors\": [\n    4.76837158203125e-07,\n    4.76837158203125e-07,\n    4.76837158203125e-07\n  ],\n  \"decoded_boxes_scores_labels_match\": true,\n  \"restored_boxes_per_source\": [\n    16,\n    16,\n    16\n  ],\n  \"dynamic_spatial\": false,\n  \"spatial80_rejected\": true,\n  \"median_ms\": {\n    \"torch_raw_batch1\": 0.1509749990873388,\n    \"ort_raw_batch1\": 0.036599500162992626,\n    \"torch_preprocess_to_restored_boxes\": 2.3252515002241125,\n    \"ort_preprocess_to_restored_boxes\": 2.1557750005740672,\n    \"paired_torch_minus_ort_preprocess_to_restored_boxes\": 0.17311249939666595,\n    \"ort_raw_batch2\": 0.04289900061849039\n  },\n  \"end_to_end_paired_rounds\": 40,\n  \"ort_raw_batch2_images_per_second\": 46621.132687598256,\n  \"versions\": {\n    \"torch\": \"2.9.1+cpu\",\n    \"onnx\": \"1.19.1\",\n    \"onnxruntime\": \"1.23.2\"\n  },\n  \"limits\": \"CPU float32 parity; one training step is not detection-quality evidence; this CPU case does not run TensorRT/GPU; separate L4 evidence is documented\"\n}\nreal ONNX export + checker + ORT CPU + restored-box parity completed\n",
   "stderr": "/workspace/learn_to_yolo/lesson_cases/20-deployment.py:77: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter will be the default. To switch now, set dynamo=True in torch.onnx.export. This new exporter supports features like exporting LLMs with DynamicCache. We encourage you to try it and share feedback to help improve the experience. Learn more about the new export logic: https://pytorch.org/docs/stable/onnx_dynamo.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html.\n  torch.onnx.export(model, images[:1], str(onnx_path), input_names=['images'], output_names=['raw_grid'],\n",
   "exit_code": 0
 }

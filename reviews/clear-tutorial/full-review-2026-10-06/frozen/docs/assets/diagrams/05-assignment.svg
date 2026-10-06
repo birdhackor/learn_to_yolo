@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 700" role="img" aria-labelledby="title desc">
+  <title id="title">64乘64圖、4乘4候選格與中心責任分配</title>
+  <desc id="desc">依比例繪製的示意圖：64乘64圖片切成4乘4格，每格16畫素，圖上1畫素畫成4個單位。col往右、row往下，刻度是0、16、32、48、64畫素。紅框[4,4,20,20]的中心黑點(12,12)落在淡紅色row0／col0；藍框[36,36,52,52]的中心(44,44)落在淡藍色row2／col2。兩框都跨四格，責任只看中心。兩框的target都是[0.75,0.75,0.25,0.25]：前兩項是格內中心偏移除以16，後兩項是寬高除以整圖64。這张圖正格2、負格14。每格只有1個slot，同一格放兩個物件會超出容量。</desc>
+  <!-- 圖片座標(x,y)畫素對應圖面(96+4x,126+4y)，每格64個單位。 -->
+  <rect width="420" height="700" rx="12" fill="#f8fafc"/>
+  <rect x="96" y="126" width="256" height="256" fill="#fff"/>
+  <rect x="96" y="126" width="64" height="64" fill="#fee2e2"/>
+  <rect x="224" y="254" width="64" height="64" fill="#dbeafe"/>
+  <path d="M160 126V382M224 126V382M288 126V382M96 190H352M96 254H352M96 318H352" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="96" y="126" width="256" height="256" fill="none" stroke="#475569" stroke-width="1.5"/>
+  <path d="M96 119V126M160 119V126M224 119V126M288 119V126M352 119V126M89 126H96M89 190H96M89 254H96M89 318H96M89 382H96" stroke="#475569" stroke-width="1.5"/>
+  <rect x="97.5" y="127.5" width="61" height="61" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="7 4"/>
+  <rect x="225.5" y="255.5" width="61" height="61" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="7 4"/>
+  <rect x="112" y="142" width="64" height="64" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <rect x="240" y="270" width="64" height="64" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="144" cy="174" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+  <circle cx="272" cy="302" r="5" fill="#172554" stroke="#fff" stroke-width="1.5"/>
+  <g font-family="sans-serif" fill="#0f172a">
+    <text x="20" y="33" font-size="24">責任只看中心，框可以跨格</text>
+    <text x="20" y="65" font-size="20">64×64 圖，4×4 格；每格 16 畫素</text>
+    <g font-size="18" fill="#334155" text-anchor="middle">
+      <text x="128" y="93">col 0</text><text x="192" y="93">col 1</text><text x="256" y="93">col 2</text><text x="320" y="93">col 3</text>
+      <text x="96" y="116">0</text><text x="160" y="116">16</text><text x="224" y="116">32</text><text x="288" y="116">48</text><text x="352" y="116">64</text>
+    </g>
+    <g font-size="18" fill="#334155" text-anchor="end">
+      <text x="62" y="166">row 0</text><text x="62" y="230">row 1</text><text x="62" y="294">row 2</text><text x="62" y="358">row 3</text>
+      <text x="84" y="132">0</text><text x="84" y="196">16</text><text x="84" y="260">32</text><text x="84" y="324">48</text><text x="84" y="388">64</text>
+    </g>
+    <g font-size="21">
+      <text x="20" y="426" fill="#b91c1c">紅中心 (12,12) → row 0／col 0</text>
+      <text x="20" y="460" fill="#1d4ed8">藍中心 (44,44) → row 2／col 2</text>
+      <text x="20" y="501">兩框 target 都是：</text>
+      <text x="20" y="532">[0.75, 0.75, 0.25, 0.25]</text>
+      <text x="20" y="564" fill="#475569">前兩項：格內 x/16、格內 y/16</text>
+      <text x="20" y="596" fill="#475569">後兩項：寬/64、高/64</text>
+      <text x="20" y="638">黑點是中心；淡色格是正格。</text>
+      <text x="20" y="674">正格 2、負格 14；每格只有 1 框。</text>
+    </g>
+  </g>
+</svg>

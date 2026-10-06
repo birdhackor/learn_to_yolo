@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 740" role="img" aria-labelledby="title desc">
+<title id="title">實測實例：40步後的框與配對結果</title>
+<desc id="desc">實測實例的靜態重繪，同一份已存報告、非新訓練。三個預測框ID對應prediction列0到2，座標忠實按報告繪製，#2底邊為y=64，完整顯示。#0 class0 score0.763與紅色GT的IoU0.44，FP，紅GT為FN。#1 class1 score0.836與藍GT的IoU0.86，TP。#2 class1 score0.131與藍GT的IoU0.30，FP。IoU門檻0.5，GT只能配一次。</desc>
+<!-- Static redraw; not overwritten by run_multiscale_learning.py. Report: artifacts/checks/curriculum/10-multiscale-learning.json sha256=b825d38aa28ad98d0c84fe38f8be79431fae3f13d18f2690e5028da6f122ec09. Prediction IDs equal report list indices. GT and exact image from scripts/run_multiscale_learning.py small/large and image construction. IoUs computed from report boxes and same GT; display rounded only. -->
+<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M-2 2L2-2M0 8L8 0M6 10L10 6" stroke="#94a3b8" stroke-width="1.4"/></pattern><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#475569"/></marker></defs>
+<rect width="520" height="740" fill="#f8fafc"/>
+<g font-family="Noto Sans CJK TC, sans-serif" fill="#0f172a"><text x="24" y="35" font-size="25" fill="#0f172a" text-anchor="start" font-weight="700">實測實例：40 次更新後的預測</text>
+<text x="24" y="70" font-size="23" fill="#0f172a" text-anchor="start">綠虛線 GT；橙實線預測；座標為 pixel</text>
+<rect x="74" y="118" width="384" height="384" fill="#000" stroke="#64748b" stroke-width="1" />
+<rect x="104" y="148" width="48" height="48" fill="#ff0000" stroke="none" stroke-width="2" />
+<rect x="266" y="310" width="144" height="144" fill="#0000ff" stroke="none" stroke-width="2" />
+<rect x="104" y="148" width="48" height="48" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="8 5"/>
+<rect x="266" y="310" width="144" height="144" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="8 5"/>
+<rect x="111.948271" y="126.370100" width="30.171558" height="80.469601" fill="none" stroke="#fb923c" stroke-width="3" />
+<rect x="270.829361" y="311.862640" width="129.025955" height="138.692688" fill="none" stroke="#fb923c" stroke-width="3" />
+<rect x="283.211365" y="390.621658" width="127.168488" height="111.378342" fill="none" stroke="#fb923c" stroke-width="3" />
+<path d="M142.119829 166H190" fill="none" stroke="#fb923c" stroke-width="2"/>
+<text x="198" y="173" font-size="24" fill="#fff" text-anchor="start" font-weight="700">#0 FP</text>
+<text x="198" y="203" font-size="23" fill="#fff" text-anchor="start">小框 GT：FN</text>
+<path d="M270.829361 334H190" fill="none" stroke="#fb923c" stroke-width="2"/>
+<text x="183" y="342" font-size="24" fill="#fff" text-anchor="end" font-weight="700">#1 TP</text>
+<path d="M283.211365 472H190" fill="none" stroke="#fb923c" stroke-width="2"/>
+<text x="183" y="480" font-size="24" fill="#fff" text-anchor="end" font-weight="700">#2 FP</text>
+<text x="74" y="530" font-size="20" fill="#0f172a" text-anchor="middle">0</text>
+<text x="58" y="125" font-size="20" fill="#0f172a" text-anchor="end">0</text>
+<text x="170" y="530" font-size="20" fill="#0f172a" text-anchor="middle">16</text>
+<text x="58" y="221" font-size="20" fill="#0f172a" text-anchor="end">16</text>
+<text x="266" y="530" font-size="20" fill="#0f172a" text-anchor="middle">32</text>
+<text x="58" y="317" font-size="20" fill="#0f172a" text-anchor="end">32</text>
+<text x="362" y="530" font-size="20" fill="#0f172a" text-anchor="middle">48</text>
+<text x="58" y="413" font-size="20" fill="#0f172a" text-anchor="end">48</text>
+<text x="458" y="530" font-size="20" fill="#0f172a" text-anchor="middle">64</text>
+<text x="58" y="509" font-size="20" fill="#0f172a" text-anchor="end">64</text>
+<text x="480" y="530" font-size="22" fill="#0f172a" text-anchor="start">x</text>
+<text x="49" y="105" font-size="22" fill="#0f172a" text-anchor="end">y</text>
+<text x="24" y="573" font-size="23" fill="#0f172a" text-anchor="start">#0  class 0   score 0.763   IoU 0.44</text>
+<text x="24" y="609" font-size="23" fill="#0f172a" text-anchor="start">#1  class 1   score 0.836   IoU 0.86</text>
+<text x="24" y="645" font-size="23" fill="#0f172a" text-anchor="start">#2  class 1   score 0.131   IoU 0.30</text>
+<text x="24" y="682" font-size="23" fill="#0f172a" text-anchor="start">IoU 比同類 GT；配對門檻 0.5。</text>
+<text x="24" y="718" font-size="22" fill="#0f172a" text-anchor="start">#0–#2 是報告列號；小框漏檢、大框配對。</text>
+</g>
+</svg>

@@ -2,7 +2,7 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-patches.ipynb){ .md-button }
 
-[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。Vision Transformer，簡稱 **ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。
+[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。**Vision Transformer（視覺 Transformer），簡稱 ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。
 
 這四節是從第 15 章分出的自選支線。你可以先讀 [1：小 CNN](01-small-cnn.md)、[3.1：identity shortcut](03-identity.md)與 [15.1：attention](15-attention-bridge.md)，再從這裡往下走；完成 YOLO 主線不需要先完成這條支線。
 
@@ -45,7 +45,7 @@ attention 不直接使用那 192 個原始值。本例用同一個可學線性�
 
 ## 添一個 CLS，再加每個槽位的位置向量
 
-最後仍要回答整張圖是紅或藍。我們在 16 個 patch 前面添一個 **CLS token**：一個可學的 32 維向量，作為整圖的彙整位置。它不是由某個 patch 切出來，也不是正確類別答案。不同圖片一開始取得同一個 CLS 初值；後面讓它讀取各圖內容，才會形成不同的整圖表示。
+最後仍要回答整張圖是紅或藍。我們在 16 個 patch 前面添一個 **CLS（classification，分類）token**：一個可學的 32 維向量，作為整圖的彙整位置。它不是由某個 patch 切出來，也不是正確類別答案。不同圖片一開始取得同一個 CLS 初值；後面讓它讀取各圖內容，才會形成不同的整圖表示。
 
 序列變成 `[CLS, patch 1, …, patch 16]`，共 17 個 tokens，shape `[1,17,32]`。程式索引從 0 開始：索引 0 是 CLS，索引 1～16 才是圖中的 patch 1～16。
 
@@ -96,7 +96,7 @@ attention 不直接使用那 192 個原始值。本例用同一個可學線性�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-patches.json)
+本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-patches.json)
 
 ??? example "展開本次實際輸出"
 

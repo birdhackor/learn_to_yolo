@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="1280" viewBox="0 0 480 1280" role="img" aria-labelledby="title desc">
+<title id="title">候選點到框四邊的距離，與框外點的負距離</title>
+<desc id="desc">窄版上下圖板。64×64圖片，stride=8、8×8格，1畫素對5.5 SVG單位；圖片(x,y)映射為(64+5.5x,184+5.5y)，x向右y向下。上方與左方刻度是畫素座標，下方column與右方row是格編號0到7。GT框[12,16,40,36]，綠十字為GT中心(26,26)；黑候選點(28,28)為第(3,3)格中心。l,t,r,b箭頭由黑點指向GT四邊，畫素距離16,12,12,8，除stride後為2,1.5,1.5,1格。黑點不在GT中心，因此四距離不對稱。紅框外點(44,28)是同列第(5,3)格中心；紅虛線從紅點往左到框右邊，r=40−44=−4畫素，為−0.5格。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#475569"/></marker><marker id="purple-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="#7c3aed"/></marker></defs>
+<rect width="480" height="1280" fill="#f8fafc"/>
+<g font-family="Noto Sans CJK TC, sans-serif" fill="#0f172a">
+<text x="28" y="38" font-size="26" fill="#0f172a" font-weight="700">點到框四邊：l、t、r、b</text>
+<text x="28" y="74" font-size="24" fill="#0f172a">64×64；stride=8；一格=8 畫素</text>
+<rect x="12" y="96" width="456" height="628" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="132" font-size="22" fill="#0f172a">灰線：8×8 格；刻度是畫素座標</text>
+<rect x="64" y="184" width="352" height="352" fill="#fff" stroke="#64748b" stroke-width="1.5" />
+<rect x="130" y="272" width="154" height="110" fill="#dcfce7" id="gt-fill" data-xyxy="12,16,40,36"/>
+<path d="M64 184L64 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 184L416 184" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="64" y="170" font-size="22" fill="#0f172a" text-anchor="middle">0</text>
+<text x="52" y="192" font-size="22" fill="#0f172a" text-anchor="end">0</text>
+<path d="M108 184L108 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 228L416 228" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="108" y="170" font-size="22" fill="#0f172a" text-anchor="middle">8</text>
+<text x="52" y="236" font-size="22" fill="#0f172a" text-anchor="end">8</text>
+<path d="M152 184L152 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 272L416 272" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="152" y="170" font-size="22" fill="#0f172a" text-anchor="middle">16</text>
+<text x="52" y="280" font-size="22" fill="#0f172a" text-anchor="end">16</text>
+<path d="M196 184L196 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 316L416 316" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="196" y="170" font-size="22" fill="#0f172a" text-anchor="middle">24</text>
+<text x="52" y="324" font-size="22" fill="#0f172a" text-anchor="end">24</text>
+<path d="M240 184L240 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 360L416 360" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="240" y="170" font-size="22" fill="#0f172a" text-anchor="middle">32</text>
+<text x="52" y="368" font-size="22" fill="#0f172a" text-anchor="end">32</text>
+<path d="M284 184L284 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 404L416 404" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="284" y="170" font-size="22" fill="#0f172a" text-anchor="middle">40</text>
+<text x="52" y="412" font-size="22" fill="#0f172a" text-anchor="end">40</text>
+<path d="M328 184L328 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 448L416 448" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="328" y="170" font-size="22" fill="#0f172a" text-anchor="middle">48</text>
+<text x="52" y="456" font-size="22" fill="#0f172a" text-anchor="end">48</text>
+<path d="M372 184L372 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 492L416 492" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="372" y="170" font-size="22" fill="#0f172a" text-anchor="middle">56</text>
+<text x="52" y="500" font-size="22" fill="#0f172a" text-anchor="end">56</text>
+<path d="M416 184L416 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M64 536L416 536" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="416" y="170" font-size="22" fill="#0f172a" text-anchor="middle">64</text>
+<text x="52" y="544" font-size="22" fill="#0f172a" text-anchor="end">64</text>
+<text x="86" y="566" font-size="22" fill="#0f172a" text-anchor="middle">0</text>
+<text x="438" y="214" font-size="22" fill="#0f172a" text-anchor="middle">0</text>
+<text x="130" y="566" font-size="22" fill="#0f172a" text-anchor="middle">1</text>
+<text x="438" y="258" font-size="22" fill="#0f172a" text-anchor="middle">1</text>
+<text x="174" y="566" font-size="22" fill="#0f172a" text-anchor="middle">2</text>
+<text x="438" y="302" font-size="22" fill="#0f172a" text-anchor="middle">2</text>
+<text x="218" y="566" font-size="22" fill="#0f172a" text-anchor="middle">3</text>
+<text x="438" y="346" font-size="22" fill="#0f172a" text-anchor="middle">3</text>
+<text x="262" y="566" font-size="22" fill="#0f172a" text-anchor="middle">4</text>
+<text x="438" y="390" font-size="22" fill="#0f172a" text-anchor="middle">4</text>
+<text x="306" y="566" font-size="22" fill="#0f172a" text-anchor="middle">5</text>
+<text x="438" y="434" font-size="22" fill="#0f172a" text-anchor="middle">5</text>
+<text x="350" y="566" font-size="22" fill="#0f172a" text-anchor="middle">6</text>
+<text x="438" y="478" font-size="22" fill="#0f172a" text-anchor="middle">6</text>
+<text x="394" y="566" font-size="22" fill="#0f172a" text-anchor="middle">7</text>
+<text x="438" y="522" font-size="22" fill="#0f172a" text-anchor="middle">7</text>
+<text x="426" y="132" font-size="22" fill="#475569">row</text>
+<rect x="130" y="272" width="154" height="110" fill="none" stroke="#16a34a" stroke-width="3" id="gt-box" data-xyxy="12,16,40,36"/>
+<path d="M210 338L133 338" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M218 330L218 275" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M226 338L281 338" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M218 346L218 379" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="167" y="330" font-size="24" fill="#0f172a">l</text>
+<text x="230" y="300" font-size="24" fill="#0f172a">t</text>
+<text x="249" y="330" font-size="24" fill="#0f172a">r</text>
+<text x="230" y="371" font-size="24" fill="#0f172a">b</text>
+<g id="gt-center" data-xy="26,26"><path d="M201.0 327.0H213.0M207.0 321.0V333.0" stroke="#15803d" stroke-width="2"/></g>
+<circle cx="218" cy="338" r="6" fill="#172554" stroke="#fff" stroke-width="1.5" id="candidate-point" data-xy="28,28" data-cell="3,3"/>
+<path d="M298 338L292 338" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 3"/>
+<path d="M286.0 338.0L293.0 334.0V342.0Z" fill="#dc2626"/>
+<circle cx="306" cy="338" r="6" fill="#dc2626" stroke="#fff" stroke-width="1.5" id="outside-point" data-xy="44,28" data-cell="5,3"/>
+<text x="318" y="330" font-size="22" fill="#dc2626">r&lt;0</text>
+<text x="28" y="590" font-size="22" fill="#475569">column／row：格編號（0–7）</text>
+<text x="28" y="626" font-size="24" fill="#15803d">綠框 GT：[12,16,40,36]</text>
+<circle cx="34" cy="655" r="6" fill="#172554" />
+<text x="54" y="664" font-size="22" fill="#0f172a">候選點 (28,28)：第 (3,3) 格中心</text>
+<path d="M28 693L40 693" fill="none" stroke="#15803d" stroke-width="2"/>
+<path d="M34 687L34 699" fill="none" stroke="#15803d" stroke-width="2"/>
+<text x="54" y="702" font-size="22" fill="#15803d">框中心 (26,26)，在黑點左上方</text>
+<rect x="12" y="740" width="456" height="294" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="778" font-size="24" fill="#0f172a" font-weight="700">四邊距離：畫素 ÷ stride = 格</text>
+<text x="28" y="820" font-size="24" fill="#0f172a">l（左）</text>
+<text x="190" y="820" font-size="24" fill="#0f172a">16 ÷ 8 = 2 格</text>
+<text x="28" y="862" font-size="24" fill="#0f172a">t（上）</text>
+<text x="190" y="862" font-size="24" fill="#0f172a">12 ÷ 8 = 1.5 格</text>
+<text x="28" y="904" font-size="24" fill="#0f172a">r（右）</text>
+<text x="190" y="904" font-size="24" fill="#0f172a">12 ÷ 8 = 1.5 格</text>
+<text x="28" y="946" font-size="24" fill="#0f172a">b（下）</text>
+<text x="190" y="946" font-size="24" fill="#0f172a">8 ÷ 8 = 1 格</text>
+<text x="28" y="1000" font-size="22" fill="#0f172a">四邊皆正；點在框內，偏離框中心。</text>
+<rect x="12" y="1050" width="456" height="194" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
+<text x="28" y="1088" font-size="24" fill="#dc2626" font-weight="700">框外點 (44,28)：第 (5,3) 格</text>
+<text x="28" y="1126" font-size="24" fill="#dc2626">r=40−44=−4 畫素</text>
+<text x="28" y="1164" font-size="24" fill="#dc2626">−4 ÷ 8 = −0.5 格</text>
+<text x="28" y="1202" font-size="22" fill="#0f172a">r&lt;0：位於框右側，不能負責此框。</text>
+</g></svg>
