@@ -1,0 +1,87 @@
+{
+  "checked_at_utc": "2026-10-06T10:05:47.911512+00:00",
+  "readers": 6,
+  "first_unchanged": true,
+  "previously_hashed_end_unchanged": true,
+  "records": [
+    {
+      "reader_id": "R410",
+      "variant": "original",
+      "mode": "baseline",
+      "phases": [
+        "first",
+        "end"
+      ],
+      "chronological": true
+    },
+    {
+      "reader_id": "R725",
+      "variant": "early",
+      "mode": "evidence",
+      "phases": [
+        "first",
+        "end"
+      ],
+      "chronological": true
+    },
+    {
+      "reader_id": "R196",
+      "variant": "late",
+      "mode": "baseline",
+      "phases": [
+        "first",
+        "end",
+        "later"
+      ],
+      "chronological": true
+    },
+    {
+      "reader_id": "R583",
+      "variant": "original",
+      "mode": "evidence",
+      "phases": [
+        "first",
+        "end"
+      ],
+      "chronological": true
+    },
+    {
+      "reader_id": "R842",
+      "variant": "early",
+      "mode": "baseline",
+      "phases": [
+        "first",
+        "end"
+      ],
+      "chronological": true
+    },
+    {
+      "reader_id": "R367",
+      "variant": "late",
+      "mode": "evidence",
+      "phases": [
+        "first",
+        "end",
+        "later"
+      ],
+      "chronological": true
+    }
+  ],
+  "phase1_inputs_unchanged": true,
+  "tracked_changes": [],
+  "book_and_skill_unchanged": true,
+  "current_skill_matches_frozen": true,
+  "base_commit": "a0ef9e2532b2a73cc6b97a170469c57ede01977e",
+  "experiment_files_sha256": {
+    "R196.jsonl": "75beafda6b6d0490d091c038e8376402dbe2b988d3c4fc3235fdec4ea720e76a",
+    "R367.jsonl": "d723c43ae6ce6b52127fe4087178a06c8bc8f33dd4b6f0790f909ced84432c47",
+    "R410.jsonl": "730744dcfdcaf7ac1dcb3aaa2925d62e38077d4bde3d675af6357a2d6a48b05c",
+    "R583.jsonl": "900b12f201733f314e9decacb397e3884543bde98695fbdae3e37a969817ee70",
+    "R725.jsonl": "21c5883b4c37f6a518d6efe97d786e2d28a923cf6a7986f0d8a18cd249f2e843",
+    "R842.jsonl": "fe6ca59518c2192f2da44069d130a8c50b63c1db86852fc01be807fba92624b7",
+    "README.md": "c2c35c04b6f4a4d46792ff63a77abfb4f539286ef2d3c9028b6ca1a72bb22b5a",
+    "protocol.json": "6bb274587170bd689f7927f6659b5383d29bd0a9155697a8115b5e923e70426a",
+    "scores.json": "3e545d519c5daaad45b1473c0ef3d107f5b613015e5f8d3613cb366e32835341",
+    "source-variants.json": "d9bb05927d484bb994990fe22e08c312c1ba042b597d29c3dbf06d03e686ee4a"
+  }
+}
