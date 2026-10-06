@@ -1,0 +1,9 @@
+完成既定結果核對的最後階段，不新增測試、不改教材／SKILL／gold／原判分。
+允許讀 result-audit/packet.json、results.json、results-freeze.json、三個 grading/grades-N.json 及先前允許的來源／code／manifest／identities／integrity。仍不語義讀 prepare.py、作者期待檔、其他核對者或以前實驗。必要時從本次 raw 取對應 C source/final explanation，按單 case、unit 切片；勿一次打印整筆原始大JSON。來源/gold沿用已完成的來源核對。
+packet 固定選了54份個別判斷（30基礎抽樣與全部指定flags的聯集）、90個C claim核證項、7個invalid unknown核證項。每份都逐一檢查，不能只計數或因同題重複就沒讀個別證據；可批次寫結果，但理由須對應實際內容。不要把全部255個別判斷稱成已重判；也不能稱全部1988 claim語義已重判。
+先核對 judgment item/grade：target_hit、severity、必要誤報、當時可見來源的timely／premature、record_concerns與原verdict是否恰當。以凍結gold作主分，源本身仍有疑義就另記；核對分歧不覆寫任何原判分。none可有成立的非目標optional，不因optional_only就當必要誤報。
+對90 claim核證項檢查原claim的證據與state/inference是否支持完整主張、auditor判supported及reason是否恰當，特別區分「結論可由同case其他已讀句子支持」與「原引文已完整支持」。未知處置7項檢查必要／optional／合理待教或紀錄漏映射，不把未列入處置表當教材缺教。
+用獨立程式重算全部A/B/C_first/C的metrics与B聯集。驗證每流程51判斷；new 48：12必要、24none、12optional；DINO另3optional；四個不同必要缺漏各重讀3次。保留錯誤pass、undetermined、誤報與分級，不將同文重讀當不同教材。算C_final對C_first真正新增／丟失的必要命中。
+時間特別核對：CSP gold在u1已有理解負擔，u3才操作阻礙。C的timely是核證者自己source時間線，C_first是首次四題時間線，不能把兩者當完全相同測量，也不能直接說C流程把早報推遲。必要時檢查CSP三份C final explanation，只有明確駁回首次讀者u1判定才能說有時點分歧；與金標分歧保留。
+成本只核對記錄字數、contexts、source/checkpoint數與活動段秒數；字數包含程式複製的字串，不等同模型生成token或計算費。列出有限盲評、共用FS指示隔離、相同模型重讀、短文人工缺漏、未測整書／真學生的限制。
+輸出 result-audit/final-audit.json，含 access_declaration、judgment_checks（54條 evaluation_id/agree/differences/reason）、claim_checks（90條 audit_id/agree/reason）、unknown_checks（7條）、statistical_checks、timing_interpretation、workload_check、disagreements、limitations。每條可簡短但有疑義要具體。核對每個抽核ID恰好一筆；不要覆寫pregrade/integrity-audit或原scores。完成回報/root並結束本輪。

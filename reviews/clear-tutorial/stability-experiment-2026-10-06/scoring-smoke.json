@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "synthetic_only": true,
+  "checks": [
+    "B preserves both hit and false positive",
+    "B preserves component timing and selects earliest target",
+    "optional, wrong pass and undetermined count separately",
+    "altered original verdict rejected"
+  ],
+  "limitations": "Aggregation checks only; reader semantics and experimental outcomes are not tested."
+}

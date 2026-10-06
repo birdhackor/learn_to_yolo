@@ -1,0 +1,2983 @@
+{
+  "phase": "final_fixed_packet_semantic_and_statistical_audit",
+  "completed_at_utc": "2026-10-06T09:38:55.079381+00:00",
+  "status": "completed_with_recorded_disagreements_original_scores_retained",
+  "access_declaration": {
+    "new_authorized_semantic_files": [
+      "result-audit/task-phase2.txt",
+      "result-audit/packet.json",
+      "results.json",
+      "results-freeze.json",
+      "grading/grades-1.json",
+      "grading/grades-2.json",
+      "grading/grades-3.json"
+    ],
+    "previous_authorized_sources_reused": [
+      "materials.json及其允許PNG",
+      "result-audit/gold-cases-only.json",
+      "protocol/instructions/code已核範圍",
+      "private/grading-identities.json",
+      "private/run-manifest.json",
+      "freeze.json",
+      "grading-freeze.json",
+      "integrity.json",
+      "scope-check.json",
+      "自己的pregrade.json、integrity-audit.json及scratch"
+    ],
+    "gold_scope": "只讀result-audit/gold-cases-only.json作金標；packet中該合法金標的副本未擴大金標範圍。",
+    "semantic_scope": "全部固定54 judgement、90 claim、7 invalid-unknown逐项讀证据；另按單case讀四份已授權CA final explanation及對應CSP/DFL來源時間線以釐清指定分歧。未語義重判未抽到的201 judgments或其餘1898 claims。",
+    "raw_program_scope": "全raw僅延續metadata時序、key/index覆蓋、counts/workload核對；最後選樣重算只取CA claim key及supported布林、unknown key及valid布林，未輸出全部claims內容。",
+    "raw_semantic_slices": [
+      "r1b2_ca:M78184",
+      "r2b1_ca:M78184",
+      "r3b4_ca:M78184",
+      "r3b4_ca:M22957"
+    ],
+    "excluded_not_semantically_read": [
+      "prepare.py",
+      "原作者期待",
+      "其他裁定者",
+      "過去實驗/未提供答案及來源",
+      "未授權教材或SKILL"
+    ],
+    "hash_only": "prepare.py只在最初74项/相應凍結中讀bytes計SHA256；這輪另重算results-freeze 8項hash，未語義讀hash-only禁讀檔。",
+    "slicing_and_deviations": [
+      "phase1最初metadata輸出誤含跨17 case的完整prerequisites及gold欄位，違反分片要求且被截斷；均是合法來源，已向/root申報並依case/unit重讀完整17題，原pregrade保留此申報。",
+      "phase2曾把CSP與AP50多份小片合併一個exec，AP50輸出超限截斷；之後以1或2 judgement小片重讀截斷區，全部54份已完整閱讀，無跳過個別證據。",
+      "JSON可由程式整檔parse供限定key/stat/hash計算；對模型的來源/金標/抽核內容輸出按case/unit與少量ID分片。"
+    ],
+    "writes": [
+      "result-audit/final-audit.json",
+      "自有work/stability-experiment-2026-10-06/result-auditor scratch"
+    ],
+    "no_original_source_gold_score_program_mutations": true,
+    "no_new_tests": true,
+    "no_network_search": true
+  },
+  "coverage": {
+    "judgments": {
+      "checked_count": 54,
+      "expected_count": 54,
+      "exact_id_set": true,
+      "each_id_exactly_once": true,
+      "agreements": 53,
+      "disagreements": 1
+    },
+    "claims": {
+      "checked_count": 90,
+      "expected_count": 90,
+      "exact_id_set": true,
+      "each_id_exactly_once": true,
+      "agreements": 90,
+      "disagreements": 0
+    },
+    "unknowns": {
+      "checked_count": 7,
+      "expected_count": 7,
+      "exact_id_set": true,
+      "each_id_exactly_once": true,
+      "agreements": 4,
+      "disagreements": 3
+    }
+  },
+  "judgment_check_rule": "54份逐項核target/severity、off-target必要誤報、當時可見來源的timely/premature、record concerns及原verdict。agree涵蓋理由：53全部同意；E370285仅撤回无說明之理由不同意，54份主布林均同意。",
+  "judgment_checks": [
+    {
+      "evaluation_id": "E259299",
+      "case_id": "M91299",
+      "agree": true,
+      "differences": [],
+      "reason": "u1已有期望值解碼且微分明確延後，空issues/pass與手算範圍相符。",
+      "original_verdict": "pass",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E654680",
+      "case_id": "M66540",
+      "agree": true,
+      "differences": [],
+      "reason": "u1 .50門檻與u2 P/R、包絡面積充分，空issues/pass成立。",
+      "original_verdict": "pass",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E235588",
+      "case_id": "M36704",
+      "agree": true,
+      "differences": [],
+      "reason": "u1切半/旁路/串接/融合及u2參數尺寸齊全，兩份空issues/pass均成立。",
+      "original_verdict": "pass",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E188481",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E300444",
+      "case_id": "M36704",
+      "agree": true,
+      "differences": [],
+      "reason": "u1切半/旁路/串接/融合及u2參數尺寸齊全，兩份空issues/pass均成立。",
+      "original_verdict": "pass",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E924440",
+      "case_id": "M20204",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3以D/A=.6及未知T連到D去留/顯示索引，u2只給T<9/11且.9明言反事實；blocker及u3首次命中正確。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E703760",
+      "case_id": "M16388",
+      "agree": true,
+      "differences": [],
+      "reason": "NMS全名、class-wise、嚴格>及T=.5均給，空issues/pass正確。",
+      "original_verdict": "pass",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E750624",
+      "case_id": "M20204",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3以D/A=.6及未知T連到D去留/顯示索引，u2只給T<9/11且.9明言反事實；blocker及u3首次命中正確。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E399678",
+      "case_id": "M81954",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆AP中文名稱引文支持英文全名optional；保留.50配對和u2面積已教，名稱不阻礙手算，u1時點合理。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E219916",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E478674",
+      "case_id": "M83522",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆承認bin/target/loss與ltrb框式，u2引用要求由p取l再算x1；缺p→l規則是局部操作阻礙，u2命中且u3未補。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E668482",
+      "case_id": "M19796",
+      "agree": true,
+      "differences": [],
+      "reason": "u4 DINO兩模型/CLS概要引文保留已教角色，只記缺英文全名optional，u4當場有同項，分級及時點成立。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u4",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E771097",
+      "case_id": "M83522",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆承認bin/target/loss與ltrb框式，u2引用要求由p取l再算x1；缺p→l規則是局部操作阻礙，u2命中且u3未補。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E789968",
+      "case_id": "M81954",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆AP中文名稱引文支持英文全名optional；保留.50配對和u2面積已教，名稱不阻礙手算，u1時點合理。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E875120",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "u3門檻目標blocker適當；另保留u1 P/R詞義burden，u2立即定義，屬額外off-target與premature，與同一門檻的早報不同。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": true,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E487614",
+      "case_id": "M78184",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆保留名稱、介面目的與參數表，只報8→4分流及4→8接合來源缺漏；u1已有理解負擔，依本筆timeline的首次記錄判及時性，未將可算參數當完整方法。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E691987",
+      "case_id": "M83522",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆承認bin/target/loss與ltrb框式，u2引用要求由p取l再算x1；缺p→l規則是局部操作阻礙，u2命中且u3未補。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E623964",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E891964",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E477202",
+      "case_id": "M83522",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆承認bin/target/loss與ltrb框式，u2引用要求由p取l再算x1；缺p→l規則是局部操作阻礙，u2命中且u3未補。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E892340",
+      "case_id": "M83522",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆承認bin/target/loss與ltrb框式，u2引用要求由p取l再算x1；缺p→l規則是局部操作阻礙，u2命中且u3未補。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E769342",
+      "case_id": "M78184",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆保留名稱、介面目的與參數表，只報8→4分流及4→8接合來源缺漏；u1已有理解負擔，依本筆timeline的首次記錄判及時性，未將可算參數當完整方法。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E533847",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E551786",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E370285",
+      "case_id": "M22957",
+      "agree": false,
+      "differences": [
+        {
+          "field": "record_concerns[1] / reason",
+          "original": "final pass撤回burden未說明依據、記錄不一致",
+          "audit": "原CA final explanation明說「最終駁回這個自有誤報」，並以u1表示變化及DFL損失角色的推論說明；normalized item未傳explanation不等於原始紀錄欠說明。首條premature concern及全部主分布林不變。"
+        }
+      ],
+      "reason": "timeline相對scalar理由burden超出當下手算；但CA final explanation已明確駁回自有誤報，因此原判分所稱撤回無依據不符完整記錄。",
+      "original_verdict": "pass",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E586198",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E394287",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E407130",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E729129",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E837730",
+      "case_id": "M78184",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆保留名稱、介面目的與參數表，只報8→4分流及4→8接合來源缺漏；u1已有理解負擔，依本筆timeline的首次記錄判及時性，未將可算參數當完整方法。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E354935",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E154265",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E373713",
+      "case_id": "M78184",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆保留名稱、介面目的與參數表，只報8→4分流及4→8接合來源缺漏；u1已有理解負擔，依本筆timeline的首次記錄判及時性，未將可算參數當完整方法。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E300848",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E462582",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。 本筆u2 timeline空，頁末追列u2 burden不能說當場早報，premature=false正確；record_concern合理。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E432847",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E468897",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E275597",
+      "case_id": "M72209",
+      "agree": true,
+      "differences": [],
+      "reason": "DFL英文全名optional命中；另外要求證明從scalar換分布的採用收益為burden，忽略相鄰監督/期望角色與u2緊接例子，必要誤報成立。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": true,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E693760",
+      "case_id": "M20204",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3以D/A=.6及未知T連到D去留/顯示索引，u2只給T<9/11且.9明言反事實；blocker及u3首次命中正確。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E471467",
+      "case_id": "M78184",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆保留名稱、介面目的與參數表，只報8→4分流及4→8接合來源缺漏；u1已有理解負擔，依本筆timeline的首次記錄判及時性，未將可算參數當完整方法。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": false,
+        "first_target_unit": "u2",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E669864",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E108061",
+      "case_id": "M20204",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3以D/A=.6及未知T連到D去留/顯示索引，u2只給T<9/11且.9明言反事實；blocker及u3首次命中正確。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E317383",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E930799",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E606535",
+      "case_id": "M46675",
+      "agree": true,
+      "differences": [],
+      "reason": "u1只是概覽、u2立即給P/R與包絡後才運算；保留u1為必要burden是過早誤報。真正當時必需而後解決的缺漏仍應保留，這例不屬那種。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": false,
+        "severity_match": false,
+        "off_target_necessary": true,
+        "timely_target_hit": false,
+        "first_target_unit": null,
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E414199",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E502576",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E853624",
+      "case_id": "M81954",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆AP中文名稱引文支持英文全名optional；保留.50配對和u2面積已教，名稱不阻礙手算，u1時點合理。 另把u1概覽P/R未定義留為burden，u2立即釐清，必要誤報及premature正確。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": true,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E198137",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E798104",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E472294",
+      "case_id": "M20204",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3以D/A=.6及未知T連到D去留/顯示索引，u2只給T<9/11且.9明言反事實；blocker及u3首次命中正確。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": false
+      }
+    },
+    {
+      "evaluation_id": "E956477",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E736990",
+      "case_id": "M47282",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u3引用IoU=.49新框及TP/FP/召回要求，成功門檻缺漏及blocker成立。u1/u2先按給定判定算面積，較早同一門檻burden只屬premature，最終正確目標不另算off-target。",
+      "original_verdict": "needs_revision",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u3",
+        "premature_necessary_flag": true
+      }
+    },
+    {
+      "evaluation_id": "E715253",
+      "case_id": "M19340",
+      "agree": true,
+      "differences": [],
+      "reason": "本筆u1中文NMS引文只給中文全名；已教去重角色及規則被保留，optional正確。u1及u3均有具體名稱問題，gold時點疑義不改主分。",
+      "original_verdict": "optional_only",
+      "main_grade_fields_agree": true,
+      "original_grade_fields": {
+        "target_hit": true,
+        "severity_match": true,
+        "off_target_necessary": false,
+        "timely_target_hit": true,
+        "first_target_unit": "u1",
+        "premature_necessary_flag": false
+      }
+    }
+  ],
+  "claim_check_rule": "explicit核原引文是否直接支持完整主張；inferred核當時可見原引文是否具備推論前提；unknown核確實未知而不以外部常識填補。原引文不完整與結論可由同case其他已讀來源成立分開，不能把引用/標記瑕疵算教材缺教。每條保存原state、supported與具體理由；90份原supported判斷均同意。",
+  "claim_checks": [
+    {
+      "audit_id": "82f12c312443",
+      "case_id": "M91299",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3原引文同時給四bin上限與新增輸出，不推論收益，explicit支持完整主張。"
+    },
+    {
+      "audit_id": "dc95cf3dcbcb",
+      "case_id": "M91299",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3直接明說未測AP且不能稱成本值得，未知收益界線恰當。"
+    },
+    {
+      "audit_id": "45ec0ebcbad8",
+      "case_id": "M20204",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "T分支與B刪正確；原引文缺C座標，不能證新增D/C不重疊和完整索引。"
+    },
+    {
+      "audit_id": "7c3310672480",
+      "case_id": "M81954",
+      "unit_id": "u2",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原排序到包絡面積支持方法輪廓，不以局部算式取代整體。"
+    },
+    {
+      "audit_id": "00a17ce430de",
+      "case_id": "M36704",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句給CSP全名、中名與共同shape，explicit完整。"
+    },
+    {
+      "audit_id": "9206a284c547",
+      "case_id": "M46675",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2原端點/包絡句直接給面積1/3，支持完整。"
+    },
+    {
+      "audit_id": "2494c1618d42",
+      "case_id": "M46675",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原.49/.50/R前提可推失敗與R不增，但未引失敗記FP映射；false是引用缺項。"
+    },
+    {
+      "audit_id": "9b9ac69feaab",
+      "case_id": "M78184",
+      "unit_id": "u2",
+      "q": 2,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "CSP368有引、Full1240沒引，複合主張引用不完整。"
+    },
+    {
+      "audit_id": "5d84b9cbe334",
+      "case_id": "M78184",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "1240−368=872算術對，原Full句缺CSP368前提，false合理。"
+    },
+    {
+      "audit_id": "43bf45470438",
+      "case_id": "M78184",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 6,
+      "original_state": "unknown",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3已讀來源仍未指定完整路由，unknown無借後文，supported=true正確。"
+    },
+    {
+      "audit_id": "b1186a4b59fc",
+      "case_id": "M22957",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 5,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "inference算l=1.5及x1=16正確，但原引文只有框式；缺u1期望及u2均勻p，false是引用不完整、非教材缺教。"
+    },
+    {
+      "audit_id": "ddedbc81c553",
+      "case_id": "M22957",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原均勻p引文不足支持期望1.5及真值1.25比較；同case已讀句可補，不應混成原引文完整。"
+    },
+    {
+      "audit_id": "04839ba1c24b",
+      "case_id": "M22957",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3原句直接給四邊各softmax再回ltrb，explicit範圍完整。"
+    },
+    {
+      "audit_id": "58e92da1422f",
+      "case_id": "M19340",
+      "unit_id": "u2",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句完整列NMS輸入與保留索引/顯示用途，支持主張。"
+    },
+    {
+      "audit_id": "2b57462d58a5",
+      "case_id": "M16388",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原分組句完整支持各類獨立。"
+    },
+    {
+      "audit_id": "3cb9fd433163",
+      "case_id": "M83522",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 2,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "p原長引文明列特徵格與1格8px，prior單位主張有直接證據。"
+    },
+    {
+      "audit_id": "53f1da6b3504",
+      "case_id": "M63770",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "帶偏置公式及in/out/k符號均在u2原引文，支持完整。"
+    },
+    {
+      "audit_id": "cf3ba8f9ab9e",
+      "case_id": "M66540",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "原引文完整給同圖同類未用真值/最大IoU/至少.50，支持配對規則。"
+    },
+    {
+      "audit_id": "14cb48869545",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1嚴格>T規則原文明說，u3回引prior完整。"
+    },
+    {
+      "audit_id": "8ec126b33f6f",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3操作要求完整支持本段完成索引主張。"
+    },
+    {
+      "audit_id": "233a2e434622",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原題目句不含.5/IoU/C不重疊；inference結果對，逐claim引文缺項。"
+    },
+    {
+      "audit_id": "03b6605e7bd3",
+      "case_id": "M72209",
+      "unit_id": "u1",
+      "q": 2,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原句只給bin表示刻度，監督需同段DFL句，false正確。"
+    },
+    {
+      "audit_id": "91202727637f",
+      "case_id": "M72209",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 2,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "16px推論正確；原引文只有框式，缺期望式/均勻p，false屬引用缺項。"
+    },
+    {
+      "audit_id": "2bd38c7a62e1",
+      "case_id": "M72209",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 2,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原均勻p句不含期望與框式，16px可由已讀句補，false恰當。"
+    },
+    {
+      "audit_id": "237be981f3ad",
+      "case_id": "M66211",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原名稱展開支持u3 prior全稱。"
+    },
+    {
+      "audit_id": "8f9ee19a515e",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原排序→P/R→包絡概覽完整支持方法輪廓。"
+    },
+    {
+      "audit_id": "0ecf2236bd3f",
+      "case_id": "M47282",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "第一筆FP與重複FP有引，最高分需降分排序句，false正確。"
+    },
+    {
+      "audit_id": "3e9787442343",
+      "case_id": "M46675",
+      "unit_id": "u2",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "AP全名及排序到面積角色均在u1原引文，支持完整。"
+    },
+    {
+      "audit_id": "16f2460e6de2",
+      "case_id": "M46675",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句區分本算法與官方101點，supported=true。"
+    },
+    {
+      "audit_id": "057aa2fd7305",
+      "case_id": "M19340",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2 .9明標反事實、非本次設定及結果，支持完整主張。"
+    },
+    {
+      "audit_id": "b9c6a602ad68",
+      "case_id": "M19340",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3原句直接限制框少不支持品質提高，explicit正確。"
+    },
+    {
+      "audit_id": "dd98a373cee0",
+      "case_id": "M19340",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 2,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "舊三框先A記錄不能證加D後排序，缺A/D分數；false是引用缺項。"
+    },
+    {
+      "audit_id": "248fff3f4170",
+      "case_id": "M66540",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2原句直接給排名/固定真值核分母，支持完整。"
+    },
+    {
+      "audit_id": "4a40052be710",
+      "case_id": "M16388",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 2,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "p幾何IoU定義支持prior，無外部借用。"
+    },
+    {
+      "audit_id": "e01880afa4bd",
+      "case_id": "M83522",
+      "unit_id": "u2",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句支持本頁宣告單邊監督/解碼範圍，不代表缺規則版已給完整算法；audit保留此界線。"
+    },
+    {
+      "audit_id": "1197b565ebd6",
+      "case_id": "M83522",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 3,
+      "original_state": "unknown",
+      "original_supported": true,
+      "agree": true,
+      "reason": "缺p→l規則時l/x1數值unknown正當，無引文不應自行填答案；aux literal_quote_present=true空值沒有額外證明力。"
+    },
+    {
+      "audit_id": "440dd3977e5a",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "q": 3,
+      "claim_index": 0,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原排序句未含同圖同類真值需求，配對句可補，false合理。"
+    },
+    {
+      "audit_id": "4574ce02d854",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "unknown",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1當時未給P/R公式/成功門檻，unknown事實正確；必要處置另判。"
+    },
+    {
+      "audit_id": "8c1b48e73121",
+      "case_id": "M47282",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2原包絡數字直接给1/3，支持完整。"
+    },
+    {
+      "audit_id": "99df34319769",
+      "case_id": "M47282",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原題目要求與高分限制不含.49數字，需相鄰句補引。"
+    },
+    {
+      "audit_id": "60530fdc8d15",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3原句直接要求依本頁門檻操作，supported=true恰當。"
+    },
+    {
+      "audit_id": "021c280d25e4",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 6,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原操作句非A/C答案證據，T/兩IoU/C前提缺引，false合理。"
+    },
+    {
+      "audit_id": "804169c40fae",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "回指q3合理但本條只有待解題目；原引文未支持A/C結果。"
+    },
+    {
+      "audit_id": "9c0399eca680",
+      "case_id": "M72209",
+      "unit_id": "u1",
+      "q": 2,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "學習理由推論合理，但原還原句缺表示變更/監督前提，false恰當。"
+    },
+    {
+      "audit_id": "d9df484f7e53",
+      "case_id": "M72209",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原期望式缺四個.25數值，1.5正確但引用不完整。"
+    },
+    {
+      "audit_id": "e60df184c292",
+      "case_id": "M72209",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "框式不能單獨證明l=1.5前提；引用上一主張不取代逐項來源，16px正確。"
+    },
+    {
+      "audit_id": "749a6be5b131",
+      "case_id": "M72209",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 2,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "16/18px比較可推出，原框式缺均勻p、期望與真值10px。"
+    },
+    {
+      "audit_id": "7fa93b48dc37",
+      "case_id": "M72209",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "期望式引用未含均勻p數值，原引文不足證明1.5。"
+    },
+    {
+      "audit_id": "9b6ebc67c996",
+      "case_id": "M72209",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原框式缺l=1.5的p/期望前提，false不表示教材解碼缺教。"
+    },
+    {
+      "audit_id": "2df214a369b6",
+      "case_id": "M66211",
+      "unit_id": "u1",
+      "q": 4,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原延期梯度句未含不接偵測器前提，完整限制需同段另句。"
+    },
+    {
+      "audit_id": "ebaa0fa5caaf",
+      "case_id": "M66211",
+      "unit_id": "u2",
+      "q": 2,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原CSP368缺Full1240比較前提，節省推論正確但引用不足。"
+    },
+    {
+      "audit_id": "4a91499ee043",
+      "case_id": "M66211",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "CSP/Full雙數主張僅引CSP，false合理。"
+    },
+    {
+      "audit_id": "095905f3dbf4",
+      "case_id": "M81954",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原P/R四點不含面積步驟，兩率與面積合併引用不完整。"
+    },
+    {
+      "audit_id": "7fed1b006275",
+      "case_id": "M81954",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1直接說單一顯示門檻不足，supported=true。"
+    },
+    {
+      "audit_id": "eb4eaa656bae",
+      "case_id": "M36704",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "主張兩個總數卻只引CSP368，缺Full1240，false恰當。"
+    },
+    {
+      "audit_id": "db6af2137c57",
+      "case_id": "M36704",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "u3回引CSP368不能覆蓋兩者參數，Full另句可補，非教材缺教。"
+    },
+    {
+      "audit_id": "6a09c42e1c81",
+      "case_id": "M20204",
+      "unit_id": "u2",
+      "q": 2,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "競爭非正確性的限制在原u2引文明說。"
+    },
+    {
+      "audit_id": "d3b19cd6232f",
+      "case_id": "M20204",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "操作句支持比較D要求，未明說D新增；同段首句可補，false合理。"
+    },
+    {
+      "audit_id": "12fde0dd5edd",
+      "case_id": "M20204",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 4,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "條件D去留有引文，但最終A/D/C缺D分數與D/C座標，false恰當。"
+    },
+    {
+      "audit_id": "ce3bc04de787",
+      "case_id": "M20204",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 2,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "q4原條件引文亦缺D/C幾何和排序，結果正確而引用不足。"
+    },
+    {
+      "audit_id": "833b2158397d",
+      "case_id": "M91299",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "初始手算且未更新、不可稱學會10px均在原引文，supported=true成立。"
+    },
+    {
+      "audit_id": "9ff3d863ac41",
+      "case_id": "M63770",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "u1只引串接融合，前文已教且非相加需p對照，explicit範圍過強。"
+    },
+    {
+      "audit_id": "4a748af9d5f6",
+      "case_id": "M63770",
+      "unit_id": "u1",
+      "q": 3,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句給串接→8→8 1×1融合，支持完整。"
+    },
+    {
+      "audit_id": "02758336eac8",
+      "case_id": "M83522",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 2,
+      "original_state": "prior",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原引文只教可非整數，未引特徵格單位；p另句可補，supported=false恰當。"
+    },
+    {
+      "audit_id": "0057e2f568d3",
+      "case_id": "M19796",
+      "unit_id": "u2",
+      "q": 2,
+      "claim_index": 2,
+      "original_state": "unknown",
+      "original_supported": true,
+      "agree": true,
+      "reason": "DINO u2未教共同內容到loss，unknown恰當，未借u4。"
+    },
+    {
+      "audit_id": "89d011534286",
+      "case_id": "M19796",
+      "unit_id": "u6",
+      "q": 3,
+      "claim_index": 1,
+      "original_state": "prior",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原view/crop shape及單位句缺用途，u5 crop只記錄操作句可補。"
+    },
+    {
+      "audit_id": "9ac68c1dd22c",
+      "case_id": "M19796",
+      "unit_id": "u6",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u4相同backbone→兩表示原句支持u6 prior，完整。"
+    },
+    {
+      "audit_id": "00de3d3d74da",
+      "case_id": "M16388",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 1,
+      "original_state": "prior",
+      "original_supported": false,
+      "agree": true,
+      "reason": "p只教IoU，未引NMS使用IoU的銜接；u1規則可補，false合理。"
+    },
+    {
+      "audit_id": "382841f7acce",
+      "case_id": "M16388",
+      "unit_id": "u2",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句給NMS逐輪最高分，u2 prior正確。"
+    },
+    {
+      "audit_id": "b5034c26742a",
+      "case_id": "M16388",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原幾何值還需.5與嚴格>才證抑制，不能標explicit完整依據。"
+    },
+    {
+      "audit_id": "64bd2cc62d0e",
+      "case_id": "M66540",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原名称/包絡句未引IoU至少.50，複合主張缺判準部分。"
+    },
+    {
+      "audit_id": "bc6a692a03c8",
+      "case_id": "M66540",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 1,
+      "original_state": "prior",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原P/R公式未給面積，另句可補，false正確。"
+    },
+    {
+      "audit_id": "475af9a19196",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "原AP全名/排序/包絡充分，沒有據名稱偷補50含義。"
+    },
+    {
+      "audit_id": "820c66580b3d",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 1,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原T與IoU引文未支持先留A的排序前提；完整來源可補，false恰當。"
+    },
+    {
+      "audit_id": "d28a8b9542b4",
+      "case_id": "M30083",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 0,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "q4同樣缺先留A引文，抑制/集合推論可見來源支持但原引用不足。"
+    },
+    {
+      "audit_id": "0837be12ea6d",
+      "case_id": "M66211",
+      "unit_id": "u2",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原句只有名称/shape，未含路徑；下一句可補，不是教材缺教。"
+    },
+    {
+      "audit_id": "d02b29872a8c",
+      "case_id": "M66211",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2原句給296+72=368且算術正確，支持CSP數量。"
+    },
+    {
+      "audit_id": "5deaa2c7e1b0",
+      "case_id": "M66211",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句支持名稱及形狀比較，supported=true。"
+    },
+    {
+      "audit_id": "4b6fd1ba21f8",
+      "case_id": "M91299",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2原句含px=28與x1=28−8l，u3回引先前框界還原支持prior。"
+    },
+    {
+      "audit_id": "5778c946b61a",
+      "case_id": "M20204",
+      "unit_id": "u2",
+      "q": 3,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2原引文列三框完整座標/分數，explicit支持。"
+    },
+    {
+      "audit_id": "38fbe23cbdd0",
+      "case_id": "M20204",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 2,
+      "original_state": "prior",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u2 T<9/11引文直接支持範圍而非唯一值，prior恰當。"
+    },
+    {
+      "audit_id": "d47f0bc73e2a",
+      "case_id": "M20204",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 3,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原引文缺A/C坐標和分數，D/C不重疊及排序需補，兩分支本身正確。"
+    },
+    {
+      "audit_id": "8bd07493f3a8",
+      "case_id": "M36704",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3原句同給.297比例與未測速度/品質，supported=true完整。"
+    },
+    {
+      "audit_id": "e825d66254fa",
+      "case_id": "M19340",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 1,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原T/IoU/規則僅證若A保留便抑制D，缺本次先A前提，false合理。"
+    },
+    {
+      "audit_id": "2cde01023f69",
+      "case_id": "M19340",
+      "unit_id": "u3",
+      "q": 3,
+      "claim_index": 2,
+      "original_state": "inferred",
+      "original_supported": false,
+      "agree": true,
+      "reason": "引用D=.85及舊先A仍缺A=.9或本次先A，原索引引用鏈不完整。"
+    },
+    {
+      "audit_id": "c17e16b69830",
+      "case_id": "M46675",
+      "unit_id": "u2",
+      "q": 4,
+      "claim_index": 1,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "原給定FP/TP序列與第三筆重複框，explicit完整。"
+    },
+    {
+      "audit_id": "8d98c96ffc0a",
+      "case_id": "M46675",
+      "unit_id": "u3",
+      "q": 1,
+      "claim_index": 3,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原P/R公式與四點不支持面積意義，u2另一句可補，false合理。"
+    },
+    {
+      "audit_id": "0ac64e08978c",
+      "case_id": "M46675",
+      "unit_id": "u3",
+      "q": 2,
+      "claim_index": 0,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u1原句直接給整批評估不只單門檻的問題，支持完整。"
+    },
+    {
+      "audit_id": "d67d08ab4325",
+      "case_id": "M78184",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 2,
+      "original_state": "explicit",
+      "original_supported": true,
+      "agree": true,
+      "reason": "u3原句明示8通道接下一區塊用途，未要求已構造缺路由版。"
+    },
+    {
+      "audit_id": "97b6fda28c02",
+      "case_id": "M78184",
+      "unit_id": "u3",
+      "q": 4,
+      "claim_index": 3,
+      "original_state": "explicit",
+      "original_supported": false,
+      "agree": true,
+      "reason": "原文無訓練數字支持更快更準，不能改成沒有訓練效果；措辭過強false正確。"
+    }
+  ],
+  "unknown_check_rule": "未知是否存在、需不需要當下理解、issue/optional/合理待教及處置漏映射分開；漏映射只算記錄問題，不直接算教材缺教。",
+  "unknown_checks": [
+    {
+      "agree": false,
+      "reason": "依凍結gold及本輪來源判斷，u1已藉CSP四通道運算/八通道介面解釋主要方法，路由缺項構成理解burden。讀者承認目的/介面已教且只報局部路徑，issue處置有效；CA以未要求實作否定u1理解需要，與gold有時點分歧。",
+      "proposed_reader_disposition_valid": true,
+      "audit_id": "2f8ddc7658c8",
+      "case_id": "M78184",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": [
+        {
+          "field": "reader_disposition_valid",
+          "original": false,
+          "audit": true
+        }
+      ]
+    },
+    {
+      "agree": true,
+      "reason": "u1 q4未知未有具體數值結果，卻未映到dispositions；當時尚未要求算例操作，可reasonable_deferral。這是記錄漏映射而非教材缺教。",
+      "audit_id": "ae7cd1d6f232",
+      "case_id": "M16388",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": []
+    },
+    {
+      "agree": true,
+      "reason": "已處置P/R及面積未知，但q4無框例/AP結果未單獨列；u1概覽可等u2例子，invalid指記錄映射缺項，不是必要教材問題。",
+      "audit_id": "48545734ee09",
+      "case_id": "M66540",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": []
+    },
+    {
+      "agree": true,
+      "reason": "q4未知數值結果而unknowns/dispositions均空，記錄欠映射；u1尚未要求解讀結果，合理待教處置恰當。",
+      "audit_id": "935d2e50acd9",
+      "case_id": "M30083",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": []
+    },
+    {
+      "agree": true,
+      "reason": "AP u1概覽後u2立即在操作前給P/R與包絡，未用未定量先推理；把此unknown升當下burden過早，CA駁回有效。",
+      "audit_id": "3457253ea5de",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": []
+    },
+    {
+      "agree": false,
+      "reason": "gold明定門檻必要到u3新框判定才啟用，u1明說先依表列判定算面積。讀者只在當前概覽/表列計算範圍合理等待，沒有把整個AP50永久延期；CA稱全部含義延期偏寬並u1升burden，與來源任務及gold時點分歧。",
+      "proposed_reader_disposition_valid": true,
+      "audit_id": "86dffcea18ae",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": [
+        {
+          "field": "reader_disposition_valid",
+          "original": false,
+          "audit": true
+        }
+      ]
+    },
+    {
+      "agree": false,
+      "reason": "u1整個方法的4→8介面解釋已需要路由含義，不必等到u3畫圖才有burden。此讀者把計數公式另作合理待教而只將路徑記issue，範圍正當；CA invalid時點與gold分歧。",
+      "proposed_reader_disposition_valid": true,
+      "audit_id": "1d27084c92a1",
+      "case_id": "M78184",
+      "unit_id": "u1",
+      "original_reader_disposition_valid": false,
+      "differences": [
+        {
+          "field": "reader_disposition_valid",
+          "original": false,
+          "audit": true
+        }
+      ]
+    }
+  ],
+  "statistical_checks": {
+    "method": "自寫程式依凍結grades及匿名identity重建255個別列、204流程列、B聯集及12組統計；未呼叫原計分程式、未加入測試。除固定54份外，其他grades只作欄位、覆蓋與算術核對，非語義重判。",
+    "grading_coverage": {
+      "rows": 255,
+      "unique_ids": 255,
+      "identity_rows": 255,
+      "exact_coverage_and_no_duplicate": true,
+      "identity_errors": []
+    },
+    "pipeline_counts": {
+      "A": 51,
+      "C_first": 51,
+      "C": 51,
+      "B": 51
+    },
+    "denominators": {
+      "distinct_sources": 17,
+      "adapted_source_variants": 16,
+      "dino_source": 1,
+      "source_severity_counts": {
+        "optional": 5,
+        "blocker": 4,
+        "none": 8
+      },
+      "per_role_case_judgments": {
+        "a": 51,
+        "b1": 51,
+        "b2": 51,
+        "c": 51,
+        "ca": 51
+      },
+      "per_pipeline_A_B_C_case_count": {
+        "A": 51,
+        "B": 51,
+        "C": 51
+      },
+      "auxiliary_C_first_case_count": 51,
+      "per_pipeline_essential": 12,
+      "per_pipeline_none_controls": 24,
+      "per_pipeline_optional": 15,
+      "per_pipeline_new_cases": 48,
+      "per_pipeline_original_dino": 3,
+      "observed_case_severity_counts_per_role": {
+        "a": {
+          "none": 24,
+          "blocker": 12,
+          "optional": 15
+        },
+        "b1": {
+          "none": 24,
+          "blocker": 12,
+          "optional": 15
+        },
+        "b2": {
+          "none": 24,
+          "blocker": 12,
+          "optional": 15
+        },
+        "c": {
+          "none": 24,
+          "blocker": 12,
+          "optional": 15
+        },
+        "ca": {
+          "optional": 15,
+          "none": 24,
+          "blocker": 12
+        }
+      },
+      "essential_cases_each_three_repeats": [
+        {
+          "case_id": "M20204",
+          "severity": "blocker",
+          "role_repeat_counts": {
+            "a": 3,
+            "b1": 3,
+            "b2": 3,
+            "c": 3,
+            "ca": 3
+          }
+        },
+        {
+          "case_id": "M83522",
+          "severity": "blocker",
+          "role_repeat_counts": {
+            "a": 3,
+            "b1": 3,
+            "b2": 3,
+            "c": 3,
+            "ca": 3
+          }
+        },
+        {
+          "case_id": "M47282",
+          "severity": "blocker",
+          "role_repeat_counts": {
+            "a": 3,
+            "b1": 3,
+            "b2": 3,
+            "c": 3,
+            "ca": 3
+          }
+        },
+        {
+          "case_id": "M78184",
+          "severity": "blocker",
+          "role_repeat_counts": {
+            "a": 3,
+            "b1": 3,
+            "b2": 3,
+            "c": 3,
+            "ca": 3
+          }
+        }
+      ],
+      "all_case_role_repeat_keys_exactly_once": true,
+      "pipeline_denominator_derivation": "A取a，C取ca，B按(cohort,case_id)合併b1/b2，各51；C_first另列c的51且非獨立新增樣本。必要4個case各3次=12，none8個變體各3次=24，optional4個變體加舊DINO各3次=15。"
+    },
+    "case_role_repeat_counts_all_three": true,
+    "b_union_rule": {
+      "unit": "(cohort, case_id)配對b1/b2，不增加教材樣本",
+      "verdict": "needs_revision > undetermined > optional_only > pass",
+      "target_timely_off_target_premature": "各欄位OR",
+      "severity_match": "同一component的target_hit及severity_match均成立才計入；再對兩者OR",
+      "first_target_unit": "只在有target_hit且unit非空的component中取最早unit",
+      "record_concerns": "兩component保留合併；component IDs與個別first units亦核对"
+    },
+    "metrics": [
+      {
+        "arm": "A",
+        "scope": "new_cases",
+        "n": 48,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 9,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 23,
+        "names_n": 12,
+        "names_wrong_escalation": 2,
+        "names_optional_hit": 12,
+        "undetermined": 0
+      },
+      {
+        "arm": "A",
+        "scope": "known_dino",
+        "n": 3,
+        "essential_n": 0,
+        "essential_hits": 0,
+        "essential_timely_hits": 0,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 0,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 0,
+        "names_n": 3,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 3,
+        "undetermined": 0
+      },
+      {
+        "arm": "A",
+        "scope": "all",
+        "n": 51,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 9,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 23,
+        "names_n": 15,
+        "names_wrong_escalation": 2,
+        "names_optional_hit": 15,
+        "undetermined": 0
+      },
+      {
+        "arm": "B",
+        "scope": "new_cases",
+        "n": 48,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 10,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 1,
+        "controls_clean_pass": 22,
+        "names_n": 12,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 12,
+        "undetermined": 0
+      },
+      {
+        "arm": "B",
+        "scope": "known_dino",
+        "n": 3,
+        "essential_n": 0,
+        "essential_hits": 0,
+        "essential_timely_hits": 0,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 0,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 0,
+        "names_n": 3,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 3,
+        "undetermined": 0
+      },
+      {
+        "arm": "B",
+        "scope": "all",
+        "n": 51,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 10,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 1,
+        "controls_clean_pass": 22,
+        "names_n": 15,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 15,
+        "undetermined": 0
+      },
+      {
+        "arm": "C_first",
+        "scope": "new_cases",
+        "n": 48,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 11,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 23,
+        "names_n": 12,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 12,
+        "undetermined": 0
+      },
+      {
+        "arm": "C_first",
+        "scope": "known_dino",
+        "n": 3,
+        "essential_n": 0,
+        "essential_hits": 0,
+        "essential_timely_hits": 0,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 0,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 0,
+        "names_n": 3,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 3,
+        "undetermined": 0
+      },
+      {
+        "arm": "C_first",
+        "scope": "all",
+        "n": 51,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 11,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 23,
+        "names_n": 15,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 15,
+        "undetermined": 0
+      },
+      {
+        "arm": "C",
+        "scope": "new_cases",
+        "n": 48,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 9,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 23,
+        "names_n": 12,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 12,
+        "undetermined": 0
+      },
+      {
+        "arm": "C",
+        "scope": "known_dino",
+        "n": 3,
+        "essential_n": 0,
+        "essential_hits": 0,
+        "essential_timely_hits": 0,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 0,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 0,
+        "names_n": 3,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 3,
+        "undetermined": 0
+      },
+      {
+        "arm": "C",
+        "scope": "all",
+        "n": 51,
+        "essential_n": 12,
+        "essential_hits": 12,
+        "essential_timely_hits": 9,
+        "essential_wrong_pass": 0,
+        "essential_undetermined": 0,
+        "controls_n": 24,
+        "controls_necessary_false_positives": 0,
+        "controls_clean_pass": 23,
+        "names_n": 15,
+        "names_wrong_escalation": 0,
+        "names_optional_hit": 15,
+        "undetermined": 0
+      }
+    ],
+    "metric_differences": [],
+    "pipeline_field_differences": [],
+    "individual_field_differences": [],
+    "selection_check": {
+      "baseline_judgments": 30,
+      "flagged_judgments": 31,
+      "overlap": 7,
+      "selected_judgments": 54,
+      "judgment_ids_exact": true,
+      "selection_labels_match": true,
+      "packet_grades_match_original": true,
+      "baseline_claims": 48,
+      "flagged_claims": 46,
+      "baseline_flagged_claim_overlap": 4,
+      "expected_claims": 90,
+      "claim_ids_exact": true,
+      "invalid_unknowns": 7,
+      "unknown_ids_exact": true
+    },
+    "grade_logic_concerns": [],
+    "c_necessary_change": {
+      "added": 0,
+      "lost": 0,
+      "paired_required_cases": 12,
+      "case_pairs": [
+        {
+          "cohort": "r2b1",
+          "case_id": "M78184",
+          "first_id": "E373713",
+          "final_id": "E567113",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": false,
+          "final_timely": false,
+          "first_unit": "u2",
+          "final_unit": "u2"
+        },
+        {
+          "cohort": "r3b4",
+          "case_id": "M78184",
+          "first_id": "E259106",
+          "final_id": "E837730",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": false,
+          "first_unit": "u1",
+          "final_unit": "u2"
+        },
+        {
+          "cohort": "r1b2",
+          "case_id": "M78184",
+          "first_id": "E806475",
+          "final_id": "E317079",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": false,
+          "first_unit": "u1",
+          "final_unit": "u2"
+        },
+        {
+          "cohort": "r1b4",
+          "case_id": "M47282",
+          "first_id": "E736990",
+          "final_id": "E462582",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u3",
+          "final_unit": "u3"
+        },
+        {
+          "cohort": "r2b3",
+          "case_id": "M47282",
+          "first_id": "E875120",
+          "final_id": "E100541",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u3",
+          "final_unit": "u3"
+        },
+        {
+          "cohort": "r3b2",
+          "case_id": "M47282",
+          "first_id": "E414199",
+          "final_id": "E551786",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u3",
+          "final_unit": "u3"
+        },
+        {
+          "cohort": "r3b3",
+          "case_id": "M20204",
+          "first_id": "E147297",
+          "final_id": "E564400",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u3",
+          "final_unit": "u3"
+        },
+        {
+          "cohort": "r1b1",
+          "case_id": "M20204",
+          "first_id": "E472294",
+          "final_id": "E306414",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u3",
+          "final_unit": "u3"
+        },
+        {
+          "cohort": "r2b4",
+          "case_id": "M20204",
+          "first_id": "E374687",
+          "final_id": "E108061",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u3",
+          "final_unit": "u3"
+        },
+        {
+          "cohort": "r3b1",
+          "case_id": "M83522",
+          "first_id": "E968269",
+          "final_id": "E732007",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u2",
+          "final_unit": "u2"
+        },
+        {
+          "cohort": "r2b2",
+          "case_id": "M83522",
+          "first_id": "E415459",
+          "final_id": "E464513",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u2",
+          "final_unit": "u2"
+        },
+        {
+          "cohort": "r1b3",
+          "case_id": "M83522",
+          "first_id": "E771097",
+          "final_id": "E691987",
+          "first_necessary_hit": true,
+          "final_necessary_hit": true,
+          "added": false,
+          "lost": false,
+          "first_timely": true,
+          "final_timely": true,
+          "first_unit": "u2",
+          "final_unit": "u2"
+        }
+      ]
+    },
+    "none_optional_only_without_necessary_false_positive": [
+      {
+        "evaluation_id": "E100644",
+        "case_id": "M66540",
+        "role": "c"
+      },
+      {
+        "evaluation_id": "E783371",
+        "case_id": "M66540",
+        "role": "ca"
+      },
+      {
+        "evaluation_id": "E380783",
+        "case_id": "M91299",
+        "role": "b2"
+      },
+      {
+        "evaluation_id": "E786585",
+        "case_id": "M91299",
+        "role": "a"
+      }
+    ],
+    "none_optional_interpretation": "none只有必要誤報才計necessary false positive；成立的非目標optional可使clean_pass少一而不構成必要誤報。此規則在四個個別none/optional_only列與流程匯總一致。",
+    "results_freeze": {
+      "frozen_at_utc": "2026-10-06T09:21:30.812803+00:00",
+      "scope": "All original blinded grades and derived primary results, plus deterministic semantic audit packet, before independent semantic rechecking. Original grades/gold are retained if auditor disagrees.",
+      "count": 8,
+      "checks": [
+        {
+          "path": "results.json",
+          "expected_sha256": "4e9c9292b6acdb9e50ed35b3515304ed1881ef192ed4fda1b7a4b1df66d01397",
+          "actual_sha256": "4e9c9292b6acdb9e50ed35b3515304ed1881ef192ed4fda1b7a4b1df66d01397",
+          "match": true
+        },
+        {
+          "path": "result-audit/packet.json",
+          "expected_sha256": "43d97a7a0465d630a43bb4e0fd9b5aec48bd5c60ba9c2d6676987a29c1a53273",
+          "actual_sha256": "43d97a7a0465d630a43bb4e0fd9b5aec48bd5c60ba9c2d6676987a29c1a53273",
+          "match": true
+        },
+        {
+          "path": "result-audit-plan.md",
+          "expected_sha256": "3015d71ee7f7d3c252b264ee96e1b686a4eb437cb2a4c72ece215fc32f876032",
+          "actual_sha256": "3015d71ee7f7d3c252b264ee96e1b686a4eb437cb2a4c72ece215fc32f876032",
+          "match": true
+        },
+        {
+          "path": "grading/grades-1.json",
+          "expected_sha256": "4d6e9a50b4a0f7d071f6ee3705ccfb4f16333745ee6caf27f4e2388647535cdc",
+          "actual_sha256": "4d6e9a50b4a0f7d071f6ee3705ccfb4f16333745ee6caf27f4e2388647535cdc",
+          "match": true
+        },
+        {
+          "path": "grading/grades-2.json",
+          "expected_sha256": "569f82488f1ab824eaea4a5d8430323674cd387cb25f26079ce9f5106f430fad",
+          "actual_sha256": "569f82488f1ab824eaea4a5d8430323674cd387cb25f26079ce9f5106f430fad",
+          "match": true
+        },
+        {
+          "path": "grading/grades-3.json",
+          "expected_sha256": "3a8bc10983177f81bc4e86dec7a2d9948dbf8169437a5000ecbae22485eeba35",
+          "actual_sha256": "3a8bc10983177f81bc4e86dec7a2d9948dbf8169437a5000ecbae22485eeba35",
+          "match": true
+        },
+        {
+          "path": "result-audit/pregrade.json",
+          "expected_sha256": "d398c0564066cac71de3087e5fbac406cdcddd8b9ca97cb0da3cfabaea0150c9",
+          "actual_sha256": "d398c0564066cac71de3087e5fbac406cdcddd8b9ca97cb0da3cfabaea0150c9",
+          "match": true
+        },
+        {
+          "path": "result-audit/integrity-audit.json",
+          "expected_sha256": "f51e2b0d1b4075403a7a844286b0502933dfc5f00d0df60c4bde51ac2acf7f7a",
+          "actual_sha256": "f51e2b0d1b4075403a7a844286b0502933dfc5f00d0df60c4bde51ac2acf7f7a",
+          "match": true
+        }
+      ],
+      "mismatches": []
+    },
+    "interpretation": "A、B、C_first、C均命中12/12必要缺漏且無錯誤pass或undetermined。C對C_first新增0、丟失0必要命中，不能據此宣稱核證提高必要命中。C的名稱必要誤報0，A為2；none必要誤報C為0、B為1。但C_first本就為0，這些固定短文結果不證明核證普遍改善或穩定性勝出。"
+  },
+  "timing_interpretation": {
+    "gold_and_source": "CSP在u1已用4通道中間運算、8通道外部介面解釋主要方法；具體分流/旁路/重接缺項已是理解burden。u2已給in/out可算參數，u3畫實際資料流才是操作blocker。不可因u3才操作而抹去u1理解負擔。NMS數值T與AP50的配對門檻到u3操作才必要，DFL p到l則從u2需要。",
+    "measurement_roles": "C_first採首次四題讀者時間線；C採核證者自己的source inventory時間線。二者不是完全相同測量，不能由11/12與9/12的數字就宣稱C流程一般會延後讀者。",
+    "csp_pairs": [
+      {
+        "cohort": "r2b1",
+        "case_id": "M78184",
+        "first_id": "E373713",
+        "final_id": "E567113",
+        "first_necessary_hit": true,
+        "final_necessary_hit": true,
+        "added": false,
+        "lost": false,
+        "first_timely": false,
+        "final_timely": false,
+        "first_unit": "u2",
+        "final_unit": "u2"
+      },
+      {
+        "cohort": "r3b4",
+        "case_id": "M78184",
+        "first_id": "E259106",
+        "final_id": "E837730",
+        "first_necessary_hit": true,
+        "final_necessary_hit": true,
+        "added": false,
+        "lost": false,
+        "first_timely": true,
+        "final_timely": false,
+        "first_unit": "u1",
+        "final_unit": "u2"
+      },
+      {
+        "cohort": "r1b2",
+        "case_id": "M78184",
+        "first_id": "E806475",
+        "final_id": "E317079",
+        "first_necessary_hit": true,
+        "final_necessary_hit": true,
+        "added": false,
+        "lost": false,
+        "first_timely": true,
+        "final_timely": false,
+        "first_unit": "u1",
+        "final_unit": "u2"
+      }
+    ],
+    "explicit_disagreements": [
+      {
+        "cohort": "r1b2",
+        "first_id": "E806475",
+        "final_id": "E317079",
+        "finding": "首次讀者u1 burden、CA自己的u1合理待教，CA final explanation明說不同意讀者u1立即記burden；主target仍命中，timely true→false。與凍結gold的u1理解必要時點有分歧。"
+      },
+      {
+        "cohort": "r3b4",
+        "first_id": "E259106",
+        "final_id": "E837730",
+        "finding": "CA final explanation明說「駁回讀者u1必要burden的时点」；首次u1、CA首次u2，主target仍命中，timely true→false。與gold有同一時點分歧。"
+      },
+      {
+        "cohort": "r2b1",
+        "first_id": "E373713",
+        "final_id": "E567113",
+        "finding": "首次讀者及CA均首次u2、timely均false；CA explanation只調blocker為burden，沒有明確駁回讀者u1判定。此列支持與gold時點有差別，不支持核證把讀者的早報推遲。"
+      }
+    ],
+    "raw_explanation_evidence": [
+      {
+        "reader_id": "r1b2_ca",
+        "case_id": "M78184",
+        "source": "raw/r1b2_ca.jsonl:last record.case_results[M78184].explanation",
+        "quote": "已核證全部四題claim及未知／inventory。與獨立清單共同支持u2至u3完整路徑必要缺漏，沒有把局部計數完整當整個CSP介紹完整。不同點：讀者u1立即記burden，我獨立u1記開場配置可暫待教，u2開始操作後才成blocker；未用後文改寫u1。讀者u2/u3的路徑問題有效，u3切分串接只有提名及成本，仍未補四通道来源與接回。另u2兩條claim及計數inventory只附一邊成本却主張兩邊／相減，已列引用缺陷並以已見句子補證。"
+      },
+      {
+        "reader_id": "r2b1_ca",
+        "case_id": "M78184",
+        "source": "raw/r2b1_ca.jsonl:last record.case_results[M78184].explanation",
+        "quote": "逐核32個四題claims與三段8項inventory。首次讀者與獨立來源都抓到CSP整體分流/重接缺漏，u2操作与u3重畫路徑要求已使其必要，後文未釐清。保留名称/目的/局部參數算式已教，缺项不誇為整節全未介紹。我将讀者blocker調為burden，因計數本身可完成但整體路徑不能構造，最終仍needs_revision。另Full why_here所附結果句不能標直接引入理由，屬紀錄state修正。"
+      },
+      {
+        "reader_id": "r3b4_ca",
+        "case_id": "M78184",
+        "source": "raw/r3b4_ca.jsonl:last record.case_results[M78184].explanation",
+        "quote": "43條claims、未知處置與inventory全部核证。独立u1将完整路径视为可立即待教，故駁回讀者u1必要burden的时点；u2要求实作八通道融合、u3要求画完整流后，没有切分/支路/串接规则则是必要blocker，與读者末判一致。保留已教参数、介面與限制，不以完整计数代替整个CSP。u3 q4最後一條無訓練數字不等於無訓練效果，另列措辭證據缺项。"
+      }
+    ],
+    "optional_gold_timing_concerns": [
+      {
+        "case_id": "M19340",
+        "finding": "gold頂層first_required_unit=u3與later_resolution_unit=u1沿用數值門檻時序，名稱target本在u1可記optional；unit assessments指向u1。固定抽核15份均正確記名稱optional，沒有主分布林分歧。"
+      },
+      {
+        "case_id": "M81954",
+        "finding": "gold first_required_unit=u1/u2不是單一gate ID，名称target可從u1記optional；抽核3份未因此改變名稱命中/分級。必要timely統計不含optional。"
+      },
+      {
+        "case_id": "M72209",
+        "finding": "gold first_required_unit=u1/u2同樣含糊，名称target从u1可記optional；抽核1份的名稱命中成立，另外scalar轉分布理由誤升burden另計。必要timely統計不含optional。"
+      }
+    ],
+    "preservation": "所有原gold、個別grades與timely統計保留；上述時點分歧另記，未把後文補教逆寫成先前已懂。"
+  },
+  "workload_check": {
+    "source": "沿用自己的integrity-audit獨立重算；凍結result hash證明該報告未更動。",
+    "counts": {
+      "cohorts": 12,
+      "unique_readers": 60,
+      "source_notes": 810,
+      "four_question_checkpoints": 612,
+      "anonymous_individual_judgments": 255,
+      "unique_evaluation_ids": 255,
+      "raw_final_case_records": 255,
+      "all_first_reader_claims": 7468,
+      "c_primary_claims": 1988,
+      "c_required_claim_indices": 1988,
+      "c_audit_entries": 1988,
+      "c_covered_case_results": 51,
+      "raw_record_segments": 237
+    },
+    "by_role": {
+      "a": {
+        "contexts": 12,
+        "record_characters": 458720,
+        "source_note_count": 162,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 6541.956971999999,
+        "record_segments": 45,
+        "source_segments": 45,
+        "comparison_segments": 0
+      },
+      "b1": {
+        "contexts": 12,
+        "record_characters": 448353,
+        "source_note_count": 162,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 5951.560920000001,
+        "record_segments": 45,
+        "source_segments": 45,
+        "comparison_segments": 0
+      },
+      "b2": {
+        "contexts": 12,
+        "record_characters": 440633,
+        "source_note_count": 162,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 5813.5080259999995,
+        "record_segments": 45,
+        "source_segments": 45,
+        "comparison_segments": 0
+      },
+      "c": {
+        "contexts": 12,
+        "record_characters": 853891,
+        "source_note_count": 162,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 6649.334345,
+        "record_segments": 45,
+        "source_segments": 45,
+        "comparison_segments": 0
+      },
+      "ca": {
+        "contexts": 12,
+        "record_characters": 1579766,
+        "source_note_count": 162,
+        "checkpoint_count": 0,
+        "active_segment_seconds": 7442.200135000001,
+        "record_segments": 57,
+        "source_segments": 45,
+        "comparison_segments": 12
+      }
+    },
+    "by_pipeline": {
+      "A": {
+        "contexts": 12,
+        "record_characters": 458720,
+        "source_note_count": 162,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 6541.956971999999,
+        "record_segments": 45,
+        "source_segments": 45,
+        "comparison_segments": 0
+      },
+      "B": {
+        "contexts": 24,
+        "record_characters": 888986,
+        "source_note_count": 324,
+        "checkpoint_count": 306,
+        "active_segment_seconds": 11765.068946,
+        "record_segments": 90,
+        "source_segments": 90,
+        "comparison_segments": 0
+      },
+      "C": {
+        "contexts": 24,
+        "record_characters": 2433657,
+        "source_note_count": 324,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 14091.534480000002,
+        "record_segments": 102,
+        "source_segments": 90,
+        "comparison_segments": 12
+      },
+      "C_first": {
+        "contexts": 12,
+        "record_characters": 853891,
+        "source_note_count": 162,
+        "checkpoint_count": 153,
+        "active_segment_seconds": 6649.334345,
+        "record_segments": 45,
+        "source_segments": 45,
+        "comparison_segments": 0
+      }
+    },
+    "matches_reported_integrity": true,
+    "record_characters_definition": "len(json.dumps(record,ensure_ascii=False))；包含JSON鍵、重複引文及程式複製字串，不是生成token、UTF-8 bytes、完整輸入或計算費。",
+    "active_segment_seconds_definition": "每次來源/比較揭露至記錄的wall秒數加總；含排程、等待、工具等，context可重疊，不是模型CPU時間或實際總經過時間。",
+    "comparability": "B與C各24 contexts/324 source notes，但B有306四題checkpoints，C有153加12 comparison段及1988 claim核證；C_first是C的子集。不同工作不可只用代理字數/秒數宣稱成本相等或效率優勝。"
+  },
+  "disagreements": [
+    {
+      "kind": "judgment_record_reason",
+      "evaluation_id": "E370285",
+      "case_id": "M22957",
+      "finding": "timeline相對scalar理由burden超出當下手算；但CA final explanation已明確駁回自有誤報，因此原判分所稱撤回無依據不符完整記錄。",
+      "original_grade_retained": true,
+      "main_grade_boolean_changes": 0,
+      "source_evidence": {
+        "reader_id": "r3b4_ca",
+        "case_id": "M22957",
+        "source": "raw/r3b4_ca.jsonl:last record.case_results[M22957].explanation",
+        "quote": "42條claims及所有未知/概念分工已核证。原source-01/02/03中把改用分布的理由列burden保持原樣，但最终駁回這個自有误报：主要命名方法是DFL，新距離分布需要相鄰bin監督，可由u1的表示變化與DFL損失角色合理推得學習理由，不必另證優於scalar或偵測效益；此判断不借u3回补u1。读者u1/u2 inventory为何在此的explicit标签仍過强，已逐欄標示应是inferred。u3只补免四捨五入的局部用途。性能/成本值得与可信不确定性合理待資料检查。"
+      }
+    },
+    {
+      "kind": "unknown_disposition",
+      "audit_id": "2f8ddc7658c8",
+      "case_id": "M78184",
+      "unit_id": "u1",
+      "finding": "依凍結gold及本輪來源判斷，u1已藉CSP四通道運算/八通道介面解釋主要方法，路由缺項構成理解burden。讀者承認目的/介面已教且只報局部路徑，issue處置有效；CA以未要求實作否定u1理解需要，與gold有時點分歧。",
+      "original_grade_retained": true,
+      "proposed_reader_disposition_valid": true,
+      "main_grade_boolean_changes": 0
+    },
+    {
+      "kind": "unknown_disposition",
+      "audit_id": "86dffcea18ae",
+      "case_id": "M47282",
+      "unit_id": "u1",
+      "finding": "gold明定門檻必要到u3新框判定才啟用，u1明說先依表列判定算面積。讀者只在當前概覽/表列計算範圍合理等待，沒有把整個AP50永久延期；CA稱全部含義延期偏寬並u1升burden，與來源任務及gold時點分歧。",
+      "original_grade_retained": true,
+      "proposed_reader_disposition_valid": true,
+      "main_grade_boolean_changes": 0
+    },
+    {
+      "kind": "unknown_disposition",
+      "audit_id": "1d27084c92a1",
+      "case_id": "M78184",
+      "unit_id": "u1",
+      "finding": "u1整個方法的4→8介面解釋已需要路由含義，不必等到u3畫圖才有burden。此讀者把計數公式另作合理待教而只將路徑記issue，範圍正當；CA invalid時點與gold分歧。",
+      "original_grade_retained": true,
+      "proposed_reader_disposition_valid": true,
+      "main_grade_boolean_changes": 0
+    },
+    {
+      "kind": "source_gold_timing",
+      "references": [
+        "pregrade.json: M19340/M81954/M72209",
+        "timing_interpretation:CSP"
+      ],
+      "finding": "名稱gold頂層時點含糊與CSP核證者時點分歧均獨立列出；不改gold，不據此重算未抽到的個別語義。"
+    }
+  ],
+  "score_impact": "未改任何原分數。固定抽核中1個judgment reason与3個unknown disposition異議不改已核主布林；不是全255份語義敏感性重判。",
+  "limitations": [
+    "有限盲評：grade匿名IDs不等於完全盲；結果核對者在各階段合法接觸資料逐步擴大。共享FS只有指示隔離與存取申報，不能從hash或timestamp證明沒有私讀。",
+    "三輪為相同模型對同文重讀，12個必要結果只有4種必要缺漏各3次，51流程case不等於51獨立教材；C_first與C亦非獨立樣本。",
+    "短文與人工設置的缺漏、完整變體及名稱optional只涵蓋這次範圍；未測整書、長程先備、真學生或其他模型，不能宣稱泛化穩定性。",
+    "語義審核範圍固定54/255個別判斷、90/1988 C claims及7個flagged unknowns；255 grades只全量核算術與identity覆蓋，1988只全量核key覆蓋。抽核不是重新裁定全部結果。",
+    "source/state/inference以凍結來源與當時可見段落為限；某個正確答案的引文缺項不代表教材真有同一缺項，也不以外部領域知識修補原引文。",
+    "CSP u1理解burden、u3操作blocker與CA u2首次標記有保留時點分歧；名稱gold頂層unit欄位的疑義已保留但未更動金標。",
+    "record字數含程式複製字串，活動段秒數包含工具與等待並可重疊，只是工作量代理，不能當生成token、計算費或端到端耗時。",
+    "phase1跨case metadata輸出與phase2合併輸出截斷均已如實申報並完整分片補讀；未觸及禁讀語義來源，仍是流程偏差。"
+  ]
+}

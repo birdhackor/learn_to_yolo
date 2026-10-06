@@ -1,0 +1,3738 @@
+{
+  "items": [
+    {
+      "evaluation_id": "E261402",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱，至 u3 未補",
+          "already_taught": "平均精確率中文名稱、整段排序、IoU 0.50 判準、P/R 分母、包絡面積與結果意義皆已教。",
+          "missing": "AP 的英文完整名稱仍未展開。",
+          "needed_now": "不影響目前 AP50 手算與 IoU=0.49 的判定。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "已有中文平均精確率、AP50 角色及 IoU 0.50 判準。",
+              "missing": "AP 的英文完整名稱未展開。",
+              "needed_now": "不阻礙目前配對與整體目的理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱，至 u3 未補",
+              "already_taught": "平均精確率中文名稱、整段排序、IoU 0.50 判準、P/R 分母、包絡面積與結果意義皆已教。",
+              "missing": "AP 的英文完整名稱仍未展開。",
+              "needed_now": "不影響目前 AP50 手算與 IoU=0.49 的判定。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E621430",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E491173",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E892340",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼；u3 頁末仍未釐清",
+          "already_taught": "DFL 完整名稱與訓練角色、距離刻度、鄰近 target 權重、loss、p、候選點及 stride 解碼都已教。",
+          "missing": "由 p 得 l 的分布解碼規則。",
+          "needed_now": "不能完成 u2 的 x1=28−8l；也不能按 u3 把四份分布交給原本 ltrb 解碼。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "bin 是零到三格、logits 經 softmax 得 p、相鄰 target 和 loss、距離換框邊公式均已教。",
+              "missing": "p 轉成單一距離 l 的解碼規則。",
+              "needed_now": "當前要求先算 l 再算 x1=28−8l，無法依已讀文本求得 l 或畫素左界。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼；u3 頁末仍未釐清",
+              "already_taught": "DFL 完整名稱與訓練角色、距離刻度、鄰近 target 權重、loss、p、候選點及 stride 解碼都已教。",
+              "missing": "由 p 得 l 的分布解碼規則。",
+              "needed_now": "不能完成 u2 的 x1=28−8l；也不能按 u3 把四份分布交給原本 ltrb 解碼。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E968269",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼",
+          "already_taught": "DFL 角色、真值 target 權重、loss、softmax p 與 x1=28−8l 均已教。",
+          "missing": "如何由四個 bin 的 p 取得單距離 l；u3 只重述各分布變回距離，至頁末未釐清。",
+          "needed_now": "不能完成本段從均勻 p 到左界的實際解碼；不能只憑課外知識選轉換規則。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "DFL 角色、真值 target 權重、loss、softmax p 與 x1=28−8l 均已教。",
+              "missing": "如何由四個 bin 的 p 取得單距離 l",
+              "needed_now": "不能完成本段從均勻 p 到左界的實際解碼；不能只憑課外知識選轉換規則。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "DFL 角色、真值 target 權重、loss、softmax p 與 x1=28−8l 均已教。",
+              "missing": "如何由四個 bin 的 p 取得單距離 l；u3 只重述各分布變回距離，至頁末未釐清。",
+              "needed_now": "不能完成本段從均勻 p 到左界的實際解碼；不能只憑課外知識選轉換規則。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E275014",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E235588",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E541681",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/實際解碼，u3 頁末仍未釐清",
+          "already_taught": "已教 DFL 完整名稱與角色、bin 距離單位、兩側 target、softmax、加權 CE、x1=28−8l，以及四邊獨立 softmax 後接 ltrb 的用途。",
+          "missing": "由分布 p 算單一距離 l 的解碼方法；u3 沒有補明。",
+          "needed_now": "u2 無法從 p=[0.25,0.25,0.25,0.25] 算出 l，故無法完成宣告的實際左界解碼。這個必要操作缺漏保留，不否定已可理解的監督與 loss。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "已教 bin 距離意義、softmax、相鄰刻度 target 權重、加權 CE 及 x1=28−8l。",
+              "missing": "p 到單一距離 l 的規則。",
+              "needed_now": "無法從已給 p=[0.25,0.25,0.25,0.25] 得 l，因而不能完成本段要畫的左界；監督與 loss 部分仍可完成。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/實際解碼，u3 頁末仍未釐清",
+              "already_taught": "已教 DFL 完整名稱與角色、bin 距離單位、兩側 target、softmax、加權 CE、x1=28−8l，以及四邊獨立 softmax 後接 ltrb 的用途。",
+              "missing": "由分布 p 算單一距離 l 的解碼方法；u3 沒有補明。",
+              "needed_now": "u2 無法從 p=[0.25,0.25,0.25,0.25] 算出 l，故無法完成宣告的實際左界解碼。這個必要操作缺漏保留，不否定已可理解的監督與 loss。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E645182",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E478674",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼；u3 仍未釐清",
+          "already_taught": "已教 DFL 名稱和監督角色、bin0 至 bin3 距離含義、相鄰 target 權重、softmax、加權交叉熵，前文也有已知 l 時的 ltrb 框界解碼。",
+          "missing": "p 轉成單一距離 l 的公式或可執行步驟；u3 只說四份分布各變回距離，沒有補上。",
+          "needed_now": "u2 的實際解碼指示要求從 p 得 l 再算 x1，直到頁末仍無法算出數值；保留 u2 當場卡點。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "已教四個 bin 的距離含義、softmax、相鄰 target 權重、加權交叉熵；前文也教 l 已知時如何換成畫素框界。",
+              "missing": "分布 p 如何解碼為單一距離 l 的公式或操作。",
+              "needed_now": "無法按當前指示從均勻 p 得到 l，因而無法得出 x1 的數值。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼；u3 仍未釐清",
+              "already_taught": "已教 DFL 名稱和監督角色、bin0 至 bin3 距離含義、相鄰 target 權重、softmax、加權交叉熵，前文也有已知 l 時的 ltrb 框界解碼。",
+              "missing": "p 轉成單一距離 l 的公式或可執行步驟；u3 只說四份分布各變回距離，沒有補上。",
+              "needed_now": "u2 的實際解碼指示要求從 p 得 l 再算 x1，直到頁末仍無法算出數值；保留 u2 當場卡點。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E980643",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E399678",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱，至 u3 未補",
+          "already_taught": "已給平均精確率中文意義、排序評估角色、IoU 門檻、配對規則與本例包絡面積。",
+          "missing": "重要縮寫 AP 的英文完整名稱未展開，後文未釐清。",
+          "needed_now": "不阻礙目前手算或概念理解，屬選讀名称補充。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "已給中文名稱平均精確率、IoU 0.50 的意義與整體評估流程。",
+              "missing": "AP 的英文完整名稱未展開。",
+              "needed_now": "不阻礙目前理解它是整批預測的評估分數；屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱，至 u3 未補",
+              "already_taught": "已給平均精確率中文意義、排序評估角色、IoU 門檻、配對規則與本例包絡面積。",
+              "missing": "重要縮寫 AP 的英文完整名稱未展開，後文未釐清。",
+              "needed_now": "不阻礙目前手算或概念理解，屬選讀名称補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E740040",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱；頁末仍未補",
+          "already_taught": "平均精確率的中文意義、同圖同類配對、IoU門檻、P/R、包絡面積及結果限制皆已教。",
+          "missing": "AP 英文完整名稱；u2、u3未補。",
+          "needed_now": "不影響全頁理解或IoU0.49的判定。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文平均精確率、排序、配對、IoU 0.50 與包絡面積角色已說明。",
+              "missing": "AP 英文完整名稱。",
+              "needed_now": "不影響現在辨認評估流程，屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱；u2 未補",
+              "already_taught": "AP50 的角色、配對門檻及本段 P、R、包絡面積都清楚。",
+              "missing": "AP 英文完整名稱。",
+              "needed_now": "不影響目前 AP50 手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱；頁末仍未補",
+              "already_taught": "平均精確率的中文意義、同圖同類配對、IoU門檻、P/R、包絡面積及結果限制皆已教。",
+              "missing": "AP 英文完整名稱；u2、u3未補。",
+              "needed_now": "不影響全頁理解或IoU0.49的判定。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E729665",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E732007",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼",
+          "already_taught": "bin0..3 是零到三格，softmax p，DFL 權重和 loss，且已有 x1=px−l×stride",
+          "missing": "把機率分布 p 轉成距離 l 的計算規則；u3 仍未釐清",
+          "needed_now": "本段要求實際計算 l 再求 x1；只知 p 與刻度無法選定轉換法",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "bin0..3 是零到三格，softmax p，DFL 權重和 loss，且已有 x1=px−l×stride",
+              "missing": "把機率分布 p 轉成距離 l 的計算規則",
+              "needed_now": "本段要求實際計算 l 再求 x1；只知 p 與刻度無法選定轉換法",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "bin0..3 是零到三格，softmax p，DFL 權重和 loss，且已有 x1=px−l×stride",
+              "missing": "把機率分布 p 轉成距離 l 的計算規則；u3 仍未釐清",
+              "needed_now": "本段要求實際計算 l 再求 x1；只知 p 與刻度無法選定轉換法",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E848885",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E507132",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E270623",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E213501",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E757079",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱",
+          "already_taught": "已教中文平均精確率、IoU 0.50、排序配對與 all-points 包絡面積；u2 釐清 P/R 定義。",
+          "missing": "AP 的英文完整名稱沒有展開，後來未釐清。",
+          "needed_now": "名稱補充；無礙目前配對與手算。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            },
+            {
+              "source": "u1",
+              "quote": "配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+            },
+            {
+              "source": "u2",
+              "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3，因此 (R,P) 是 (0,0)、(1/3,1/2)、(1/3,1/3)、(2/3,1/2)。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "已給中文平均精確率、50 的 IoU 判準及評估角色。",
+              "missing": "AP 的英文完整名稱未展開。",
+              "needed_now": "名稱補充，不阻礙已教的配對和總結角色。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "AP50 的中文、角色與 IoU 0.50 已教；u2 又給精確率、召回率與面積計算。",
+              "missing": "AP 英文完整名稱仍未展開。",
+              "needed_now": "名稱補充，不妨礙當前手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "已教中文平均精確率、IoU 0.50、排序配對與 all-points 包絡面積；u2 釐清 P/R 定義。",
+              "missing": "AP 的英文完整名稱沒有展開，後來未釐清。",
+              "needed_now": "名稱補充；無礙目前配對與手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+                },
+                {
+                  "source": "u2",
+                  "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3，因此 (R,P) 是 (0,0)、(1/3,1/2)、(1/3,1/3)、(2/3,1/2)。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E841108",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E391311",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/實際解碼；u3/四份分布各變回距離",
+          "already_taught": "距離bin含義、logits/softmax、1.25的target权重与loss、候选点28及x1=28−8l均已说明；u3补充四边各自softmax与手算限制。",
+          "missing": "四个bin機率p轉為單距離l的具體运算，後文u3仍未釐清。",
+          "needed_now": "u2要求實際算出畫框左界时，讀者無法先從均勻p得到l；此原始卡點仍影響頁末完整解碼能力。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "四個 bin 的距離含義、softmax、相鄰兩格 target 權重與加權 CE 都已清楚；候選點 px=28 及 x1=28−8l 也已給。",
+              "missing": "尚未交代四個機率如何換成單一距離 l。",
+              "needed_now": "無法從本次 p=[0.25,0.25,0.25,0.25] 得到 l，因而無法完成當段要求的左界實際解碼。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/實際解碼；u3/四份分布各變回距離",
+              "already_taught": "距離bin含義、logits/softmax、1.25的target权重与loss、候选点28及x1=28−8l均已说明；u3补充四边各自softmax与手算限制。",
+              "missing": "四个bin機率p轉為單距離l的具體运算，後文u3仍未釐清。",
+              "needed_now": "u2要求實際算出畫框左界时，讀者無法先從均勻p得到l；此原始卡點仍影響頁末完整解碼能力。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E380667",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼；u3 仍未釐清",
+          "already_taught": "DFL 距離分布角色、非整數 target、softmax、加權 CE、每邊各自 softmax 以及 ltrb 框界公式已教。",
+          "missing": "分布 p 轉單一距離 l 的運算方法與意義。",
+          "needed_now": "u2 的實際解碼需要該轉換，無法得到 l 與 x1；u3 說四份分布各變回距離仍不說怎樣變。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "bin 對應、softmax、非整數距離相鄰刻度權重、加權 CE 與距離到左界公式都已教。",
+              "missing": "分布 p 轉單一距離 l 的運算與意義未交代。",
+              "needed_now": "無法完成當前要求的實際解碼，不能由給定 p 算出 l 和 x1。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼；u3 仍未釐清",
+              "already_taught": "DFL 距離分布角色、非整數 target、softmax、加權 CE、每邊各自 softmax 以及 ltrb 框界公式已教。",
+              "missing": "分布 p 轉單一距離 l 的運算方法與意義。",
+              "needed_now": "u2 的實際解碼需要該轉換，無法得到 l 與 x1；u3 說四份分布各變回距離仍不說怎樣變。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E639426",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E106520",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E273378",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E914706",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E737861",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E215651",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱（u2仍未補）",
+          "already_taught": "平均精確率、排序、配對門檻、包絡面積均已說明。",
+          "missing": "AP 英文全名",
+          "needed_now": "只影響名稱完整性。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文平均精確率、0.50 配對門檻、排序与包絡面積角色已說明。",
+              "missing": "AP（Average Precision）英文全名未展開。",
+              "needed_now": "名稱補充，並不阻礙当前概覽。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱（u2仍未補）",
+              "already_taught": "平均精確率、排序、配對門檻、包絡面積均已說明。",
+              "missing": "AP 英文全名",
+              "needed_now": "只影響名稱完整性。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱（u2仍未補）",
+              "already_taught": "平均精確率、排序、配對門檻、包絡面積均已說明。",
+              "missing": "AP 英文全名",
+              "needed_now": "只影響名稱完整性。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E670455",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E654302",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E225855",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E320478",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱（至頁末仍未補）",
+          "already_taught": "中文平均精確率、50的IoU門檻、配對規則、P/R分母、包絡算法與範圍完整",
+          "missing": "AP英文完整名稱未展開",
+          "needed_now": "名稱補充，不妨礙本頁操作；後文未釐清",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文名、評估角色與 50 的 IoU 含義已說明",
+              "missing": "AP 的英文完整名稱未展開",
+              "needed_now": "不妨礙目前辨認評估規則，只是縮寫補充",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱（u2 仍未補）",
+              "already_taught": "AP50 角色、IoU 門檻與 P/R 及包絡操作皆已交代",
+              "missing": "AP 英文完整名稱未展開",
+              "needed_now": "名稱補充，不影響當前算面積",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱（至頁末仍未補）",
+              "already_taught": "中文平均精確率、50的IoU門檻、配對規則、P/R分母、包絡算法與範圍完整",
+              "missing": "AP英文完整名稱未展開",
+              "needed_now": "名稱補充，不妨礙本頁操作；後文未釐清",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E294860",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱",
+          "already_taught": "AP50中文、0.50配對、排序、P/R和包絡面積在u1-u2已給。",
+          "missing": "AP的英文完整名稱未展開，後文未補。",
+          "needed_now": "名稱補充，不妨礙計算或0.49配對。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文平均精確率與 0.50 配對門檻已給。",
+              "missing": "AP 的英文完整名稱尚未展開。",
+              "needed_now": "屬名稱補充，目前不影響配對規則理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文名稱、配對及 u2 的比率與面積已交代。",
+              "missing": "AP 英文完整名稱仍未展開。",
+              "needed_now": "名稱補充，不影響此面積手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "AP50中文、0.50配對、排序、P/R和包絡面積在u1-u2已給。",
+              "missing": "AP的英文完整名稱未展開，後文未補。",
+              "needed_now": "名稱補充，不妨礙計算或0.49配對。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E185870",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/實際解碼；u3頁末仍未釐清",
+          "already_taught": "已完整介紹DFL的距離bin角色、兩鄰target、loss、softmax與原ltrb框解碼。",
+          "missing": "未給p→單一距離l的具體規則；u3僅重述各分布要變回距離。",
+          "needed_now": "u2要求把均勻p換成l並算x1=28−8l，讀者不能根據已讀材料完成。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "已教距離bin、真值相鄰權重、DFL loss、softmax與畫素框解碼公式。",
+              "missing": "未教四個bin機率如何合成單一距離l。",
+              "needed_now": "在本段要求的實際解碼中，無法由p求l，再求要畫的左界x1。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                },
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/實際解碼；u3頁末仍未釐清",
+              "already_taught": "已完整介紹DFL的距離bin角色、兩鄰target、loss、softmax與原ltrb框解碼。",
+              "missing": "未給p→單一距離l的具體規則；u3僅重述各分布要變回距離。",
+              "needed_now": "u2要求把均勻p換成l並算x1=28−8l，讀者不能根據已讀材料完成。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E771097",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼（至 u3 頁末未釐清）",
+          "already_taught": "距離 bin、target、loss 與 ltrb 左界式已教；u3 說明四邊獨立 softmax 並將距離交給 ltrb，仍未交代 p 到距離的規則。",
+          "missing": "p 如何換成單一左距離 l 的解碼規則",
+          "needed_now": "本段已進入實際解碼，沒有 l 的取得規則就無法得到要畫的左界。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u1",
+              "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+            },
+            {
+              "source": "u3",
+              "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "距離 bin、target 和 loss 已教；已知得到 l 以後可用 x1=28−8l。",
+              "missing": "p 如何換成單一左距離 l 的解碼規則",
+              "needed_now": "本段已進入實際解碼，沒有 l 的取得規則就無法得到要畫的左界。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼（至 u3 頁末未釐清）",
+              "already_taught": "距離 bin、target、loss 與 ltrb 左界式已教；u3 說明四邊獨立 softmax 並將距離交給 ltrb，仍未交代 p 到距離的規則。",
+              "missing": "p 如何換成單一左距離 l 的解碼規則",
+              "needed_now": "本段已進入實際解碼，沒有 l 的取得規則就無法得到要畫的左界。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E347587",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E939159",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E477202",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/實際解碼；u3尚未釐清",
+          "already_taught": "DFL整體訓練角色、bin刻度、target權重、加權交叉熵、softmax与單距離ltrb解碼已教；僅分布→距離銜接缺漏。",
+          "missing": "如何把p=[0.25,0.25,0.25,0.25]转单一l。",
+          "needed_now": "u2要在px28代入x1=28−8l，此步無法完成，頁末也仍未完成。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "DFL角色、bin距離刻度、softmax、真值兩側權重、加權loss及距離轉畫素框邊公式均已教。",
+              "missing": "p=[0.25,0.25,0.25,0.25] 轉單一左距離l的規則。",
+              "needed_now": "本段要算px=28的左界x1，缺轉換規則會卡住實際解碼。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u2",
+                  "quote": "四個 logits 全零時，softmax 得 p=[0.25,0.25,0.25,0.25]，L=−ln 0.25≈1.3863。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/實際解碼；u3尚未釐清",
+              "already_taught": "DFL整體訓練角色、bin刻度、target權重、加權交叉熵、softmax与單距離ltrb解碼已教；僅分布→距離銜接缺漏。",
+              "missing": "如何把p=[0.25,0.25,0.25,0.25]转单一l。",
+              "needed_now": "u2要在px28代入x1=28−8l，此步無法完成，頁末也仍未完成。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E415459",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼（頁末仍未釐清）",
+          "already_taught": "DFL 名稱、兩側刻度監督、target 權重、loss、softmax 軸與單距離 ltrb 解碼已教。",
+          "missing": "分布 p 到單一 l 的規則",
+          "needed_now": "u2 要由均勻 p 得 l，再代入 x1=28−8l，尚不能完成；u3 重述變回距離但沒給規則，保留當時必要缺漏。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            },
+            {
+              "source": "p",
+              "quote": "前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u3/偵測 AP",
+          "already_taught": "此頁沒有偵測評測、不能說成本值得的結論邊界已明示。",
+          "missing": "AP 的完整名稱與當下足夠含義",
+          "needed_now": "只作未評測的名稱補充，不影響本頁 DFL 監督手算。",
+          "evidence": [
+            {
+              "source": "u3",
+              "quote": "本頁沒有測偵測 AP，不能宣稱額外成本值得。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "DFL 的名稱、監督角色、距離 bin、target 權重、softmax、loss，以及單一距離到框左界的式子都已說明。",
+              "missing": "分布 p 到單一 l 的規則",
+              "needed_now": "當下要由 p=[0.25,0.25,0.25,0.25] 得 l，再得要畫的 x1；沒有規則不能完成這條操作鏈。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "p",
+                  "quote": "前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼（頁末仍未釐清）",
+              "already_taught": "DFL 名稱、兩側刻度監督、target 權重、loss、softmax 軸與單距離 ltrb 解碼已教。",
+              "missing": "分布 p 到單一 l 的規則",
+              "needed_now": "u2 要由均勻 p 得 l，再代入 x1=28−8l，尚不能完成；u3 重述變回距離但沒給規則，保留當時必要缺漏。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                },
+                {
+                  "source": "p",
+                  "quote": "前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u3/偵測 AP",
+              "already_taught": "此頁沒有偵測評測、不能說成本值得的結論邊界已明示。",
+              "missing": "AP 的完整名稱與當下足夠含義",
+              "needed_now": "只作未評測的名稱補充，不影響本頁 DFL 監督手算。",
+              "evidence": [
+                {
+                  "source": "u3",
+                  "quote": "本頁沒有測偵測 AP，不能宣稱額外成本值得。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E956820",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E511281",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E523090",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱；到 u3 仍未展開",
+          "already_taught": "平均精確率中文、IoU 門檻、兩率及面積算法均已教，u1 算法未知在 u2 已釐清",
+          "missing": "AP 英文完整名稱",
+          "needed_now": "僅名稱對照補充，無必要推理或操作受阻",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文平均精確率、整體流程與 IoU 門檻已交代",
+              "missing": "AP 英文完整名稱未展開",
+              "needed_now": "名稱對照補充，不阻礙當下流程理解",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文意義、配對和面積算法已教",
+              "missing": "AP 英文完整名稱未展開",
+              "needed_now": "名稱對照補充，無當下必要推理受阻",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱；到 u3 仍未展開",
+              "already_taught": "平均精確率中文、IoU 門檻、兩率及面積算法均已教，u1 算法未知在 u2 已釐清",
+              "missing": "AP 英文完整名稱",
+              "needed_now": "僅名稱對照補充，無必要推理或操作受阻",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E164974",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E293886",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E576374",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E978662",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/實際解碼；u3 頁末仍未釐清",
+          "already_taught": "bin 距離刻度、softmax、target 權重、加權 CE、stride 與 x1=28−8l 都清楚；u3 又交代四邊各自 softmax 及交給 ltrb。",
+          "missing": "從四個 bin 機率轉回單一距離的規則。",
+          "needed_now": "u2 当場求 l 與左界的操作無法完成；頁末仍不能知道分布解碼結果如何取得。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "bin0 至 bin3 代表零至三格、softmax 產生 p、真值相鄰兩 bin 權重與 loss，以及 x1=28−8l 已教。",
+              "missing": "尚未給從分布 p 取單一距離 l 的規則。",
+              "needed_now": "无法由給出的均勻 p 求 l，因而不能完成本段已要求的實際解碼左界。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u2",
+                  "quote": "softmax 得 p=[0.25,0.25,0.25,0.25]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/實際解碼；u3 頁末仍未釐清",
+              "already_taught": "bin 距離刻度、softmax、target 權重、加權 CE、stride 與 x1=28−8l 都清楚；u3 又交代四邊各自 softmax 及交給 ltrb。",
+              "missing": "從四個 bin 機率轉回單一距離的規則。",
+              "needed_now": "u2 当場求 l 與左界的操作無法完成；頁末仍不能知道分布解碼結果如何取得。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E532191",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E761032",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E580048",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1（至 u3 尚未補充）",
+          "already_taught": "AP50 中文名稱、主要角色、IoU 門檻、配對、P/R 與包絡面積完整可用。",
+          "missing": "AP 的英文完整名稱未展開。",
+          "needed_now": "只需名稱補充，不阻礙當前推理或計算；後文未釐清此名稱。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "已給 AP50 中文意義、排序面積角色及 50 的 IoU 門檻。",
+              "missing": "AP 的英文完整名稱未展開。",
+              "needed_now": "角色已清楚，只是名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（u2 尚未補充）",
+              "already_taught": "AP50 中文、排序面積與配對門檻已教，u2 又給完整面積算法。",
+              "missing": "AP 英文全名仍未展開。",
+              "needed_now": "名稱補充，未阻礙這次計算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（至 u3 尚未補充）",
+              "already_taught": "AP50 中文名稱、主要角色、IoU 門檻、配對、P/R 與包絡面積完整可用。",
+              "missing": "AP 的英文完整名稱未展開。",
+              "needed_now": "只需名稱補充，不阻礙當前推理或計算；後文未釐清此名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E454512",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E449727",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E980761",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E100482",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱",
+          "already_taught": "AP50中文、0.50配對、排序、P/R和包絡面積在u1-u2已給。",
+          "missing": "AP的英文完整名稱未展開，後文未補。",
+          "needed_now": "名稱補充，不妨礙計算或0.49配對。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50首次名稱",
+              "already_taught": "AP50中文為平均精確率，50為IoU>=0.50，排序配對與包絡概括角色已清楚。",
+              "missing": "AP未給完整英文名稱；此處不以來源外英文當教材已教。",
+              "needed_now": "名稱補充，未阻礙當前方法理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50首次名稱",
+              "already_taught": "AP50中文意義、IoU0.50配對判準、P/R及all-points面積皆已教。",
+              "missing": "AP未展開完整英文名稱。",
+              "needed_now": "名稱補充，不阻礙算值。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50首次名稱",
+              "already_taught": "AP50中文名稱、IoU>=0.50判準、P/R、all-points與限制均已教。",
+              "missing": "AP尚未完整英文展開。",
+              "needed_now": "名稱補充；不影响0.49框為FP和召回不增的答案。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E869864",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E729449",
+      "case_id": "M30083",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E300444",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E968027",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/實際解碼；u3 頁末仍未釐清",
+          "already_taught": "DFL 是訓練距離分布的加權交叉熵、bin 意義、target 權重、softmax、loss、拿到距離後的 ltrb 座標式已教。",
+          "missing": "從 p=[0.25,0.25,0.25,0.25] 算出 l 的規則仍未提供；後文只有重申轉換順序，沒有補上換算。",
+          "needed_now": "不能完成 u2 當下要求的分布解碼或得到要畫的左界，影響整個方法的輸出用途。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "bin 的刻度意義、softmax、監督權重與 loss，以及得到 l 後用 x1=28−8l 換算畫素左界。",
+              "missing": "p 轉成單一 l 的規則未給，不能從已教內容選出唯一 l。",
+              "needed_now": "無法完成正文當下要求的分布解碼及左界計算。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "p",
+                  "quote": "解碼左界是 x1=px−l×stride，其他三邊同理。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/實際解碼；u3 頁末仍未釐清",
+              "already_taught": "DFL 是訓練距離分布的加權交叉熵、bin 意義、target 權重、softmax、loss、拿到距離後的 ltrb 座標式已教。",
+              "missing": "從 p=[0.25,0.25,0.25,0.25] 算出 l 的規則仍未提供；後文只有重申轉換順序，沒有補上換算。",
+              "needed_now": "不能完成 u2 當下要求的分布解碼或得到要畫的左界，影響整個方法的輸出用途。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E311207",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1（頁末u3仍未展開）",
+          "already_taught": "中文平均精確率、配對、P/R、all-points包络及算例完整。",
+          "missing": "重要缩写AP沒有英文完整名稱。",
+          "needed_now": "不影响此時FP判定及AP手算，属名稱改善。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "AP50 的中文名稱、整體流程及 IoU 判準。",
+              "missing": "AP 英文完整名稱未展開。",
+              "needed_now": "不妨礙目前理解方法角色；補全重要縮寫。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（u2仍未展開）",
+              "already_taught": "AP50中文、流程、P/R與面積已解釋。",
+              "missing": "AP英文完整名稱未展開。",
+              "needed_now": "不妨礙手算；屬重要縮寫名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（頁末u3仍未展開）",
+              "already_taught": "中文平均精確率、配對、P/R、all-points包络及算例完整。",
+              "missing": "重要缩写AP沒有英文完整名稱。",
+              "needed_now": "不影响此時FP判定及AP手算，属名稱改善。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E194112",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E221461",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E691987",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼",
+          "already_taught": "距離 bin 含義、真值 1.25 格的 target 權重、softmax 機率與 loss，以及單一 l 到 x1 的前文公式",
+          "missing": "機率向量 p 如何轉成單一距離 l 的規則",
+          "needed_now": "正文已要求用 p=[.25,.25,.25,.25] 解碼 l 並求 x1；沒有 p→l 規則無法依已讀內容完成；u3雖提四份分布各變回距離，仍未補規則。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "距離 bin 含義、真值 1.25 格的 target 權重、softmax 機率與 loss，以及單一 l 到 x1 的前文公式",
+              "missing": "機率向量 p 如何轉成單一距離 l 的規則",
+              "needed_now": "正文已要求用 p=[.25,.25,.25,.25] 解碼 l 並求 x1；沒有 p→l 規則無法依已讀內容完成",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/接著實際解碼",
+              "already_taught": "距離 bin 含義、真值 1.25 格的 target 權重、softmax 機率與 loss，以及單一 l 到 x1 的前文公式",
+              "missing": "機率向量 p 如何轉成單一距離 l 的規則",
+              "needed_now": "正文已要求用 p=[.25,.25,.25,.25] 解碼 l 並求 x1；沒有 p→l 規則無法依已讀內容完成；u3雖提四份分布各變回距離，仍未補規則。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E676242",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E479957",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50 名稱",
+          "already_taught": "中文意義、用途、配對及面積操作均已教；u3 清楚限制單類及 COCO 不能類比。",
+          "missing": "AP 英文全名未展開，後文未補。",
+          "needed_now": "不影響 AP50 的本頁推理，可選擇補名稱。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文平均精確率、IoU 0.50 判準及方法角色已說明。",
+              "missing": "AP 的英文全名未展開。",
+              "needed_now": "不阻礙當下理解計分角色；可補名稱供辨認。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "角色、中文意義、0.50 配對判準及本段比例／面積步驟已教。",
+              "missing": "AP 的英文全名仍未展開。",
+              "needed_now": "不影響面積計算，只補名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50 名稱",
+              "already_taught": "中文意義、用途、配對及面積操作均已教；u3 清楚限制單類及 COCO 不能類比。",
+              "missing": "AP 英文全名未展開，後文未補。",
+              "needed_now": "不影響 AP50 的本頁推理，可選擇補名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E901006",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E853624",
+      "case_id": "M81954",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "burden",
+          "location": "u1（後於 u2 釐清）",
+          "already_taught": "u1 已教排序、同圖同類未用真值配對、IoU 至少 0.50 及 TP／FP；u2 後來給出 P／R 分母、軸與包絡算法。",
+          "missing": "u1 當時已用精確率、召回率和右側包絡面積定義 AP50，卻未給這些量的含義、分母及軸。此缺項在 u2 釐清，沒有改寫 u1 原始判斷。",
+          "needed_now": "u1 當時理解整個 AP50 為何能由配對概括為評估分數；頁末判定保留當時必要缺漏。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            },
+            {
+              "source": "p",
+              "quote": "前文沒有教 AP、精確率與召回率，以下才引入它們。"
+            },
+            {
+              "source": "u2",
+              "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+            },
+            {
+              "source": "u2",
+              "quote": "在 R=0 與一補精確率零的端點，再從右往左取最大 P"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u1",
+          "already_taught": "AP50 的中文名、50 的含義與完整本例計算法已教。",
+          "missing": "AP 的英文完整名稱至頁末仍未給。",
+          "needed_now": "名稱補充，不影響目前數字例子與 0.49 判定。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1",
+              "already_taught": "已交代同類排序、同圖同類且不重用真值的配對，以及 IoU 0.50 的 TP／FP 判準。",
+              "missing": "精確率、召回率是什麼，以及右側包絡的軸與面積意義。",
+              "needed_now": "理解 AP50 為何可以把逐筆配對概括為一個評估分數，而不只記得配對規則。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "p",
+                  "quote": "前文沒有教 AP、精確率與召回率，以下才引入它們。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "AP50 的中文名、評估角色與 50 的含義已給。",
+              "missing": "AP 的英文完整名稱。",
+              "needed_now": "名稱補充，不阻礙已交代的排序與配對。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "AP50 中文名、排序配對角色已教；u2 已釐清精確率／召回率及包絡面積。",
+              "missing": "AP 的英文完整名稱仍未給。",
+              "needed_now": "名稱補充，不影響目前面積手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1（後於 u2 釐清）",
+              "already_taught": "u1 已教排序、同圖同類未用真值配對、IoU 至少 0.50 及 TP／FP；u2 後來給出 P／R 分母、軸與包絡算法。",
+              "missing": "u1 當時已用精確率、召回率和右側包絡面積定義 AP50，卻未給這些量的含義、分母及軸。此缺項在 u2 釐清，沒有改寫 u1 原始判斷。",
+              "needed_now": "u1 當時理解整個 AP50 為何能由配對概括為評估分數；頁末判定保留當時必要缺漏。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "p",
+                  "quote": "前文沒有教 AP、精確率與召回率，以下才引入它們。"
+                },
+                {
+                  "source": "u2",
+                  "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+                },
+                {
+                  "source": "u2",
+                  "quote": "在 R=0 與一補精確率零的端點，再從右往左取最大 P"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "AP50 的中文名、50 的含義與完整本例計算法已教。",
+              "missing": "AP 的英文完整名稱至頁末仍未給。",
+              "needed_now": "名稱補充，不影響目前數字例子與 0.49 判定。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E852312",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E789968",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/AP50",
+          "already_taught": "中文名称、配對、P/R、包絡與使用限制。",
+          "missing": "AP 英文全名。",
+          "needed_now": "名稱補充，不影響算例。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50",
+              "already_taught": "平均精確率、配對與包絡概括角色。",
+              "missing": "AP 英文全名。",
+              "needed_now": "名稱補充，不妨礙當前框評估輪廓。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/AP50",
+              "already_taught": "中文名称、配對、P/R、包絡與使用限制。",
+              "missing": "AP 英文全名。",
+              "needed_now": "名稱補充，不影響算例。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E911669",
+      "case_id": "M81954",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1（u3仍未補）",
+          "already_taught": "AP50的中文名稱、評估角色、IoU門檻、P/R與面積算法完整。",
+          "missing": "AP的英文完整名稱。",
+          "needed_now": "僅名稱補充，不阻礙配對與面積推理。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "本節算 AP50（平均精確率）"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u3",
+          "already_taught": "已說此例不跨類平均，不能當成官方COCO成績。",
+          "missing": "COCO完整名稱與中文意義。",
+          "needed_now": "外部範圍名稱補充；本頁並未要求計算官方成績。",
+          "evidence": [
+            {
+              "source": "u3",
+              "quote": "這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；官方插值與資料範圍要另外核對。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "AP50 的中文名稱、整體目的及 IoU 0.50 配對門檻已給。",
+              "missing": "AP 的英文完整名稱。",
+              "needed_now": "不影響目前認識評估角色，是名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（u3仍未補）",
+              "already_taught": "AP50的中文名稱、評估角色、IoU門檻、P/R與面積算法完整。",
+              "missing": "AP的英文完整名稱。",
+              "needed_now": "僅名稱補充，不阻礙配對與面積推理。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "本節算 AP50（平均精確率）"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u3",
+              "already_taught": "已說此例不跨類平均，不能當成官方COCO成績。",
+              "missing": "COCO完整名稱與中文意義。",
+              "needed_now": "外部範圍名稱補充；本頁並未要求計算官方成績。",
+              "evidence": [
+                {
+                  "source": "u3",
+                  "quote": "這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；官方插值與資料範圍要另外核對。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E991780",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E566666",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E300213",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E464513",
+      "case_id": "M83522",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "blocker",
+          "location": "u2/接著實際解碼（頁末仍未釐清）",
+          "already_taught": "DFL 名稱、兩側刻度監督、target 權重、loss、softmax 軸與單距離 ltrb 解碼已教。",
+          "missing": "分布 p 到單一 l 的規則",
+          "needed_now": "u2 要由均勻 p 得 l，再代入 x1=28−8l，尚不能完成；u3 重述變回距離但沒給規則，保留當時必要缺漏。",
+          "evidence": [
+            {
+              "source": "u2",
+              "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+            },
+            {
+              "source": "u3",
+              "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+            },
+            {
+              "source": "p",
+              "quote": "前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u3/偵測 AP",
+          "already_taught": "此頁沒有偵測評測、不能說成本值得的結論邊界已明示。",
+          "missing": "AP 的完整名稱與當下足夠含義",
+          "needed_now": "只作未評測的名稱補充，不影響本頁 DFL 監督手算。",
+          "evidence": [
+            {
+              "source": "u3",
+              "quote": "本頁沒有測偵測 AP，不能宣稱額外成本值得。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/分布轉左距離",
+              "already_taught": "四個 bin 的格數、target 相鄰權重、loss、softmax 與 x1=28−8l 都已教。",
+              "missing": "由機率 p 得到單一距離 l 的解碼規則未給；例如應採何種加權或選取算法仍未知，不能由 bins 或 softmax 自行補。",
+              "needed_now": "本段已要求實際解碼並得要畫的左界，缺此規則無法求 l 及 x1。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "blocker",
+              "location": "u2/分布轉左距離",
+              "already_taught": "四個 bin 的格數、target 相鄰權重、loss、softmax 與 x1=28−8l 都已教。",
+              "missing": "由機率 p 得到單一距離 l 的解碼規則未給；例如應採何種加權或選取算法仍未知，不能由 bins 或 softmax 自行補。 u3 未釐清。",
+              "needed_now": "本段已要求實際解碼並得要畫的左界，缺此規則無法求 l 及 x1。",
+              "evidence": [
+                {
+                  "source": "u2",
+                  "quote": "接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E755543",
+      "case_id": "M66211",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E460885",
+      "case_id": "M36704",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "case_id": "M30083",
+      "title": "NMS 的候選去重與顯示輸出",
+      "prerequisite": {
+        "text": "已讀：框用 xyxy 表示左上角與右下角，座標原點在圖左上，x 向右、y 向下，單位是畫素。IoU 是兩框交集面積除以聯集面積，相同框為一、不重疊為零。前文只教幾何與框的表示，沒有教候選去重或跨類規則。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "不同候選可能指向同一物件，畫框前需要去重。NMS（Non-Maximum Suppression，非極大值抑制）是推論後處理：每輪保留剩下候選中分數最高的框。輸入是已解碼的框、預測類別與分數，輸出保留索引供顯示端取回框。本頁按預測類別分組，各類獨立處理，不同類別不互相抑制。IoU 門檻 T 在零到一之間；其他候選與保留框的 IoU 嚴格大於 T 才刪掉，門檻越高越容易留下重疊框。本次 T=0.5。分數只作排序，不是正確率，NMS 不讀真值；以下用人工記錄，不訓練模型。",
+          "checkpoint": true
+        },
+        {
+          "text": "先核對類別零的三框記錄，xyxy 單位是畫素：A=[0,0,10,10]、分數 0.9；B=[1,0,11,10]、分數 0.8；C=[20,0,30,10]、分數 0.7。記錄顯示先留 A、抑制 B，再留 C，回傳 A、C。A、B 面積各 100，交集 90，IoU=90/(100+100−90)=9/11，約 0.818；C 與前兩框均不重疊。B 被刪只告訴我們 T<9/11，不能由結果反推出唯一門檻。另以 T=0.9 做反事實比較，這不是本次設定：因 9/11<0.9，B 不被 A 抑制，三框都留下。這兩個結果說明門檻控制候選彼此的競爭，不是判框是否正確。",
+          "checkpoint": true
+        },
+        {
+          "text": "顯示端現在多收到同一張圖、同類別零的 D=[2.5,0,12.5,10]，分數 0.85；A、B、C 的資料沿用前例。D 與 A 面積各 100，交集為 7.5×10=75，所以 IoU=75/(100+100−75)=0.6。這次請實際依本頁採用的門檻完成 NMS：先留 A，把 D 與 A 的 IoU 和當下門檻比較，決定是否抑制 D，再列出最後顯示的索引。上一段的 0.9 只是假設比較值，不能拿來替代本頁設定。這次沒有真值，留下的框仍可能是背景誤報；框數減少本身不支持辨識品質提高。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M36704",
+      "title": "CSP 的區塊路徑與參數成本",
+      "prerequisite": {
+        "text": "已讀：卷積用 NCHW 排列，B 或 N 表示圖片筆數，C 是通道，高寬是 H、W。已經比較逐值相加與沿通道串接：同樣兩個二通道向量，相加得到二通道，串接得到四通道。前文並未教 CSP；以下只使用這些形狀與接合知識。\n\n實際前文來源：\ndocs/lessons/01-small-cnn.md L28：這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。後文有時以 B 表示 batch 大小，意思和 N 相同。\ndocs/lessons/03-identity.md L23：這裡的加法是逐個位置、逐個 channel 相加，不是把兩個 tensor 接起來（串接，concatenation）。例如 x 是 [1,2]、F(x) 是 [10,20]：相加得 [11,22]，長度不變；串接得 [1,2,10,20]，長度變長。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/01-small-cnn.md",
+            "lines_or_anchor": "L28",
+            "quote": "這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。後文有時以 B 表示 batch 大小，意思和 N 相同。"
+          },
+          {
+            "path": "docs/lessons/03-identity.md",
+            "lines_or_anchor": "L23",
+            "quote": "這裡的加法是逐個位置、逐個 channel 相加，不是把兩個 tensor 接起來（串接，concatenation）。例如 x 是 [1,2]、F(x) 是 [10,20]：相加得 [11,22]，長度不變；串接得 [1,2,10,20]，長度變長。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "同一階段常連做幾層卷積，全部通道都參與會很花參數。本節用 CSP（Cross Stage Partial，跨階段部分連接）比較兩種輸入、輸出同為 [B,8,8,8] 的特徵區塊。CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。這樣只讓一半通道承擔兩層 3×3 的成本，仍提供八通道給下一層。這裡只手算區塊，不接偵測器。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在逐層計算 CSP。卷積都帶偏置，參數數是 out×in×k²+out；out、in 是輸出、輸入通道，k 是濾鏡邊長。CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數，8→8、1×1 的融合層有 8×8+8=72 個，共 368。Full 同樣三層但兩個 3×3 都是 8→8，共 2×(8×8×9+8)+72=1240。各層的步幅為一，3×3 補邊一、1×1 不補邊，高寬均為八；實作 CSP 時，融合層必須讀到八通道。偏置是每個輸出通道各有一個可學加數；參數表只數權重與偏置，不把特徵圖裡的數值也算成參數。",
+          "checkpoint": true
+        },
+        {
+          "text": "368/1240 約為 0.297，這支持單一區塊的參數約剩三成，還沒有量到速度或偵測品質。輸出仍是 [B,8,8,8]，所以可以接原本需要八通道的下一個區塊；這和把整條網路都改成四通道不同。重做時要先把八通道輸入畫成文字資料流，核對兩個 3×3 的輸入與融合層收到的八通道來源，再核對參數表。參數少可能減少表達能力，切分與串接也需要搬移資料；本頁沒有訓練數字可支持更準或更快。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M66211",
+      "title": "CSP 的區塊路徑與參數成本",
+      "prerequisite": {
+        "text": "已讀：卷積用 NCHW 排列，B 或 N 表示圖片筆數，C 是通道，高寬是 H、W。已經比較逐值相加與沿通道串接：同樣兩個二通道向量，相加得到二通道，串接得到四通道。前文並未教 CSP；以下只使用這些形狀與接合知識。\n\n實際前文來源：\ndocs/lessons/01-small-cnn.md L28：這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。後文有時以 B 表示 batch 大小，意思和 N 相同。\ndocs/lessons/03-identity.md L23：這裡的加法是逐個位置、逐個 channel 相加，不是把兩個 tensor 接起來（串接，concatenation）。例如 x 是 [1,2]、F(x) 是 [10,20]：相加得 [11,22]，長度不變；串接得 [1,2,10,20]，長度變長。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/01-small-cnn.md",
+            "lines_or_anchor": "L28",
+            "quote": "這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。後文有時以 B 表示 batch 大小，意思和 N 相同。"
+          },
+          {
+            "path": "docs/lessons/03-identity.md",
+            "lines_or_anchor": "L23",
+            "quote": "這裡的加法是逐個位置、逐個 channel 相加，不是把兩個 tensor 接起來（串接，concatenation）。例如 x 是 [1,2]、F(x) 是 [10,20]：相加得 [11,22]，長度不變；串接得 [1,2,10,20]，長度變長。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "同一階段常連做幾層卷積，全部通道都參與會很花參數。本節用 CSP（Cross Stage Partial，跨階段部分連接）比較兩種輸入、輸出同為 [B,8,8,8] 的特徵區塊。CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。這樣只讓一半通道承擔兩層 3×3 的成本，仍提供八通道給下一層。這裡只手算區塊，不接偵測器。 原論文的融合順序與梯度說法留到選讀，目前只需追出這個簡化區塊的路徑。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在逐層計算 CSP。卷積都帶偏置，參數數是 out×in×k²+out；out、in 是輸出、輸入通道，k 是濾鏡邊長。CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數，8→8、1×1 的融合層有 8×8+8=72 個，共 368。Full 同樣三層但兩個 3×3 都是 8→8，共 2×(8×8×9+8)+72=1240。各層的步幅為一，3×3 補邊一、1×1 不補邊，高寬均為八；實作 CSP 時，融合層必須讀到八通道。偏置是每個輸出通道各有一個可學加數；參數表只數權重與偏置，不把特徵圖裡的數值也算成參數。",
+          "checkpoint": true
+        },
+        {
+          "text": "368/1240 約為 0.297，這支持單一區塊的參數約剩三成，還沒有量到速度或偵測品質。輸出仍是 [B,8,8,8]，所以可以接原本需要八通道的下一個區塊；這和把整條網路都改成四通道不同。重做時要先把八通道輸入畫成文字資料流，核對兩個 3×3 的輸入與融合層收到的八通道來源，再核對參數表。參數少可能減少表達能力，切分與串接也需要搬移資料；本頁沒有訓練數字可支持更準或更快。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M81954",
+      "title": "AP50 的包絡面積與配對判準",
+      "prerequisite": {
+        "text": "已讀：xyxy 是畫素框的左上角與右下角。IoU 是交集面積除以聯集面積，相同框為一、不重疊為零；IoU 可以拿任意兩框計算，單靠幾何公式沒有「算偵測正確」的門檻。前文沒有教 AP、精確率與召回率，以下才引入它們。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "想把一批框概括成評估分數，不能只選一個顯示門檻。本節算 AP50（平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。成功記 TP（True Positive，真陽性），失敗記 FP（False Positive，假陽性），每個真值只得分一次。這是人工框評估，不做訓練，採 all-points 插值算法。",
+          "checkpoint": true
+        },
+        {
+          "text": "操作 AP50 的面積步驟：兩張圖合計有三個真值，四筆同類預測按分數 0.95、0.90、0.80、0.70 排序，給定判定依序為 FP、TP、FP、TP；第三筆是第二筆的重複框。精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3，因此 (R,P) 是 (0,0)、(1/3,1/2)、(1/3,1/3)、(2/3,1/2)。在 R=0 與一補精確率零的端點，再從右往左取最大 P；包絡在零到 2/3 高 1/2，之後高零，AP50=(2/3)×(1/2)=1/3。表列判定是這次面積計算的輸入；每個步驟的分母都可從目前排名與固定的真值總數核對。",
+          "checkpoint": true
+        },
+        {
+          "text": "這個三分之一反映整段排序的精確率與漏檢，並不是四筆框的平均分數，也不是全部納入時的精確率 1/2。現在把某筆未配對預測換成 IoU=0.49 的框：它只有一個同圖同類真值可配，且那個真值尚未用過。請依本頁 AP50 的配對規則判定 TP 或 FP，再決定它會不會增加召回率；高分本身不能代替定位達標。這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；官方插值與資料範圍要另外核對。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M83522",
+      "title": "DFL 的距離監督與分布解碼",
+      "prerequisite": {
+        "text": "已讀：候選點到框的左、上、右、下距離是 ltrb，距離以特徵格為單位，stride 八時一格等於八畫素。解碼左界是 x1=px−l×stride，其他三邊同理。已學過 logits、softmax 將一組數變成總和為一的機率，以及正確類別機率 p 的交叉熵 −ln p。前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。\n\n實際前文來源：\ndocs/lessons/12-anchor-free.md L19：各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。\ndocs/lessons/12-anchor-free.md L34：記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。\ndocs/lessons/07-loss.md L49：softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。\ndocs/lessons/07-loss.md L50：單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L19",
+            "quote": "各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。"
+          },
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L34",
+            "quote": "記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L49",
+            "quote": "softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L50",
+            "quote": "單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。DFL（Distribution Focal Loss，分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。這樣可對非整數距離提供兩側刻度的監督；不能把四個數當成四種物件。本頁只手算一條邊的監督與解碼，不包含圖片或完整偵測訓練。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在操作 DFL 的一條左邊距離。這次另給左邊真值距離十畫素，不沿用前文的框；stride 為八畫素／格，所以 d=10/8=1.25 格；相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。loss L=−0.75 ln p1−0.25 ln p2，ln 是自然對數。四個 logits 全零時，softmax 得 p=[0.25,0.25,0.25,0.25]，L=−ln 0.25≈1.3863。接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。這裡的左邊是框的左邊，與較小的刻度索引不是同一種方向；四個機率是在同一條邊內加總為一。",
+          "checkpoint": true
+        },
+        {
+          "text": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。剛才四個相等機率只是初始手算，還没有任何參數更新，不能說模型已學到十畫素。使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。四 bin 的可表示距離有上限，也增加輸出量；本頁沒有測偵測 AP，不能宣稱額外成本值得。分布攤得很開是否表示可信的不確定性，也要另用資料檢查。",
+          "checkpoint": true
+        }
+      ]
+    }
+  ],
+  "gold": [
+    {
+      "case_id": "M30083",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教像素 xyxy 與 IoU。",
+          "u1 已明訂按預測類別分組、每輪保留剩餘最高分、IoU 嚴格大於 T 才抑制；輸入、索引輸出、顯示用途與不讀真值也已交代。",
+          "u2 明確將 A/C 當給定記錄，並說 B 被抑制只能限制 T<9/11；0.9 是反事實比較值。",
+          "u1 明文給本次 T=0.5。"
+        ],
+        "missing": [],
+        "needed_now": "本次數值門檻與操作規則已充分，u3 可唯一完成。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本頁按預測類別分組，各類獨立處理，不同類別不互相抑制。"
+          },
+          {
+            "source": "u1",
+            "quote": "其他候選與保留框的 IoU 嚴格大於 T 才刪掉"
+          },
+          {
+            "source": "u2",
+            "quote": "B 被刪只告訴我們 T<9/11，不能由結果反推出唯一門檻。"
+          },
+          {
+            "source": "u3",
+            "quote": "這次請實際依本頁採用的門檻完成 NMS"
+          },
+          {
+            "source": "u1",
+            "quote": "本次 T=0.5。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u3",
+        "later_resolution_unit": "u1",
+        "rationale": "實際 T 在 u1 就已明文提供，u3 無須外部預設。"
+      },
+      "allowed_inferences": [
+        "A 先保留，B 的 9/11>0.5 而被抑制；D 的 0.6>0.5 也被抑制，C 不重疊而保留，最後索引是 A、C。",
+        "T=0.9 是反事實設定，不可取代本次 .5；T=.6 時的等號不刪由嚴格 > 規則可推，但不是本次設定。",
+        "候選减少不證明辨識品質提高。"
+      ],
+      "legitimate_unknowns": [
+        "加速、並行、模型分數來源與訓練不影響此次人工記錄 NMS。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "NMS 名稱、角色、class-wise、嚴格 > 與本次 T=.5 均完整。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "記錄核對、T 上界與 .9 反事實區分都清楚。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "可用已教本次 T=.5 判 D 被抑制並列 A、C。"
+        }
+      ]
+    },
+    {
+      "case_id": "M36704",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 NCHW 與串接不同於相加。",
+          "u1 有中間通道降至四、外部輸入輸出仍八通道的目的與成本角色。",
+          "u2 明給各卷積 in/out、參數公式、步幅及補邊，因此數字參數表可核算。",
+          "通道切分、保留原值旁路、串接與融合順序已交代。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。"
+          },
+          {
+            "source": "u2",
+            "quote": "CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": "u1/u2",
+        "rationale": "u1 給完整資料流，u2 給卷積參數與空間尺寸規則，u3 可重畫核對。"
+      },
+      "allowed_inferences": [
+        "四通道原值旁路與四通道卷積結果串成八通道，再經 8→8 融合，外部介面不變。",
+        "參數剩約三成，不能推出速度或精度收益。"
+      ],
+      "legitimate_unknowns": [
+        "原版 CSP 的全部設計、梯度理論、完整偵測器與訓練品質均非目前手算前提。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "節省中間成本的方法與完整路徑清楚。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "公式、符號、空間尺寸與參數範圍齊備。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "資料流與比例能由前文完整核對；結論有範圍限制。"
+        }
+      ]
+    },
+    {
+      "case_id": "M66211",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 NCHW 與串接不同於相加。",
+          "u1 有中間通道降至四、外部輸入輸出仍八通道的目的與成本角色。",
+          "u2 明給各卷積 in/out、參數公式、步幅及補邊，因此數字參數表可核算。",
+          "通道切分、保留原值旁路、串接與融合順序已交代。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。"
+          },
+          {
+            "source": "u2",
+            "quote": "CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": "u1/u2",
+        "rationale": "原論文的融合順序與梯度說法不影響已明訂的簡化區塊路徑，可選讀。"
+      },
+      "allowed_inferences": [
+        "四通道原值旁路與四通道卷積結果串成八通道，再經 8→8 融合，外部介面不變。",
+        "參數剩約三成，不能推出速度或精度收益。"
+      ],
+      "legitimate_unknowns": [
+        "原版 CSP 的全部設計、梯度理論、完整偵測器與訓練品質均非目前手算前提。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "節省中間成本的方法與完整路徑清楚。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "公式、符號、空間尺寸與參數範圍齊備。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "資料流與比例能由前文完整核對；結論有範圍限制。"
+        }
+      ]
+    },
+    {
+      "case_id": "M81954",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u1：AP 名稱",
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。",
+          "IoU 0.50 成功門檻明說。"
+        ],
+        "missing": [
+          "AP 英文全名。"
+        ],
+        "needed_now": "中文意義、角色與當下算法均清楚，只缺名稱展開。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本節算 AP50（平均精確率）"
+          },
+          {
+            "source": "u1",
+            "quote": "AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+          },
+          {
+            "source": "u2",
+            "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+          },
+          {
+            "source": "u2",
+            "quote": "AP50=(2/3)×(1/2)=1/3"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": null,
+        "rationale": "u1 的概覽後緊接 u2 給 P/R 與包絡數字，不在解釋前要求運算。"
+      },
+      "allowed_inferences": [
+        "IoU=0.49 未達 0.50，判 FP、不增加累積 TP 或召回。",
+        "面積是排序精確率包絡總結，非分數平均或最後一點精確率。"
+      ],
+      "legitimate_unknowns": [
+        "每個給定 TP/FP 的原始框與圖像未展示，但 u2 指定它們為面積輸入，當下無須自行重配。",
+        "官方 COCO 範圍、101 點插值與跨類平均可後教。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "optional",
+          "reason": "只缺 AP 英文全名。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "P/R 與面積的數字計算完整。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "0.49 是否達標可由 0.50 規則唯一判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M83522",
+      "severity": "blocker",
+      "target_gap": {
+        "location": "u2：『先把這份 p 換成單一左距離 l』",
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。"
+        ],
+        "missing": [
+          "使用時四個 bin 機率轉成一個距離的規則。"
+        ],
+        "needed_now": "ltrb 解碼需要數值 l。softmax 只把 logits 變機率，不能決定取最大 bin、期望值或其他方式；四個相等機率尤其不能自行選單一 bin。英文全名及訓練 target 都不能替代解碼。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。"
+          },
+          {
+            "source": "u1",
+            "quote": "模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。"
+          },
+          {
+            "source": "u2",
+            "quote": "先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l"
+          },
+          {
+            "source": "u3",
+            "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u2",
+        "later_resolution_unit": null,
+        "rationale": "一開始可理解分布與監督角色；u2 開始實際分布解碼時缺必要映射，u3 也未補。"
+      },
+      "allowed_inferences": [
+        "target=[0,0.75,0.25,0]；全零 logits 的 L≈1.3863；都可照已给公式算。",
+        "不能把 target 的真值 1.25 當成初始 p 已學出的 l。"
+      ],
+      "legitimate_unknowns": [
+        "完整偵測訓練、loss 微分、AP、機率可信度不屬當下手算要求。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "分布表示、訓練用途與兩側監督的理由明確，解碼規則尚未開始用。"
+        },
+        {
+          "unit": "u2",
+          "severity": "blocker",
+          "reason": "從 p 取得 l 的必要算法缺少。"
+        },
+        {
+          "unit": "u3",
+          "severity": "blocker",
+          "reason": "重提四份分布回距離，但沒有解決缺漏。"
+        }
+      ]
+    }
+  ]
+}

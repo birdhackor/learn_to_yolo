@@ -1,0 +1,2044 @@
+{
+  "items": [
+    {
+      "evaluation_id": "E698423",
+      "reader_id": "r1b1_a",
+      "role": "a",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E693760",
+      "reader_id": "r1b1_a",
+      "role": "a",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E311207",
+      "reader_id": "r1b1_a",
+      "role": "a",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E235588",
+      "reader_id": "r1b1_a",
+      "role": "a",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E328570",
+      "reader_id": "r1b1_a",
+      "role": "a",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E593422",
+      "reader_id": "r1b1_b1",
+      "role": "b1",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E924440",
+      "reader_id": "r1b1_b1",
+      "role": "b1",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E479957",
+      "reader_id": "r1b1_b1",
+      "role": "b1",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E275014",
+      "reader_id": "r1b1_b1",
+      "role": "b1",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E964139",
+      "reader_id": "r1b1_b1",
+      "role": "b1",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E168053",
+      "reader_id": "r1b1_b2",
+      "role": "b2",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E750624",
+      "reader_id": "r1b1_b2",
+      "role": "b2",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E320478",
+      "reader_id": "r1b1_b2",
+      "role": "b2",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E901006",
+      "reader_id": "r1b1_b2",
+      "role": "b2",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E589631",
+      "reader_id": "r1b1_b2",
+      "role": "b2",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E141095",
+      "reader_id": "r1b1_c",
+      "role": "c",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E472294",
+      "reader_id": "r1b1_c",
+      "role": "c",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E294860",
+      "reader_id": "r1b1_c",
+      "role": "c",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E621430",
+      "reader_id": "r1b1_c",
+      "role": "c",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E957596",
+      "reader_id": "r1b1_c",
+      "role": "c",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E539783",
+      "reader_id": "r1b1_ca",
+      "role": "ca",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E937951",
+      "reader_id": "r1b1_ca",
+      "role": "ca",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E306414",
+      "reader_id": "r1b1_ca",
+      "role": "ca",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E100482",
+      "reader_id": "r1b1_ca",
+      "role": "ca",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E566666",
+      "reader_id": "r1b1_ca",
+      "role": "ca",
+      "cohort": "r1b1",
+      "repeat": 1,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E112392",
+      "reader_id": "r1b2_a",
+      "role": "a",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E487614",
+      "reader_id": "r1b2_a",
+      "role": "a",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E432041",
+      "reader_id": "r1b2_a",
+      "role": "a",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E354935",
+      "reader_id": "r1b2_a",
+      "role": "a",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E116987",
+      "reader_id": "r1b2_b1",
+      "role": "b1",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E471467",
+      "reader_id": "r1b2_b1",
+      "role": "b1",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E334780",
+      "reader_id": "r1b2_b1",
+      "role": "b1",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E407130",
+      "reader_id": "r1b2_b1",
+      "role": "b1",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E535679",
+      "reader_id": "r1b2_b2",
+      "role": "b2",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E394549",
+      "reader_id": "r1b2_b2",
+      "role": "b2",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E556859",
+      "reader_id": "r1b2_b2",
+      "role": "b2",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E468897",
+      "reader_id": "r1b2_b2",
+      "role": "b2",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E495545",
+      "reader_id": "r1b2_c",
+      "role": "c",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E806475",
+      "reader_id": "r1b2_c",
+      "role": "c",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E250246",
+      "reader_id": "r1b2_c",
+      "role": "c",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E219916",
+      "reader_id": "r1b2_c",
+      "role": "c",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E333601",
+      "reader_id": "r1b2_ca",
+      "role": "ca",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E317079",
+      "reader_id": "r1b2_ca",
+      "role": "ca",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E559026",
+      "reader_id": "r1b2_ca",
+      "role": "ca",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E729129",
+      "reader_id": "r1b2_ca",
+      "role": "ca",
+      "cohort": "r1b2",
+      "repeat": 1,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E583353",
+      "reader_id": "r1b3_a",
+      "role": "a",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E380667",
+      "reader_id": "r1b3_a",
+      "role": "a",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E561420",
+      "reader_id": "r1b3_a",
+      "role": "a",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E111655",
+      "reader_id": "r1b3_a",
+      "role": "a",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E905924",
+      "reader_id": "r1b3_b1",
+      "role": "b1",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E478674",
+      "reader_id": "r1b3_b1",
+      "role": "b1",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E833998",
+      "reader_id": "r1b3_b1",
+      "role": "b1",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E270209",
+      "reader_id": "r1b3_b1",
+      "role": "b1",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E236426",
+      "reader_id": "r1b3_b2",
+      "role": "b2",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E968027",
+      "reader_id": "r1b3_b2",
+      "role": "b2",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E242881",
+      "reader_id": "r1b3_b2",
+      "role": "b2",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E132528",
+      "reader_id": "r1b3_b2",
+      "role": "b2",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E272688",
+      "reader_id": "r1b3_c",
+      "role": "c",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E771097",
+      "reader_id": "r1b3_c",
+      "role": "c",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E407529",
+      "reader_id": "r1b3_c",
+      "role": "c",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E640660",
+      "reader_id": "r1b3_c",
+      "role": "c",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E113769",
+      "reader_id": "r1b3_ca",
+      "role": "ca",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E691987",
+      "reader_id": "r1b3_ca",
+      "role": "ca",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E978595",
+      "reader_id": "r1b3_ca",
+      "role": "ca",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E654680",
+      "reader_id": "r1b3_ca",
+      "role": "ca",
+      "cohort": "r1b3",
+      "repeat": 1,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E729449",
+      "reader_id": "r1b4_a",
+      "role": "a",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E584873",
+      "reader_id": "r1b4_a",
+      "role": "a",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E511281",
+      "reader_id": "r1b4_a",
+      "role": "a",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E394287",
+      "reader_id": "r1b4_a",
+      "role": "a",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E729665",
+      "reader_id": "r1b4_b1",
+      "role": "b1",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E842710",
+      "reader_id": "r1b4_b1",
+      "role": "b1",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E852312",
+      "reader_id": "r1b4_b1",
+      "role": "b1",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E317383",
+      "reader_id": "r1b4_b1",
+      "role": "b1",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E270623",
+      "reader_id": "r1b4_b2",
+      "role": "b2",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E232264",
+      "reader_id": "r1b4_b2",
+      "role": "b2",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E939159",
+      "reader_id": "r1b4_b2",
+      "role": "b2",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E154265",
+      "reader_id": "r1b4_b2",
+      "role": "b2",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E507132",
+      "reader_id": "r1b4_c",
+      "role": "c",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E863456",
+      "reader_id": "r1b4_c",
+      "role": "c",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E491173",
+      "reader_id": "r1b4_c",
+      "role": "c",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E736990",
+      "reader_id": "r1b4_c",
+      "role": "c",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E869864",
+      "reader_id": "r1b4_ca",
+      "role": "ca",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E532417",
+      "reader_id": "r1b4_ca",
+      "role": "ca",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E454512",
+      "reader_id": "r1b4_ca",
+      "role": "ca",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E462582",
+      "reader_id": "r1b4_ca",
+      "role": "ca",
+      "cohort": "r1b4",
+      "repeat": 1,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E644340",
+      "reader_id": "r2b1_a",
+      "role": "a",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E350743",
+      "reader_id": "r2b1_a",
+      "role": "a",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E300848",
+      "reader_id": "r2b1_a",
+      "role": "a",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E900746",
+      "reader_id": "r2b1_a",
+      "role": "a",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E121543",
+      "reader_id": "r2b1_a",
+      "role": "a",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E434389",
+      "reader_id": "r2b1_b1",
+      "role": "b1",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E192513",
+      "reader_id": "r2b1_b1",
+      "role": "b1",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E623964",
+      "reader_id": "r2b1_b1",
+      "role": "b1",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E419634",
+      "reader_id": "r2b1_b1",
+      "role": "b1",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E166868",
+      "reader_id": "r2b1_b1",
+      "role": "b1",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E315227",
+      "reader_id": "r2b1_b2",
+      "role": "b2",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E599391",
+      "reader_id": "r2b1_b2",
+      "role": "b2",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E891964",
+      "reader_id": "r2b1_b2",
+      "role": "b2",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E257293",
+      "reader_id": "r2b1_b2",
+      "role": "b2",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E283718",
+      "reader_id": "r2b1_b2",
+      "role": "b2",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E980326",
+      "reader_id": "r2b1_c",
+      "role": "c",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E638245",
+      "reader_id": "r2b1_c",
+      "role": "c",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E533847",
+      "reader_id": "r2b1_c",
+      "role": "c",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E373713",
+      "reader_id": "r2b1_c",
+      "role": "c",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E162178",
+      "reader_id": "r2b1_c",
+      "role": "c",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E853093",
+      "reader_id": "r2b1_ca",
+      "role": "ca",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E950187",
+      "reader_id": "r2b1_ca",
+      "role": "ca",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E586198",
+      "reader_id": "r2b1_ca",
+      "role": "ca",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E865988",
+      "reader_id": "r2b1_ca",
+      "role": "ca",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E567113",
+      "reader_id": "r2b1_ca",
+      "role": "ca",
+      "cohort": "r2b1",
+      "repeat": 2,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E380078",
+      "reader_id": "r2b2_a",
+      "role": "a",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E180813",
+      "reader_id": "r2b2_a",
+      "role": "a",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E978662",
+      "reader_id": "r2b2_a",
+      "role": "a",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E152760",
+      "reader_id": "r2b2_a",
+      "role": "a",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E726543",
+      "reader_id": "r2b2_b1",
+      "role": "b1",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E825817",
+      "reader_id": "r2b2_b1",
+      "role": "b1",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E391311",
+      "reader_id": "r2b2_b1",
+      "role": "b1",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E124427",
+      "reader_id": "r2b2_b1",
+      "role": "b1",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E237432",
+      "reader_id": "r2b2_b2",
+      "role": "b2",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E403970",
+      "reader_id": "r2b2_b2",
+      "role": "b2",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E541681",
+      "reader_id": "r2b2_b2",
+      "role": "b2",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E567705",
+      "reader_id": "r2b2_b2",
+      "role": "b2",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E100644",
+      "reader_id": "r2b2_c",
+      "role": "c",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E392519",
+      "reader_id": "r2b2_c",
+      "role": "c",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E415459",
+      "reader_id": "r2b2_c",
+      "role": "c",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E917563",
+      "reader_id": "r2b2_c",
+      "role": "c",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E783371",
+      "reader_id": "r2b2_ca",
+      "role": "ca",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E885414",
+      "reader_id": "r2b2_ca",
+      "role": "ca",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E464513",
+      "reader_id": "r2b2_ca",
+      "role": "ca",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E814486",
+      "reader_id": "r2b2_ca",
+      "role": "ca",
+      "cohort": "r2b2",
+      "repeat": 2,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E956477",
+      "reader_id": "r2b3_a",
+      "role": "a",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E761032",
+      "reader_id": "r2b3_a",
+      "role": "a",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E275597",
+      "reader_id": "r2b3_a",
+      "role": "a",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E194112",
+      "reader_id": "r2b3_a",
+      "role": "a",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E198137",
+      "reader_id": "r2b3_b1",
+      "role": "b1",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E106520",
+      "reader_id": "r2b3_b1",
+      "role": "b1",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E947682",
+      "reader_id": "r2b3_b1",
+      "role": "b1",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E755543",
+      "reader_id": "r2b3_b1",
+      "role": "b1",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E996638",
+      "reader_id": "r2b3_b2",
+      "role": "b2",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E980761",
+      "reader_id": "r2b3_b2",
+      "role": "b2",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E985412",
+      "reader_id": "r2b3_b2",
+      "role": "b2",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E841108",
+      "reader_id": "r2b3_b2",
+      "role": "b2",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E875120",
+      "reader_id": "r2b3_c",
+      "role": "c",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E532191",
+      "reader_id": "r2b3_c",
+      "role": "c",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E620751",
+      "reader_id": "r2b3_c",
+      "role": "c",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E449727",
+      "reader_id": "r2b3_c",
+      "role": "c",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E100541",
+      "reader_id": "r2b3_ca",
+      "role": "ca",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E645182",
+      "reader_id": "r2b3_ca",
+      "role": "ca",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E160318",
+      "reader_id": "r2b3_ca",
+      "role": "ca",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E956820",
+      "reader_id": "r2b3_ca",
+      "role": "ca",
+      "cohort": "r2b3",
+      "repeat": 2,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E853624",
+      "reader_id": "r2b4_a",
+      "role": "a",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E639426",
+      "reader_id": "r2b4_a",
+      "role": "a",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E193320",
+      "reader_id": "r2b4_a",
+      "role": "a",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E786585",
+      "reader_id": "r2b4_a",
+      "role": "a",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E740040",
+      "reader_id": "r2b4_b1",
+      "role": "b1",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E225855",
+      "reader_id": "r2b4_b1",
+      "role": "b1",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E593835",
+      "reader_id": "r2b4_b1",
+      "role": "b1",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E503124",
+      "reader_id": "r2b4_b1",
+      "role": "b1",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E911669",
+      "reader_id": "r2b4_b2",
+      "role": "b2",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E300444",
+      "reader_id": "r2b4_b2",
+      "role": "b2",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E588387",
+      "reader_id": "r2b4_b2",
+      "role": "b2",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E380783",
+      "reader_id": "r2b4_b2",
+      "role": "b2",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E523090",
+      "reader_id": "r2b4_c",
+      "role": "c",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E991780",
+      "reader_id": "r2b4_c",
+      "role": "c",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E374687",
+      "reader_id": "r2b4_c",
+      "role": "c",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E976479",
+      "reader_id": "r2b4_c",
+      "role": "c",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E789968",
+      "reader_id": "r2b4_ca",
+      "role": "ca",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E164974",
+      "reader_id": "r2b4_ca",
+      "role": "ca",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E108061",
+      "reader_id": "r2b4_ca",
+      "role": "ca",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E362327",
+      "reader_id": "r2b4_ca",
+      "role": "ca",
+      "cohort": "r2b4",
+      "repeat": 2,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E892683",
+      "reader_id": "r3b1_a",
+      "role": "a",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E477202",
+      "reader_id": "r3b1_a",
+      "role": "a",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E246123",
+      "reader_id": "r3b1_a",
+      "role": "a",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E284692",
+      "reader_id": "r3b1_a",
+      "role": "a",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E509311",
+      "reader_id": "r3b1_a",
+      "role": "a",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E998935",
+      "reader_id": "r3b1_b1",
+      "role": "b1",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E185870",
+      "reader_id": "r3b1_b1",
+      "role": "b1",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E648145",
+      "reader_id": "r3b1_b1",
+      "role": "b1",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E667124",
+      "reader_id": "r3b1_b1",
+      "role": "b1",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E131781",
+      "reader_id": "r3b1_b1",
+      "role": "b1",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E489084",
+      "reader_id": "r3b1_b2",
+      "role": "b2",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E892340",
+      "reader_id": "r3b1_b2",
+      "role": "b2",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E120534",
+      "reader_id": "r3b1_b2",
+      "role": "b2",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E847210",
+      "reader_id": "r3b1_b2",
+      "role": "b2",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E458013",
+      "reader_id": "r3b1_b2",
+      "role": "b2",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E530655",
+      "reader_id": "r3b1_c",
+      "role": "c",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E968269",
+      "reader_id": "r3b1_c",
+      "role": "c",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E703760",
+      "reader_id": "r3b1_c",
+      "role": "c",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E308800",
+      "reader_id": "r3b1_c",
+      "role": "c",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E484113",
+      "reader_id": "r3b1_c",
+      "role": "c",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E379158",
+      "reader_id": "r3b1_ca",
+      "role": "ca",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M63770"
+    },
+    {
+      "evaluation_id": "E732007",
+      "reader_id": "r3b1_ca",
+      "role": "ca",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M83522"
+    },
+    {
+      "evaluation_id": "E668482",
+      "reader_id": "r3b1_ca",
+      "role": "ca",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M19796"
+    },
+    {
+      "evaluation_id": "E662672",
+      "reader_id": "r3b1_ca",
+      "role": "ca",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M16388"
+    },
+    {
+      "evaluation_id": "E658428",
+      "reader_id": "r3b1_ca",
+      "role": "ca",
+      "cohort": "r3b1",
+      "repeat": 3,
+      "case_id": "M66540"
+    },
+    {
+      "evaluation_id": "E451474",
+      "reader_id": "r3b2_a",
+      "role": "a",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E670455",
+      "reader_id": "r3b2_a",
+      "role": "a",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E293886",
+      "reader_id": "r3b2_a",
+      "role": "a",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E465329",
+      "reader_id": "r3b2_a",
+      "role": "a",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E669864",
+      "reader_id": "r3b2_b1",
+      "role": "b1",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E576374",
+      "reader_id": "r3b2_b1",
+      "role": "b1",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E221461",
+      "reader_id": "r3b2_b1",
+      "role": "b1",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E622094",
+      "reader_id": "r3b2_b1",
+      "role": "b1",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E798104",
+      "reader_id": "r3b2_b2",
+      "role": "b2",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E347587",
+      "reader_id": "r3b2_b2",
+      "role": "b2",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E654302",
+      "reader_id": "r3b2_b2",
+      "role": "b2",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E442357",
+      "reader_id": "r3b2_b2",
+      "role": "b2",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E414199",
+      "reader_id": "r3b2_c",
+      "role": "c",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E737861",
+      "reader_id": "r3b2_c",
+      "role": "c",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E300213",
+      "reader_id": "r3b2_c",
+      "role": "c",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E882463",
+      "reader_id": "r3b2_c",
+      "role": "c",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E551786",
+      "reader_id": "r3b2_ca",
+      "role": "ca",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M47282"
+    },
+    {
+      "evaluation_id": "E848885",
+      "reader_id": "r3b2_ca",
+      "role": "ca",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M30083"
+    },
+    {
+      "evaluation_id": "E273378",
+      "reader_id": "r3b2_ca",
+      "role": "ca",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M66211"
+    },
+    {
+      "evaluation_id": "E822991",
+      "reader_id": "r3b2_ca",
+      "role": "ca",
+      "cohort": "r3b2",
+      "repeat": 3,
+      "case_id": "M72209"
+    },
+    {
+      "evaluation_id": "E273334",
+      "reader_id": "r3b3_a",
+      "role": "a",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E580048",
+      "reader_id": "r3b3_a",
+      "role": "a",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E517311",
+      "reader_id": "r3b3_a",
+      "role": "a",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E460885",
+      "reader_id": "r3b3_a",
+      "role": "a",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E259299",
+      "reader_id": "r3b3_b1",
+      "role": "b1",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E261402",
+      "reader_id": "r3b3_b1",
+      "role": "b1",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E347579",
+      "reader_id": "r3b3_b1",
+      "role": "b1",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E914706",
+      "reader_id": "r3b3_b1",
+      "role": "b1",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E750171",
+      "reader_id": "r3b3_b2",
+      "role": "b2",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E399678",
+      "reader_id": "r3b3_b2",
+      "role": "b2",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E715981",
+      "reader_id": "r3b3_b2",
+      "role": "b2",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E676242",
+      "reader_id": "r3b3_b2",
+      "role": "b2",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E116659",
+      "reader_id": "r3b3_c",
+      "role": "c",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E757079",
+      "reader_id": "r3b3_c",
+      "role": "c",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E147297",
+      "reader_id": "r3b3_c",
+      "role": "c",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E213501",
+      "reader_id": "r3b3_c",
+      "role": "c",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E279013",
+      "reader_id": "r3b3_ca",
+      "role": "ca",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M91299"
+    },
+    {
+      "evaluation_id": "E215651",
+      "reader_id": "r3b3_ca",
+      "role": "ca",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M81954"
+    },
+    {
+      "evaluation_id": "E564400",
+      "reader_id": "r3b3_ca",
+      "role": "ca",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M20204"
+    },
+    {
+      "evaluation_id": "E980643",
+      "reader_id": "r3b3_ca",
+      "role": "ca",
+      "cohort": "r3b3",
+      "repeat": 3,
+      "case_id": "M36704"
+    },
+    {
+      "evaluation_id": "E502576",
+      "reader_id": "r3b4_a",
+      "role": "a",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E970770",
+      "reader_id": "r3b4_a",
+      "role": "a",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E776478",
+      "reader_id": "r3b4_a",
+      "role": "a",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E619000",
+      "reader_id": "r3b4_a",
+      "role": "a",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E930799",
+      "reader_id": "r3b4_b1",
+      "role": "b1",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E805856",
+      "reader_id": "r3b4_b1",
+      "role": "b1",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E514229",
+      "reader_id": "r3b4_b1",
+      "role": "b1",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E855905",
+      "reader_id": "r3b4_b1",
+      "role": "b1",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E432847",
+      "reader_id": "r3b4_b2",
+      "role": "b2",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E606535",
+      "reader_id": "r3b4_b2",
+      "role": "b2",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E769342",
+      "reader_id": "r3b4_b2",
+      "role": "b2",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E742212",
+      "reader_id": "r3b4_b2",
+      "role": "b2",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E715253",
+      "reader_id": "r3b4_c",
+      "role": "c",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E589557",
+      "reader_id": "r3b4_c",
+      "role": "c",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E259106",
+      "reader_id": "r3b4_c",
+      "role": "c",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E643292",
+      "reader_id": "r3b4_c",
+      "role": "c",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M22957"
+    },
+    {
+      "evaluation_id": "E188481",
+      "reader_id": "r3b4_ca",
+      "role": "ca",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M19340"
+    },
+    {
+      "evaluation_id": "E148371",
+      "reader_id": "r3b4_ca",
+      "role": "ca",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M46675"
+    },
+    {
+      "evaluation_id": "E837730",
+      "reader_id": "r3b4_ca",
+      "role": "ca",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M78184"
+    },
+    {
+      "evaluation_id": "E370285",
+      "reader_id": "r3b4_ca",
+      "role": "ca",
+      "cohort": "r3b4",
+      "repeat": 3,
+      "case_id": "M22957"
+    }
+  ]
+}

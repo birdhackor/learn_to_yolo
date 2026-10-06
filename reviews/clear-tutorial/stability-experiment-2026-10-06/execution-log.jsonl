@@ -1,0 +1,61 @@
+{"event": "initial_launch_batch", "reader_ids": ["r1b1_a", "r1b1_b1", "r1b1_b2", "r1b1_c", "r1b1_ca", "r1b2_a"], "utc": "2026-10-06T07:16:20.020427+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b2_b1", "r1b2_b2", "r1b2_c"], "completed": ["r1b1_b2", "r1b2_a"], "waiting_auditors": ["r1b1_ca"], "utc": "2026-10-06T07:25:39.263347+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b2_ca"], "completed": ["r1b1_b2", "r1b2_a", "r1b1_a", "r1b1_b1"], "utc": "2026-10-06T07:26:46.337758+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b3_a"], "utc": "2026-10-06T07:27:34.027529+00:00"}
+{"event": "restore_truncated_authorized_batch", "reader_id": "r1b1_ca", "utc": "2026-10-06T07:29:59.727006+00:00", "snapshot_sha256": "88b97171403220835dc8d258998a1cf6f3cde26922002e6a99021bbd373ecf5b", "path": "/workspace/work/stability-experiment-2026-10-06/r1b1_ca/revealed-comparison.json", "scope": "精確複製gate已揭露last_batch，未重置state、未新增來源或作者判斷。允許auditor只讀自己的此檔并按case切片。"}
+{"event": "operational_stdout_capture_advice", "utc": "2026-10-06T07:30:37.173930+00:00", "readers": ["r1b3_ca", "r1b4_ca", "r2b1_ca", "r2b2_ca", "r2b3_ca", "r2b4_ca", "r3b1_ca", "r3b2_ca", "r3b3_ca", "r3b4_ca"], "already_launched_notified": ["r1b1_ca", "r1b2_ca"], "message": "\n操作提醒：comparison JSON較大，請以gate next的stdout直接redirect至自有scratch JSON，再按case/unit/answer分片讀取同一已揭露JSON，避免工具輸出截斷。不得讀raw/state/private。若已截斷不能重試next，通知root恢復同一last_batch；判準与閱讀順序不變。\n", "scope": "保存並切片同一gate揭露内容，不更動材料/標準。"}
+{"event": "launch_batch", "reader_ids": ["r1b3_b1"], "utc": "2026-10-06T07:32:49.594390+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b3_b2", "r1b3_c"], "utc": "2026-10-06T07:34:01.021055+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b3_ca"], "utc": "2026-10-06T07:34:57.622382+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b4_a"], "utc": "2026-10-06T07:37:59.026508+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b4_b1"], "utc": "2026-10-06T07:39:05.577636+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b4_b2"], "utc": "2026-10-06T07:40:34.062100+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b4_c"], "utc": "2026-10-06T07:41:51.517868+00:00"}
+{"event": "launch_batch", "reader_ids": ["r1b4_ca"], "utc": "2026-10-06T07:42:44.615787+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b1_a"], "utc": "2026-10-06T07:46:16.607687+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b1_b1"], "utc": "2026-10-06T07:47:18.773805+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b1_b2", "r2b1_c"], "utc": "2026-10-06T07:48:27.500469+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b1_ca"], "utc": "2026-10-06T07:49:32.644676+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b2_a"], "utc": "2026-10-06T07:55:58.002110+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b2_b1", "r2b2_b2", "r2b2_c"], "utc": "2026-10-06T07:57:55.308816+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b2_ca"], "utc": "2026-10-06T07:59:25.923883+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b3_a"], "utc": "2026-10-06T08:03:11.857571+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b3_b1"], "utc": "2026-10-06T08:04:21.269369+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b3_b2"], "utc": "2026-10-06T08:05:22.559921+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b3_c", "r2b3_ca"], "utc": "2026-10-06T08:06:23.357488+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b4_a"], "utc": "2026-10-06T08:11:27.905104+00:00"}
+{"event": "launch_batch", "reader_ids": ["r2b4_b1", "r2b4_b2", "r2b4_c"], "utc": "2026-10-06T08:13:17.305532+00:00"}
+{"time_utc": "2026-10-06T08:14:02.679329+00:00", "event": "comparison_output_truncated", "reader_id": "r2b2_ca", "detail": "Agent reports metadata print inadvertently included primary_records. gate stdout retained complete in own scratch comparison.json; no second next; re-read only own already-revealed slices. record format rejections at report: 0.", "evidence_type": "agent_self_report"}
+{"time_utc": "2026-10-06T08:14:02.679368+00:00", "event": "grading_wrappers_prepared", "detail": "Three arm-blinded grader task wrappers created before reader completion and before grading. Frozen grading-instructions remain unchanged."}
+{"event": "launch_batch", "reader_ids": ["r2b4_ca"], "utc": "2026-10-06T08:15:39.856515+00:00"}
+{"time_utc": "2026-10-06T08:16:51.496370+00:00", "event": "comparison_output_truncated", "reader_id": "r2b3_ca", "detail": "Agent reports primary_records mistakenly printed as metadata, exceeding display limit. Full gate stdout retained in own gate-next-05.json; no second next; slice re-reading only already-revealed snapshot. r2b4_ca was reminded to print only keys/counts/case_id/unit_id as technical instruction, not content/rubric change.", "evidence_type": "agent_self_report"}
+{"event": "launch_batch", "reader_ids": ["r3b1_a", "r3b1_b1", "r3b1_b2"], "utc": "2026-10-06T08:20:38.167996+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b1_c"], "utc": "2026-10-06T08:21:58.065417+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b1_ca"], "utc": "2026-10-06T08:22:36.216167+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b2_a"], "utc": "2026-10-06T08:28:17.405887+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b2_b1"], "utc": "2026-10-06T08:30:27.568881+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b2_b2", "r3b2_c"], "utc": "2026-10-06T08:31:44.184901+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b2_ca"], "utc": "2026-10-06T08:33:11.211197+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b3_a"], "utc": "2026-10-06T08:37:52.844298+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b3_b1", "r3b3_b2"], "utc": "2026-10-06T08:38:56.072901+00:00"}
+{"time_utc": "2026-10-06T08:38:56.476758+00:00", "event": "reader_format_rejection", "reader_id": "r3b1_b1", "detail": "Agent reports image labels cited as u2 text rejected by literal gate; draft preserved, changed only to supporting visible body quotation, accepted; judgments unchanged.", "evidence_type": "agent_self_report"}
+{"time_utc": "2026-10-06T08:38:56.476848+00:00", "event": "reader_format_rejection", "reader_id": "r3b2_c", "detail": "Agent reports unequal unknown/disposition missing strings rejected; original draft preserved, string linking only corrected before submission.", "evidence_type": "agent_self_report"}
+{"time_utc": "2026-10-06T08:38:56.476860+00:00", "event": "scoring_pregrade_validation", "detail": "Before all reads/any grading, score validates grader case_id/verdict, Boolean fields and recorded first_target_unit. B derived first_target_unit now takes earliest component target; preserves both component units. Main metric rules unchanged. Reproducible synthetic check-aggregation.py passes, including rejection of altered original verdict. collect.py was not in initial source/read-protocol freeze."}
+{"time_utc": "2026-10-06T08:38:56.476868+00:00", "event": "result_audit_plan_saved", "detail": "result-audit-plan.md fixed before grading, supplements independent check already declared in protocol."}
+{"event": "launch_batch", "reader_ids": ["r3b3_c"], "utc": "2026-10-06T08:40:53.067612+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b3_ca"], "utc": "2026-10-06T08:42:52.969032+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b4_a", "r3b4_b1"], "utc": "2026-10-06T08:46:07.628968+00:00"}
+{"event": "launch_batch", "reader_ids": ["r3b4_b2", "r3b4_c", "r3b4_ca"], "utc": "2026-10-06T08:48:08.239577+00:00"}
+{"time_utc": "2026-10-06T08:52:21.667558+00:00", "event": "lost_gate_stdout_recovery", "reader_id": "r3b4_b1", "detail": "Agent reports exec-server transport disconnected on gate next; retry blocked because original reveal succeeded. Root copied exactly the already-revealed last_batch from state to agent own scratch, without resetting gate or changing any material/record. Reader receives only current own batch, no gold, other reader or future source.", "state_round": 2, "recovery_path": "/workspace/work/stability-experiment-2026-10-06/r3b4_b1/recovered-current-batch.json", "recovery_sha256": "2ee18ffa6e04c2717691f3b9980417aa237a0735e68a2bd7c885419a5188d2f3", "state_sha256": "e0995a3f2fb04453ba6b1a462c3e59847e7a42ac8a6b7517a0d2acc47784627e"}
+{"time_utc": "2026-10-06T08:55:51.543732+00:00", "event": "audit_author_metadata_exposure", "agent_id": "stability_result_auditor", "detail": "Allowed private/gold.json top-level adjudication contains author_disagreements. Auditor self-reported accidental read of this metadata, not reader outcomes. Original audit stopped and retained as exposed; a fresh-context replacement receives exact primary gold cases only, with top-level adjudication removed. Primary reader/grade materials unchanged; normalize already exports cases only.", "replacement_gold_path": "result-audit/gold-cases-only.json", "replacement_gold_sha256": "c51f25a90e1cb5a4fbe3816047fa6d82a6a924391b29883bdbd8ede29e8fff37", "identical_primary_cases": true}
+{"time_utc": "2026-10-06T08:58:18.211459+00:00", "event": "audit_scope_sanitization", "detail": "Exposed auditor additionally self-reported author expectation embedded in prepare.py. Fresh clean auditor task excludes semantic reading of prepare.py; hashing original frozen bytes only remains allowed. No reader outcomes seen in exposed run; pregrade-exposure.json retained separately."}
+{"time_utc": "2026-10-06T09:01:19.631769+00:00", "event": "reader_format_rejection", "reader_id": "r3b4_c", "detail": "Agent reports first source batch unknown/disposition missing string mismatch rejected; original draft preserved, string linking only fixed before successful record.", "evidence_type": "agent_self_report"}
+{"time_utc": "2026-10-06T09:01:19.631802+00:00", "event": "comparison_display_truncated", "reader_id": "r3b4_ca", "detail": "Agent reports printing three AP units at once exceeded display limit; full gate stdout retained in own gate-next-05.json, no repeated next; re-read per unit/answer. No semantic sources expanded.", "evidence_type": "agent_self_report"}
+{"time_utc": "2026-10-06T09:01:19.631812+00:00", "event": "audit_display_truncated", "agent_id": "stability_result_auditor_clean", "detail": "Agent reports allowed material/gold metadata summary unintentionally included prerequisite text and exceeded display limit; all printed fields were allowed. Re-read case/unit slices; no forbidden source/outcomes seen.", "evidence_type": "agent_self_report"}
+{"time_utc": "2026-10-06T09:01:19.631818+00:00", "event": "grader_image_scope_clarified", "detail": "Before grading, wrappers explicitly allow view_image only for images listed in assigned bundle, to validate figure-related findings. Rubric and sources unchanged."}
+{"time_utc": "2026-10-06T09:01:19.631822+00:00", "event": "audit_replacement_started", "agent_id": "stability_result_auditor_clean", "detail": "Fresh context launched with case-only primary gold and no semantic access to prepare.py or other auditors. Original exposed pregrade retained."}
+{"time_utc": "2026-10-06T09:06:19.974860+00:00", "event": "all_reader_records_and_grading_inputs_frozen", "reader_count": 60, "grading_inputs": 74, "raw_reader_judgments": 255, "claim_coverage_errors": 0}
+{"time_utc": "2026-10-06T09:21:30.812803+00:00", "event": "all_blinded_grades_and_primary_results_frozen", "raw_grades": 255, "audit_selected_judgments": 54, "audit_claims": 90, "audit_unknown_items": 7}
+{"time_utc": "2026-10-06T09:40:52.853955+00:00", "event": "tool_transport_outage", "detail": "Global exec transport outage approximately 09:07–09:10 UTC affected root and graders; restored without changing frozen inputs."}
+{"time_utc": "2026-10-06T09:40:52.853955+00:00", "event": "final_semantic_audit_completed", "detail": "54 judgments, 90 claims, 7 unknown dispositions checked; one judgment reason and three unknown disposition disagreements retained, original grades unchanged. One legal AP50 snippet was truncated and fully re-read."}
+{"time_utc": "2026-10-06T09:40:52.853955+00:00", "event": "experiment_completed", "detail": "No further trials. Frozen hashes and scope verified; textbook and SKILL unchanged."}

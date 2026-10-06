@@ -1,0 +1,489 @@
+{
+  "cases": [
+    {
+      "case_id": "M36704",
+      "topic_id": "architecture_csp",
+      "kind": "complete",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "Full 的中間卷積處理八通道，CSP 的中間卷積處理四通道；參數比例可由給定公式直接算出。",
+          "shape 相同足以判斷下一層的通道介面相容，不能推論數值等於輸入。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器中的速度與 AP；本頁沒有做該實驗。",
+          "原始 CSPNet 的梯度資訊主張與完整 stage 配置。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M78184",
+      "topic_id": "architecture_csp",
+      "kind": "essential_gap",
+      "expected": {
+        "severity": "burden",
+        "target_gap": {
+          "location": "unit1 的 CSP 路徑介紹；unit2 的八通道融合層首次被操作；unit3 的重做指示",
+          "already_taught": "CSP 是節省區塊中間參數且維持八通道輸出的結構；三層的尺寸、參數算法與結果已交代。",
+          "missing": "四通道卷積支路如何從八通道輸入取得材料，以及另外四個原始通道如何走旁路、與支路輸出串接，成為融合層的八個輸入通道。",
+          "needed_now": "unit2 已要求融合層讀到八通道，unit3 要依本頁實作並核對各通道來源。參數表只能說有四通道卷積與八通道融合，不能唯一決定旁路、串接與原值保留的資料流。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/11-csp.md",
+              "lines_or_anchor": "L15",
+              "quote": "Partial（部分）指只有一部分通道進入這段卷積；Cross Stage（跨 stage）指另一部分直接接到 stage 末端，再和卷積的結果合併。"
+            },
+            {
+              "path": "docs/lessons/11-csp.md",
+              "lines_or_anchor": "L19",
+              "quote": "**旁路（bypass）**：前 4 個通道（第 0 到 3 個）。不做卷積，原值直接送到串接的地方。"
+            },
+            {
+              "path": "docs/lessons/11-csp.md",
+              "lines_or_anchor": "L24",
+              "quote": "兩路接著沿 channel 軸串接（concat）：通道數相加，4+4=8，得到 `[B,8,8,8]`。"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "Full 的中間卷積處理八通道，CSP 的中間卷積處理四通道；參數比例可由給定公式直接算出。",
+          "shape 相同足以判斷下一層的通道介面相容，不能推論數值等於輸入。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器中的速度與 AP；本頁沒有做該實驗。",
+          "原始 CSPNet 的梯度資訊主張與完整 stage 配置。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M63770",
+      "topic_id": "architecture_csp",
+      "kind": "name_only",
+      "expected": {
+        "severity": "optional",
+        "target_gap": {
+          "location": "unit1 的 CSP 首次出現",
+          "already_taught": "切半、旁路、卷積、串接、融合及節省中間參數的角色均在 unit1 說明。",
+          "missing": "CSP 的英文完整名稱 Cross Stage Partial。",
+          "needed_now": "需要記錄名稱補充；中文意義和完整資料流已足以完成當下操作，不形成必要概念缺漏。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/11-csp.md",
+              "lines_or_anchor": "L15",
+              "quote": "Partial（部分）指只有一部分通道進入這段卷積；Cross Stage（跨 stage）指另一部分直接接到 stage 末端，再和卷積的結果合併。"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "Full 的中間卷積處理八通道，CSP 的中間卷積處理四通道；參數比例可由給定公式直接算出。",
+          "shape 相同足以判斷下一層的通道介面相容，不能推論數值等於輸入。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器中的速度與 AP；本頁沒有做該實驗。",
+          "原始 CSPNet 的梯度資訊主張與完整 stage 配置。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M66211",
+      "topic_id": "architecture_csp",
+      "kind": "legitimate_deferral",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "Full 的中間卷積處理八通道，CSP 的中間卷積處理四通道；參數比例可由給定公式直接算出。",
+          "shape 相同足以判斷下一層的通道介面相容，不能推論數值等於輸入。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器中的速度與 AP；本頁沒有做該實驗。",
+          "原始 CSPNet 的梯度資訊主張與完整 stage 配置。",
+          "已明確延期的原論文融合順序；手算本頁配置不需要它。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M30083",
+      "topic_id": "algorithm_nms",
+      "kind": "complete",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "A、B 的 IoU 可由座標重算為 9/11；unit2 的既定 A、C 結果只限制 0≤T<9/11，不能唯一決定 T。",
+          "例如 T=0.5 與 T=0.7 都符合 unit2 的結果，但 D 與 A 的 IoU=0.6 會使 unit3 的顯示結果不同。",
+          "按預測類別分組及不同類別不競爭已在所有版本明說，不應再把 class-wise 當缺項。",
+          "提高 IoU 抑制門檻讓重疊候選較容易留下；T=0.9 是反事實，比較文字明說它不是本次設定。"
+        ],
+        "legitimate_unknowns": [
+          "Soft-NMS、跨類競爭的其他設定與高效實作；本頁未比較。",
+          "保留框是否正確；本頁沒有真值，也沒有訓練或能力比較。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M20204",
+      "topic_id": "algorithm_nms",
+      "kind": "essential_gap",
+      "expected": {
+        "severity": "burden",
+        "target_gap": {
+          "location": "unit1 的本頁數值門檻設定；unit3 的新增 D 抑制操作",
+          "already_taught": "NMS 的完整英文名與去重角色、輸入和顯示索引用途、最高分優先、class-wise 分組、IoU 門檻的作用、嚴格大於才抑制、門檻範圍及不讀真值均已教。unit2 的既定結果與 IoU 算例完整。",
+          "missing": "本頁實際採用的 IoU 抑制門檻數值 T=0.5；不缺按類別分組或 NMS 一般角色。",
+          "needed_now": "unit2 的 B 抑制與 A、C 輸出僅限制 T<9/11；T=0.5 或 T=0.7 都能得到同樣結果。unit3 已要求依本頁實際設定判斷與 A 的 IoU=0.6 的 D 是否被抑制，兩個有效門檻給不同答案。反事實 T=0.9 已明說不是當下值，不能補定值。缺項在 unit3 才影響必要操作，不應將 unit2 的給定結果計算判為不完整。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/06-decode-nms.md",
+              "lines_or_anchor": "L126",
+              "quote": "本節按預測類別分組，各組分別做 NMS（class-wise NMS），門檻 0.5。所以兩個框即使完全相同，只要預測類別不同，就不會互相刪除。"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "A、B 的 IoU 可由座標重算為 9/11；unit2 的既定 A、C 結果只限制 0≤T<9/11，不能唯一決定 T。",
+          "例如 T=0.5 與 T=0.7 都符合 unit2 的結果，但 D 與 A 的 IoU=0.6 會使 unit3 的顯示結果不同。",
+          "按預測類別分組及不同類別不競爭已在所有版本明說，不應再把 class-wise 當缺項。",
+          "提高 IoU 抑制門檻讓重疊候選較容易留下；T=0.9 是反事實，比較文字明說它不是本次設定。"
+        ],
+        "legitimate_unknowns": [
+          "Soft-NMS、跨類競爭的其他設定與高效實作；本頁未比較。",
+          "保留框是否正確；本頁沒有真值，也沒有訓練或能力比較。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M19340",
+      "topic_id": "algorithm_nms",
+      "kind": "name_only",
+      "expected": {
+        "severity": "optional",
+        "target_gap": {
+          "location": "unit1 的 NMS 首次出現",
+          "already_taught": "非極大值抑制的角色、完整比較規則、class-wise 分組、本次 T=0.5、輸入與顯示索引用途均已教。",
+          "missing": "NMS 的英文完整名稱 Non-Maximum Suppression。",
+          "needed_now": "屬名稱補充；三框記錄與新增同類 D 的抑制操作不依賴英文展開。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/06-decode-nms.md",
+              "lines_or_anchor": "L124",
+              "quote": "非極大值抑制（Non-Maximum Suppression，NMS）就是用來刪掉這種重複框"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "A、B 的 IoU 可由座標重算為 9/11；unit2 的既定 A、C 結果只限制 0≤T<9/11，不能唯一決定 T。",
+          "例如 T=0.5 與 T=0.7 都符合 unit2 的結果，但 D 與 A 的 IoU=0.6 會使 unit3 的顯示結果不同。",
+          "按預測類別分組及不同類別不競爭已在所有版本明說，不應再把 class-wise 當缺項。",
+          "提高 IoU 抑制門檻讓重疊候選較容易留下；T=0.9 是反事實，比較文字明說它不是本次設定。"
+        ],
+        "legitimate_unknowns": [
+          "Soft-NMS、跨類競爭的其他設定與高效實作；本頁未比較。",
+          "保留框是否正確；本頁沒有真值，也沒有訓練或能力比較。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M16388",
+      "topic_id": "algorithm_nms",
+      "kind": "legitimate_deferral",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "A、B 的 IoU 可由座標重算為 9/11；unit2 的既定 A、C 結果只限制 0≤T<9/11，不能唯一決定 T。",
+          "例如 T=0.5 與 T=0.7 都符合 unit2 的結果，但 D 與 A 的 IoU=0.6 會使 unit3 的顯示結果不同。",
+          "按預測類別分組及不同類別不競爭已在所有版本明說，不應再把 class-wise 當缺項。",
+          "提高 IoU 抑制門檻讓重疊候選較容易留下；T=0.9 是反事實，比較文字明說它不是本次設定。"
+        ],
+        "legitimate_unknowns": [
+          "Soft-NMS、跨類競爭的其他設定與高效實作；本頁未比較。",
+          "保留框是否正確；本頁沒有真值，也沒有訓練或能力比較。",
+          "已明確延期的加速實作；手算不依賴它。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M66540",
+      "topic_id": "evaluation_ap50",
+      "kind": "complete",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "給定 FP、TP、FP、TP 後，全部累積比例、包絡與面積可重算，不必虛構缺圖。",
+          "第三筆不能再次使用已配對真值，這個一次配對規則已教。",
+          "AP50 結果為 1/3 不等於所有預測的 precision 1/2，也不等於平均 score。"
+        ],
+        "legitimate_unknowns": [
+          "官方 COCO 的全部匹配規則、101 點插值、各類平均與多 IoU 門檻結果。",
+          "給定主例四個 TP/FP 的完整框座標；面積操作將配對結果當作明示輸入，不要求重建不存在的原圖。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M47282",
+      "topic_id": "evaluation_ap50",
+      "kind": "essential_gap",
+      "expected": {
+        "severity": "burden",
+        "target_gap": {
+          "location": "unit1 的 AP50 定義與 unit3 的新框判定",
+          "already_taught": "AP 是排序後的 PR 包絡面積、P/R 分母、同圖同類一次配對、主例的 TP/FP 輸入及 all-points 算法都已教。",
+          "missing": "50 指預測與真值的配對 IoU 門檻 0.50（含等號），而非 score、百分之五十精確率或候選彼此去重門檻。",
+          "needed_now": "unit3 已要求對 IoU=0.49 且其餘配對條件皆滿足的新框實際判 TP/FP。主例直接提供二元判定，不能反推出數值門檻；幾何前文只定義 IoU，並沒有偵測達標標準。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/06-evaluation.md",
+              "lines_or_anchor": "L19",
+              "quote": "此處 IoU 門檻是 0.5。"
+            },
+            {
+              "path": "docs/lessons/06-evaluation.md",
+              "lines_or_anchor": "L19",
+              "quote": "每筆預測只找同一張圖、同一類別、還沒被配對的 GT，取其中 IoU 最高的一個。若這個 IoU 至少 0.5，就配對成功"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "給定 FP、TP、FP、TP 後，全部累積比例、包絡與面積可重算，不必虛構缺圖。",
+          "第三筆不能再次使用已配對真值，這個一次配對規則已教。",
+          "AP50 結果為 1/3 不等於所有預測的 precision 1/2，也不等於平均 score。"
+        ],
+        "legitimate_unknowns": [
+          "官方 COCO 的全部匹配規則、101 點插值、各類平均與多 IoU 門檻結果。",
+          "給定主例四個 TP/FP 的完整框座標；面積操作將配對結果當作明示輸入，不要求重建不存在的原圖。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M81954",
+      "topic_id": "evaluation_ap50",
+      "kind": "name_only",
+      "expected": {
+        "severity": "optional",
+        "target_gap": {
+          "location": "unit1 的 AP 首次出現",
+          "already_taught": "平均精確率的面積含義、AP50 的配對門檻、輸入與評估用途均已教。",
+          "missing": "AP 的英文完整名稱 Average Precision。",
+          "needed_now": "名稱補充不妨礙算面積或判定 IoU=0.49 的框。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/06-evaluation.md",
+              "lines_or_anchor": "L81",
+              "quote": "這塊面積就是 AP（Average Precision，平均精確率）。"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "給定 FP、TP、FP、TP 後，全部累積比例、包絡與面積可重算，不必虛構缺圖。",
+          "第三筆不能再次使用已配對真值，這個一次配對規則已教。",
+          "AP50 結果為 1/3 不等於所有預測的 precision 1/2，也不等於平均 score。"
+        ],
+        "legitimate_unknowns": [
+          "官方 COCO 的全部匹配規則、101 點插值、各類平均與多 IoU 門檻結果。",
+          "給定主例四個 TP/FP 的完整框座標；面積操作將配對結果當作明示輸入，不要求重建不存在的原圖。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M46675",
+      "topic_id": "evaluation_ap50",
+      "kind": "legitimate_deferral",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "給定 FP、TP、FP、TP 後，全部累積比例、包絡與面積可重算，不必虛構缺圖。",
+          "第三筆不能再次使用已配對真值，這個一次配對規則已教。",
+          "AP50 結果為 1/3 不等於所有預測的 precision 1/2，也不等於平均 score。"
+        ],
+        "legitimate_unknowns": [
+          "官方 COCO 的全部匹配規則、101 點插值、各類平均與多 IoU 門檻結果。",
+          "給定主例四個 TP/FP 的完整框座標；面積操作將配對結果當作明示輸入，不要求重建不存在的原圖。",
+          "明確延期的官方 101 點插值；本頁沒有宣稱使用該算法。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M22957",
+      "topic_id": "concept_dfl",
+      "kind": "complete",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "target 的相鄰權重可從 d=1.25 重算，CE 的數值可從 softmax 四等分驗算。",
+          "bin 表示距離刻度；DFL 監督的是距離，不是物件類別。",
+          "DFL 的監督權重雖用到線性距離，不能單憑這一點唯一決定使用時採 argmax、期望值或其他 scalar decoder。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器的訓練成效、資料切分、optimizer 與訓練步數；本頁明示只做手算。",
+          "梯度推導、官方 bin 數、超界處理細節與不確定性校準。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M83522",
+      "topic_id": "concept_dfl",
+      "kind": "essential_gap",
+      "expected": {
+        "severity": "burden",
+        "target_gap": {
+          "location": "unit1 的分布輸出銜接；unit2 的 p→l→x1 解碼操作",
+          "already_taught": "DFL 的名稱、loss 身分、非整數距離監督理由、bin 含義、logits/softmax、target、加權 CE 與數值均已教。",
+          "missing": "使用時應以各 bin 的距離乘其機率再加總，取得格單位的期望距離 l，與 DFL 訓練 loss 分工，供四邊解碼使用。",
+          "needed_now": "unit2 已要求把均勻 p 換成單一 l 並畫出左界，unit3 又要求四邊都依同一流程接回 ltrb。前文只有單一距離解碼，這次沒有指定如何把向量縮為 scalar。期望值給 l=1.5、x1=16，argmax 平手選法則可給不同左界，不能以猜到一種方式代替作者的解碼規則。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/12-dfl.md",
+              "lines_or_anchor": "L17",
+              "quote": "最後用期望值把機率還原成一個距離。"
+            },
+            {
+              "path": "docs/lessons/12-dfl.md",
+              "lines_or_anchor": "L37",
+              "quote": "解碼時，預測距離是期望值 \\(\\hat d=\\sum_{k=0}^{K-1}k\\,p_k\\) 格"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "target 的相鄰權重可從 d=1.25 重算，CE 的數值可從 softmax 四等分驗算。",
+          "bin 表示距離刻度；DFL 監督的是距離，不是物件類別。",
+          "DFL 的監督權重雖用到線性距離，不能單憑這一點唯一決定使用時採 argmax、期望值或其他 scalar decoder。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器的訓練成效、資料切分、optimizer 與訓練步數；本頁明示只做手算。",
+          "梯度推導、官方 bin 數、超界處理細節與不確定性校準。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M72209",
+      "topic_id": "concept_dfl",
+      "kind": "name_only",
+      "expected": {
+        "severity": "optional",
+        "target_gap": {
+          "location": "unit1 的 DFL 首次出現",
+          "already_taught": "加權 loss 與期望值解碼的分工、bin 身分、使用材料與左界用途均已教。",
+          "missing": "DFL 的英文完整名稱 Distribution Focal Loss。",
+          "needed_now": "屬名稱補充；中文名稱與當下必要含義已完整，公式和解碼不受影響。",
+          "source_quotes": [
+            {
+              "path": "docs/lessons/12-dfl.md",
+              "lines_or_anchor": "L9",
+              "quote": "Distribution Focal Loss（簡稱 DFL）把機率集中到真值兩側最近的刻度。"
+            }
+          ]
+        },
+        "allowed_inferences": [
+          "target 的相鄰權重可從 d=1.25 重算，CE 的數值可從 softmax 四等分驗算。",
+          "bin 表示距離刻度；DFL 監督的是距離，不是物件類別。",
+          "DFL 的監督權重雖用到線性距離，不能單憑這一點唯一決定使用時採 argmax、期望值或其他 scalar decoder。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器的訓練成效、資料切分、optimizer 與訓練步數；本頁明示只做手算。",
+          "梯度推導、官方 bin 數、超界處理細節與不確定性校準。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M91299",
+      "topic_id": "concept_dfl",
+      "kind": "legitimate_deferral",
+      "expected": {
+        "severity": "none",
+        "target_gap": {
+          "location": "無",
+          "already_taught": "本版本在首次操作前提供當下必要的介紹與銜接。",
+          "missing": "",
+          "needed_now": "",
+          "source_quotes": []
+        },
+        "allowed_inferences": [
+          "target 的相鄰權重可從 d=1.25 重算，CE 的數值可從 softmax 四等分驗算。",
+          "bin 表示距離刻度；DFL 監督的是距離，不是物件類別。",
+          "DFL 的監督權重雖用到線性距離，不能單憑這一點唯一決定使用時採 argmax、期望值或其他 scalar decoder。"
+        ],
+        "legitimate_unknowns": [
+          "完整偵測器的訓練成效、資料切分、optimizer 與訓練步數；本頁明示只做手算。",
+          "梯度推導、官方 bin 數、超界處理細節與不確定性校準。",
+          "已明確延期的梯度推導；本頁不要求反向傳播或參數更新。"
+        ],
+        "unrelated_issues": []
+      }
+    },
+    {
+      "case_id": "M19796",
+      "topic_id": "original_dino",
+      "kind": "known_regression",
+      "expected": {
+        "severity": "burden",
+        "target_gap": {
+          "missing": "DINO 自我蒸餾方法名稱含義、兩模型分工與保留特徵後用的基本串接，不把投影頭細節後教擴為基本介紹皆可後教",
+          "already_taught": "無標籤動機、同圖關係、ViT/CLS、兩模型目標/回答與投影頭角色、僅生成view已存在；導覽也說影像特徵方法。",
+          "needed_now": "u4已把命名DINO引入機制與後續塌縮問題；尚欠基本方法定位與ViT/局部view的分工銜接。"
+        }
+      }
+    }
+  ]
+}

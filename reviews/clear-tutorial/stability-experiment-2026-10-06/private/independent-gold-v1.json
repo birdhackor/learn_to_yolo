@@ -1,0 +1,1269 @@
+{
+  "cases": [
+    {
+      "case_id": "M19796",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u4：DINO 第一次進入正文機制介紹",
+        "already_taught": [
+          "p 已說 DINO（2021）是自監督影像特徵方法，並與同名 DETR 偵測器區分。",
+          "u1–u3 已說明收起紅藍答案、同圖製造不同 view 與保留共同內容的目的。",
+          "u4 說明圖經既有 ViT 得 CLS；跨 view 一致性是本例的學習關係；DINO 用兩模型產生目標與回答，投影頭把 CLS 轉成訓練分布。"
+        ],
+        "missing": [
+          "DINO 的英文全名未提供。"
+        ],
+        "needed_now": "只是重要縮寫的名稱補充。當下是生成 view、理解共同內容與自監督關係，尚未要求算 DINO loss 或執行 teacher/student 更新；英文全名缺少不阻礙這一步。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。"
+          },
+          {
+            "source": "p",
+            "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+          },
+          {
+            "source": "u4",
+            "quote": "把資料本身製造的關係當成訓練目標，叫 **self-supervised learning（自監督學習）**。"
+          },
+          {
+            "source": "u4",
+            "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+          },
+          {
+            "source": "u4",
+            "quote": "其詳細機制留到 [22.3 節](22-distillation.md)。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "p",
+        "first_required_unit": "u4",
+        "later_resolution_unit": null,
+        "rationale": "u1 問題由 u2 的同圖衍生 views 與 u4 的一致性關係回答；不在提問當刻要求完整答案。DINO 在 u4 有當下夠用的角色說明，完整蒸餾操作尚未成為任務。"
+      },
+      "allowed_inferences": [
+        "由 p 的特徵學習定位、u4 的共同内容目標與兩模型分布比較，可推得 DINO 是這條自監督特徵學習路線所採的方法；這項判斷並非只因 view/helper 已介紹而通過。",
+        "u2、u3 可推得裁切、翻轉與同倍率亮度變化會改位置、尺度或亮度，同時保留部分顏色線索；不能推出所有 view 都保留矩形。",
+        "u6 的 teacher 只讀 global、student 也讀 local，配合『局部看法朝較完整的看法學習』，可推得這裡所說的目標方向；不能補出 teacher 更新方式。"
+      ],
+      "legitimate_unknowns": [
+        "兩模型如何初始化與更新、teacher 如何取得、投影頭結構、center、温度、塌縮防止機制留待後教。",
+        "u6 是原版 multi-crop 選讀定位，當下不必實作 local view。",
+        "u5 節錄使用 images 的形狀已指定；沒有要求該段 snippet 獨立生成資料。"
+      ],
+      "unrelated_issues": [
+        "只查看允許的 PNG 原圖預覽；未檢查網站桌面/手機排版、SVG 原始碼、notebook 或實作，不能宣稱完整視覺及技術驗收。"
+      ],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "材料是既有 32×32 RGB 矩形；顏色人工答案收起來；提出製造學習訊號的問題。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u1",
+                "quote": "現在把訓練時的顏色答案收起來，只留下圖片。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u2",
+            "later_resolution_unit": "u2/u4",
+            "rationale": "開場提出問題，緊接下文提供素材與操作，合理。"
+          }
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "view 是同原圖各抽大方形、resize、翻轉與調亮度後的衍生圖；crop 軸、像素、邊界與圖的反例均明說。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u2",
+                "quote": "這兩張衍生圖片叫兩個 **view（視圖）**：同一張原圖的兩種看法。"
+              },
+              {
+                "source": "u2",
+                "quote": "圖中兩個 view 來自同一張原圖，不是隨便拿兩張紅色圖配對。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u2",
+            "later_resolution_unit": null,
+            "rationale": "原圖 PNG 顯示 A/B crop、兩個 global view 與不含物件的反例，當下可理解 view 操作。"
+          }
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "global 是較大區域；面積抽樣、裁走物件風險、只同倍率調 RGB 與顏色任務的關係均交代。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u3",
+                "quote": "裁切不是永遠安全的。"
+              },
+              {
+                "source": "u3",
+                "quote": "原因是後續要檢查的任務是矩形顏色；若先把紅藍線索抹掉，要求兩個 view 仍相同，就會和這個用途衝突。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u3",
+            "later_resolution_unit": null,
+            "rationale": "未要求讀者先懂未教的 DINO 訓練機制。"
+          }
+        },
+        {
+          "unit": "u4",
+          "severity": "optional",
+          "target_gap": {
+            "location": "u4：DINO",
+            "already_taught": [
+              "自監督、一致性、既有 ViT/CLS 與 DINO 兩模型分布比較的當下角色已交代。"
+            ],
+            "missing": [
+              "DINO 英文全名。"
+            ],
+            "needed_now": "名稱展開可補；不是目前操作阻碍。",
+            "evidence": [
+              {
+                "source": "u4",
+                "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u4",
+            "later_resolution_unit": null,
+            "rationale": "詳細蒸餾留到 22.3，本節未要求操作它。"
+          }
+        },
+        {
+          "unit": "u5",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "只做資料操作、不更新 ViT；RNG、random_view 輸入輸出 shape、crop 用途、不讀 labels/boxes 都有說明。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u5",
+                "quote": "這一節先做資料操作，不更新 ViT。"
+              },
+              {
+                "source": "u5",
+                "quote": "這段程式兩次只把 `images` 交給 `random_view`；沒有 `labels` 或 `boxes` 引數。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u5",
+            "later_resolution_unit": null,
+            "rationale": "helper 的可理解性在資料操作範圍內充分，沒有以 helper 代替 DINO 完整操作介紹。"
+          }
+        },
+        {
+          "unit": "u6",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "交換紅藍會使一致性與顏色任務衝突，答案依前文可推；multi-crop 的 global/local 模型讀取差異與小實驗範圍交代。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u6",
+                "quote": "要求它們表示一致，會鼓勵模型對紅藍差異不敏感，與後續顏色分類的用途衝突。"
+              },
+              {
+                "source": "u6",
+                "quote": "teacher 只讀 global，student 也讀 local，讓局部看法朝較完整的看法學習。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u6",
+            "later_resolution_unit": null,
+            "rationale": "教師更新、center 與温度只預告後教；目前不是推理所需。"
+          }
+        }
+      ],
+    "basic_method_adjudication": {
+      "focus": "DINO 第一次正文教學時的基本方法意義，而非只核定 view 或 helper。",
+      "what_and_role": {
+        "answer": "DINO 在這條路線上是不用人工紅藍答案學影像特徵的方法。當下夠用的機制是：同圖兩份看法經既有 ViT 得 CLS，兩模型產生目標與回答，CLS 經投影頭變成訓練分布再比較。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "DINO（2021）是學影像特徵的方法"
+          },
+          {
+            "source": "u4",
+            "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+          }
+        ]
+      },
+      "why_here": {
+        "answer": "紅藍人工答案收起來後，仍需要圖片提供的學習關係；同原圖的 views 共享一些內容，一致性訓練希望特徵保留它們而減少对本次翻轉與亮度的依賴。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "現在把訓練時的顏色答案收起來，只留下圖片。"
+          },
+          {
+            "source": "u4",
+            "quote": "讓特徵保留兩份 view 共享的內容，減少對這次左右翻轉或亮度變化的依賴。"
+          }
+        ]
+      },
+      "how_far_taught": {
+        "answer": "u4 交代目標／回答與投影分布比較；u6 選讀再交代 teacher 讀大範圍 global、student 也讀 local，局部向較完整學習。以兩段合讀，可合理推得 teacher/student 對應較完整目標與學習回答的基本分工；這是由已讀語句推得，並非聲稱正文已給完整更新算法。u4 時已有本節所需角色，不需用 u6 倒填才能通過 u4。",
+        "evidence": [
+          {
+            "source": "u4",
+            "quote": "投影頭是讓特徵變成訓練用輸出的可學層"
+          },
+          {
+            "source": "u6",
+            "quote": "teacher 只讀 global，student 也讀 local，讓局部看法朝較完整的看法學習。"
+          }
+        ]
+      },
+      "what_results_support": {
+        "answer": "當下真正產出的只是兩份 view 與 crop；程式没有更新 ViT，因此只支持理解學習輸入與一致性關係的來源，不支持已學出 DINO 特徵或重現自然影像能力。",
+        "evidence": [
+          {
+            "source": "u5",
+            "quote": "輸出證明的是兩份輸入怎麼製造，以及資料操作能重做；不是模型已學到特徵。"
+          },
+          {
+            "source": "u6",
+            "quote": "不能把合成矩形的結果說成重現原版 DINO 的自然影像能力。"
+          }
+        ]
+      },
+      "verdict": "當下基本方法意義充分，重要縮寫英文全名缺漏為 optional；不因微分、EMA、center、溫度或 head 細節後教而判機制介紹不足。"
+    },
+    "boundary_note": "DINO 首次正文介紹是否還需要一句更直接的『這是如何無標籤學圖特徵』可討論，但 p 已給用途且 u4 給當下路徑，不能忽略這些證據而判整體完全未介紹。我核定概念銜接充分，名稱展開為 optional。"
+    },
+    {
+      "case_id": "M20204",
+      "severity": "blocker",
+      "target_gap": {
+        "location": "u3：加入異類別 D 後要求實際列出保留索引",
+        "already_taught": [
+          "p 已教 xyxy 像素座標及 IoU。",
+          "u1 已教最高分優先、超門檻抑制、索引輸出、顯示用途、不讀真值。",
+          "u2 單類數值與每輪剩餘候選的比較規則完整。"
+        ],
+        "missing": [
+          "未明訂本頁跨預測類別的比較範圍：分組各做 NMS，或所有類别候選共同抑制。"
+        ],
+        "needed_now": "同類算例可以完成；u3 的 D 是否參與 A 的抑制及保留索引取決於比較範圍，不能靠 IoU 或英文全名決定。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "每輪留下最高分框，刪掉與它重疊過多的其他候選。"
+          },
+          {
+            "source": "u2",
+            "quote": "單類算例回傳 A、C 的索引。"
+          },
+          {
+            "source": "u3",
+            "quote": "請實際把四筆交給本頁設定的 NMS，列出要顯示的候選索引並說明 D 是否與 A 比較。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u3",
+        "later_resolution_unit": null,
+        "rationale": "u1/u2 當下只需單類操作；u3 才實際要求未給的跨類政策。"
+      },
+      "allowed_inferences": [
+        "單類結果 A、C；門檻 0.9 時 A、B、C 全留。",
+        "若把 u1 的『其他候選』嚴格直讀為整批所有類別，則可計算出 A、C 並判 D 被 A 抑制；這是有文字支持的替代讀法，不能宣稱 NMS 天生按類分組。"
+      ],
+      "legitimate_unknowns": [
+        "作者是否刻意採 class-agnostic；沒有指定常規實作可查，不能補出。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "基本算法、用途與門檻已足以準備單類算例；跨類政策此時可暫未知。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "全部同類，跨類設定不影響已有算例。"
+        },
+        {
+          "unit": "u3",
+          "severity": "blocker",
+          "reason": "要求本頁設定的跨類比較，但尚未明訂其範圍。"
+        }
+      ],
+      "boundary_note": "此案是最有爭議的邊界。若將無類別限定的『其他候選』視為明訂所有候選共同抑制，本案可改為 none；我採較嚴格的『頁面設定應可唯一辨認』標準列 blocker，信心中等。"
+    },
+    {
+      "case_id": "M19340",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u1：NMS 名稱",
+        "already_taught": [
+          "p 已教 xyxy 像素座標及 IoU。",
+          "u1 已教最高分優先、超門檻抑制、索引輸出、顯示用途、不讀真值。",
+          "u2 單類數值與每輪剩餘候選的比較規則完整。",
+          "按預測類別分組的政策已明訂。"
+        ],
+        "missing": [
+          "NMS 英文全名。"
+        ],
+        "needed_now": "角色與操作清楚，僅需名稱展開。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "NMS（非極大值抑制）是推論後處理：每輪留下最高分框，刪掉與它重疊過多的其他候選。"
+          },
+          {
+            "source": "u1",
+            "quote": "本頁採按預測類別分組的 NMS，各類分別處理，候選彼此的 IoU 門檻為 0.5。"
+          },
+          {
+            "source": "u2",
+            "quote": "先保留 A，因 0.818>0.5 而移除 B；剩下 C，再保留它。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": null,
+        "rationale": "u1 有當下所需規則；u2 把算法算完；u3 延伸雙類仍可依規則完成。"
+      },
+      "allowed_inferences": [
+        "A、C 為類別零保留框，D 是類別一獨立組而保留；D 不與 A 比較。",
+        "保留框數變少只證明候選抑制，不證明辨識變好。"
+      ],
+      "legitimate_unknowns": [
+        "未教模型分數生成方式、加速程式與訓練，均不影響本次手算。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "optional",
+          "reason": "只缺重要縮寫英文全名。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "逐輪、IoU、門檻改動與原索引都說明。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "異類 D 可依分組規則判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M46675",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。",
+          "IoU 0.50 成功門檻明說。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+          },
+          {
+            "source": "u2",
+            "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+          },
+          {
+            "source": "u2",
+            "quote": "AP50=(2/3)×(1/2)=1/3"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "官方 101 點插值留後，這次 all-points 包絡算法已固定，合理。"
+      },
+      "allowed_inferences": [
+        "IoU=0.49 未達 0.50，判 FP、不增加累積 TP 或召回。",
+        "面積是排序精確率包絡總結，非分數平均或最後一點精確率。"
+      ],
+      "legitimate_unknowns": [
+        "每個給定 TP/FP 的原始框與圖像未展示，但 u2 指定它們為面積輸入，當下無須自行重配。",
+        "官方 COCO 範圍、101 點插值與跨類平均可後教。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "評分用途、配對、門檻與算法已教。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "P/R 與面積的數字計算完整。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "0.49 是否達標可由 0.50 規則唯一判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M16388",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 xyxy 像素座標及 IoU。",
+          "u1 已教最高分優先、超門檻抑制、索引輸出、顯示用途、不讀真值。",
+          "u2 單類數值與每輪剩餘候選的比較規則完整。",
+          "按預測類別分組的政策已明訂。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本頁採按預測類別分組的 NMS，各類分別處理，候選彼此的 IoU 門檻為 0.5。"
+          },
+          {
+            "source": "u2",
+            "quote": "先保留 A，因 0.818>0.5 而移除 B；剩下 C，再保留它。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": "u1/u2",
+        "rationale": "加速排序與並行實作不是這次手算的必要知識，可後教。"
+      },
+      "allowed_inferences": [
+        "A、C 為類別零保留框，D 是類別一獨立組而保留；D 不與 A 比較。",
+        "保留框數變少只證明候選抑制，不證明辨識變好。"
+      ],
+      "legitimate_unknowns": [
+        "未教模型分數生成方式、加速程式與訓練，均不影響本次手算。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "NMS 的用途、材料、輸出與比較範圍明確。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "逐輪、IoU、門檻改動與原索引都說明。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "異類 D 可依分組規則判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M83522",
+      "severity": "blocker",
+      "target_gap": {
+        "location": "u2：『先把這份 p 換成單一左距離 l』",
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。"
+        ],
+        "missing": [
+          "使用時四個 bin 機率轉成一個距離的規則。"
+        ],
+        "needed_now": "ltrb 解碼需要數值 l。softmax 只把 logits 變機率，不能決定取最大 bin、期望值或其他方式；四個相等機率尤其不能自行選單一 bin。英文全名及訓練 target 都不能替代解碼。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。"
+          },
+          {
+            "source": "u1",
+            "quote": "模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。"
+          },
+          {
+            "source": "u2",
+            "quote": "先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l"
+          },
+          {
+            "source": "u3",
+            "quote": "四份分布各變回距離後才交給原本的 ltrb 解碼。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u2",
+        "later_resolution_unit": null,
+        "rationale": "一開始可理解分布與監督角色；u2 開始實際分布解碼時缺必要映射，u3 也未補。"
+      },
+      "allowed_inferences": [
+        "target=[0,0.75,0.25,0]；全零 logits 的 L≈1.3863；都可照已给公式算。",
+        "不能把 target 的真值 1.25 當成初始 p 已學出的 l。"
+      ],
+      "legitimate_unknowns": [
+        "完整偵測訓練、loss 微分、AP、機率可信度不屬當下手算要求。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "分布表示、訓練用途與兩側監督的理由明確，解碼規則尚未開始用。"
+        },
+        {
+          "unit": "u2",
+          "severity": "blocker",
+          "reason": "從 p 取得 l 的必要算法缺少。"
+        },
+        {
+          "unit": "u3",
+          "severity": "blocker",
+          "reason": "重提四份分布回距離，但沒有解決缺漏。"
+        }
+      ]
+    },
+    {
+      "case_id": "M66540",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。",
+          "IoU 0.50 成功門檻明說。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+          },
+          {
+            "source": "u2",
+            "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+          },
+          {
+            "source": "u2",
+            "quote": "AP50=(2/3)×(1/2)=1/3"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "u1 的概覽後緊接 u2 給 P/R 與包絡數字，不在解釋前要求運算。"
+      },
+      "allowed_inferences": [
+        "IoU=0.49 未達 0.50，判 FP、不增加累積 TP 或召回。",
+        "面積是排序精確率包絡總結，非分數平均或最後一點精確率。"
+      ],
+      "legitimate_unknowns": [
+        "每個給定 TP/FP 的原始框與圖像未展示，但 u2 指定它們為面積輸入，當下無須自行重配。",
+        "官方 COCO 範圍、101 點插值與跨類平均可後教。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "評分用途、配對、門檻與算法已教。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "P/R 與面積的數字計算完整。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "0.49 是否達標可由 0.50 規則唯一判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M63770",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u1：CSP 名稱",
+        "already_taught": [
+          "p 已教 NCHW 與串接不同於相加。",
+          "u1 有中間通道降至四、外部輸入輸出仍八通道的目的與成本角色。",
+          "u2 明給各卷積 in/out、參數公式、步幅及補邊，因此數字參數表可核算。",
+          "通道切分、保留原值旁路、串接與融合順序已交代。"
+        ],
+        "missing": [
+          "CSP 英文全名。"
+        ],
+        "needed_now": "只需縮寫展開；當下結構、理由與用途已夠用。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本節用 CSP（跨階段部分連接）"
+          },
+          {
+            "source": "u1",
+            "quote": "CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。"
+          },
+          {
+            "source": "u2",
+            "quote": "CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": null,
+        "rationale": "u1 給完整資料流，u2 給卷積參數與空間尺寸規則，u3 可重畫核對。"
+      },
+      "allowed_inferences": [
+        "四通道原值旁路與四通道卷積結果串成八通道，再經 8→8 融合，外部介面不變。",
+        "參數剩約三成，不能推出速度或精度收益。"
+      ],
+      "legitimate_unknowns": [
+        "原版 CSP 的全部設計、梯度理論、完整偵測器與訓練品質均非目前手算前提。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "optional",
+          "reason": "只缺 CSP 英文全名。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "公式、符號、空間尺寸與參數範圍齊備。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "資料流與比例能由前文完整核對；結論有範圍限制。"
+        }
+      ]
+    },
+    {
+      "case_id": "M30083",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 xyxy 像素座標及 IoU。",
+          "u1 已教最高分優先、超門檻抑制、索引輸出、顯示用途、不讀真值。",
+          "u2 單類數值與每輪剩餘候選的比較規則完整。",
+          "按預測類別分組的政策已明訂。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本頁採按預測類別分組的 NMS，各類分別處理，候選彼此的 IoU 門檻為 0.5。"
+          },
+          {
+            "source": "u2",
+            "quote": "先保留 A，因 0.818>0.5 而移除 B；剩下 C，再保留它。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": "u1/u2",
+        "rationale": "u1 有當下所需規則；u2 把算法算完；u3 延伸雙類仍可依規則完成。"
+      },
+      "allowed_inferences": [
+        "A、C 為類別零保留框，D 是類別一獨立組而保留；D 不與 A 比較。",
+        "保留框數變少只證明候選抑制，不證明辨識變好。"
+      ],
+      "legitimate_unknowns": [
+        "未教模型分數生成方式、加速程式與訓練，均不影響本次手算。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "NMS 的用途、材料、輸出與比較範圍明確。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "逐輪、IoU、門檻改動與原索引都說明。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "異類 D 可依分組規則判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M22957",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。",
+          "bin 機率的期望值解碼已給。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。"
+          },
+          {
+            "source": "u2",
+            "quote": "相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "從既有 scalar 距離銜接到 bin 監督，再以期望值回既有解碼，當下路徑完整。"
+      },
+      "allowed_inferences": [
+        "給定相等 p 的 l=1.5 格，x1=28−8×1.5=16 像素。",
+        "兩個刻度的加權 target 保留非整數真值監督；初始解碼不等於真值 10 像素。"
+      ],
+      "legitimate_unknowns": [
+        "輸出分布代表可信不確定性、完整訓練收益、超出 bin 範圍的處理未教，也未要求當下判定。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "表示、監督角色、刻度與距離還原公式已交代。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "target、loss 與解碼均可由已給規則完成。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "結果限制與四邊獨立使用已明說。"
+        }
+      ]
+    },
+    {
+      "case_id": "M66211",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 NCHW 與串接不同於相加。",
+          "u1 有中間通道降至四、外部輸入輸出仍八通道的目的與成本角色。",
+          "u2 明給各卷積 in/out、參數公式、步幅及補邊，因此數字參數表可核算。",
+          "通道切分、保留原值旁路、串接與融合順序已交代。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。"
+          },
+          {
+            "source": "u2",
+            "quote": "CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": "u1/u2",
+        "rationale": "原論文的融合順序與梯度說法不影響已明訂的簡化區塊路徑，可選讀。"
+      },
+      "allowed_inferences": [
+        "四通道原值旁路與四通道卷積結果串成八通道，再經 8→8 融合，外部介面不變。",
+        "參數剩約三成，不能推出速度或精度收益。"
+      ],
+      "legitimate_unknowns": [
+        "原版 CSP 的全部設計、梯度理論、完整偵測器與訓練品質均非目前手算前提。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "節省中間成本的方法與完整路徑清楚。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "公式、符號、空間尺寸與參數範圍齊備。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "資料流與比例能由前文完整核對；結論有範圍限制。"
+        }
+      ]
+    },
+    {
+      "case_id": "M91299",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。",
+          "bin 機率的期望值解碼已給。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。"
+          },
+          {
+            "source": "u2",
+            "quote": "相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "微分推導不是目前直接算 loss 與解碼的前提，可合理後教。"
+      },
+      "allowed_inferences": [
+        "給定相等 p 的 l=1.5 格，x1=28−8×1.5=16 像素。",
+        "兩個刻度的加權 target 保留非整數真值監督；初始解碼不等於真值 10 像素。"
+      ],
+      "legitimate_unknowns": [
+        "輸出分布代表可信不確定性、完整訓練收益、超出 bin 範圍的處理未教，也未要求當下判定。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "表示、監督角色、刻度與距離還原公式已交代。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "target、loss 與解碼均可由已給規則完成。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "結果限制與四邊獨立使用已明說。"
+        }
+      ]
+    },
+    {
+      "case_id": "M36704",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 NCHW 與串接不同於相加。",
+          "u1 有中間通道降至四、外部輸入輸出仍八通道的目的與成本角色。",
+          "u2 明給各卷積 in/out、參數公式、步幅及補邊，因此數字參數表可核算。",
+          "通道切分、保留原值旁路、串接與融合順序已交代。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "CSP 把輸入沿通道切半：前四通道保留原值走旁路，後四通道做兩層卷積；末端串接兩路，再用 8→8 的 1×1 卷積融合。"
+          },
+          {
+            "source": "u2",
+            "quote": "CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "later_resolution_unit": "u1/u2",
+        "rationale": "u1 給完整資料流，u2 給卷積參數與空間尺寸規則，u3 可重畫核對。"
+      },
+      "allowed_inferences": [
+        "四通道原值旁路與四通道卷積結果串成八通道，再經 8→8 融合，外部介面不變。",
+        "參數剩約三成，不能推出速度或精度收益。"
+      ],
+      "legitimate_unknowns": [
+        "原版 CSP 的全部設計、梯度理論、完整偵測器與訓練品質均非目前手算前提。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "節省中間成本的方法與完整路徑清楚。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "公式、符號、空間尺寸與參數範圍齊備。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "資料流與比例能由前文完整核對；結論有範圍限制。"
+        }
+      ]
+    },
+    {
+      "case_id": "M81954",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u1：AP 名稱",
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。",
+          "IoU 0.50 成功門檻明說。"
+        ],
+        "missing": [
+          "AP 英文全名。"
+        ],
+        "needed_now": "中文意義、角色與當下算法均清楚，只缺名稱展開。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本節算 AP50（平均精確率）"
+          },
+          {
+            "source": "u1",
+            "quote": "AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+          },
+          {
+            "source": "u2",
+            "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+          },
+          {
+            "source": "u2",
+            "quote": "AP50=(2/3)×(1/2)=1/3"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": null,
+        "rationale": "u1 的概覽後緊接 u2 給 P/R 與包絡數字，不在解釋前要求運算。"
+      },
+      "allowed_inferences": [
+        "IoU=0.49 未達 0.50，判 FP、不增加累積 TP 或召回。",
+        "面積是排序精確率包絡總結，非分數平均或最後一點精確率。"
+      ],
+      "legitimate_unknowns": [
+        "每個給定 TP/FP 的原始框與圖像未展示，但 u2 指定它們為面積輸入，當下無須自行重配。",
+        "官方 COCO 範圍、101 點插值與跨類平均可後教。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "optional",
+          "reason": "只缺 AP 英文全名。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "P/R 與面積的數字計算完整。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "0.49 是否達標可由 0.50 規則唯一判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M72209",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u1：DFL 名稱",
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。",
+          "bin 機率的期望值解碼已給。"
+        ],
+        "missing": [
+          "DFL 英文全名。"
+        ],
+        "needed_now": "訓練監督與使用時還原距離的角色已清楚，只是縮寫展開補充。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+          },
+          {
+            "source": "u1",
+            "quote": "使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。"
+          },
+          {
+            "source": "u2",
+            "quote": "相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": null,
+        "rationale": "從既有 scalar 距離銜接到 bin 監督，再以期望值回既有解碼，當下路徑完整。"
+      },
+      "allowed_inferences": [
+        "給定相等 p 的 l=1.5 格，x1=28−8×1.5=16 像素。",
+        "兩個刻度的加權 target 保留非整數真值監督；初始解碼不等於真值 10 像素。"
+      ],
+      "legitimate_unknowns": [
+        "輸出分布代表可信不確定性、完整訓練收益、超出 bin 範圍的處理未教，也未要求當下判定。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "optional",
+          "reason": "僅缺 DFL 英文全名。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "target、loss 與解碼均可由已給規則完成。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "結果限制與四邊獨立使用已明說。"
+        }
+      ]
+    },
+    {
+      "case_id": "M47282",
+      "severity": "blocker",
+      "target_gap": {
+        "location": "u3：IoU=0.49 的新框需判定 TP/FP",
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。"
+        ],
+        "missing": [
+          "AP50 配對成功的 IoU 數值門檻，以及 50 的含義。"
+        ],
+        "needed_now": "最大 IoU 只選出待配的真值，不決定定位達標。u3 要求依本頁規則判 IoU=0.49，沒有門檻無法判 TP 或是否增加召回。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "單靠幾何公式沒有「算偵測正確」的門檻。"
+          },
+          {
+            "source": "u1",
+            "quote": "配對只找同圖同類、尚未使用的真值，取 IoU 最大者，成功記 TP"
+          },
+          {
+            "source": "u2",
+            "quote": "表列判定是這次面積計算的輸入"
+          },
+          {
+            "source": "u3",
+            "quote": "請依本頁 AP50 的配對規則判定 TP 或 FP，再決定它會不會增加召回率"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u3",
+        "later_resolution_unit": null,
+        "rationale": "u1 宣布先按表列判定算面積，u2 因而不需先判配對；缺漏到 u3 的新框判斷成為必需。"
+      },
+      "allowed_inferences": [
+        "可以由給定的 FP、TP、FP、TP 算得面積 1/3。",
+        "可以知道每個真值只得分一次；不能由方法名稱自行解讀 50=IoU 0.5。"
+      ],
+      "legitimate_unknowns": [
+        "官方 101 點插值與跨類平均不是當下小例必要內容。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "先按給定判定算面積的安排已明說。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "給定 TP/FP 足以算 P/R 與面積，不要求倒推 IoU。"
+        },
+        {
+          "unit": "u3",
+          "severity": "blocker",
+          "reason": "實際判新框需要尚未給的定位達標門檻。"
+        }
+      ]
+    },
+    {
+      "case_id": "M78184",
+      "severity": "blocker",
+      "target_gap": {
+        "location": "u1 的 CSP 資料流介紹；u3 的重畫資料流要求",
+        "already_taught": [
+          "p 已教 NCHW 與串接不同於相加。",
+          "u1 有中間通道降至四、外部輸入輸出仍八通道的目的與成本角色。",
+          "u2 明給各卷積 in/out、參數公式、步幅及補邊，因此數字參數表可核算。"
+        ],
+        "missing": [
+          "八通道輸入如何提供兩個四通道卷積的輸入。",
+          "另外四通道的去向，以及融合層如何收到八通道：具體切分、旁路、串接順序。"
+        ],
+        "needed_now": "知道串接概念不會自動指定本區塊串接哪兩路。u1 開始以 CSP 的四→八通道機制説明維持介面，概念負擔已出現；u3 明確要求追出來源時無法唯一重畫。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "前文並未教 CSP；以下只使用這些形狀與接合知識。"
+          },
+          {
+            "source": "u1",
+            "quote": "CSP 的兩層 3×3 改成四通道，末端仍是八通道。"
+          },
+          {
+            "source": "u2",
+            "quote": "實作 CSP 時，融合層必須讀到八通道。"
+          },
+          {
+            "source": "u3",
+            "quote": "核對兩個 3×3 的輸入與融合層收到的八通道來源"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1",
+        "first_blocking_operation_unit": "u3",
+        "later_resolution_unit": null,
+        "rationale": "先有形狀銜接的理解負擔；u2 依給定尺寸算參數仍可；u3 必須有實際路徑才可操作，後文提到切分串接也未給路由。"
+      },
+      "allowed_inferences": [
+        "參數數可由給定層規格核得 368 與 1240，比例約 0.297。",
+        "缺失路徑需能湊成八通道，但存在多種架構；不能從尺寸或 CSP 全名補出保留原值的旁路。"
+      ],
+      "legitimate_unknowns": [
+        "原論文梯度解釋、速度與偵測精度不屬本頁手算要求。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "burden",
+          "reason": "方法只交代通道數變化，未交代四→八的來源與維持介面的實際路徑。"
+        },
+        {
+          "unit": "u2",
+          "severity": "burden",
+          "reason": "給定層規格可算參數，但融合層讀八通道的來源仍不明。"
+        },
+        {
+          "unit": "u3",
+          "severity": "blocker",
+          "reason": "重畫完整文字資料流不能唯一完成。"
+        }
+      ]
+    }
+  ],
+  "access_declaration": {
+    "role": "獨立 gold 核定者；全文閱讀核定，不聲稱首次閱讀盲讀。",
+    "read": [
+      "/workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/materials.json",
+      "/workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/frozen-skill.md",
+      "/workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/images/views.png"
+    ],
+    "not_read": [
+      "任何既存 private 檔案",
+      "作者預期答案",
+      "實驗提示或讀者輸出",
+      "其他 reviews",
+      "repo 其他來源、程式、外部資料"
+    ],
+    "method": "逐 case 以 p 與截至當前 unit 的文本判断必要程度；後文只用於確認是否後來釐清，不倒填早期知識。讀全部17匿名來源是授權的 gold 工作。"
+  },
+  "limitations": [
+    "AI 教材核定，並非實際學生測試；嚴重程度是基於當下必須推理或操作是否能完成。",
+    "只讀指定材料與 frozen skill；原教材前文只取 p 實際提供的節錄，不假設未揭露前文已補全。",
+    "未做實作、數據、網站排版或連結驗證。",
+    "M20204 的跨類政策有文字解讀爭議：已明記直讀所有候選時可完成的替代判斷，不能將該案当成毫無爭議的 gold。",
+    "M19796 概念銜接依據同时包括 p 導覽的功能定位與 u4 正文的角色/路徑；沒有只憑完整 view/helper 判定新命名方法已教。"
+  ]
+}

@@ -1,0 +1,286 @@
+{
+  "reader_id": "r2b1_b1",
+  "role": "reader",
+  "structured": false,
+  "primary_id": null,
+  "cases": [
+    {
+      "case_id": "M22957",
+      "title": "DFL 的距離監督與分布解碼",
+      "prerequisite": {
+        "text": "已讀：候選點到框的左、上、右、下距離是 ltrb，距離以特徵格為單位，stride 八時一格等於八畫素。解碼左界是 x1=px−l×stride，其他三邊同理。已學過 logits、softmax 將一組數變成總和為一的機率，以及正確類別機率 p 的交叉熵 −ln p。前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。\n\n實際前文來源：\ndocs/lessons/12-anchor-free.md L19：各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。\ndocs/lessons/12-anchor-free.md L34：記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。\ndocs/lessons/07-loss.md L49：softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。\ndocs/lessons/07-loss.md L50：單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L19",
+            "quote": "各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。"
+          },
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L34",
+            "quote": "記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L49",
+            "quote": "softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L50",
+            "quote": "單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。DFL（Distribution Focal Loss，分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。本頁只手算一條邊的監督與解碼，不包含圖片或完整偵測訓練。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在操作 DFL 的一條左邊距離。這次另給左邊真值距離十畫素，不沿用前文的框；stride 為八畫素／格，所以 d=10/8=1.25 格；相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。loss L=−0.75 ln p1−0.25 ln p2，ln 是自然對數。四個 logits 全零時，softmax 得 p=[0.25,0.25,0.25,0.25]，L=−ln 0.25≈1.3863。接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。這裡的左邊是框的左邊，與較小的刻度索引不是同一種方向；四個機率是在同一條邊內加總為一。",
+          "checkpoint": true
+        },
+        {
+          "text": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。剛才四個相等機率只是初始手算，還没有任何參數更新，不能說模型已學到十畫素。使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。四 bin 的可表示距離有上限，也增加輸出量；本頁沒有測偵測 AP，不能宣稱額外成本值得。分布攤得很開是否表示可信的不確定性，也要另用資料檢查。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M46675",
+      "title": "AP50 的包絡面積與配對判準",
+      "prerequisite": {
+        "text": "已讀：xyxy 是畫素框的左上角與右下角。IoU 是交集面積除以聯集面積，相同框為一、不重疊為零；IoU 可以拿任意兩框計算，單靠幾何公式沒有「算偵測正確」的門檻。前文沒有教 AP、精確率與召回率，以下才引入它們。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "想把一批框概括成評估分數，不能只選一個顯示門檻。本節算 AP50（AP 是 Average Precision，平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。成功記 TP（True Positive，真陽性），失敗記 FP（False Positive，假陽性），每個真值只得分一次。這是人工框評估，不做訓練，採 all-points 插值算法。 官方評分的 101 點插值留到比較章，這裡的包絡面積算法已固定。",
+          "checkpoint": true
+        },
+        {
+          "text": "操作 AP50 的面積步驟：兩張圖合計有三個真值，四筆同類預測按分數 0.95、0.90、0.80、0.70 排序，給定判定依序為 FP、TP、FP、TP；第三筆是第二筆的重複框。精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3，因此 (R,P) 是 (0,0)、(1/3,1/2)、(1/3,1/3)、(2/3,1/2)。在 R=0 與一補精確率零的端點，再從右往左取最大 P；包絡在零到 2/3 高 1/2，之後高零，AP50=(2/3)×(1/2)=1/3。表列判定是這次面積計算的輸入；每個步驟的分母都可從目前排名與固定的真值總數核對。",
+          "checkpoint": true
+        },
+        {
+          "text": "這個三分之一反映整段排序的精確率與漏檢，並不是四筆框的平均分數，也不是全部納入時的精確率 1/2。現在把某筆未配對預測換成 IoU=0.49 的框：它只有一個同圖同類真值可配，且那個真值尚未用過。請依本頁 AP50 的配對規則判定 TP 或 FP，再決定它會不會增加召回率；高分本身不能代替定位達標。這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；官方插值與資料範圍要另外核對。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M19340",
+      "title": "NMS 的候選去重與顯示輸出",
+      "prerequisite": {
+        "text": "已讀：框用 xyxy 表示左上角與右下角，座標原點在圖左上，x 向右、y 向下，單位是畫素。IoU 是兩框交集面積除以聯集面積，相同框為一、不重疊為零。前文只教幾何與框的表示，沒有教候選去重或跨類規則。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "不同候選可能指向同一物件，畫框前需要去重。NMS（非極大值抑制）是推論後處理：每輪保留剩下候選中分數最高的框。輸入是已解碼的框、預測類別與分數，輸出保留索引供顯示端取回框。本頁按預測類別分組，各類獨立處理，不同類別不互相抑制。IoU 門檻 T 在零到一之間；其他候選與保留框的 IoU 嚴格大於 T 才刪掉，門檻越高越容易留下重疊框。本次 T=0.5。分數只作排序，不是正確率，NMS 不讀真值；以下用人工記錄，不訓練模型。",
+          "checkpoint": true
+        },
+        {
+          "text": "先核對類別零的三框記錄，xyxy 單位是畫素：A=[0,0,10,10]、分數 0.9；B=[1,0,11,10]、分數 0.8；C=[20,0,30,10]、分數 0.7。記錄顯示先留 A、抑制 B，再留 C，回傳 A、C。A、B 面積各 100，交集 90，IoU=90/(100+100−90)=9/11，約 0.818；C 與前兩框均不重疊。B 被刪只告訴我們 T<9/11，不能由結果反推出唯一門檻。另以 T=0.9 做反事實比較，這不是本次設定：因 9/11<0.9，B 不被 A 抑制，三框都留下。這兩個結果說明門檻控制候選彼此的競爭，不是判框是否正確。",
+          "checkpoint": true
+        },
+        {
+          "text": "顯示端現在多收到同一張圖、同類別零的 D=[2.5,0,12.5,10]，分數 0.85；A、B、C 的資料沿用前例。D 與 A 面積各 100，交集為 7.5×10=75，所以 IoU=75/(100+100−75)=0.6。這次請實際依本頁採用的門檻完成 NMS：先留 A，把 D 與 A 的 IoU 和當下門檻比較，決定是否抑制 D，再列出最後顯示的索引。上一段的 0.9 只是假設比較值，不能拿來替代本頁設定。這次沒有真值，留下的框仍可能是背景誤報；框數減少本身不支持辨識品質提高。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M19796",
+      "title": "22.1 沒有紅藍標籤，同一張圖的兩個 view 能教什麼？",
+      "prerequisite": {
+        "text": "這次局部閱讀實際提供下列原版導覽與前文節錄；其他完整頁面沒有揭露。基本 Python、NN/CNN 及數學為指定背景。不得使用尚未提供的22.2以後內容。\n\n實際前文來源：\ndocs/index.md L27：學過 CNN、ResNet 與 [15.1 attention](lessons/15-attention-bridge.md) 後，還可以問另一個問題：直接把圖片切成小塊交給 Transformer，會得到什麼特徵？[第 21–23 章選讀支線](lessons/21-patches.md)沿紅／藍矩形例子，從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。主線仍可接著讀 15.2 與後續 YOLO 章節。DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。\ndocs/learning-path.md L20：- **ViT／DINO 選讀支線：**先讀第 1、3 章與 15.1 attention，再從 21.1 開始。這條支線沿分類、影像特徵與單物件定位前進，不改主線順序，也不要求先讀完所有 YOLO 版本。數學仍從向量、shape 與實際數字說起。\ndocs/lessons/21-patches.md L5：[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。Vision Transformer，簡稱 **ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。\ndocs/lessons/21-patches.md L11：沿用第 1 章的答案規則：**紅矩形是類別 0，藍矩形是類別 1**。現在每張圖仍是 32×32 RGB，但矩形的寬、高、位置和亮度會變，背景也有少量暗色雜訊。這些變化的抽樣不依賴類別；兩類都是矩形，所以答案不代表形狀種類。\ndocs/lessons/21-transformer.md L5：紅矩形回答 0，藍矩形回答 1。輸入仍是 32×32 RGB；[前兩節](21-patches.md)已經準備好 16 個 patch 加 CLS，共 `[B,17,32]` 的 tokens，也知道 attention 能讓它們互相讀取。**怎麼把這個讀取步驟接成完整的圖片分類模型？** 本節走完 Transformer block 到兩個類別分數的路徑。\ndocs/lessons/21-transformer.md L9：先看 block 的材料：一串 tokens，每個 token 有 32 個特徵，其中第 0 個是 CLS。這些是中間表示，不是紅藍分數。block 要更新這串表示，仍保留 17 個 tokens、每個仍為 32 維，讓下一個 block 接著使用。\ndocs/lessons/21-transformer.md L66：|`tokens`|`[B,17,32]`|含 CLS 的完整序列，已通過最後 LN|\ndocs/lessons/21-transformer.md L81：`encode_tokens` 依序執行兩個 blocks 和最後 LN。第 0 個 CLS 經過了 attention，所以它的值會依圖片內容而變；分類 head 只讀這個最終 CLS，不直接讀原始像素，也不把 patch 編號當類別。\ndocs/lessons/21-transformer.md L83：完整程式把第一個 block 的兩次相加拆開算，實際得到的結果與 `block(embedded)` 完全相同，`manual_residual_matches_block=true`。同時印出 CLS `[1,32]`、patches `[1,16,32]` 和 logits `[1,2]`，模型參數數量為 23,970。這些結果確認公式與實作的路徑一致；此程式沒有做 optimizer 更新，也沒有用分類正確率證明它學會任務。[下一節](21-training.md)才真正更新整個模型、保留 checkpoint 並測試。\ndocs/lessons/21-transformer.md L99：原論文依據：[ViT §3.1 式 (2)～(4)](https://arxiv.org/html/2010.11929#S3.SS1) 定義 Pre-LN、attention／MLP 兩條 residual 與最終 CLS 的 LN；MLP 使用 GELU。[§4.1 Table 1](https://arxiv.org/html/2010.11929#S4.SS1) 的 ViT-Base 是深度 12、寬度 768、MLP 3072、12 heads。本例是 2／32／64／4，並直接從小資料訓練；分類 head 採單一線性層，沒有重現論文預訓練時含隱藏層的 head，也沒有大規模預訓練。\ndocs/lessons/21-training.md L5：[上一節](21-transformer.md)接好完整 TinyViT。**這個小模型真的能學會紅藍分類，並在存檔後接著同一次訓練嗎？** 本節把前面的模型一起更新，再測試未參與更新的圖，最後檢查 checkpoint 還原。\ndocs/lessons/21-training.md L31：這次不是只更新 logits：patch 投影、CLS、位置向量、兩個 blocks 的 LN／QKV／輸出投影／MLP，以及分類 head 都交給 optimizer。一次更新先用 `train()` 啟用 dropout，再算 loss、清梯度、反傳、檢查梯度，最後 `optimizer.step()` 更新參數。完整程式的前半段如下：",
+        "source_refs": [
+          {
+            "path": "docs/index.md",
+            "lines_or_anchor": "L27",
+            "quote": "學過 CNN、ResNet 與 [15.1 attention](lessons/15-attention-bridge.md) 後，還可以問另一個問題：直接把圖片切成小塊交給 Transformer，會得到什麼特徵？[第 21–23 章選讀支線](lessons/21-patches.md)沿紅／藍矩形例子，從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。主線仍可接著讀 15.2 與後續 YOLO 章節。DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+          },
+          {
+            "path": "docs/learning-path.md",
+            "lines_or_anchor": "L20",
+            "quote": "- **ViT／DINO 選讀支線：**先讀第 1、3 章與 15.1 attention，再從 21.1 開始。這條支線沿分類、影像特徵與單物件定位前進，不改主線順序，也不要求先讀完所有 YOLO 版本。數學仍從向量、shape 與實際數字說起。"
+          },
+          {
+            "path": "docs/lessons/21-patches.md",
+            "lines_or_anchor": "L5",
+            "quote": "[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。Vision Transformer，簡稱 **ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。"
+          },
+          {
+            "path": "docs/lessons/21-patches.md",
+            "lines_or_anchor": "L11",
+            "quote": "沿用第 1 章的答案規則：**紅矩形是類別 0，藍矩形是類別 1**。現在每張圖仍是 32×32 RGB，但矩形的寬、高、位置和亮度會變，背景也有少量暗色雜訊。這些變化的抽樣不依賴類別；兩類都是矩形，所以答案不代表形狀種類。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L5",
+            "quote": "紅矩形回答 0，藍矩形回答 1。輸入仍是 32×32 RGB；[前兩節](21-patches.md)已經準備好 16 個 patch 加 CLS，共 `[B,17,32]` 的 tokens，也知道 attention 能讓它們互相讀取。**怎麼把這個讀取步驟接成完整的圖片分類模型？** 本節走完 Transformer block 到兩個類別分數的路徑。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L9",
+            "quote": "先看 block 的材料：一串 tokens，每個 token 有 32 個特徵，其中第 0 個是 CLS。這些是中間表示，不是紅藍分數。block 要更新這串表示，仍保留 17 個 tokens、每個仍為 32 維，讓下一個 block 接著使用。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L66",
+            "quote": "|`tokens`|`[B,17,32]`|含 CLS 的完整序列，已通過最後 LN|"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L81",
+            "quote": "`encode_tokens` 依序執行兩個 blocks 和最後 LN。第 0 個 CLS 經過了 attention，所以它的值會依圖片內容而變；分類 head 只讀這個最終 CLS，不直接讀原始像素，也不把 patch 編號當類別。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L83",
+            "quote": "完整程式把第一個 block 的兩次相加拆開算，實際得到的結果與 `block(embedded)` 完全相同，`manual_residual_matches_block=true`。同時印出 CLS `[1,32]`、patches `[1,16,32]` 和 logits `[1,2]`，模型參數數量為 23,970。這些結果確認公式與實作的路徑一致；此程式沒有做 optimizer 更新，也沒有用分類正確率證明它學會任務。[下一節](21-training.md)才真正更新整個模型、保留 checkpoint 並測試。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L99",
+            "quote": "原論文依據：[ViT §3.1 式 (2)～(4)](https://arxiv.org/html/2010.11929#S3.SS1) 定義 Pre-LN、attention／MLP 兩條 residual 與最終 CLS 的 LN；MLP 使用 GELU。[§4.1 Table 1](https://arxiv.org/html/2010.11929#S4.SS1) 的 ViT-Base 是深度 12、寬度 768、MLP 3072、12 heads。本例是 2／32／64／4，並直接從小資料訓練；分類 head 採單一線性層，沒有重現論文預訓練時含隱藏層的 head，也沒有大規模預訓練。"
+          },
+          {
+            "path": "docs/lessons/21-training.md",
+            "lines_or_anchor": "L5",
+            "quote": "[上一節](21-transformer.md)接好完整 TinyViT。**這個小模型真的能學會紅藍分類，並在存檔後接著同一次訓練嗎？** 本節把前面的模型一起更新，再測試未參與更新的圖，最後檢查 checkpoint 還原。"
+          },
+          {
+            "path": "docs/lessons/21-training.md",
+            "lines_or_anchor": "L31",
+            "quote": "這次不是只更新 logits：patch 投影、CLS、位置向量、兩個 blocks 的 LN／QKV／輸出投影／MLP，以及分類 head 都交給 optimizer。一次更新先用 `train()` 啟用 dropout，再算 loss、清梯度、反傳、檢查梯度，最後 `optimizer.step()` 更新參數。完整程式的前半段如下："
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "# 22.1 沒有紅藍標籤，同一張圖的兩個 view 能教什麼？\n\n[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/22-views.ipynb){ .md-button }\n\n前文用 32×32 RGB 矩形，讓 ViT 讀圖片，再對照「紅或藍」答案更新。現在把訓練時的顏色答案收起來，只留下圖片。這一節的問題是：**沒有人工類別答案，我們能從同一張圖自己製造什麼學習訊號？**\n",
+          "checkpoint": false,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 1,
+            "end": 6
+          },
+          "images": []
+        },
+        {
+          "text": "## 一張矩形，做出兩份看法\n\n先看材料。圖片規則沿用前文：每張只有一個紅色或藍色矩形，背景偏暗；矩形的位置、寬高和亮度會改變。本節另外生成一張紅色矩形作 view 示範，不是取前章 128 張資料裡的索引 0。兩類都用矩形，因此後面若能分紅藍，只支持學到顏色任務所需的線索，不能稱為學會形狀分類。\n\n從一張圖片各抽一次較大的正方形區域，縮放回 32×32，再各自決定是否左右翻轉與調整亮度。這兩張衍生圖片叫兩個 **view（視圖）**：同一張原圖的兩種看法。它們保留一些共同內容，又讓位置、裁切範圍和亮度稍有不同。\n\n圖上的 crop 座標是**原圖的像素**，順序為 `[x1,y1,x2,y2]`：左上邊界為 `(x1,y1)`，右下邊界為 `(x2,y2)`。原點在原圖左上，x 向右、y 向下；右邊 `x2` 和下邊 `y2` 不包含在裁切範圍內。\n\n![同一張32×32矩形生成兩個global view，並顯示原圖上的裁切區域](../assets/diagrams/22-views.svg)\n\n圖中兩個 view 來自同一張原圖，不是隨便拿兩張紅色圖配對。裁切座標畫在原圖上；縮放與翻轉後，view 裡的物件位置已改變，不能把原圖的框座標直接拿來用。本節自監督訓練只讀 image，不讀矩形的 label 或 box。\n\n這是本節程式另生成的實際紅矩形：以 seed 101 生成 1 張圖，取這份單張資料的索引 0，view 的亂數種子為 22。A、B 的原圖 crop 分別為 `[1,1,29,29]`、`[2,1,29,28]` 像素。圖下方另取左上 `[0,0,8,8]`，展示裁走物件的反例；這個額外小 crop 不加入後面的兩個 global view 訓練。\n",
+          "checkpoint": true,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 7,
+            "end": 20
+          },
+          "images": [
+            {
+              "path": "/workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/images/views.png",
+              "status": "原始SVG預覽；網站未驗證"
+            }
+          ]
+        },
+        {
+          "text": "## 要保留的共同內容，決定了 view 怎麼做\n\n這裡每次選原圖面積比例約 0.65 到 1 的正方形 crop（裁切），稱為 global view，因為它讀的是比較大的一片，不是小小局部。程式先抽面積比例、求正方形邊長並四捨五入，再抽左上位置；32 像素的小圖經取整後，實際面積比例會稍有差距。\n\n裁切不是永遠安全的。矩形若很靠角落，crop 可能只留下部分矩形，甚至全部裁掉。兩張 view 是否還包含我們想保留的內容，必須看素材和增強方式，不能先假定「任何 crop 都不改語意」。這個小實驗使用大 crop 降低風險，但沒有讀 box 來保證物件一定在其中；這些失敗 view 也是實驗的限制。\n\n亮度變化使用同一個倍數調整 RGB 三個通道，沒有交換紅藍通道、改色相或轉灰階。原因是後續要檢查的任務是矩形顏色；若先把紅藍線索抹掉，要求兩個 view 仍相同，就會和這個用途衝突。設計 view 時仍需對資料與用途做選擇；「loss 沒用 label」不表示增強策略完全不需要人判斷。\n",
+          "checkpoint": false,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 21,
+            "end": 28
+          },
+          "images": []
+        },
+        {
+          "text": "## 讓同圖兩份表示互相接近\n\n前文的 ViT 把 RGB 圖切成 16 個 8×8 patch；每個 patch 變成 32 維 token，加入 CLS 與位置向量，經兩層 Transformer 得到一張圖的 CLS 特徵 `[32]`。現在讓 view 1、view 2 各走一次相同的 backbone，得到兩份圖片表示。\n\n我們希望同一張圖的兩份表示相近，讓特徵保留兩份 view 共享的內容，減少對這次左右翻轉或亮度變化的依賴。這叫 **view consistency（跨視圖一致性）**。但原圖 A 和另一張原圖 B 是否也應該相近，不能從這個條件推出；本節只知道哪兩個 view 來自同一張圖。\n\n把資料本身製造的關係當成訓練目標，叫 **self-supervised learning（自監督學習）**。在這個例子中，「來自同一原圖」就是免費取得的關係，代替人工寫出的紅藍類別答案。這和前文 supervised learning（監督學習）的差別在於更新時用的目標來源，ViT 的 patch、attention 和 MLP 仍會真的更新。\n\nDINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。投影頭是讓特徵變成訓練用輸出的可學層；其詳細機制留到 [22.3 節](22-distillation.md)。在開始訓練前，先用[下一節](22-collapse.md)檢查這個想法的一個漏洞：如果模型對每張圖都回答同一向量，兩個 view 不是也會相同嗎？\n",
+          "checkpoint": true,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 29,
+            "end": 38
+          },
+          "images": []
+        },
+        {
+          "text": "## 程式先只生成 view\n\n這一節先做資料操作，不更新 ViT。下面使用本節的真實 helper，產生兩批 view；`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。\n\n```python\nimport torch\nfrom miniyolo.self_distillation import random_view\n\ngenerator = torch.Generator().manual_seed(1007)\nview1, crop1 = random_view(images, generator)\nview2, crop2 = random_view(images, generator)\n```\n\n`images` 是 `[B,3,32,32]`，B 張原圖、RGB 三通道、高寬各 32；值是 0 到 1 的浮點數。`view1`、`view2` 也是 `[B,3,32,32]`。`crop1`、`crop2` 是 `[B,4]`，每張原圖上的 `[x1,y1,x2,y2]` 像素座標：x 向右、y 向下，右下邊界不包含在切片中。這些 crop 數字只用來理解及記錄資料操作，不會當成 DINO 的偵測答案。\n\n這段程式兩次只把 `images` 交給 `random_view`；沒有 `labels` 或 `boxes` 引數。執行 `PYTHONPATH=. python lesson_cases/22-views.py`，或使用頁首 notebook，查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。輸出證明的是兩份輸入怎麼製造，以及資料操作能重做；不是模型已學到特徵。\n",
+          "checkpoint": false,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 39,
+            "end": 55
+          },
+          "images": []
+        },
+        {
+          "text": "## 改一件事，先預測\n\n假如把資料操作改成「有一半機率把紅、藍通道交換」，再要求同圖兩個 view 的表示一致，對後來要分紅藍的任務可能有什麼影響？\n\n??? note \"參考答案\"\n\n    同一張紅矩形可能變成一紅一藍的兩個 view。要求它們表示一致，會鼓勵模型對紅藍差異不敏感，與後續顏色分類的用途衝突。這不代表色彩增強在所有任務都不合適；它表示 view 的設計要對應想保留的內容。\n\n??? note \"原始 DINO 為什麼讀不同大小的 view\"\n\n    [DINO 論文](https://arxiv.org/abs/2104.14294) §3.1 的 multi-crop 包含兩個 global view 及多個較小的 local view；teacher 只讀 global，student 也讀 local，讓局部看法朝較完整的看法學習。固定官方 [main_dino.py 的 DataAugmentationDINO](https://github.com/facebookresearch/dino/blob/7c446df5b9f45747937fb0d72314eb9f7b66930a/main_dino.py) 顯示 global/local crop 的實際增強流程。\n\n    本書 CPU 小實驗只做兩個 global view，沒有 multi-crop、自然影像資料或原版大量訓練。下面幾節會把跨 view、teacher、center 和溫度的主線走完，但不能把合成矩形的結果說成重現原版 DINO 的自然影像能力。\n\n[上一節：21.4 ViT 訓練與還原](21-training.md) · [下一節：22.2 一致也會塌縮](22-collapse.md)",
+          "checkpoint": true,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 56,
+            "end": 70
+          },
+          "images": []
+        }
+      ]
+    },
+    {
+      "case_id": "M78184",
+      "title": "CSP 的區塊路徑與參數成本",
+      "prerequisite": {
+        "text": "已讀：卷積用 NCHW 排列，B 或 N 表示圖片筆數，C 是通道，高寬是 H、W。已經比較逐值相加與沿通道串接：同樣兩個二通道向量，相加得到二通道，串接得到四通道。前文並未教 CSP；以下只使用這些形狀與接合知識。\n\n實際前文來源：\ndocs/lessons/01-small-cnn.md L28：這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。後文有時以 B 表示 batch 大小，意思和 N 相同。\ndocs/lessons/03-identity.md L23：這裡的加法是逐個位置、逐個 channel 相加，不是把兩個 tensor 接起來（串接，concatenation）。例如 x 是 [1,2]、F(x) 是 [10,20]：相加得 [11,22]，長度不變；串接得 [1,2,10,20]，長度變長。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/01-small-cnn.md",
+            "lines_or_anchor": "L28",
+            "quote": "這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。後文有時以 B 表示 batch 大小，意思和 N 相同。"
+          },
+          {
+            "path": "docs/lessons/03-identity.md",
+            "lines_or_anchor": "L23",
+            "quote": "這裡的加法是逐個位置、逐個 channel 相加，不是把兩個 tensor 接起來（串接，concatenation）。例如 x 是 [1,2]、F(x) 是 [10,20]：相加得 [11,22]，長度不變；串接得 [1,2,10,20]，長度變長。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "同一階段常連做幾層卷積，全部通道都參與會很花參數。本節用 CSP（Cross Stage Partial，跨階段部分連接）比較兩種輸入、輸出同為 [B,8,8,8] 的特徵區塊。對照的 Full 讓八個通道都做兩層 3×3，末端用 8→8 的 1×1 卷積融合；CSP 的兩層 3×3 改成四通道，末端仍是八通道。這次關心減少中間參數而維持外部介面的做法，計算範圍是單一區塊，不接偵測器。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在逐層計算 CSP。卷積都帶偏置，參數數是 out×in×k²+out；out、in 是輸出、輸入通道，k 是濾鏡邊長。CSP 的兩個 4→4、3×3 卷積共 2×(4×4×9+4)=296 個參數，8→8、1×1 的融合層有 8×8+8=72 個，共 368。Full 同樣三層但兩個 3×3 都是 8→8，共 2×(8×8×9+8)+72=1240。各層的步幅為一，3×3 補邊一、1×1 不補邊，高寬均為八；實作 CSP 時，融合層必須讀到八通道。偏置是每個輸出通道各有一個可學加數；參數表只數權重與偏置，不把特徵圖裡的數值也算成參數。",
+          "checkpoint": true
+        },
+        {
+          "text": "368/1240 約為 0.297，這支持單一區塊的參數約剩三成，還沒有量到速度或偵測品質。輸出仍是 [B,8,8,8]，所以可以接原本需要八通道的下一個區塊；這和把整條網路都改成四通道不同。重做時要先把八通道輸入畫成文字資料流，核對兩個 3×3 的輸入與融合層收到的八通道來源，再核對參數表。參數少可能減少表達能力，切分與串接也需要搬移資料；本頁沒有訓練數字可支持更準或更快。",
+          "checkpoint": true
+        }
+      ]
+    }
+  ]
+}

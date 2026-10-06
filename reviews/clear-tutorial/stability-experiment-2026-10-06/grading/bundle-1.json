@@ -1,0 +1,5019 @@
+{
+  "items": [
+    {
+      "evaluation_id": "E333601",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E822991",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱",
+          "already_taught": "距離 bins、真值相鄰權重、CE、期望距離與畫素解碼已教。",
+          "missing": "英文全稱。",
+          "needed_now": "名稱補充而非計算障礙。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文分佈聚焦損失及距離加權 CE 角色已交代。",
+              "missing": "DFL 的英文完整名稱。",
+              "needed_now": "名稱補充；不阻礙目前監督與解碼理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "距離 bins、真值相鄰權重、CE、期望距離與畫素解碼已教。",
+              "missing": "英文全稱。",
+              "needed_now": "名稱補充而非計算障礙。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "距離 bins、真值相鄰權重、CE、期望距離與畫素解碼已教。",
+              "missing": "英文全稱。",
+              "needed_now": "名稱補充而非計算障礙。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E532417",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱（全頁未補）",
+          "already_taught": "中文名稱、監督連續距離、CE、期望解碼及四邊使用均已教。",
+          "missing": "DFL 英文全名。",
+          "needed_now": "不影響本頁手算，只需名稱補充。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文名稱、距離監督作用、機率與解碼關係已交代。",
+              "missing": "重要縮寫 DFL 未給英文全名。",
+              "needed_now": "不妨礙當前一邊手算；補充名稱即可。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱（u2 尚未補充）",
+              "already_taught": "距離監督、加權 CE、期望還原及接回框解碼已教。",
+              "missing": "DFL 英文全名。",
+              "needed_now": "名稱補充；不影響 u2 的監督與解碼。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱（全頁未補）",
+              "already_taught": "中文名稱、監督連續距離、CE、期望解碼及四邊使用均已教。",
+              "missing": "DFL 英文全名。",
+              "needed_now": "不影響本頁手算，只需名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E315227",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E539783",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱（頁末仍未補）",
+          "already_taught": "p定位為影像特徵方法，u4說明兩模型目標/回答與CLS投影分布比較，u6區分原版multi-crop與本書兩global示例。",
+          "missing": "DINO縮寫完整名稱及名称中文意義未給。",
+          "needed_now": "名稱補充；本頁材料製造、自監督目標來源與分布比較角色已有，無必要操作阻礙。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u5/RNG",
+          "already_taught": "generator記錄亂數位置，同一種子及同樣呼叫順序可重做view；功能含義已有。",
+          "missing": "RNG縮寫完整名稱未展開，首次讀者漏記此名稱補充。",
+          "needed_now": "名稱補充，不影響view生成或重做，不升級主要方法缺漏。",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "同一 RNG 狀態能重做 view 的檢查"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO首次正文介绍",
+              "already_taught": "導覽定位DINO學影像特徵，本段教兩模型產生目標回答、投影分布比較及後續詳細機制位置。",
+              "missing": "DINO完整名稱與名稱中文意義。",
+              "needed_now": "名稱補充，當前没有DINO實作；不升級成整體方法完全未教。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO首次正文介绍",
+              "already_taught": "方法定位、兩模型目標回答及投影分布角色已有。",
+              "missing": "DINO完整名稱與中文名稱意義。",
+              "needed_now": "名稱補充，無本節DINO實作。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5/RNG",
+              "already_taught": "generator記錄亂數位置，同種子同呼叫序可重做。",
+              "missing": "RNG未展開完整名稱。",
+              "needed_now": "名稱補充，不影響重做操作。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "同一 RNG 狀態能重做 view 的檢查"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO首次正文介绍",
+              "already_taught": "DINO為學影像特徵的方法，本頁有兩模型產目標/回答、CLS投影分布比較及multi-crop定位，細節明定後教。",
+              "missing": "DINO完整名稱及名稱中文意義。",
+              "needed_now": "名称補充，當下view製作與一致性推理不受阻。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5/RNG",
+              "already_taught": "generator記錄亂數位置，同種子同呼叫序可重做。",
+              "missing": "RNG完整名稱。",
+              "needed_now": "名稱補充，非操作缺漏。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "同一 RNG 狀態能重做 view 的檢查"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E250246",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E100644",
+      "case_id": "M66540",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u3/官方 COCO 成績",
+          "already_taught": "本例一類、不跨類平均及不能稱官方成績的範圍已清楚。",
+          "missing": "COCO 英文完整名稱",
+          "needed_now": "名稱對照補充；不影響當下 AP50 計算和 0.49 配對判斷。",
+          "evidence": [
+            {
+              "source": "u3",
+              "quote": "這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u3/官方 COCO 成績",
+              "already_taught": "本例一類、不跨類平均及不能稱官方成績的範圍已清楚。",
+              "missing": "COCO 英文完整名稱",
+              "needed_now": "名稱對照補充；不影響當下 AP50 計算和 0.49 配對判斷。",
+              "evidence": [
+                {
+                  "source": "u3",
+                  "quote": "這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E668482",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO",
+          "already_taught": "導覽定位為影像特徵方法；正文給兩模型產生目標/回答、CLS 投影分布比較的概要",
+          "missing": "DINO 英文完整名稱和中文名稱",
+          "needed_now": "角色已有當下足夠概要；名稱屬補充，不構成訓練操作障礙",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO",
+              "already_taught": "導覽定位為影像特徵方法；正文給兩模型產生目標/回答、CLS 投影分布比較的概要",
+              "missing": "DINO 英文完整名稱和中文名稱",
+              "needed_now": "角色已有當下足夠概要；名稱屬補充，不構成訓練操作障礙",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO",
+              "already_taught": "導覽定位為影像特徵方法；正文給兩模型產生目標/回答、CLS 投影分布比較的概要",
+              "missing": "DINO 英文完整名稱和中文名稱",
+              "needed_now": "角色已有當下足夠概要；名稱屬補充，不構成訓練操作障礙",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO",
+              "already_taught": "導覽定位為影像特徵方法；正文給兩模型產生目標/回答、CLS 投影分布比較的概要",
+              "missing": "DINO 英文完整名稱和中文名稱",
+              "needed_now": "角色已有當下足夠概要；名稱屬補充，不構成訓練操作障礙",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E148371",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E865988",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO命名",
+          "already_taught": "前文導覽說是學影像特徵的方法且不是同名DETR偵測器；u4給兩份模型產生目標回答、CLS投影成分布比較的概要；自監督及view一致性目的也已提供",
+          "missing": "DINO縮寫完整名稱與中文含義未展開",
+          "needed_now": "目前只需理解特徵比較目標與下一節全相同向量漏洞，名稱補充不影響此推理",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO命名",
+              "already_taught": "前文導覽說是學影像特徵的方法且不是同名DETR偵測器；u4給兩份模型產生目標回答、CLS投影成分布比較的概要；自監督及view一致性目的也已提供",
+              "missing": "DINO縮寫完整名稱與中文含義未展開",
+              "needed_now": "目前只需理解特徵比較目標與下一節全相同向量漏洞，名稱補充不影響此推理",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO命名",
+              "already_taught": "前文導覽說是學影像特徵的方法且不是同名DETR偵測器；u4給兩份模型產生目標回答、CLS投影成分布比較的概要；自監督及view一致性目的也已提供",
+              "missing": "DINO縮寫完整名稱與中文含義未展開",
+              "needed_now": "目前只需理解特徵比較目標與下一節全相同向量漏洞，名稱補充不影響此推理",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO命名",
+              "already_taught": "前文導覽說是學影像特徵的方法且不是同名DETR偵測器；u4給兩份模型產生目標回答、CLS投影成分布比較的概要；自監督及view一致性目的也已提供",
+              "missing": "DINO縮寫完整名稱與中文含義未展開",
+              "needed_now": "目前只需理解特徵比較目標與下一節全相同向量漏洞，名稱補充不影響此推理",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E783371",
+      "case_id": "M66540",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u3/官方 COCO 成績",
+          "already_taught": "本例一類、不跨類平均及不能稱官方成績的範圍已清楚。",
+          "missing": "COCO 英文完整名稱",
+          "needed_now": "名稱對照補充；不影響當下 AP50 計算和 0.49 配對判斷。",
+          "evidence": [
+            {
+              "source": "u3",
+              "quote": "這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E160318",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL名稱，u2/u3仍未補",
+          "already_taught": "中文分佈聚焦損失、加權CE訓練角色、相鄰target及期望解碼分工都充分。",
+          "missing": "DFL英文完整名稱。",
+          "needed_now": "名称補充，不阻礙當前單邊手算及四邊銜接。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文名稱、訓練時加權交叉熵及相鄰刻度角色已有說明。",
+              "missing": "DFL 英文完整名稱。",
+              "needed_now": "名稱補充，不阻礙已說明的監督或解碼含義。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文名稱、監督角色及權重操作已教。",
+              "missing": "DFL 英文完整名稱仍未展開。",
+              "needed_now": "名稱補充，不影響目前算loss及解碼。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL名稱",
+              "already_taught": "中文名稱、訓練加權CE、真值相鄰bin角色與解碼分工均已說明。",
+              "missing": "英文完整名稱。",
+              "needed_now": "補名稱，不阻礙目前理解及手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E432041",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E842710",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱，至 u3 未補",
+          "already_taught": "已給中文名與訓練時加權交叉熵角色；u2 給真值兩側權重與 loss，u3 說明避免整數取捨與四邊独立解碼。",
+          "missing": "DFL 未展開英文完整名稱。",
+          "needed_now": "名稱補充；目前完整監督與解碼手算沒有因此受阻。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "已稱分佈聚焦損失，交代為訓練時的加權交叉熵以及距離刻度目標。",
+              "missing": "DFL 未展開英文完整名称。",
+              "needed_now": "名稱補充，不妨礙當前角色與流程理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱，u2 未補",
+              "already_taught": "中文名、加權交叉熵、相鄰刻度權重及解碼均已教。",
+              "missing": "英文完整名稱。",
+              "needed_now": "僅名称補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱，至 u3 未補",
+              "already_taught": "已給中文名與訓練時加權交叉熵角色；u2 給真值兩側權重與 loss，u3 說明避免整數取捨與四邊独立解碼。",
+              "missing": "DFL 未展開英文完整名稱。",
+              "needed_now": "名稱補充；目前完整監督與解碼手算沒有因此受阻。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E484113",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 首次正文機制介紹",
+          "already_taught": "導覽影像特徵定位與正文自監督目的、兩模型產目標回答、CLS投影分布比較；u6補原版視图差異。",
+          "missing": "DINO完整名稱與中文名稱意義至u6頁末未補。",
+          "needed_now": "目前命名方法角色可理解，名稱補充為選讀改善；後續細部待教不等同全方法已教完。",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            },
+            {
+              "source": "u6",
+              "quote": "本書 CPU 小實驗只做兩個 global view，沒有 multi-crop、自然影像資料或原版大量訓練。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文機制介紹",
+              "already_taught": "導覽影像特徵定位、自監督同圖目標、兩份模型產目標回答、CLS投影分布比較已給。",
+              "missing": "重要縮寫 DINO 未展開完整名稱與中文名稱意義。",
+              "needed_now": "目前角色與關係可理解，屬名稱補充，不擴張為整體沒有介紹。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文機制介紹",
+              "already_taught": "導覽影像特徵定位與正文自監督目的、兩模型產目標回答、CLS投影分布比較；u6補原版視图差異。",
+              "missing": "DINO完整名稱與中文名稱意義至u6頁末未補。",
+              "needed_now": "目前命名方法角色可理解，名稱補充為選讀改善；後續細部待教不等同全方法已教完。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                },
+                {
+                  "source": "u6",
+                  "quote": "本書 CPU 小實驗只做兩個 global view，沒有 multi-crop、自然影像資料或原版大量訓練。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E957596",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱（頁末仍未補）",
+          "already_taught": "p定位為影像特徵方法，u4說明兩模型目標/回答與CLS投影分布比較，u6區分原版multi-crop與本書兩global示例。",
+          "missing": "DINO縮寫完整名稱及名称中文意義未給。",
+          "needed_now": "名稱補充；本頁材料製造、自監督目標來源與分布比較角色已有，無必要操作阻礙。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱",
+              "already_taught": "前文導覽定位為學影像特徵方法；本段說明兩模型目標/回答及CLS投影分布比較。",
+              "missing": "DINO縮寫的完整名稱及名稱中文意義未給。",
+              "needed_now": "角色及當下比較路徑可理解，屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱",
+              "already_taught": "p的影像特徵方法角色、u4的兩模型及CLS投影分布比較均已給。",
+              "missing": "DINO縮寫完整名稱及名稱中文意義未補。",
+              "needed_now": "名稱補充，不阻礙現在的view生成。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱（頁末仍未補）",
+              "already_taught": "p定位為影像特徵方法，u4說明兩模型目標/回答與CLS投影分布比較，u6區分原版multi-crop與本書兩global示例。",
+              "missing": "DINO縮寫完整名稱及名称中文意義未給。",
+              "needed_now": "名稱補充；本頁材料製造、自監督目標來源與分布比較角色已有，無必要操作阻礙。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E703760",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E112392",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E863456",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1",
+          "already_taught": "中文意義、訓練監督角色、算式及解碼均已教；截至u3仍未補英文。",
+          "missing": "DFL 的英文全名。",
+          "needed_now": "不影響此頁理解或手算。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "中文分佈聚焦損失、訓練用途及分工已明說。",
+              "missing": "DFL 英文完整名稱未展開。",
+              "needed_now": "不影響當前距離表示與監督分工。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "DFL 中文、監督角色及 u2 詳細算式已教。",
+              "missing": "DFL 的英文全名。",
+              "needed_now": "不影響目前監督或解碼。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "中文意義、訓練監督角色、算式及解碼均已教；截至u3仍未補英文。",
+              "missing": "DFL 的英文全名。",
+              "needed_now": "不影響此頁理解或手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E905924",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E654680",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E132528",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E648145",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E882463",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱",
+          "already_taught": "中文名稱、加權 CE 角色、bin 意義、相鄰權重、期望值解碼及四邊各自 softmax 均已教。",
+          "missing": "DFL 英文完整名稱未展開，至頁末未補。",
+          "needed_now": "僅名稱對照補充，不妨礙主要概念或當前手算。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "已給中文名稱、加權交叉熵角色、相鄰刻度監督與距離解碼用途。",
+              "missing": "DFL 未展開英文全名。",
+              "needed_now": "不阻礙目前距離監督與解碼理解，只影響名稱對照。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "已給中文名稱及監督、bin 機率、期望值解碼角色；u2 已給權重與算例。",
+              "missing": "英文縮寫 DFL 的完整名稱仍未展開。",
+              "needed_now": "只影響名稱對照，不阻礙本例的監督和解碼手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文名稱、加權 CE 角色、bin 意義、相鄰權重、期望值解碼及四邊各自 softmax 均已教。",
+              "missing": "DFL 英文完整名稱未展開，至頁末未補。",
+              "needed_now": "僅名稱對照補充，不妨礙主要概念或當前手算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E847210",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E667124",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E284692",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E589631",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱；至u6頁末未補",
+          "already_taught": "前文定位DINO（2021）為影像特徵方法，本頁已教自監督目標來源、兩模型和CLS投影分布角色，並交代原版與本例範圍",
+          "missing": "DINO英文完整名稱與中文展開未提供",
+          "needed_now": "名稱補充，無當前必要推理阻礙；後文至本頁末未釐清",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            },
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u5/RNG 名稱",
+          "already_taught": "generator記錄亂數位置，同種子同呼叫順序能重做view，已說清楚其當前作用",
+          "missing": "RNG英文完整名稱／中文展開未寫",
+          "needed_now": "名稱補充，不妨礙使用generator理解重做；u6未補",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+            },
+            {
+              "source": "u5",
+              "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱",
+              "already_taught": "前文導覽已定位DINO（2021）為影像特徵方法；本段給自監督目標來源與兩模型/CLS投影分布的角色",
+              "missing": "DINO英文完整名稱及中文展開未提供",
+              "needed_now": "名稱補充；目前方法角色已足以理解，詳細機制仍明示待教",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                },
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱；至u6頁末未補",
+              "already_taught": "前文定位DINO（2021）為影像特徵方法，本頁已教自監督目標來源、兩模型和CLS投影分布角色，並交代原版與本例範圍",
+              "missing": "DINO英文完整名稱與中文展開未提供",
+              "needed_now": "名稱補充，無當前必要推理阻礙；後文至本頁末未釐清",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                },
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5/RNG 名稱",
+              "already_taught": "generator記錄亂數位置，同種子同呼叫順序能重做view，已說清楚其當前作用",
+              "missing": "RNG英文完整名稱／中文展開未寫",
+              "needed_now": "名稱補充，不妨礙使用generator理解重做；u6未補",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+                },
+                {
+                  "source": "u5",
+                  "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E116987",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E559026",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E606535",
+      "case_id": "M46675",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "burden",
+          "location": "u1/AP50 主算法介紹；u2 已釐清",
+          "already_taught": "u1 已交代評估目的、排序、唯一配對與 IoU 門檻；u2 才給 P/R 分母與包絡步驟。",
+          "missing": "首次 u1 用精確率、召回率及右側最大包絡解釋整個方法時，尚無它們的意義與銜接。",
+          "needed_now": "u1 當時回答 AP50 如何由配對記錄得到分數受到影響；u2 後來已解決，但保留當時必要缺漏。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+            },
+            {
+              "source": "p",
+              "quote": "前文沒有教 AP、精確率與召回率，以下才引入它們。"
+            },
+            {
+              "source": "u2",
+              "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+            },
+            {
+              "source": "u2",
+              "quote": "在 R=0 與一補精確率零的端點，再從右往左取最大 P"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1/AP50 主要算法",
+              "already_taught": "AP 全名、彙總目的、排序、同圖同類唯一配對、IoU 0.50 及 TP/FP 已清楚。",
+              "missing": "精確率、召回率的含義及如何連到包絡面積。",
+              "needed_now": "四題中說明整個 AP50 方法如何從配對記錄產生一個分數，必須靠尚未定義的量。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "p",
+                  "quote": "前文沒有教 AP、精確率與召回率，以下才引入它們。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1/AP50 主算法介紹；u2 已釐清",
+              "already_taught": "u1 已交代評估目的、排序、唯一配對與 IoU 門檻；u2 才給 P/R 分母與包絡步驟。",
+              "missing": "首次 u1 用精確率、召回率及右側最大包絡解釋整個方法時，尚無它們的意義與銜接。",
+              "needed_now": "u1 當時回答 AP50 如何由配對記錄得到分數受到影響；u2 後來已解決，但保留當時必要缺漏。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "計算精確率與召回率，再用右側最大精確率包絡的面積總結。"
+                },
+                {
+                  "source": "p",
+                  "quote": "前文沒有教 AP、精確率與召回率，以下才引入它們。"
+                },
+                {
+                  "source": "u2",
+                  "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+                },
+                {
+                  "source": "u2",
+                  "quote": "在 R=0 與一補精確率零的端點，再從右往左取最大 P"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E853093",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E328570",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4（頁末u6仍未展開）",
+          "already_taught": "DINO影像特徵定位、雙模型目標/回答、CLS投影分布與同圖關係已教。",
+          "missing": "DINO重要縮寫未展開完整英文名稱及名称中文意義。",
+          "needed_now": "不妨礙本節理解材料與方法角色，名稱補充。",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u5（頁末u6仍未展開）",
+          "already_taught": "generator記錄亂數位置，種子加同呼叫順序可重做。",
+          "missing": "RNG縮寫未展開。",
+          "needed_now": "不影響重做資料操作的概念，名稱補充。",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4（前文p亦未展開）",
+              "already_taught": "前文定位DINO為影像特徵方法，此段說明雙模型、CLS投影分布及自監督目標。",
+              "missing": "重要縮寫DINO未給完整英文名稱及名稱中文意義。",
+              "needed_now": "不妨礙目前理解角色與學習問題；屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u5",
+              "already_taught": "generator記錄亂數位置，同種子同呼叫順序能重做view。",
+              "missing": "重做檢查使用的RNG縮寫未展開。",
+              "needed_now": "不影響資料操作與重做概念；屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4（頁末u6仍未展開）",
+              "already_taught": "DINO影像特徵定位、雙模型目標/回答、CLS投影分布與同圖關係已教。",
+              "missing": "DINO重要縮寫未展開完整英文名稱及名称中文意義。",
+              "needed_now": "不妨礙本節理解材料與方法角色，名稱補充。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5（頁末u6仍未展開）",
+              "already_taught": "generator記錄亂數位置，種子加同呼叫順序可重做。",
+              "missing": "RNG縮寫未展開。",
+              "needed_now": "不影響重做資料操作的概念，名稱補充。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E599391",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E334780",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E180813",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E619000",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E403970",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E825817",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E638245",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E270209",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E166868",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO名稱（頁末仍未釐清）",
+          "already_taught": "p已定位影像特徵方法，u4說兩模型目標/回答、CLS投影成分布；本頁view一致性與自監督目標來源亦已清楚。",
+          "missing": "重要縮寫DINO未展開完整英文名稱及中文意義。",
+          "needed_now": "不影響本頁view設計及資料操作，僅名稱補充。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO名稱及前文導覽p",
+              "already_taught": "p定位DINO為學影像特徵的方法；u4說兩份模型產生目標與回答、投影CLS成分布比較，並與自監督目標來源銜接。",
+              "missing": "重要縮寫DINO未展開完整英文名稱及中文意義。",
+              "needed_now": "不阻礙目前角色與跨view概念；名稱補充。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO名稱（頁末仍未釐清）",
+              "already_taught": "p已定位影像特徵方法，u4說兩模型目標/回答、CLS投影成分布；本頁view一致性與自監督目標來源亦已清楚。",
+              "missing": "重要縮寫DINO未展開完整英文名稱及中文意義。",
+              "needed_now": "不影響本頁view設計及資料操作，僅名稱補充。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E855905",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E434389",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E509311",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "p/DINO與u4，至u6尚未展開",
+          "already_taught": "已教DINO是影像特徵方法，兩模型目標与回答、CLS可學投影分布比較，承接同圖自監督訊號；本節資料操作範圍与後節安排清楚。",
+          "missing": "DINO重要縮寫未給英文完整名稱與中文名稱意義。",
+          "needed_now": "僅名称補充；不阻礙目前同圖view設計、資料生成或訓練角色概念。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "p/DINO導覽",
+              "already_taught": "導覽已給DINO（2021）的影像特徵角色、與同名偵測器區別；正文已給view資料準備。",
+              "missing": "DINO英文名稱展開及中文名稱意義。",
+              "needed_now": "目前名稱補充，未阻礙view資料準備。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "p及u4/DINO名稱",
+              "already_taught": "p已說學影像特徵；u4已說兩份模型、CLS投影成分布比較及自監督同圖目標關係。",
+              "missing": "DINO英文完整名稱與中文名稱意義尚未展開。",
+              "needed_now": "名稱補充，不妨礙這段理解整體訊號來源與資料流。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "p/DINO與u4，至u6尚未展開",
+              "already_taught": "已教DINO是影像特徵方法，兩模型目標与回答、CLS可學投影分布比較，承接同圖自監督訊號；本節資料操作範圍与後節安排清楚。",
+              "missing": "DINO重要縮寫未給英文完整名稱與中文名稱意義。",
+              "needed_now": "僅名称補充；不阻礙目前同圖view設計、資料生成或訓練角色概念。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E622094",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱，u2/u3 均未補",
+          "already_taught": "中文名稱、相鄰 bin 加權交叉熵、期望解碼與四邊分別 softmax；當前操作可完成。",
+          "missing": "DFL 的英文完整名稱。",
+          "needed_now": "只是名稱補充，不影響距離監督與解碼的理解。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文為分佈聚焦損失，角色是訓練時加權交叉熵，另用期望解碼。",
+              "missing": "英文完整名稱。",
+              "needed_now": "不阻礙當下理解訓練目標與距離輸出，只影響名稱辨識。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱，u2 尚未補",
+              "already_taught": "中文名稱、加權交叉熵角色、bin 與期望解碼；本段補足具體權重算例。",
+              "missing": "英文完整名稱。",
+              "needed_now": "不妨礙本段監督與左邊解碼。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱，u2/u3 均未補",
+              "already_taught": "中文名稱、相鄰 bin 加權交叉熵、期望解碼與四邊分別 softmax；當前操作可完成。",
+              "missing": "DFL 的英文完整名稱。",
+              "needed_now": "只是名稱補充，不影響距離監督與解碼的理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E589557",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E535679",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E237432",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E947682",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱；至 u3 未補充",
+          "already_taught": "已教中文分佈聚焦損失、加權交叉熵監督相鄰 bin、每邊 softmax 和期望解碼，並有數值例。",
+          "missing": "重要縮寫 DFL 未展開英文完整名稱。",
+          "needed_now": "不阻礙本頁手算與理解，僅名稱補充；後文未釐清。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文為分佈聚焦損失，已說明是訓練時加權交叉熵及其距離監督角色。",
+              "missing": "未展開 DFL 英文完整名稱。",
+              "needed_now": "不阻礙目前辨識訓練與解碼的分工；作為重要縮寫可補充名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱；至 u3 未補充",
+              "already_taught": "已教中文分佈聚焦損失、加權交叉熵監督相鄰 bin、每邊 softmax 和期望解碼，並有數值例。",
+              "missing": "重要縮寫 DFL 未展開英文完整名稱。",
+              "needed_now": "不阻礙本頁手算與理解，僅名稱補充；後文未釐清。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E556859",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E640660",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E232264",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 首次命名；到 u3 未補",
+          "already_taught": "已教中文名稱、加權交叉熵監督、相鄰 bin 權重、期望解碼與四邊銜接。",
+          "missing": "DFL 英文完整名稱未展開，後文沒有釐清。",
+          "needed_now": "屬縮寫名稱補充，不妨礙本頁手算及理解監督與解碼。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 首次命名",
+              "already_taught": "已給中文名稱、加權交叉熵的角色與相鄰刻度監督意義。",
+              "missing": "DFL 英文全名未展開。",
+              "needed_now": "不阻礙目前區分監督與解碼；補充名稱可使縮寫完整。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 命名（u2 仍未補）",
+              "already_taught": "中文名稱、加權交叉熵、target 權重和期望解碼已教。",
+              "missing": "DFL 英文全名。",
+              "needed_now": "不妨礙當前 loss、距離與左界運算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 首次命名；到 u3 未補",
+              "already_taught": "已教中文名稱、加權交叉熵監督、相鄰 bin 權重、期望解碼與四邊銜接。",
+              "missing": "DFL 英文完整名稱未展開，後文沒有釐清。",
+              "needed_now": "屬縮寫名稱補充，不妨礙本頁手算及理解監督與解碼。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E584873",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1，至 u3 未補充",
+          "already_taught": "中文名稱、加權交叉熵的訓練角色、兩 bin 監督、softmax 與期望距離解碼已明說。",
+          "missing": "DFL 的英文完整名稱。",
+          "needed_now": "不影響本頁一條邊的手算與四邊後續解碼；屬名稱補充，沒有在後文釐清。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "已說 DFL 是分佈聚焦損失、訓練時的加權交叉熵，並說明監督角色。",
+              "missing": "重要縮寫 DFL 未展開英文完整名稱。",
+              "needed_now": "不妨礙目前分辨訓練監督與使用時解碼；屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（截至 u2 尚未補充）",
+              "already_taught": "已教中文名稱、訓練監督角色、target 權重與解碼方法。",
+              "missing": "DFL 英文完整名稱。",
+              "needed_now": "不影響這一條邊的 loss 與解碼，屬補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1，至 u3 未補充",
+              "already_taught": "中文名稱、加權交叉熵的訓練角色、兩 bin 監督、softmax 與期望距離解碼已明說。",
+              "missing": "DFL 的英文完整名稱。",
+              "needed_now": "不影響本頁一條邊的手算與四邊後續解碼；屬名稱補充，沒有在後文釐清。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E980326",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E370285",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1/DFL學習理由",
+              "already_taught": "完整名稱、加權CE角色、相鄰刻度監督、softmax與期望解碼均已介紹。",
+              "missing": "為何需要把原本的單一距離改成四bin分布，這解決什麼表示或監督問題。",
+              "needed_now": "已進入DFL整體監督与解碼，讀者可照步驟卻不知道改用分布的學習理由。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "DFL（Distribution Focal Loss，分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1/DFL學習理由",
+              "already_taught": "完整名稱、加權CE角色、相鄰刻度監督、softmax與期望解碼均已介紹。",
+              "missing": "為何需要把原本的單一距離改成四bin分布，這解決什麼表示或監督問題。",
+              "needed_now": "已進入DFL整體監督与解碼，讀者可照步驟卻不知道改用分布的學習理由。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "DFL（Distribution Focal Loss，分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "burden",
+              "location": "u1/DFL學習理由（u3部分釐清）",
+              "already_taught": "完整名稱、加權CE角色、相鄰刻度監督、softmax與期望解碼均已介紹。",
+              "missing": "u1进入DFL監督與解碼时未教改為分布的學習理由。u3後來補「不必把1.25四捨五入」，只釐清离散bin監督的局部理由。",
+              "needed_now": "已進入DFL整體監督与解碼，讀者可照步驟卻不知道改用分布的學習理由。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                },
+                {
+                  "source": "u1",
+                  "quote": "DFL（Distribution Focal Loss，分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E970770",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E283718",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 首次正文介紹；至 u6 未展開",
+          "already_taught": "p 已定位 DINO（2021）為影像特徵學習而非同名偵測器；u4 交代兩模型產生目標／回答、CLS 可學投影頭轉分布比較；u6 另說原版 multi-crop 與本書簡化範圍。",
+          "missing": "DINO 英文全名與名稱中文意義。",
+          "needed_now": "高層特徵學習路線與本節 view 操作可理解，不阻礙当前操作；仍需補重要縮寫名稱。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文方法介紹（p 導覽亦未展開）",
+              "already_taught": "p 已定位 DINO（2021）是學影像特徵的方法；u4 已講兩份模型的目標／回答分工、CLS 投影成分布再比較。",
+              "missing": "DINO 英文完整名稱與名稱中文意義。",
+              "needed_now": "目前高層方法可理解，僅需補命名，不影響 view 或自監督概念操作。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文介紹；至 u6 未展開",
+              "already_taught": "p 已定位 DINO（2021）為影像特徵學習而非同名偵測器；u4 交代兩模型產生目標／回答、CLS 可學投影頭轉分布比較；u6 另說原版 multi-crop 與本書簡化範圍。",
+              "missing": "DINO 英文全名與名稱中文意義。",
+              "needed_now": "高層特徵學習路線與本節 view 操作可理解，不阻礙当前操作；仍需補重要縮寫名稱。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E658428",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E272688",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E620751",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1（至 u3 未補）",
+          "already_taught": "中文名、加權交叉熵、分布刻度及期望解碼均清楚。",
+          "missing": "DFL 的英文完整名稱",
+          "needed_now": "名稱補充，不阻礙當前計算或整體角色理解。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "中文分佈聚焦損失、加權 CE 的角色與分布解碼已說明。",
+              "missing": "DFL 的英文全名",
+              "needed_now": "名稱補充，當前操作不受阻。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（u2 尚未補）",
+              "already_taught": "中文名稱、損失與解碼已教。",
+              "missing": "DFL 的英文全名",
+              "needed_now": "英文名稱補充；不妨礙現在計算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（至 u3 未補）",
+              "already_taught": "中文名、加權交叉熵、分布刻度及期望解碼均清楚。",
+              "missing": "DFL 的英文完整名稱",
+              "needed_now": "名稱補充，不阻礙當前計算或整體角色理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E805856",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E380078",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E442357",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱（u2、u3 未補）",
+          "already_taught": "中文分佈聚焦損失、加權 CE、相鄰 bin 权重、訓練与使用分工均已教。",
+          "missing": "DFL 重要缩写沒有英文完整名稱；後文仍未釐清。",
+          "needed_now": "不影響當下 target、loss、期望与解碼推理，僅改善名称完整性。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "中文名稱、訓練時加權交叉熵與距離監督的角色已教。",
+              "missing": "重要縮寫 DFL 未提供英文完整名稱。",
+              "needed_now": "僅名稱補充，当前距離監督與解碼流程仍可理解。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱（u2 尚未補）",
+              "already_taught": "u2 已釐清相鄰 bin 權重、loss、畫素與格單位，監督与使用意義均清楚。",
+              "missing": "DFL 的英文完整名稱仍未展開。",
+              "needed_now": "不阻礙當下手算，僅名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱（u2、u3 未補）",
+              "already_taught": "中文分佈聚焦損失、加權 CE、相鄰 bin 权重、訓練与使用分工均已教。",
+              "missing": "DFL 重要缩写沒有英文完整名稱；後文仍未釐清。",
+              "needed_now": "不影響當下 target、loss、期望与解碼推理，僅改善名称完整性。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E162178",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 首次正文教學；至 u6 未補名稱",
+          "already_taught": "前文定位影像特徵；u4 教兩模型產生目標／回答及 CLS 投影分布比較，u6 另教大／小 view 的分工。",
+          "missing": "DINO 英文完整名稱與中文名稱含義",
+          "needed_now": "重要縮寫的名稱補充，不影響本頁 view 製作與一致性用途推理。",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文教學",
+              "already_taught": "導覽定位為學影像特徵；正文概述兩模型產生目標／回答及投影 CLS 分布比較。",
+              "missing": "DINO 的完整名稱與中文名稱含義",
+              "needed_now": "縮寫名稱補充，不影響此段一致性目標與 DINO 分工概述。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱，u5 未補充",
+              "already_taught": "自監督與一致性目標，DINO 兩份模型、投影分布比較的角色概述。",
+              "missing": "DINO 英文完整名稱與名稱含義。",
+              "needed_now": "名稱補充，不影響本節生成 view。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文教學；至 u6 未補名稱",
+              "already_taught": "前文定位影像特徵；u4 教兩模型產生目標／回答及 CLS 投影分布比較，u6 另教大／小 view 的分工。",
+              "missing": "DINO 英文完整名稱與中文名稱含義",
+              "needed_now": "重要縮寫的名稱補充，不影響本頁 view 製作與一致性用途推理。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E950187",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E350743",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E131781",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱；u6頁末仍未展開",
+          "already_taught": "p定位DINO為影像特徵方法，u4給兩模型目標/回答与CLS投影，u6補原版global/local分工。",
+          "missing": "DINO英文全稱与中文名稱意義，後文u5/u6未釐清。",
+          "needed_now": "不影響本頁的view製造、自監督概念和範圍理解，名稱補充。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u5/RNG 狀態",
+          "already_taught": "已說generator記錄亂數位置，同種子与同呼叫次序能重做。",
+          "missing": "RNG縮寫完整名稱未展開。",
+          "needed_now": "不影响當前重做資料操作的理解。",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+            },
+            {
+              "source": "u5",
+              "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱",
+              "already_taught": "導覽已說DINO（2021）是學影像特徵的方法，此段补两模型、CLS投影與比較角色。",
+              "missing": "DINO英文全稱與中文名稱意義未展開。",
+              "needed_now": "不阻礙已描述的同圖關係與表示路徑，屬名稱補充。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱；u6頁末仍未展開",
+              "already_taught": "p定位DINO為影像特徵方法，u4給兩模型目標/回答与CLS投影，u6補原版global/local分工。",
+              "missing": "DINO英文全稱与中文名稱意義，後文u5/u6未釐清。",
+              "needed_now": "不影響本頁的view製造、自監督概念和範圍理解，名稱補充。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5/RNG 狀態",
+              "already_taught": "已說generator記錄亂數位置，同種子与同呼叫次序能重做。",
+              "missing": "RNG縮寫完整名稱未展開。",
+              "needed_now": "不影响當前重做資料操作的理解。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+                },
+                {
+                  "source": "u5",
+                  "quote": "查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E465329",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1/DFL 名稱，至 u3 仍未補充",
+          "already_taught": "DFL 中文名、距離 bin 監督、softmax、加權交叉熵、單邊與四邊期望解碼均已教。",
+          "missing": "英文完整名稱未展開；後文未釐清。",
+          "needed_now": "不妨礙當前理解或手算，属名稱補充。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱",
+              "already_taught": "已教中文名分佈聚焦損失、加權交叉熵的監督角色及與物件分類的區別。",
+              "missing": "英文完整名稱未展開。",
+              "needed_now": "目前監督／解碼理解不受影響，只是名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱（u2 尚未補充）",
+              "already_taught": "距離 bin、加權交叉熵、softmax 及期望解碼皆已交代。",
+              "missing": "英文完整名稱。",
+              "needed_now": "不影響本段手算，只是名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/DFL 名稱，至 u3 仍未補充",
+              "already_taught": "DFL 中文名、距離 bin 監督、softmax、加權交叉熵、單邊與四邊期望解碼均已教。",
+              "missing": "英文完整名稱未展開；後文未釐清。",
+              "needed_now": "不妨礙當前理解或手算，属名稱補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E726543",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E275597",
+      "case_id": "M72209",
+      "verdict": "needs_revision",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1",
+          "already_taught": "DFL 中文名稱、損失角色、相鄰刻度監督、期望解碼及限制已教。",
+          "missing": "英文完整名稱未展開，後文也未補。",
+          "needed_now": "名稱辨認的補充，不妨礙本頁機制。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）"
+            }
+          ]
+        },
+        {
+          "severity": "burden",
+          "location": "u1/u2，u3 部分釐清",
+          "already_taught": "u1 可理解損失和解碼角色，u2 權重與loss算例完整；u3 後來說明加權target避免把小數取整。",
+          "missing": "u1進入主要機制、u2手算時，主要方法的採用理由仍未交代；u3只釐清選bin之後的相鄰權重理由，未明說為何原本單值改為分布。",
+          "needed_now": "當時無法說明整個方法回應的問題，不能以loss與解碼計算完整代替主要方法的學習理由。頁末保留此早期斷點。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率"
+            },
+            {
+              "source": "p",
+              "quote": "距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。"
+            },
+            {
+              "source": "u3",
+              "quote": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "DFL 中文名称與訓練損失角色、監督對象及期望解碼均已介紹。",
+              "missing": "DFL 未展開英文完整名稱。",
+              "needed_now": "不妨礙追蹤目前机制，便於名稱辨認的補充。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            },
+            {
+              "severity": "burden",
+              "location": "u1",
+              "already_taught": "已說明四 bin 機率、相鄰刻度監督，以及期望值接回四邊解碼。",
+              "missing": "仍未交代原本單一距離遇到什麼問題，或改為機率表示新增何種能力。",
+              "needed_now": "回答主要方法為何在此引入時只能指出表示改變，不能說出這個改變的學習理由。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1/u2",
+              "already_taught": "DFL 中文名稱、加權交叉熵監督、分布解碼與具體權重算例已教。",
+              "missing": "DFL 英文完整名稱仍未展開。",
+              "needed_now": "辨認縮寫的補充，不影響計算。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）"
+                }
+              ]
+            },
+            {
+              "severity": "burden",
+              "location": "u1/u2",
+              "already_taught": "u2 釐清相鄰 bin 的權重、loss 及解碼操作；保留這些已教部分。",
+              "missing": "表示改變回應的問題或新增能力仍未知。",
+              "needed_now": "手算能完成，卻仍無法回答整個 DFL 方法為何需要在此採用。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率"
+                },
+                {
+                  "source": "u2",
+                  "quote": "現在操作 DFL 的一條左邊距離。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "DFL 中文名稱、損失角色、相鄰刻度監督、期望解碼及限制已教。",
+              "missing": "英文完整名稱未展開，後文也未補。",
+              "needed_now": "名稱辨認的補充，不妨礙本頁機制。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）"
+                }
+              ]
+            },
+            {
+              "severity": "burden",
+              "location": "u1/u2，u3 部分釐清",
+              "already_taught": "u1 可理解損失和解碼角色，u2 權重與loss算例完整；u3 後來說明加權target避免把小數取整。",
+              "missing": "u1進入主要機制、u2手算時，主要方法的採用理由仍未交代；u3只釐清選bin之後的相鄰權重理由，未明說為何原本單值改為分布。",
+              "needed_now": "當時無法說明整個方法回應的問題，不能以loss與解碼計算完整代替主要方法的學習理由。頁末保留此早期斷點。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率"
+                },
+                {
+                  "source": "p",
+                  "quote": "距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。"
+                },
+                {
+                  "source": "u3",
+                  "quote": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E985412",
+      "case_id": "M72209",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u1，至 u3 頁末未補",
+          "already_taught": "DFL 中文名稱與加權 CE、相鄰 bin 監督、避免非整數距離四捨五入、期望解碼和限制均已清楚。",
+          "missing": "DFL 英文完整名稱。",
+          "needed_now": "不阻礙本頁主要概念或手算；可補重要縮寫名稱。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1",
+              "already_taught": "已解釋中文名稱、加權交叉熵、距離 bin 與訓練／解碼分工。",
+              "missing": "DFL 英文全名未展開。",
+              "needed_now": "不妨礙目前理解距離監督與解碼；可補名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u2",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1（u2 尚未補英文）",
+              "already_taught": "中文名、距離 bin、加權 CE 與期望解碼，以及此段監督權重都清楚。",
+              "missing": "DFL 英文完整名稱。",
+              "needed_now": "不影響現在算 target、loss 與左界；可補名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u3",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u1，至 u3 頁末未補",
+              "already_taught": "DFL 中文名稱與加權 CE、相鄰 bin 監督、避免非整數距離四捨五入、期望解碼和限制均已清楚。",
+              "missing": "DFL 英文完整名稱。",
+              "needed_now": "不阻礙本頁主要概念或手算；可補重要縮寫名稱。",
+              "evidence": [
+                {
+                  "source": "u1",
+                  "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E458013",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱；u6 頁末仍未展開",
+          "already_taught": "前文教 DINO 是學影像特徵的方法；正文教兩模型產生目標/回答、CLS 投影分布比較、同圖關係取代人工答案與資料生成限制。",
+          "missing": "DINO 的英文完整名稱及中文意義。",
+          "needed_now": "不影響已教的兩 view 製作、增強用途選擇或自監督目標來源理解。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱（前文亦未展開）",
+              "already_taught": "前文定位為學影像特徵，本段教兩模型產生目標和回答、CLS 投影分布比較。",
+              "missing": "重要名稱 DINO 的英文完整展開及中文意義。",
+              "needed_now": "不影響已教的自監督目標來源與一致性直覺。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                },
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": []
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱；u6 頁末仍未展開",
+              "already_taught": "前文教 DINO 是學影像特徵的方法；正文教兩模型產生目標/回答、CLS 投影分布比較、同圖關係取代人工答案與資料生成限制。",
+              "missing": "DINO 的英文完整名稱及中文意義。",
+              "needed_now": "不影響已教的兩 view 製作、增強用途選擇或自監督目標來源理解。",
+              "evidence": [
+                {
+                  "source": "p",
+                  "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+                },
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E192513",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E111655",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E583353",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E392519",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E246123",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E236426",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E113769",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E644340",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E742212",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E120534",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E495545",
+      "case_id": "M46675",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E964139",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱",
+          "already_taught": "前文已定位影像特徵方法；本頁說明自監督目標來源、兩模型目標／回答及CLS投影分布比較。",
+          "missing": "DINO完整名稱與名稱中文意義未展開，u6未補。",
+          "needed_now": "不阻礙当前材料生成、跨視圖一致性及方法定位；可補名称。",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u5/RNG 狀態",
+          "already_taught": "亂數generator的位置、相同種子和呼叫順序能重做已教。",
+          "missing": "RNG的完整名稱與中文名稱未展開，u6未補。",
+          "needed_now": "重做的概念已清楚，不影響當前資料操作理解。",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "同一 RNG 狀態能重做 view 的檢查"
+            },
+            {
+              "source": "u5",
+              "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱",
+              "already_taught": "前文已定位為影像特徵方法；本段說明兩模型的目標／回答角色、CLS投影分布及比較，且自監督的目標來源已清楚。",
+              "missing": "DINO 的完整名稱及名稱中文意義沒有展開。",
+              "needed_now": "不阻礙当前跨視圖一致性與自監督角色理解；可補重要名稱。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u5/RNG 狀態",
+              "already_taught": "generator 記錄亂數位置、種子與呼叫順序對重做的作用已清楚。",
+              "missing": "RNG 英文全名及中文名稱未展開。",
+              "needed_now": "不影響理解相同亂數狀態能重做資料操作，可補名稱。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "同一 RNG 狀態能重做 view 的檢查"
+                },
+                {
+                  "source": "u5",
+                  "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱",
+              "already_taught": "前文已定位影像特徵方法；本頁說明自監督目標來源、兩模型目標／回答及CLS投影分布比較。",
+              "missing": "DINO完整名稱與名稱中文意義未展開，u6未補。",
+              "needed_now": "不阻礙当前材料生成、跨視圖一致性及方法定位；可補名称。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5/RNG 狀態",
+              "already_taught": "亂數generator的位置、相同種子和呼叫順序能重做已教。",
+              "missing": "RNG的完整名稱與中文名稱未展開，u6未補。",
+              "needed_now": "重做的概念已清楚，不影響當前資料操作理解。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "同一 RNG 狀態能重做 view 的檢查"
+                },
+                {
+                  "source": "u5",
+                  "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E885414",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E643292",
+      "case_id": "M22957",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E308800",
+      "case_id": "M66540",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E121543",
+      "case_id": "M19796",
+      "verdict": "optional_only",
+      "issues": [
+        {
+          "severity": "optional",
+          "location": "u4/DINO 名稱（u6 頁末仍未釐清）",
+          "already_taught": "前文指出 DINO 是影像特徵方法；正文已有同圖自監督目的、兩模型目標回答和投影分布的概述，明確把細節留後節。",
+          "missing": "DINO 的英文完整名稱與中文名稱未展開。",
+          "needed_now": "名稱對應補充，不阻礙本頁資料操作及目前概念目的。",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        },
+        {
+          "severity": "optional",
+          "location": "u5/RNG 名稱（u6 頁末仍未釐清）",
+          "already_taught": "generator 記錄亂數位置，種子與相同呼叫順序能重做同組 view 的角色明確。",
+          "missing": "RNG 英文完整名稱未展開。",
+          "needed_now": "僅縮寫名稱補充，不影響本頁重做資料操作的理解。",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+            },
+            {
+              "source": "u5",
+              "quote": "同一 RNG 狀態能重做 view 的檢查。"
+            }
+          ]
+        }
+      ],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        },
+        {
+          "unit_id": "u4",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 首次正文方法概述",
+              "already_taught": "前文定位 DINO 是影像特徵方法；本段指出兩份模型、CLS 投影分布以及目標回答的分工概述。",
+              "missing": "DINO 的縮寫完整名稱與中文名稱未展開。",
+              "needed_now": "只影響名稱對應；已有角色及目前夠用的概述，不以此升為主要概念阻礙。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u5",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u5/RNG 名稱",
+              "already_taught": "generator 的亂數位置、相同種子與呼叫順序的重做條件已教。",
+              "missing": "RNG 縮寫未展開英文完整名稱。",
+              "needed_now": "僅名稱對應補充，不影響目前生成與重做 view 的理解。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+                },
+                {
+                  "source": "u5",
+                  "quote": "同一 RNG 狀態能重做 view 的檢查。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "unit_id": "u6",
+          "issues": [
+            {
+              "severity": "optional",
+              "location": "u4/DINO 名稱（u6 頁末仍未釐清）",
+              "already_taught": "前文指出 DINO 是影像特徵方法；正文已有同圖自監督目的、兩模型目標回答和投影分布的概述，明確把細節留後節。",
+              "missing": "DINO 的英文完整名稱與中文名稱未展開。",
+              "needed_now": "名稱對應補充，不阻礙本頁資料操作及目前概念目的。",
+              "evidence": [
+                {
+                  "source": "u4",
+                  "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+                }
+              ]
+            },
+            {
+              "severity": "optional",
+              "location": "u5/RNG 名稱（u6 頁末仍未釐清）",
+              "already_taught": "generator 記錄亂數位置，種子與相同呼叫順序能重做同組 view 的角色明確。",
+              "missing": "RNG 英文完整名稱未展開。",
+              "needed_now": "僅縮寫名稱補充，不影響本頁重做資料操作的理解。",
+              "evidence": [
+                {
+                  "source": "u5",
+                  "quote": "`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+                },
+                {
+                  "source": "u5",
+                  "quote": "同一 RNG 狀態能重做 view 的檢查。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluation_id": "E662672",
+      "case_id": "M16388",
+      "verdict": "pass",
+      "issues": [],
+      "timeline_issues": [
+        {
+          "unit_id": "u1",
+          "issues": []
+        },
+        {
+          "unit_id": "u2",
+          "issues": []
+        },
+        {
+          "unit_id": "u3",
+          "issues": []
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "case_id": "M16388",
+      "title": "NMS 的候選去重與顯示輸出",
+      "prerequisite": {
+        "text": "已讀：框用 xyxy 表示左上角與右下角，座標原點在圖左上，x 向右、y 向下，單位是畫素。IoU 是兩框交集面積除以聯集面積，相同框為一、不重疊為零。前文只教幾何與框的表示，沒有教候選去重或跨類規則。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "不同候選可能指向同一物件，畫框前需要去重。NMS（Non-Maximum Suppression，非極大值抑制）是推論後處理：每輪保留剩下候選中分數最高的框。輸入是已解碼的框、預測類別與分數，輸出保留索引供顯示端取回框。本頁按預測類別分組，各類獨立處理，不同類別不互相抑制。IoU 門檻 T 在零到一之間；其他候選與保留框的 IoU 嚴格大於 T 才刪掉，門檻越高越容易留下重疊框。本次 T=0.5。分數只作排序，不是正確率，NMS 不讀真值；以下用人工記錄，不訓練模型。 加速排序與並行實作留到程式課，這次手算不需要那些內部細節。",
+          "checkpoint": true
+        },
+        {
+          "text": "先核對類別零的三框記錄，xyxy 單位是畫素：A=[0,0,10,10]、分數 0.9；B=[1,0,11,10]、分數 0.8；C=[20,0,30,10]、分數 0.7。記錄顯示先留 A、抑制 B，再留 C，回傳 A、C。A、B 面積各 100，交集 90，IoU=90/(100+100−90)=9/11，約 0.818；C 與前兩框均不重疊。B 被刪只告訴我們 T<9/11，不能由結果反推出唯一門檻。另以 T=0.9 做反事實比較，這不是本次設定：因 9/11<0.9，B 不被 A 抑制，三框都留下。這兩個結果說明門檻控制候選彼此的競爭，不是判框是否正確。",
+          "checkpoint": true
+        },
+        {
+          "text": "顯示端現在多收到同一張圖、同類別零的 D=[2.5,0,12.5,10]，分數 0.85；A、B、C 的資料沿用前例。D 與 A 面積各 100，交集為 7.5×10=75，所以 IoU=75/(100+100−75)=0.6。這次請實際依本頁採用的門檻完成 NMS：先留 A，把 D 與 A 的 IoU 和當下門檻比較，決定是否抑制 D，再列出最後顯示的索引。上一段的 0.9 只是假設比較值，不能拿來替代本頁設定。這次沒有真值，留下的框仍可能是背景誤報；框數減少本身不支持辨識品質提高。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M19796",
+      "title": "22.1 沒有紅藍標籤，同一張圖的兩個 view 能教什麼？",
+      "prerequisite": {
+        "text": "這次局部閱讀實際提供下列原版導覽與前文節錄；其他完整頁面沒有揭露。基本 Python、NN/CNN 及數學為指定背景。不得使用尚未提供的22.2以後內容。\n\n實際前文來源：\ndocs/index.md L27：學過 CNN、ResNet 與 [15.1 attention](lessons/15-attention-bridge.md) 後，還可以問另一個問題：直接把圖片切成小塊交給 Transformer，會得到什麼特徵？[第 21–23 章選讀支線](lessons/21-patches.md)沿紅／藍矩形例子，從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。主線仍可接著讀 15.2 與後續 YOLO 章節。DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。\ndocs/learning-path.md L20：- **ViT／DINO 選讀支線：**先讀第 1、3 章與 15.1 attention，再從 21.1 開始。這條支線沿分類、影像特徵與單物件定位前進，不改主線順序，也不要求先讀完所有 YOLO 版本。數學仍從向量、shape 與實際數字說起。\ndocs/lessons/21-patches.md L5：[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。Vision Transformer，簡稱 **ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。\ndocs/lessons/21-patches.md L11：沿用第 1 章的答案規則：**紅矩形是類別 0，藍矩形是類別 1**。現在每張圖仍是 32×32 RGB，但矩形的寬、高、位置和亮度會變，背景也有少量暗色雜訊。這些變化的抽樣不依賴類別；兩類都是矩形，所以答案不代表形狀種類。\ndocs/lessons/21-transformer.md L5：紅矩形回答 0，藍矩形回答 1。輸入仍是 32×32 RGB；[前兩節](21-patches.md)已經準備好 16 個 patch 加 CLS，共 `[B,17,32]` 的 tokens，也知道 attention 能讓它們互相讀取。**怎麼把這個讀取步驟接成完整的圖片分類模型？** 本節走完 Transformer block 到兩個類別分數的路徑。\ndocs/lessons/21-transformer.md L9：先看 block 的材料：一串 tokens，每個 token 有 32 個特徵，其中第 0 個是 CLS。這些是中間表示，不是紅藍分數。block 要更新這串表示，仍保留 17 個 tokens、每個仍為 32 維，讓下一個 block 接著使用。\ndocs/lessons/21-transformer.md L66：|`tokens`|`[B,17,32]`|含 CLS 的完整序列，已通過最後 LN|\ndocs/lessons/21-transformer.md L81：`encode_tokens` 依序執行兩個 blocks 和最後 LN。第 0 個 CLS 經過了 attention，所以它的值會依圖片內容而變；分類 head 只讀這個最終 CLS，不直接讀原始像素，也不把 patch 編號當類別。\ndocs/lessons/21-transformer.md L83：完整程式把第一個 block 的兩次相加拆開算，實際得到的結果與 `block(embedded)` 完全相同，`manual_residual_matches_block=true`。同時印出 CLS `[1,32]`、patches `[1,16,32]` 和 logits `[1,2]`，模型參數數量為 23,970。這些結果確認公式與實作的路徑一致；此程式沒有做 optimizer 更新，也沒有用分類正確率證明它學會任務。[下一節](21-training.md)才真正更新整個模型、保留 checkpoint 並測試。\ndocs/lessons/21-transformer.md L99：原論文依據：[ViT §3.1 式 (2)～(4)](https://arxiv.org/html/2010.11929#S3.SS1) 定義 Pre-LN、attention／MLP 兩條 residual 與最終 CLS 的 LN；MLP 使用 GELU。[§4.1 Table 1](https://arxiv.org/html/2010.11929#S4.SS1) 的 ViT-Base 是深度 12、寬度 768、MLP 3072、12 heads。本例是 2／32／64／4，並直接從小資料訓練；分類 head 採單一線性層，沒有重現論文預訓練時含隱藏層的 head，也沒有大規模預訓練。\ndocs/lessons/21-training.md L5：[上一節](21-transformer.md)接好完整 TinyViT。**這個小模型真的能學會紅藍分類，並在存檔後接著同一次訓練嗎？** 本節把前面的模型一起更新，再測試未參與更新的圖，最後檢查 checkpoint 還原。\ndocs/lessons/21-training.md L31：這次不是只更新 logits：patch 投影、CLS、位置向量、兩個 blocks 的 LN／QKV／輸出投影／MLP，以及分類 head 都交給 optimizer。一次更新先用 `train()` 啟用 dropout，再算 loss、清梯度、反傳、檢查梯度，最後 `optimizer.step()` 更新參數。完整程式的前半段如下：",
+        "source_refs": [
+          {
+            "path": "docs/index.md",
+            "lines_or_anchor": "L27",
+            "quote": "學過 CNN、ResNet 與 [15.1 attention](lessons/15-attention-bridge.md) 後，還可以問另一個問題：直接把圖片切成小塊交給 Transformer，會得到什麼特徵？[第 21–23 章選讀支線](lessons/21-patches.md)沿紅／藍矩形例子，從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。主線仍可接著讀 15.2 與後續 YOLO 章節。DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+          },
+          {
+            "path": "docs/learning-path.md",
+            "lines_or_anchor": "L20",
+            "quote": "- **ViT／DINO 選讀支線：**先讀第 1、3 章與 15.1 attention，再從 21.1 開始。這條支線沿分類、影像特徵與單物件定位前進，不改主線順序，也不要求先讀完所有 YOLO 版本。數學仍從向量、shape 與實際數字說起。"
+          },
+          {
+            "path": "docs/lessons/21-patches.md",
+            "lines_or_anchor": "L5",
+            "quote": "[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。Vision Transformer，簡稱 **ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。"
+          },
+          {
+            "path": "docs/lessons/21-patches.md",
+            "lines_or_anchor": "L11",
+            "quote": "沿用第 1 章的答案規則：**紅矩形是類別 0，藍矩形是類別 1**。現在每張圖仍是 32×32 RGB，但矩形的寬、高、位置和亮度會變，背景也有少量暗色雜訊。這些變化的抽樣不依賴類別；兩類都是矩形，所以答案不代表形狀種類。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L5",
+            "quote": "紅矩形回答 0，藍矩形回答 1。輸入仍是 32×32 RGB；[前兩節](21-patches.md)已經準備好 16 個 patch 加 CLS，共 `[B,17,32]` 的 tokens，也知道 attention 能讓它們互相讀取。**怎麼把這個讀取步驟接成完整的圖片分類模型？** 本節走完 Transformer block 到兩個類別分數的路徑。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L9",
+            "quote": "先看 block 的材料：一串 tokens，每個 token 有 32 個特徵，其中第 0 個是 CLS。這些是中間表示，不是紅藍分數。block 要更新這串表示，仍保留 17 個 tokens、每個仍為 32 維，讓下一個 block 接著使用。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L66",
+            "quote": "|`tokens`|`[B,17,32]`|含 CLS 的完整序列，已通過最後 LN|"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L81",
+            "quote": "`encode_tokens` 依序執行兩個 blocks 和最後 LN。第 0 個 CLS 經過了 attention，所以它的值會依圖片內容而變；分類 head 只讀這個最終 CLS，不直接讀原始像素，也不把 patch 編號當類別。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L83",
+            "quote": "完整程式把第一個 block 的兩次相加拆開算，實際得到的結果與 `block(embedded)` 完全相同，`manual_residual_matches_block=true`。同時印出 CLS `[1,32]`、patches `[1,16,32]` 和 logits `[1,2]`，模型參數數量為 23,970。這些結果確認公式與實作的路徑一致；此程式沒有做 optimizer 更新，也沒有用分類正確率證明它學會任務。[下一節](21-training.md)才真正更新整個模型、保留 checkpoint 並測試。"
+          },
+          {
+            "path": "docs/lessons/21-transformer.md",
+            "lines_or_anchor": "L99",
+            "quote": "原論文依據：[ViT §3.1 式 (2)～(4)](https://arxiv.org/html/2010.11929#S3.SS1) 定義 Pre-LN、attention／MLP 兩條 residual 與最終 CLS 的 LN；MLP 使用 GELU。[§4.1 Table 1](https://arxiv.org/html/2010.11929#S4.SS1) 的 ViT-Base 是深度 12、寬度 768、MLP 3072、12 heads。本例是 2／32／64／4，並直接從小資料訓練；分類 head 採單一線性層，沒有重現論文預訓練時含隱藏層的 head，也沒有大規模預訓練。"
+          },
+          {
+            "path": "docs/lessons/21-training.md",
+            "lines_or_anchor": "L5",
+            "quote": "[上一節](21-transformer.md)接好完整 TinyViT。**這個小模型真的能學會紅藍分類，並在存檔後接著同一次訓練嗎？** 本節把前面的模型一起更新，再測試未參與更新的圖，最後檢查 checkpoint 還原。"
+          },
+          {
+            "path": "docs/lessons/21-training.md",
+            "lines_or_anchor": "L31",
+            "quote": "這次不是只更新 logits：patch 投影、CLS、位置向量、兩個 blocks 的 LN／QKV／輸出投影／MLP，以及分類 head 都交給 optimizer。一次更新先用 `train()` 啟用 dropout，再算 loss、清梯度、反傳、檢查梯度，最後 `optimizer.step()` 更新參數。完整程式的前半段如下："
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "# 22.1 沒有紅藍標籤，同一張圖的兩個 view 能教什麼？\n\n[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/22-views.ipynb){ .md-button }\n\n前文用 32×32 RGB 矩形，讓 ViT 讀圖片，再對照「紅或藍」答案更新。現在把訓練時的顏色答案收起來，只留下圖片。這一節的問題是：**沒有人工類別答案，我們能從同一張圖自己製造什麼學習訊號？**\n",
+          "checkpoint": false,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 1,
+            "end": 6
+          },
+          "images": []
+        },
+        {
+          "text": "## 一張矩形，做出兩份看法\n\n先看材料。圖片規則沿用前文：每張只有一個紅色或藍色矩形，背景偏暗；矩形的位置、寬高和亮度會改變。本節另外生成一張紅色矩形作 view 示範，不是取前章 128 張資料裡的索引 0。兩類都用矩形，因此後面若能分紅藍，只支持學到顏色任務所需的線索，不能稱為學會形狀分類。\n\n從一張圖片各抽一次較大的正方形區域，縮放回 32×32，再各自決定是否左右翻轉與調整亮度。這兩張衍生圖片叫兩個 **view（視圖）**：同一張原圖的兩種看法。它們保留一些共同內容，又讓位置、裁切範圍和亮度稍有不同。\n\n圖上的 crop 座標是**原圖的像素**，順序為 `[x1,y1,x2,y2]`：左上邊界為 `(x1,y1)`，右下邊界為 `(x2,y2)`。原點在原圖左上，x 向右、y 向下；右邊 `x2` 和下邊 `y2` 不包含在裁切範圍內。\n\n![同一張32×32矩形生成兩個global view，並顯示原圖上的裁切區域](../assets/diagrams/22-views.svg)\n\n圖中兩個 view 來自同一張原圖，不是隨便拿兩張紅色圖配對。裁切座標畫在原圖上；縮放與翻轉後，view 裡的物件位置已改變，不能把原圖的框座標直接拿來用。本節自監督訓練只讀 image，不讀矩形的 label 或 box。\n\n這是本節程式另生成的實際紅矩形：以 seed 101 生成 1 張圖，取這份單張資料的索引 0，view 的亂數種子為 22。A、B 的原圖 crop 分別為 `[1,1,29,29]`、`[2,1,29,28]` 像素。圖下方另取左上 `[0,0,8,8]`，展示裁走物件的反例；這個額外小 crop 不加入後面的兩個 global view 訓練。\n",
+          "checkpoint": true,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 7,
+            "end": 20
+          },
+          "images": [
+            {
+              "path": "/workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/images/views.png",
+              "status": "原始SVG預覽；網站未驗證"
+            }
+          ]
+        },
+        {
+          "text": "## 要保留的共同內容，決定了 view 怎麼做\n\n這裡每次選原圖面積比例約 0.65 到 1 的正方形 crop（裁切），稱為 global view，因為它讀的是比較大的一片，不是小小局部。程式先抽面積比例、求正方形邊長並四捨五入，再抽左上位置；32 像素的小圖經取整後，實際面積比例會稍有差距。\n\n裁切不是永遠安全的。矩形若很靠角落，crop 可能只留下部分矩形，甚至全部裁掉。兩張 view 是否還包含我們想保留的內容，必須看素材和增強方式，不能先假定「任何 crop 都不改語意」。這個小實驗使用大 crop 降低風險，但沒有讀 box 來保證物件一定在其中；這些失敗 view 也是實驗的限制。\n\n亮度變化使用同一個倍數調整 RGB 三個通道，沒有交換紅藍通道、改色相或轉灰階。原因是後續要檢查的任務是矩形顏色；若先把紅藍線索抹掉，要求兩個 view 仍相同，就會和這個用途衝突。設計 view 時仍需對資料與用途做選擇；「loss 沒用 label」不表示增強策略完全不需要人判斷。\n",
+          "checkpoint": false,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 21,
+            "end": 28
+          },
+          "images": []
+        },
+        {
+          "text": "## 讓同圖兩份表示互相接近\n\n前文的 ViT 把 RGB 圖切成 16 個 8×8 patch；每個 patch 變成 32 維 token，加入 CLS 與位置向量，經兩層 Transformer 得到一張圖的 CLS 特徵 `[32]`。現在讓 view 1、view 2 各走一次相同的 backbone，得到兩份圖片表示。\n\n我們希望同一張圖的兩份表示相近，讓特徵保留兩份 view 共享的內容，減少對這次左右翻轉或亮度變化的依賴。這叫 **view consistency（跨視圖一致性）**。但原圖 A 和另一張原圖 B 是否也應該相近，不能從這個條件推出；本節只知道哪兩個 view 來自同一張圖。\n\n把資料本身製造的關係當成訓練目標，叫 **self-supervised learning（自監督學習）**。在這個例子中，「來自同一原圖」就是免費取得的關係，代替人工寫出的紅藍類別答案。這和前文 supervised learning（監督學習）的差別在於更新時用的目標來源，ViT 的 patch、attention 和 MLP 仍會真的更新。\n\nDINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。投影頭是讓特徵變成訓練用輸出的可學層；其詳細機制留到 [22.3 節](22-distillation.md)。在開始訓練前，先用[下一節](22-collapse.md)檢查這個想法的一個漏洞：如果模型對每張圖都回答同一向量，兩個 view 不是也會相同嗎？\n",
+          "checkpoint": true,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 29,
+            "end": 38
+          },
+          "images": []
+        },
+        {
+          "text": "## 程式先只生成 view\n\n這一節先做資料操作，不更新 ViT。下面使用本節的真實 helper，產生兩批 view；`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。\n\n```python\nimport torch\nfrom miniyolo.self_distillation import random_view\n\ngenerator = torch.Generator().manual_seed(1007)\nview1, crop1 = random_view(images, generator)\nview2, crop2 = random_view(images, generator)\n```\n\n`images` 是 `[B,3,32,32]`，B 張原圖、RGB 三通道、高寬各 32；值是 0 到 1 的浮點數。`view1`、`view2` 也是 `[B,3,32,32]`。`crop1`、`crop2` 是 `[B,4]`，每張原圖上的 `[x1,y1,x2,y2]` 像素座標：x 向右、y 向下，右下邊界不包含在切片中。這些 crop 數字只用來理解及記錄資料操作，不會當成 DINO 的偵測答案。\n\n這段程式兩次只把 `images` 交給 `random_view`；沒有 `labels` 或 `boxes` 引數。執行 `PYTHONPATH=. python lesson_cases/22-views.py`，或使用頁首 notebook，查看示例 crop、view shape 及同一 RNG 狀態能重做 view 的檢查。輸出證明的是兩份輸入怎麼製造，以及資料操作能重做；不是模型已學到特徵。\n",
+          "checkpoint": false,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 39,
+            "end": 55
+          },
+          "images": []
+        },
+        {
+          "text": "## 改一件事，先預測\n\n假如把資料操作改成「有一半機率把紅、藍通道交換」，再要求同圖兩個 view 的表示一致，對後來要分紅藍的任務可能有什麼影響？\n\n??? note \"參考答案\"\n\n    同一張紅矩形可能變成一紅一藍的兩個 view。要求它們表示一致，會鼓勵模型對紅藍差異不敏感，與後續顏色分類的用途衝突。這不代表色彩增強在所有任務都不合適；它表示 view 的設計要對應想保留的內容。\n\n??? note \"原始 DINO 為什麼讀不同大小的 view\"\n\n    [DINO 論文](https://arxiv.org/abs/2104.14294) §3.1 的 multi-crop 包含兩個 global view 及多個較小的 local view；teacher 只讀 global，student 也讀 local，讓局部看法朝較完整的看法學習。固定官方 [main_dino.py 的 DataAugmentationDINO](https://github.com/facebookresearch/dino/blob/7c446df5b9f45747937fb0d72314eb9f7b66930a/main_dino.py) 顯示 global/local crop 的實際增強流程。\n\n    本書 CPU 小實驗只做兩個 global view，沒有 multi-crop、自然影像資料或原版大量訓練。下面幾節會把跨 view、teacher、center 和溫度的主線走完，但不能把合成矩形的結果說成重現原版 DINO 的自然影像能力。\n\n[上一節：21.4 ViT 訓練與還原](21-training.md) · [下一節：22.2 一致也會塌縮](22-collapse.md)",
+          "checkpoint": true,
+          "source_ref": {
+            "path": "docs/lessons/22-views.md",
+            "start": 56,
+            "end": 70
+          },
+          "images": []
+        }
+      ]
+    },
+    {
+      "case_id": "M22957",
+      "title": "DFL 的距離監督與分布解碼",
+      "prerequisite": {
+        "text": "已讀：候選點到框的左、上、右、下距離是 ltrb，距離以特徵格為單位，stride 八時一格等於八畫素。解碼左界是 x1=px−l×stride，其他三邊同理。已學過 logits、softmax 將一組數變成總和為一的機率，以及正確類別機率 p 的交叉熵 −ln p。前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。\n\n實際前文來源：\ndocs/lessons/12-anchor-free.md L19：各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。\ndocs/lessons/12-anchor-free.md L34：記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。\ndocs/lessons/07-loss.md L49：softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。\ndocs/lessons/07-loss.md L50：單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L19",
+            "quote": "各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。"
+          },
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L34",
+            "quote": "記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L49",
+            "quote": "softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L50",
+            "quote": "單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。DFL（Distribution Focal Loss，分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。本頁只手算一條邊的監督與解碼，不包含圖片或完整偵測訓練。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在操作 DFL 的一條左邊距離。這次另給左邊真值距離十畫素，不沿用前文的框；stride 為八畫素／格，所以 d=10/8=1.25 格；相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。loss L=−0.75 ln p1−0.25 ln p2，ln 是自然對數。四個 logits 全零時，softmax 得 p=[0.25,0.25,0.25,0.25]，L=−ln 0.25≈1.3863。接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。這裡的左邊是框的左邊，與較小的刻度索引不是同一種方向；四個機率是在同一條邊內加總為一。",
+          "checkpoint": true
+        },
+        {
+          "text": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。剛才四個相等機率只是初始手算，還没有任何參數更新，不能說模型已學到十畫素。使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。四 bin 的可表示距離有上限，也增加輸出量；本頁沒有測偵測 AP，不能宣稱額外成本值得。分布攤得很開是否表示可信的不確定性，也要另用資料檢查。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M46675",
+      "title": "AP50 的包絡面積與配對判準",
+      "prerequisite": {
+        "text": "已讀：xyxy 是畫素框的左上角與右下角。IoU 是交集面積除以聯集面積，相同框為一、不重疊為零；IoU 可以拿任意兩框計算，單靠幾何公式沒有「算偵測正確」的門檻。前文沒有教 AP、精確率與召回率，以下才引入它們。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "想把一批框概括成評估分數，不能只選一個顯示門檻。本節算 AP50（AP 是 Average Precision，平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。成功記 TP（True Positive，真陽性），失敗記 FP（False Positive，假陽性），每個真值只得分一次。這是人工框評估，不做訓練，採 all-points 插值算法。 官方評分的 101 點插值留到比較章，這裡的包絡面積算法已固定。",
+          "checkpoint": true
+        },
+        {
+          "text": "操作 AP50 的面積步驟：兩張圖合計有三個真值，四筆同類預測按分數 0.95、0.90、0.80、0.70 排序，給定判定依序為 FP、TP、FP、TP；第三筆是第二筆的重複框。精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3，因此 (R,P) 是 (0,0)、(1/3,1/2)、(1/3,1/3)、(2/3,1/2)。在 R=0 與一補精確率零的端點，再從右往左取最大 P；包絡在零到 2/3 高 1/2，之後高零，AP50=(2/3)×(1/2)=1/3。表列判定是這次面積計算的輸入；每個步驟的分母都可從目前排名與固定的真值總數核對。",
+          "checkpoint": true
+        },
+        {
+          "text": "這個三分之一反映整段排序的精確率與漏檢，並不是四筆框的平均分數，也不是全部納入時的精確率 1/2。現在把某筆未配對預測換成 IoU=0.49 的框：它只有一個同圖同類真值可配，且那個真值尚未用過。請依本頁 AP50 的配對規則判定 TP 或 FP，再決定它會不會增加召回率；高分本身不能代替定位達標。這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；官方插值與資料範圍要另外核對。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M66540",
+      "title": "AP50 的包絡面積與配對判準",
+      "prerequisite": {
+        "text": "已讀：xyxy 是畫素框的左上角與右下角。IoU 是交集面積除以聯集面積，相同框為一、不重疊為零；IoU 可以拿任意兩框計算，單靠幾何公式沒有「算偵測正確」的門檻。前文沒有教 AP、精確率與召回率，以下才引入它們。\n\n實際前文來源：\ndocs/lessons/04-localization.md L52：座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。\ndocs/lessons/04-localization.md L117：Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L52",
+            "quote": "座標以圖左上角為原點，x 向右、y 向下，單位是畫素（pixel，簡寫 px）。`xyxy` 是左上角與右下角：\\((x_1,y_1,x_2,y_2)\\)。"
+          },
+          {
+            "path": "docs/lessons/04-localization.md",
+            "lines_or_anchor": "L117",
+            "quote": "Intersection over Union（IoU，交併比）是交集面積除以聯集面積，0 表示沒有重疊，1 表示兩框完全一致。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "想把一批框概括成評估分數，不能只選一個顯示門檻。本節算 AP50（AP 是 Average Precision，平均精確率）：將同類預測按分數由高到低逐筆納入，計算精確率與召回率，再用右側最大精確率包絡的面積總結。配對只找同圖同類、尚未使用的真值，取 IoU 最大者；AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。成功記 TP（True Positive，真陽性），失敗記 FP（False Positive，假陽性），每個真值只得分一次。這是人工框評估，不做訓練，採 all-points 插值算法。",
+          "checkpoint": true
+        },
+        {
+          "text": "操作 AP50 的面積步驟：兩張圖合計有三個真值，四筆同類預測按分數 0.95、0.90、0.80、0.70 排序，給定判定依序為 FP、TP、FP、TP；第三筆是第二筆的重複框。精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3，因此 (R,P) 是 (0,0)、(1/3,1/2)、(1/3,1/3)、(2/3,1/2)。在 R=0 與一補精確率零的端點，再從右往左取最大 P；包絡在零到 2/3 高 1/2，之後高零，AP50=(2/3)×(1/2)=1/3。表列判定是這次面積計算的輸入；每個步驟的分母都可從目前排名與固定的真值總數核對。",
+          "checkpoint": true
+        },
+        {
+          "text": "這個三分之一反映整段排序的精確率與漏檢，並不是四筆框的平均分數，也不是全部納入時的精確率 1/2。現在把某筆未配對預測換成 IoU=0.49 的框：它只有一個同圖同類真值可配，且那個真值尚未用過。請依本頁 AP50 的配對規則判定 TP 或 FP，再決定它會不會增加召回率；高分本身不能代替定位達標。這個小例只用一類，不跨類平均，也不能當成官方 COCO 成績；官方插值與資料範圍要另外核對。",
+          "checkpoint": true
+        }
+      ]
+    },
+    {
+      "case_id": "M72209",
+      "title": "DFL 的距離監督與分布解碼",
+      "prerequisite": {
+        "text": "已讀：候選點到框的左、上、右、下距離是 ltrb，距離以特徵格為單位，stride 八時一格等於八畫素。解碼左界是 x1=px−l×stride，其他三邊同理。已學過 logits、softmax 將一組數變成總和為一的機率，以及正確類別機率 p 的交叉熵 −ln p。前文仍用每邊一個距離，尚未教距離 bin 或分布解碼。\n\n實際前文來源：\ndocs/lessons/12-anchor-free.md L19：各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。\ndocs/lessons/12-anchor-free.md L34：記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。\ndocs/lessons/07-loss.md L49：softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。\ndocs/lessons/07-loss.md L50：單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。",
+        "source_refs": [
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L19",
+            "quote": "各除以 stride 8，得到特徵格單位的 `ltrb=[2,1.5,1.5,1]`；ltrb 是 left、top、right、bottom 的縮寫，1 格＝8 畫素。距離不必是整數：格子只決定候選點放在哪裡，框邊不必落在格線上。"
+          },
+          {
+            "path": "docs/lessons/12-anchor-free.md",
+            "lines_or_anchor": "L34",
+            "quote": "記 stride 為 s，四個式子是 `x1=px−l×s`、`y1=py−t×s`、`x2=px+r×s`、`y2=py+b×s`。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L49",
+            "quote": "softmax：C 個類別 logits 記作 \\(z_0,\\dots,z_{C-1}\\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \\(z_0\\)、\\(z_1\\) 依序是 `class0`、`class1`。類別 k 的機率是 \\(\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}\\)，C 個機率加起來是 1。"
+          },
+          {
+            "path": "docs/lessons/07-loss.md",
+            "lines_or_anchor": "L50",
+            "quote": "單格的 CE 是 \\(-\\ln p\\)，p 是 softmax 後「正確類別」的機率。"
+          }
+        ]
+      },
+      "units": [
+        {
+          "text": "原本每條框邊只輸出一個距離，這次把它表示成四個 bin 的機率；bin0 到 bin3 分別代表零到三格。DFL（分佈聚焦損失）是訓練時的加權交叉熵，把機率推向真值相鄰兩個刻度，並非物件類別分類。模型每邊輸出四個 logits，沿 bin 軸 softmax 得到 p。使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。本頁只手算一條邊的監督與解碼，不包含圖片或完整偵測訓練。",
+          "checkpoint": true
+        },
+        {
+          "text": "現在操作 DFL 的一條左邊距離。這次另給左邊真值距離十畫素，不沿用前文的框；stride 為八畫素／格，所以 d=10/8=1.25 格；相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。loss L=−0.75 ln p1−0.25 ln p2，ln 是自然對數。四個 logits 全零時，softmax 得 p=[0.25,0.25,0.25,0.25]，L=−ln 0.25≈1.3863。接著實際解碼：先把這份 p 換成單一左距離 l，再在畫素候選點 px=28 上代入 x1=28−8l，得到要畫的左界。這裡的左邊是框的左邊，與較小的刻度索引不是同一種方向；四個機率是在同一條邊內加總為一。",
+          "checkpoint": true
+        },
+        {
+          "text": "監督 target 的 0.75、0.25 分配讓模型把機率放在真值兩側，不必把 1.25 四捨五入成整數。剛才四個相等機率只是初始手算，還没有任何參數更新，不能說模型已學到十畫素。使用這種框分支時，四條邊各自 softmax，四份分布各變回距離後才交給原本的 ltrb 解碼。四 bin 的可表示距離有上限，也增加輸出量；本頁沒有測偵測 AP，不能宣稱額外成本值得。分布攤得很開是否表示可信的不確定性，也要另用資料檢查。",
+          "checkpoint": true
+        }
+      ]
+    }
+  ],
+  "gold": [
+    {
+      "case_id": "M16388",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教像素 xyxy 與 IoU。",
+          "u1 已明訂按預測類別分組、每輪保留剩餘最高分、IoU 嚴格大於 T 才抑制；輸入、索引輸出、顯示用途與不讀真值也已交代。",
+          "u2 明確將 A/C 當給定記錄，並說 B 被抑制只能限制 T<9/11；0.9 是反事實比較值。",
+          "u1 明文給本次 T=0.5。"
+        ],
+        "missing": [],
+        "needed_now": "本次數值門檻與操作規則已充分，u3 可唯一完成。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "本頁按預測類別分組，各類獨立處理，不同類別不互相抑制。"
+          },
+          {
+            "source": "u1",
+            "quote": "其他候選與保留框的 IoU 嚴格大於 T 才刪掉"
+          },
+          {
+            "source": "u2",
+            "quote": "B 被刪只告訴我們 T<9/11，不能由結果反推出唯一門檻。"
+          },
+          {
+            "source": "u3",
+            "quote": "這次請實際依本頁採用的門檻完成 NMS"
+          },
+          {
+            "source": "u1",
+            "quote": "本次 T=0.5。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u3",
+        "later_resolution_unit": "u1",
+        "rationale": "u1 已給實際門檻；延期的加速排序與並行實作不影響本次最高分與 IoU 手算。"
+      },
+      "allowed_inferences": [
+        "A 先保留，B 的 9/11>0.5 而被抑制；D 的 0.6>0.5 也被抑制，C 不重疊而保留，最後索引是 A、C。",
+        "T=0.9 是反事實設定，不可取代本次 .5；T=.6 時的等號不刪由嚴格 > 規則可推，但不是本次設定。",
+        "候選减少不證明辨識品質提高。"
+      ],
+      "legitimate_unknowns": [
+        "加速、並行、模型分數來源與訓練不影響此次人工記錄 NMS。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "NMS 名稱、角色、class-wise、嚴格 > 與本次 T=.5 均完整。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "記錄核對、T 上界與 .9 反事實區分都清楚。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "可用已教本次 T=.5 判 D 被抑制並列 A、C。"
+        }
+      ]
+    },
+    {
+      "case_id": "M19796",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u4：DINO 第一次進入正文機制介紹",
+        "already_taught": [
+          "p 已說 DINO（2021）是自監督影像特徵方法，並與同名 DETR 偵測器區分。",
+          "u1–u3 已說明收起紅藍答案、同圖製造不同 view 與保留共同內容的目的。",
+          "u4 說明圖經既有 ViT 得 CLS；跨 view 一致性是本例的學習關係；DINO 用兩模型產生目標與回答，投影頭把 CLS 轉成訓練分布。"
+        ],
+        "missing": [
+          "DINO 的英文全名未提供。"
+        ],
+        "needed_now": "只是重要縮寫的名稱補充。當下是生成 view、理解共同內容與自監督關係，尚未要求算 DINO loss 或執行 teacher/student 更新；英文全名缺少不阻礙這一步。",
+        "evidence": [
+          {
+            "source": "p",
+            "quote": "從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。"
+          },
+          {
+            "source": "p",
+            "quote": "DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。"
+          },
+          {
+            "source": "u4",
+            "quote": "把資料本身製造的關係當成訓練目標，叫 **self-supervised learning（自監督學習）**。"
+          },
+          {
+            "source": "u4",
+            "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+          },
+          {
+            "source": "u4",
+            "quote": "其詳細機制留到 [22.3 節](22-distillation.md)。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "p",
+        "first_required_unit": "u4",
+        "later_resolution_unit": null,
+        "rationale": "u1 問題由 u2 的同圖衍生 views 與 u4 的一致性關係回答；不在提問當刻要求完整答案。DINO 在 u4 有當下夠用的角色說明，完整蒸餾操作尚未成為任務。"
+      },
+      "allowed_inferences": [
+        "由 p 的特徵學習定位、u4 的共同内容目標與兩模型分布比較，可推得 DINO 是這條自監督特徵學習路線所採的方法；這項判斷並非只因 view/helper 已介紹而通過。",
+        "u2、u3 可推得裁切、翻轉與同倍率亮度變化會改位置、尺度或亮度，同時保留部分顏色線索；不能推出所有 view 都保留矩形。",
+        "u6 的 teacher 只讀 global、student 也讀 local，配合『局部看法朝較完整的看法學習』，可推得這裡所說的目標方向；不能補出 teacher 更新方式。"
+      ],
+      "legitimate_unknowns": [
+        "兩模型如何初始化與更新、teacher 如何取得、投影頭結構、center、温度、塌縮防止機制留待後教。",
+        "u6 是原版 multi-crop 選讀定位，當下不必實作 local view。",
+        "u5 節錄使用 images 的形狀已指定；沒有要求該段 snippet 獨立生成資料。"
+      ],
+      "unrelated_issues": [
+        "只查看允許的 PNG 原圖預覽；未檢查網站桌面/手機排版、SVG 原始碼、notebook 或實作，不能宣稱完整視覺及技術驗收。"
+      ],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "材料是既有 32×32 RGB 矩形；顏色人工答案收起來；提出製造學習訊號的問題。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u1",
+                "quote": "現在把訓練時的顏色答案收起來，只留下圖片。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u2",
+            "later_resolution_unit": "u2/u4",
+            "rationale": "開場提出問題，緊接下文提供素材與操作，合理。"
+          }
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "view 是同原圖各抽大方形、resize、翻轉與調亮度後的衍生圖；crop 軸、像素、邊界與圖的反例均明說。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u2",
+                "quote": "這兩張衍生圖片叫兩個 **view（視圖）**：同一張原圖的兩種看法。"
+              },
+              {
+                "source": "u2",
+                "quote": "圖中兩個 view 來自同一張原圖，不是隨便拿兩張紅色圖配對。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u2",
+            "later_resolution_unit": null,
+            "rationale": "原圖 PNG 顯示 A/B crop、兩個 global view 與不含物件的反例，當下可理解 view 操作。"
+          }
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "global 是較大區域；面積抽樣、裁走物件風險、只同倍率調 RGB 與顏色任務的關係均交代。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u3",
+                "quote": "裁切不是永遠安全的。"
+              },
+              {
+                "source": "u3",
+                "quote": "原因是後續要檢查的任務是矩形顏色；若先把紅藍線索抹掉，要求兩個 view 仍相同，就會和這個用途衝突。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u3",
+            "later_resolution_unit": null,
+            "rationale": "未要求讀者先懂未教的 DINO 訓練機制。"
+          }
+        },
+        {
+          "unit": "u4",
+          "severity": "optional",
+          "target_gap": {
+            "location": "u4：DINO",
+            "already_taught": [
+              "自監督、一致性、既有 ViT/CLS 與 DINO 兩模型分布比較的當下角色已交代。"
+            ],
+            "missing": [
+              "DINO 英文全名。"
+            ],
+            "needed_now": "名稱展開可補；不是目前操作阻碍。",
+            "evidence": [
+              {
+                "source": "u4",
+                "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u4",
+            "later_resolution_unit": null,
+            "rationale": "詳細蒸餾留到 22.3，本節未要求操作它。"
+          }
+        },
+        {
+          "unit": "u5",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "只做資料操作、不更新 ViT；RNG、random_view 輸入輸出 shape、crop 用途、不讀 labels/boxes 都有說明。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u5",
+                "quote": "這一節先做資料操作，不更新 ViT。"
+              },
+              {
+                "source": "u5",
+                "quote": "這段程式兩次只把 `images` 交給 `random_view`；沒有 `labels` 或 `boxes` 引數。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u5",
+            "later_resolution_unit": null,
+            "rationale": "helper 的可理解性在資料操作範圍內充分，沒有以 helper 代替 DINO 完整操作介紹。"
+          }
+        },
+        {
+          "unit": "u6",
+          "severity": "none",
+          "target_gap": {
+            "location": null,
+            "already_taught": [
+              "交換紅藍會使一致性與顏色任務衝突，答案依前文可推；multi-crop 的 global/local 模型讀取差異與小實驗範圍交代。"
+            ],
+            "missing": [],
+            "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+            "evidence": [
+              {
+                "source": "u6",
+                "quote": "要求它們表示一致，會鼓勵模型對紅藍差異不敏感，與後續顏色分類的用途衝突。"
+              },
+              {
+                "source": "u6",
+                "quote": "teacher 只讀 global，student 也讀 local，讓局部看法朝較完整的看法學習。"
+              }
+            ]
+          },
+          "timing": {
+            "first_required_unit": "u6",
+            "later_resolution_unit": null,
+            "rationale": "教師更新、center 與温度只預告後教；目前不是推理所需。"
+          }
+        }
+      ],
+      "basic_method_adjudication": {
+        "focus": "DINO 第一次正文教學時的基本方法意義，而非只核定 view 或 helper。",
+        "what_and_role": {
+          "answer": "DINO 在這條路線上是不用人工紅藍答案學影像特徵的方法。當下夠用的機制是：同圖兩份看法經既有 ViT 得 CLS，兩模型產生目標與回答，CLS 經投影頭變成訓練分布再比較。",
+          "evidence": [
+            {
+              "source": "p",
+              "quote": "DINO（2021）是學影像特徵的方法"
+            },
+            {
+              "source": "u4",
+              "quote": "DINO 用兩份模型產生目標和回答，並把 CLS 經一個投影頭轉成分佈再比較。"
+            }
+          ]
+        },
+        "why_here": {
+          "answer": "紅藍人工答案收起來後，仍需要圖片提供的學習關係；同原圖的 views 共享一些內容，一致性訓練希望特徵保留它們而減少对本次翻轉與亮度的依賴。",
+          "evidence": [
+            {
+              "source": "u1",
+              "quote": "現在把訓練時的顏色答案收起來，只留下圖片。"
+            },
+            {
+              "source": "u4",
+              "quote": "讓特徵保留兩份 view 共享的內容，減少對這次左右翻轉或亮度變化的依賴。"
+            }
+          ]
+        },
+        "how_far_taught": {
+          "answer": "u4 交代目標／回答與投影分布比較；u6 選讀再交代 teacher 讀大範圍 global、student 也讀 local，局部向較完整學習。以兩段合讀，可合理推得 teacher/student 對應較完整目標與學習回答的基本分工；這是由已讀語句推得，並非聲稱正文已給完整更新算法。u4 時已有本節所需角色，不需用 u6 倒填才能通過 u4。",
+          "evidence": [
+            {
+              "source": "u4",
+              "quote": "投影頭是讓特徵變成訓練用輸出的可學層"
+            },
+            {
+              "source": "u6",
+              "quote": "teacher 只讀 global，student 也讀 local，讓局部看法朝較完整的看法學習。"
+            }
+          ]
+        },
+        "what_results_support": {
+          "answer": "當下真正產出的只是兩份 view 與 crop；程式没有更新 ViT，因此只支持理解學習輸入與一致性關係的來源，不支持已學出 DINO 特徵或重現自然影像能力。",
+          "evidence": [
+            {
+              "source": "u5",
+              "quote": "輸出證明的是兩份輸入怎麼製造，以及資料操作能重做；不是模型已學到特徵。"
+            },
+            {
+              "source": "u6",
+              "quote": "不能把合成矩形的結果說成重現原版 DINO 的自然影像能力。"
+            }
+          ]
+        },
+        "verdict": "當下基本方法意義充分，重要縮寫英文全名缺漏為 optional；不因微分、EMA、center、溫度或 head 細節後教而判機制介紹不足。"
+      },
+      "boundary_note": "DINO 首次正文介紹是否還需要一句更直接的『這是如何無標籤學圖特徵』可討論，但 p 已給用途且 u4 給當下路徑，不能忽略這些證據而判整體完全未介紹。我核定概念銜接充分，名稱展開為 optional。"
+    },
+    {
+      "case_id": "M22957",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。",
+          "bin 機率的期望值解碼已給。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。"
+          },
+          {
+            "source": "u2",
+            "quote": "相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "從既有 scalar 距離銜接到 bin 監督，再以期望值回既有解碼，當下路徑完整。"
+      },
+      "allowed_inferences": [
+        "給定相等 p 的 l=1.5 格，x1=28−8×1.5=16 像素。",
+        "兩個刻度的加權 target 保留非整數真值監督；初始解碼不等於真值 10 像素。"
+      ],
+      "legitimate_unknowns": [
+        "輸出分布代表可信不確定性、完整訓練收益、超出 bin 範圍的處理未教，也未要求當下判定。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "表示、監督角色、刻度與距離還原公式已交代。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "target、loss 與解碼均可由已給規則完成。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "結果限制與四邊獨立使用已明說。"
+        }
+      ]
+    },
+    {
+      "case_id": "M46675",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。",
+          "IoU 0.50 成功門檻明說。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+          },
+          {
+            "source": "u2",
+            "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+          },
+          {
+            "source": "u2",
+            "quote": "AP50=(2/3)×(1/2)=1/3"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "官方 101 點插值留後，這次 all-points 包絡算法已固定，合理。"
+      },
+      "allowed_inferences": [
+        "IoU=0.49 未達 0.50，判 FP、不增加累積 TP 或召回。",
+        "面積是排序精確率包絡總結，非分數平均或最後一點精確率。"
+      ],
+      "legitimate_unknowns": [
+        "每個給定 TP/FP 的原始框與圖像未展示，但 u2 指定它們為面積輸入，當下無須自行重配。",
+        "官方 COCO 範圍、101 點插值與跨類平均可後教。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "評分用途、配對、門檻與算法已教。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "P/R 與面積的數字計算完整。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "0.49 是否達標可由 0.50 規則唯一判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M66540",
+      "severity": "none",
+      "target_gap": {
+        "location": null,
+        "already_taught": [
+          "p 已教 IoU 幾何。",
+          "u1 已教同圖同類、未用真值、最大 IoU 配對候選、TP/FP、排序及 all-points 面積角色。",
+          "u2 是以給定 TP/FP 為輸入的面積計算，P/R 分母與包絡算法均提供。",
+          "IoU 0.50 成功門檻明說。"
+        ],
+        "missing": [],
+        "needed_now": "當下必要說明已有依據，無須补入完整論文或實作細節。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "AP50 的 50 指預測與真值的 IoU 至少 0.50 才配對成功。"
+          },
+          {
+            "source": "u2",
+            "quote": "精確率 P=累積 TP/已納入預測數，召回率 R=累積 TP/3"
+          },
+          {
+            "source": "u2",
+            "quote": "AP50=(2/3)×(1/2)=1/3"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": "u2",
+        "rationale": "u1 的概覽後緊接 u2 給 P/R 與包絡數字，不在解釋前要求運算。"
+      },
+      "allowed_inferences": [
+        "IoU=0.49 未達 0.50，判 FP、不增加累積 TP 或召回。",
+        "面積是排序精確率包絡總結，非分數平均或最後一點精確率。"
+      ],
+      "legitimate_unknowns": [
+        "每個給定 TP/FP 的原始框與圖像未展示，但 u2 指定它們為面積輸入，當下無須自行重配。",
+        "官方 COCO 範圍、101 點插值與跨類平均可後教。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "none",
+          "reason": "評分用途、配對、門檻與算法已教。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "P/R 與面積的數字計算完整。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "0.49 是否達標可由 0.50 規則唯一判定。"
+        }
+      ]
+    },
+    {
+      "case_id": "M72209",
+      "severity": "optional",
+      "target_gap": {
+        "location": "u1：DFL 名稱",
+        "already_taught": [
+          "p 已教特徵格距離、stride、ltrb 解碼、softmax 與交叉熵。",
+          "u1 已教 bin0–3 代表 0–3 格，DFL 是訓練加權交叉熵而非物件分類。",
+          "u2 提供 1.25 真值兩側 target 與 L 的數字。",
+          "bin 機率的期望值解碼已給。"
+        ],
+        "missing": [
+          "DFL 英文全名。"
+        ],
+        "needed_now": "訓練監督與使用時還原距離的角色已清楚，只是縮寫展開補充。",
+        "evidence": [
+          {
+            "source": "u1",
+            "quote": "DFL（分佈聚焦損失）是訓練時的加權交叉熵"
+          },
+          {
+            "source": "u1",
+            "quote": "使用時另以 l=0p0+1p1+2p2+3p3 的期望值還原單一距離，才可接回既有四邊解碼。"
+          },
+          {
+            "source": "u2",
+            "quote": "相鄰 bin1、bin2 分到 2−1.25=0.75 與 1.25−1=0.25，target 為 [0,0.75,0.25,0]。"
+          }
+        ]
+      },
+      "timing": {
+        "first_mention_unit": "u1",
+        "first_required_unit": "u1/u2",
+        "later_resolution_unit": null,
+        "rationale": "從既有 scalar 距離銜接到 bin 監督，再以期望值回既有解碼，當下路徑完整。"
+      },
+      "allowed_inferences": [
+        "給定相等 p 的 l=1.5 格，x1=28−8×1.5=16 像素。",
+        "兩個刻度的加權 target 保留非整數真值監督；初始解碼不等於真值 10 像素。"
+      ],
+      "legitimate_unknowns": [
+        "輸出分布代表可信不確定性、完整訓練收益、超出 bin 範圍的處理未教，也未要求當下判定。"
+      ],
+      "unrelated_issues": [],
+      "unit_assessments": [
+        {
+          "unit": "u1",
+          "severity": "optional",
+          "reason": "僅缺 DFL 英文全名。"
+        },
+        {
+          "unit": "u2",
+          "severity": "none",
+          "reason": "target、loss 與解碼均可由已給規則完成。"
+        },
+        {
+          "unit": "u3",
+          "severity": "none",
+          "reason": "結果限制與四邊獨立使用已明說。"
+        }
+      ]
+    }
+  ]
+}

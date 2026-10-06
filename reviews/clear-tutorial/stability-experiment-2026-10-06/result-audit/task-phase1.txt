@@ -1,0 +1,7 @@
+你是全新上下文的獨立結果核對者，現在做判分前的來源／流程核對階段。實驗目录為 /workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06。
+允許讀 protocol.md、result-audit-plan.md、reader-instructions.md、auditor-instructions.md、structured-addendum.md、frozen-skill.md、grading-instructions.md、materials.json、private/gold.json、freeze.json、image-provenance.json、collect.py、gate.py、prepare.py、prepare-result-audit.py、check-aggregation.py 與 scoring-smoke.json。freeze 列出的其他檔案只能用程式取 SHA256，不打印或語義讀取內容。可用 view_image 看 materials 明列的 images。只寫 result-audit/pregrade.json 與自有 /workspace/work/stability-experiment-2026-10-06/result-auditor/ scratch。
+不讀 raw、state、packets、grading bundle/grades、results、private 作者期待／以前的預期／其他裁定者結果、repo 其它教材或過去討論，不搜尋網路。這階段尚未收到讀者分數，不應推測哪組應該勝出。
+按 case／unit 切片讀來源與核定 gold，不一次打印全部 JSON；完整材料可重讀自己的合法資料。核對17個 gold 的特定缺項／目前影響是否由文本成立，哪些只有全名缺項，何處可以合理立即後教。不是改 gold：疑義另記確切 case_id、範圍、來源、原gold和你的判斷，尤其不要把局部缺漏說成整個方法沒有介紹。
+讀程式確認：gate只保證欄位、可見引文及先記再讀，不保證語義；C source-before-comparison與四題主張索引覆蓋檢查範圍；B合併保留命中／誤報／分級／時間；三組分母與不同角色工作量；不能把同文重讀當獨立教材或把紀錄引用不足當教材缺教。可以跑 check-aggregation.py（scratch指定自己的工作目錄），勿跑尚需未完成紀錄的 normalize/score/integrity，也不執行教材／訓練／網站測試。
+保存 pregrade.json，含 access_declaration、freeze_check、source_gold_checks（每case一筆，支持與否/疑義/時點解釋）、code_checks、limitations、pending_tasks。完成後結束本輪待命並回報/root；之後/root會followup提供已完成的判分封包與統計，才作第二階段抽核與計數。
+Think English, communicate Traditional Chinese。讀完 source 才談判定，不要求同意原gold；不能覆寫來源或實驗紀錄。

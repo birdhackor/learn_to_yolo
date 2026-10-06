@@ -1,0 +1,1223 @@
+{
+  "freeze_mismatches": [],
+  "readers": [
+    {
+      "reader_id": "r1b1_a",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:15:32.547085+00:00",
+      "last_record": "2026-10-06T07:25:50.750937+00:00",
+      "declarations": [
+        "實際只讀 /workspace/work/stability-experiment-2026-10-06/r1b1_a/task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next r1b1_a 第一批輸出。未讀其中連結、其他教材、他人紀錄、private、packets、state、gate.py 原碼，未搜尋 repo 或網路。未讀圖片。",
+        "實際讀取仍限 task.txt、指定兩個指引及 gate 第一、第二批；另用 view_image 看本批 gate 列出的 images/views.png。沒有讀其它來源、引用連結、後文、其他答案，未搜尋 repo 或網路。只寫自己的 batch 草稿。",
+        "本次新增讀取僅 gate 第三批。累計允許來源為自身task.txt、reader-instructions.md、frozen-skill.md、gate前三批與第二批列出的views.png；未讀其它來源、後文、他人答案、原始鏈接、gate.py原碼或私有檔案，未搜尋repo或網路。只寫自身草稿。",
+        "本次只新增讀取 gate 第四批的 M19796/u4；其餘來源仍限自身task.txt、指定兩指引、先前gate批次與gate列出的views.png。未讀22.2或22.3連結、原始資料、他人紀錄、預期答案或任何未揭露來源，未搜尋repo或網路。",
+        "本次只新增讀取 gate 第五批 M19796/u5；沒有執行正文指令、讀helper原碼、notebook或未揭露來源。累計仍只讀自身task.txt、指定指引、gate已揭露批次及第二批列出的views.png，未搜尋repo或網路。",
+        "本次新增來源只有 gate 第六批 M19796/u6；該批教材自身的「參考答案」與DINO補充說明文字已讀，未另讀任何實驗預期答案或他人答案。累計只讀自身task.txt、reader-instructions.md、frozen-skill.md、gate六批與第二批gate列出的views.png；未讀原始論文/程式/notebook/後文連結，未讀他人紀錄、private、packets、state或gate.py原碼，未搜尋repo或網路，未执行模型/網站測試。只寫自身batch草稿，未改已記錄判斷。"
+      ]
+    },
+    {
+      "reader_id": "r1b1_b1",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:15:35.193418+00:00",
+      "last_record": "2026-10-06T07:26:42.490613+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 本批揭露的五個 case u1 及各自前文；未讀其他來源、圖片、網站、他人答案或 gate 原碼。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露的各案 p/u1/u2，並查看本批指定 images/views.png；未讀其他來源、他人答案、後文、網站或 gate 原碼。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露的各案 p/u1/u2/u3，以及先前本 gate 指定的 views.png；本批無圖片，未讀其他來源、後文、他人答案、網站或 gate 原碼。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露各案前文與 u1/u2/u3，以及本批 M19796 u4；圖片只看先前 gate 指定 views.png，未讀未揭露內容、他人答案、網站或 gate 原碼。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露各案前文與單位，以及本批 M19796 u5；只看先前指定 views.png，未讀其他來源、連結、程式實作、他人答案或 gate 原碼，未執行教材程式。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md，以及 gate 已揭露各案前文與全部目前單位；本批只讀 M19796 u6（含 gate 揭露的教材內參考答案），未讀實驗預期／評分答案、他人紀錄、後文或任何連結。圖片只看 gate 指定 views.png；未讀 gate 原碼、搜尋 repo、驗證網站或執行教材程式。"
+      ]
+    },
+    {
+      "reader_id": "r1b1_b2",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:15:46.688043+00:00",
+      "last_record": "2026-10-06T07:24:33.717094+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md，以及 gate 本批各 case 的 u1 與各自 prerequisite；未讀其他來源、連結、程式原碼或他人答案；未搜尋 repo／網路。",
+        "只讀指定 task／兩份指引、gate 先前與本批各 case 自己的段落／前文，另看本批 gate 指定 views.png；未讀其他來源、連結、程式原碼或他人答案，未搜尋 repo／網路。",
+        "只讀指定 task／兩份指引、gate 先前與本批各 case 自己的段落／前文，以及先前 gate 指定 views.png；未讀其他來源、連結、程式原碼或他人答案，未搜尋 repo／網路。上批未提交草稿只修正逐字引文「現在」，原草稿保留且理解判斷未改。",
+        "只讀指定 task／兩份指引、gate 目前及先前已揭露內容；此批只用M19796自身u1到u4與其prerequisite，先前看過gate指定views.png。未讀連結、其他來源、原碼、未揭露後文或他人答案，未搜尋repo／網路。",
+        "只讀指定 task／两份指引、gate先前與目前揭露內容；M19796只使用其自身已見前文，先前只看gate指定views.png。未執行教材程式、讀helper原碼、外部連結、他人答案或未揭露後文，未搜尋repo／網路。",
+        "只讀指定task.txt、reader-instructions.md、frozen-skill.md、gate各批已揭露文字及各case自身prerequisite，並只看gate列出的views.png；讀取／寫入自己的scratch草稿並用gate record提交。未讀其他教材、連結、他人紀錄、private/packets/state/gate.py原碼、作者或評分資訊，未搜尋repo／網路，未執行模型、教材程式或網站測試。第二批只修正尚未提交草稿逐字引文，原草稿保留，未改成功紀錄。"
+      ]
+    },
+    {
+      "reader_id": "r1b1_c",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:16:00.439921+00:00",
+      "last_record": "2026-10-06T07:27:55.486903+00:00",
+      "declarations": [
+        "實際只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate next r1b1_c 本批輸出的五個 case u1／各自前文；沒有讀引用連結、圖片、repo 搜尋、他人答案、private、packets、state 或 gate 原碼。自己的草稿由本程式寫入。",
+        "實際只讀指定 task.txt 與三份指引、gate 已揭露的本批 u2 與同 case 先前 u1／前文，另看本批 gate 指定 images/views.png。只寫自己的 round2 草稿，未讀其他來源、預期、他人紀錄、private、packets、state、gate 原碼或未揭露後文；沒有搜尋 repo 或網路。",
+        "只讀指定task及三份指引、gate目前u3及已揭露同case前文u1/u2；之前唯一看過的教材圖片是gate列出的views.png，本批無新圖。只寫自己round3草稿，未讀未揭露後文、原始連結、他人／預期答案、private、packets、state或gate原碼，未搜尋repo／網路。",
+        "本批只讀gate M19796 u4及同case先前已揭露u1-u3和p；之前只看gate指定views.png。另讀自己未提交round3.json以統一unknown名稱並另存round3-format-fixed.json，gate成功后才next；失敗稿與錯誤輸出保留。沒有讀後文、引用連結、其他教材、預期或他人答案、private、packets、state、gate原碼，沒有搜尋repo／網路。",
+        "只讀 gate M19796 u5 與同 case 先前已揭露內容、三份指定指引及task；此前唯一圖片為gate指定views.png。本批沒有執行教材命令、helper或網站，沒有讀連結、未揭露後文、其他教材、預期／他人答案、private、packets、state或gate原碼，沒有repo／網路搜尋。只寫自己的round5草稿。",
+        "只讀指定task、reader-instructions、frozen-skill、structured-addendum及gate逐次已揭露內容；本批只M19796 u6及同case先前前文。唯一教材圖片是u2 gate列出的views.png。自己保存逐批草稿及一次格式錯誤，沒有改已record判斷。沒有讀下一節／原始來源連結、未揭露全文、其他教材、預期或他人紀錄、private、packets、state、gate原碼；未搜尋repo／網路、未執行教材、未測網站。"
+      ]
+    },
+    {
+      "reader_id": "r1b1_ca",
+      "rounds": 7,
+      "first_reveal": "2026-10-06T07:16:04.146896+00:00",
+      "last_record": "2026-10-06T07:37:04.390006+00:00",
+      "declarations": [
+        "截至本批，實際只讀 /workspace/work/stability-experiment-2026-10-06/r1b1_ca/task.txt、實驗目錄 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r1b1_ca 第1批的五個u1與各case實際前文節錄。沒有讀指引連結、其他教材、gate原碼、private/packets/state/raw、首次讀者答案或外部資料，沒有搜尋repo。此JSON為獨立來源判斷，不是假裝首次閱讀答案。",
+        "新增只讀 gate next r1b1_ca 第2批五個u2，以及用view_image查看本批列出的 /workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/images/views.png；先前範圍同已記錄第1批。未讀其他資料、首次讀者答案或後文，未搜尋repo，網站未測。",
+        "新增只讀gate next r1b1_ca 第3批五個u3；先前範圍同已保存第1、2批及其允許圖片。仍未取得首次讀者答案，未讀其他資料、私有檔或後文、未搜尋repo、未測網站。",
+        "新增只讀gate next r1b1_ca 第4批M19796/u4；前文與圖片範圍同第1至3批。未打開22.2、22.3或任何連結，未讀首次讀者答案、private/packets/state/raw或gate原碼，未搜尋repo、未測網站。",
+        "新增只讀gate next r1b1_ca 第5批M19796/u5的文字及嵌入程式碼；没有執行教材指令、打開notebook、helper實作、連結或首次讀者紀錄。歷次允許讀取如前批，未搜尋repo、未測網站。",
+        "新增只讀gate next r1b1_ca 第6批M19796/u6（含可見note原文與連結文字）；未打開DINO論文、main_dino.py、22.2以後或其他連結。已讀範圍為task、auditor與三指引、gate六批來源及第2批views.png，尚未取首次讀者答案。未搜尋repo、未測網站、未讀私有檔或gate原碼。",
+        "先完成並gate保存六批獨立來源inventory與判斷，原樣保留source-round-1.json至source-round-6.json，之後才取得gate compare。實際讀取只含自己的task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md、gate六批五case來源及各自p、u2列出views.png（view_image）、以及已凍結首次讀者r1b1_c答案。比較首次gate輸出約59,931 tokens經工具截斷；嘗試next重取redirect到自己的gate-comparison.json被拒「record the current batch before requesting more」，產生空檔，未新增來源。root精確恢復gate已揭露同一last_batch至自有scratch revealed-comparison.json後，依明確授權只讀此檔並逐case/unit切片完整讀四題claims、unknowns/dispositions及concept_inventory；沒有直接讀raw/private/packets/state或gate原碼。自身scratch的恢復檔與build-final-audit.py僅包含本次允許資料與核證，非其他讀者答案或預期。未搜尋repo、未讀任何指引/正文連結、22.2以後後文、實作、外部資料；未執行教材/helper、未訓練、未測網站，未改教材/SKILL或既有答案。這是獨立來源核證，非首次閱讀或技術效能驗證。record格式拒絕0次，另有一次next順序拒絕及其空檔JSON讀取錯誤，均未用來改判斷。"
+      ]
+    },
+    {
+      "reader_id": "r1b2_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:16:11.997238+00:00",
+      "last_record": "2026-10-06T07:24:28.384982+00:00",
+      "declarations": [
+        "只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r1b2_a 目前輸出的各 case 前文與 u1；未讀其他來源、圖片、後文、他人紀錄或 gate 原碼。",
+        "只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md、gate 目前及先前輸出的各 case 前文和 u1/u2；並寫入自己的 batch1.json。未讀其他來源、圖片、後文、他人紀錄或 gate 原碼。各 case 獨立判讀。",
+        "只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md、gate 目前及先前批次各 case 的前文與 u1/u2/u3；只寫入自己指定 scratch 目錄的 batch1.json、batch2.json 與本草稿。未讀其他來源、任何圖片、後文、他人紀錄、預期答案或 gate 原碼；未搜尋 repo 或網路。各 case 独立判讀。"
+      ]
+    },
+    {
+      "reader_id": "r1b2_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:25:27.184021+00:00",
+      "last_record": "2026-10-06T07:32:39.238962+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 本批揭露內容及前文；未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼、作者／評分資訊或網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 目前／先前批次及其前文；未讀其他來源，未讀圖片，未搜尋 repo 或網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 目前／先前批次及其前文；未讀其他來源、圖片、他人紀錄、預期答案、後文、gate.py 原碼、private、packets、state；未搜尋 repo 或網路。"
+      ]
+    },
+    {
+      "reader_id": "r1b2_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:25:34.265193+00:00",
+      "last_record": "2026-10-06T07:33:20.235312+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 本批輸出的各 case 前文及 u1；未讀其他教材、紀錄、未揭露來源、gate 原碼或網路。共用檔案系統僅指示隔離。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露前文及 u1/u2，並寫自己的草稿；未讀其他教材、他人答案、未揭露來源、gate 原碼或網路。共用檔案系統僅指示隔離。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露的各 case 前文及 u1/u2/u3，並寫自己的草稿；未讀其他教材、他人紀錄、未揭露來源、gate 原碼或網路。共用檔案系統僅指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r1b2_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:25:37.333791+00:00",
+      "last_record": "2026-10-06T07:34:08.193088+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r1b2_c 揭露的 round 1 四個 case 前文與 u1；未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼、作者評分資訊或外部連結；未搜尋 repo 或網路。",
+        "只讀先前指定指引、自己的草稿與 gate 已揭露 round 1／round 2 的前文、u1、u2；未讀其他教材、他人紀錄、未揭露來源或 gate 實作，未搜尋 repo／網路。",
+        "只讀指定 task／三份指引、自己的 batch1／batch2 草稿與寫入腳本，以及 gate 已揭露 round1～3 的各 case 前文與 u1～u3；未讀其他教材、他人紀錄、未來全文、作者／評分資料、private／packets／state 或 gate.py 原碼；未搜尋 repo／網路，未跨 case 借用知識。"
+      ]
+    },
+    {
+      "reader_id": "r1b2_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T07:26:51.157592+00:00",
+      "last_record": "2026-10-06T07:41:52.958119+00:00",
+      "declarations": [
+        "實際讀取：本 reader 的 task.txt、指定 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r1b2_ca 第1批輸出的四個 case u1 與各自 prerequisite。未讀其他資料、未搜尋 repo、未看首次讀者答案、未看圖或網站。",
+        "實際讀取僅既已申報的任務與四份指引，以及 gate 第1、2批的四案來源與各自前文；本批只新增u2。尚未讀首次讀者答案、其他檔案、圖片或網站，未搜尋。",
+        "實際讀取僅指定task與四份指引、gate第1至3批已揭露來源。本次gate stdout另存並讀取自己的gate-round-3.json，沒有讀其他檔案、首次讀者答案、圖片或網站，未搜尋。",
+        "實際讀取：自己的task.txt、指定auditor-instructions.md／reader-instructions.md／frozen-skill.md／structured-addendum.md；gate第1至3批來源及各案前文；在三批independent_inventory與judgment逐批record成功後，next曾返回pending_primary並結束待命。followup後僅執行一次gate next取得比較批，stdout完整保存於自己的gate-comparison-ready.json。初次摘要錯選primary_records導致工具顯示截斷，但完整stdout在scratch，未再next，隨後按case讀完所有u1–u3四題claim、unknowns/dispositions與inventory。另讀自己的audit-decisions.json、visible-source-texts.json及生成後的final-audit.json；visible-source-texts只轉存上下文中gate已見文字以逐字核對。先前三批來源判斷保留原樣，未重新打開其檔案。未讀raw/state/private/packets/gate.py源碼、預期答案、其他repo教材或外部資料，未搜尋，未讀圖（每段images=[]），網站未驗證，未改教材／SKILL／實驗原始答案，未訓練。"
+      ]
+    },
+    {
+      "reader_id": "r1b3_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:27:15.633560+00:00",
+      "last_record": "2026-10-06T07:34:20.081739+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate next r1b3_a 的第 1 批輸出；未讀其他教材、紀錄、private、packets、state、gate 原碼、原始連結，未搜尋 repo 或網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate next r1b3_a 的第 1、2 批，以及本人 batch1 草稿／record 輸出；未讀其他教材、紀錄、private、packets、state、gate 原碼或原始連結，未搜尋 repo 或網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate next r1b3_a 第 1 至 3 批與本人草稿和 record 回覆；未讀其他教材、紀錄、private、packets、state、gate 原碼或原始連結，未搜尋 repo 或網路。未看圖片（gate 均無圖片）。"
+      ]
+    },
+    {
+      "reader_id": "r1b3_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:32:59.037063+00:00",
+      "last_record": "2026-10-06T07:40:05.755913+00:00",
+      "declarations": [
+        "已讀指定 task.txt、reader-instructions.md、frozen-skill.md，及 gate next r1b3_b1 本批輸出的四個 case u1 與各自 prerequisite；未讀其他教材、連結、他人紀錄、預期答案、private、packets、state 或 gate 原碼，未搜尋 repo 或網路。",
+        "本批只讀 gate next r1b3_b1 所揭露的四個 case u2；使用上下文中已讀的指定 task、指引、frozen-skill 與各 case p/u1。未讀其他來源、他人紀錄、預期答案、未來段落、private、packets、state 或 gate 原碼，未搜尋 repo 或網路。",
+        "本批只讀 gate next r1b3_b1 揭露的四個 case u3；使用上下文中已讀的指定 task、指引、frozen-skill 與各 case p/u1/u2。未讀任何其他教材或連結、他人紀錄、預期答案、未揭露後文、private、packets、state 或 gate 原碼，未搜尋 repo 或網路；未看圖片（各批 images 均為空），未測網站、模型或程式實驗。"
+      ]
+    },
+    {
+      "reader_id": "r1b3_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:33:16.886786+00:00",
+      "last_record": "2026-10-06T07:40:27.462741+00:00",
+      "declarations": [
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next 揭露的第一批內容；未讀其他教材、紀錄、答案、私有來源或 gate 原碼，未搜尋 repo／網路。",
+        "累計只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md、gate 揭露的第一與第二批；未讀其他教材、紀錄、答案、私有來源或 gate 原碼，未搜尋 repo／網路。",
+        "累計只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate 揭露的第一至第三批；未讀其他教材、紀錄、答案、私有來源或 gate 原碼，未搜尋 repo／網路。無圖片讀取。"
+      ]
+    },
+    {
+      "reader_id": "r1b3_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:34:15.379201+00:00",
+      "last_record": "2026-10-06T07:40:45.578518+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r1b3_c 揭露的第 1 批各 case u1 與其前文；未讀任何其他教材、紀錄、預期答案、private、packets、state、gate.py 原碼或未揭露後文，未搜尋 repo 或網路。",
+        "只讀指定 task.txt 與三份指引，以及 gate 已揭露第 1、2 批各 case u1、u2 和各案前文；使用自己的 scratch 草稿寫檔。未讀其他教材、他人或預期答案、private、packets、state、gate.py 原碼及未揭露後文，未搜尋 repo 或網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate 依序揭露的第 1–3 批各 case u1–u3 與各自前文；另讀本 reader 自己的 scratch batch2.json 以沿用引文及格式，沒有改寫任何已提交紀錄。未讀其他教材、他人或預期答案、private、packets、state、gate.py 原碼或任何未揭露來源，未搜尋 repo 或網路，未執行模型／網站實驗。"
+      ]
+    },
+    {
+      "reader_id": "r1b3_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T07:35:09.565119+00:00",
+      "last_record": "2026-10-06T07:47:36.016941+00:00",
+      "declarations": [
+        "只讀指定 task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r1b3_ca 本次輸出（自有 scratch gate-batch-01.json）。未讀其他教材、圖片、private、packets、state、raw 或 gate.py 原碼，未搜尋 repo；未測網站。",
+        "實際新增讀取 gate next r1b3_ca 第二批輸出（自有 scratch gate-batch-02.json）；重讀自有 source-01.json以保留先前獨立 inventory。此前只讀 task.txt與四份指定指引及第一批 gate。未讀其他資料、圖、private、packets、state、raw 或 gate.py 原碼；未搜尋repo，未測網站。",
+        "實際新增讀取 gate next r1b3_ca 第三批（自有 scratch gate-batch-03.json），以及自有 source-02.json；僅曾讀task及四指定指引、gate已揭露u1-u3和自有紀錄。未讀首次讀者答案、其他教材、圖、private、packets、state、raw 或 gate.py 原碼；未搜尋repo，未測網站。",
+        "只讀本reader指定task.txt及auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；gate next r1b3_ca逐次揭露的独立來源u1-u3與前文p已先保存source-01/02/03并成功record後，才讀比較gate-batch-05.json。比較stdout先完整redirect到自有scratch，再按case/unit讀同一已揭露JSON。曾一次合併分片輸出超過exec返回上限，M16388 u3顯示部分截斷；已告知/root并改從同一已保存JSON单讀u3，未重試next也未讀raw。另讀自有來源JSON與自有build-audit.py產物作完整性核對。未讀其他教材、預期答案、圖（各batch images=[]）、private、packets、state、raw或gate.py原碼；未搜尋repo或外部資料，未測網站，不修改教材／SKILL／原讀者或來源紀錄。"
+      ]
+    },
+    {
+      "reader_id": "r1b4_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:37:42.786638+00:00",
+      "last_record": "2026-10-06T07:45:30.105307+00:00",
+      "declarations": [
+        "已讀本 reader 的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r1b4_a 揭露的第 1 批與其中前文。未讀其他教材、其他紀錄、private、packets、state、gate.py 原碼、未揭露內容或網路；未開圖片。共用檔案系統僅有指示隔離。",
+        "已讀本人 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate 揭露的第 1、2 批與第 1 批所附前文。未讀其他教材、其他紀錄、private、packets、state、gate.py 原碼、未揭露內容或網路；未開圖片。只寫自己的 batch1.json、batch2.json 並由 gate 提交，共用檔案系統僅有指示隔離。",
+        "已讀本人 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate next 揭露的第 1、2、3 批和第 1 批提供的各 case 前文。未讀其他教材、其他紀錄、private、packets、state、gate.py 原碼、未揭露內容、原始參考連結或網路；沒有圖片可開。只寫本人三批 JSON 並由 gate record 提交，未回寫已記錄判斷。共用檔案系統僅有指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r1b4_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:39:17.122977+00:00",
+      "last_record": "2026-10-06T07:47:51.483657+00:00",
+      "declarations": [
+        "只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate 第一批提供的四個 case 的 u1 與各自前文；未讀其他來源、連結、紀錄、私有檔案或 gate 原碼，未搜尋 repo 或網路。各 case 分開判斷。",
+        "只讀自己的 task.txt、指定兩份指引與 gate 第一、二批揭露內容；未讀其他来源、前文原始檔、連結、其他紀錄、私有檔案或 gate 原碼，未搜尋 repo 或網路。各 case 只沿用自身前文與 u1。",
+        "只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate 第一至第三批各 case 的已揭露內容；未讀任何原始參考連結、其他教材或紀錄、private、packets、state、gate 原碼，未搜尋 repo 或網路。各 case 獨立。未看圖片（gate 三批均未列圖片），未測網站或執行程式／模型實驗。"
+      ]
+    },
+    {
+      "reader_id": "r1b4_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:40:44.745295+00:00",
+      "last_record": "2026-10-06T07:48:39.106465+00:00",
+      "declarations": [
+        "本批實際只讀 /workspace/work/stability-experiment-2026-10-06/r1b4_b2/task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate next r1b4_b2 揭露的第一批四個 case 的 p 與 u1。未讀技能中的連結、其他教材、他人紀錄、預期答案、後文、private、packets、state 或 gate.py 原碼；未搜尋 repo 或網路。",
+        "本批新增讀取只有 gate next r1b4_b2 揭露的第二批四個 case 的 u2；沿用各自已揭露 p、u1 與指定兩份指引，沒有跨 case 借用知識。另只寫入自己的 batch01.json 並交 gate record；未讀其他教材、紀錄、預期答案、後文、private、packets、state 或 gate.py 原碼，未搜尋。",
+        "本批新增讀取只有 gate next r1b4_b2 揭露的第三批四個 case 的 u3；各 case 僅沿用自身 p、u1、u2 與指定指引。先前只讀 task.txt、reader-instructions.md、frozen-skill.md、gate 已揭露輸出，並寫自己的兩份 JSON 交 gate record；未讀他人／預期答案、後文、其他教材、任何參考連結、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路，沒有看圖片或測網站。"
+      ]
+    },
+    {
+      "reader_id": "r1b4_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:41:34.093749+00:00",
+      "last_record": "2026-10-06T07:50:57.323736+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate next r1b4_c 第1批；未读其他來源、未來內容或他人答案。共享檔案系統並非技術隔離。",
+        "只讀指定 task 與三份指引、gate 目前／先前第1和第2批內容，以及自己的 batch1 草稿作結構修正；未讀其它教材、其他紀錄、private、packets、state、gate原碼、repo搜尋或網路。共享檔案系統並非隔離。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md、gate next r1b4_c 第1至第3批，以及自己的草稿供格式／逐字引用修正。未看其他教材、其他紀錄、private、packets、state、gate原碼或原始參考連結；未搜repo或網路；未執行模型、程式實驗或網站測試。共享檔案系統只有指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r1b4_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T07:42:58.534112+00:00",
+      "last_record": "2026-10-06T07:56:15.510746+00:00",
+      "declarations": [
+        "讀取自有 task.txt、指定 auditor-instructions.md/reader-instructions.md/frozen-skill.md/structured-addendum.md，及 gate next r1b4_ca 所揭露第1批並存為自己的 batch1.json；未讀 private/packets/state/raw 或 gate.py 原碼，未搜尋 repo/外部，未看圖片/網站。",
+        "只新增讀取 gate 第2批保存於自身 batch2.json；使用已揭露第1批及已讀四份指引，未讀其它來源、raw/state/private/packets/gate.py 原碼，未看圖或測網站。",
+        "只新增讀取gate第3批保存於自身batch3.json，結合前兩批已揭露來源與指定四份指引；未讀首次讀者答案、raw/state/private/packets/gate.py原碼，未搜repo/外部，未看圖或測網站。",
+        "實際只讀自有task.txt、指定auditor-instructions.md/reader-instructions.md/frozen-skill.md/structured-addendum.md、gate來源第1至3批（保存batch1/2/3.json）、自己的source1/2/3.json，以及來源記錄成功後經gate揭露的comparison_ready.json。pending_primary先保存comparison.json並待root followup；沒有忙查或讀raw。比較資料全量先redirect保存，按case分片讀；AP case工具輸出截了u2 inventory小段，已由同一保存JSON按u2 inventory/unknown_dispositions補讀，沒有重取next。没有讀private/packets/state/raw/gate.py原碼，没有搜repo/外部，没有圖片（gate各段images=[]），網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r2b1_a",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:46:27.811306+00:00",
+      "last_record": "2026-10-06T07:57:24.444053+00:00",
+      "declarations": [
+        "實際只讀自己的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate next r2b1_a 揭露的第 1 批與其前文；未讀其他教材、他人紀錄、private、packets、state、gate 原碼或外部連結，未搜尋 repo 或網路。",
+        "只讀自己的任務與指定指引、gate 已揭露第 1–2 批；本批另以 view_image 看 gate 列出的 images/views.png。未讀外部連結、其他教材或紀錄、未揭露來源、gate 原碼，未搜尋 repo 或網路。",
+        "只讀自己的任務、兩份指定指引、gate 已揭露第 1–3 批及第 2 批列出的 views.png；未讀其他教材或紀錄、未來內容、私有檔案或 gate 原碼，未搜尋 repo 或網路。",
+        "只讀自己的任務、指定 reader-instructions.md 與 frozen-skill.md、gate 已揭露第 1–4 批，以及第 2 批列出的 views.png；未讀他人紀錄、未揭露內容、private、packets、state、gate 原碼或外部連結，未搜尋 repo 或網路。",
+        "只讀自己的任務與指定指引、gate 已揭露第 1–5 批和 gate 第 2 批列出的 views.png。未執行教材程式、未讀 helper 原碼或連結、未讀其他紀錄與未揭露來源，未搜尋 repo 或網路。",
+        "實際只讀自己的 task.txt、指定 reader-instructions.md、frozen-skill.md、gate 逐次揭露的第 1–6 批及其前文，以及 gate 第 2 批列出的 images/views.png。未讀外部連結、其他教材、他人答案、private、packets、state、gate 原碼或後文，未搜尋 repo 或網路，未執行模型、教材程式或網站測試。"
+      ]
+    },
+    {
+      "reader_id": "r2b1_b1",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:47:03.869775+00:00",
+      "last_record": "2026-10-06T07:56:06.720723+00:00",
+      "declarations": [
+        "讀取自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r2b1_b1 第1批所揭露的各case前文p與u1。未讀其他教材、他人答案、未來內容、gate原碼、packets/state/private/raw，未搜尋repo或網路，未開連結。共享檔案系統只有指示隔離。",
+        "本批只讀 gate next r2b1_b1 第2批五case的u2，以及gate列出的本段圖片 images/views.png（以view_image檢視）。仍僅使用各case自身已揭露p、u1、u2；先前讀取自己的task.txt與兩份指定指引。未讀任何其他来源，未搜尋repo或網路，未開連結。共享檔案系統只有指示隔離。 引文修正時讀取自己的尚未成功提交草稿batch-02.json，只拆分非連續引文，不改判斷；原草稿保留。",
+        "本批只讀gate next r2b1_b1第3批u3，使用各case自身已揭露p/u1/u2/u3。先前讀取範圍為自己的task.txt、指定兩份指引、gate前兩批及gate指定views.png；僅為修正字面引文讀過自己的batch-02草稿。未讀其他来源、未來內容、他人答案或gate原碼，未搜尋repo/網路，未開連結。共享檔案系統只有指示隔離。",
+        "本批只讀gate next r2b1_b1第4批M19796/u4，使用此case已揭露p與u1–u4及u2指定圖。先前只讀自己的task.txt、指定兩份指引、gate前三批、自己的引文修正草稿和指定views.png；未讀別的來源、未來內容或他人答案，未搜尋repo/網路，未開連結。共享檔案系統只有指示隔離。",
+        "本批只讀gate next r2b1_b1第5批M19796/u5，使用此case先前已揭露內容。沒有執行教材程式、模型或notebook，沒有讀helper實作或任何連結。先前讀取範圍仍是自己的任務/指定指引、gate已揭露批次、指定views.png及自己的引文修正草稿；未讀未來內容或他人答案，未搜尋repo/網路。共享檔案系統只有指示隔離。",
+        "本批只讀gate next r2b1_b1第6批M19796/u6（包括該揭露教材本身的參考答案及原始DINO補充框），使用本case自身已揭露p/u1–u6及u2指定views.png。未開任何教材連結，未讀外部預期/他人答案、未來正文、helper/gate原碼、packets/state/private/raw，未搜尋repo或網路，未執行模型/教材程式。實際其他讀取只有自己的task.txt、指定reader-instructions.md/frozen-skill.md、先前gate批次與自己的batch-02引文修正草稿。共享檔案系統只有指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r2b1_b2",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:48:32.892075+00:00",
+      "last_record": "2026-10-06T07:58:52.014856+00:00",
+      "declarations": [
+        "只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r2b1_b2 本批輸出的各 case 前文與 u1；未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼或任何連結，未搜尋 repo／網路。",
+        "本批只讀 gate next r2b1_b2 揭露的 u2，並 view_image 指定 images/views.png；使用先前已揭露同 case 的 p、u1 與指定指引。未讀其他來源、其他紀錄或未揭露內容，未搜尋 repo／網路，未開連結。",
+        "本批只讀 gate next r2b1_b2 揭露的 u3；使用同 case 已揭露 p、u1、u2 與指定兩份指引，圖片僅先前 gate 指定 views.png。未讀其他來源、他人答案、未揭露後文或連結，未搜尋 repo／網路。",
+        "本批只讀 gate next r2b1_b2 的 M19796 u4；使用該 case 已揭露 p、u1 至 u3 與指定指引，先前圖片只看 gate 指定 views.png。未讀後續連結、其他答案或任何未揭露來源，未搜尋 repo／網路。",
+        "本批只讀 gate next r2b1_b2 的 M19796 u5，沿用此 case 先前揭露内容。未執行教材程式或 notebook，未讀 helper／repo／任何連結，未讀他人或未揭露來源。",
+        "本批只讀 gate next r2b1_b2 揭露的 M19796 u6，使用同 case 已揭露 p、u1 至 u5、指定指引與 u2 gate 列出的 views.png。未開論文、main_dino.py、Colab 或任何原始參考連結；未執行教材或模型；未搜尋 repo／網路，未讀其他紀錄、預期答案或未揭露來源。"
+      ]
+    },
+    {
+      "reader_id": "r2b1_c",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T07:48:43.578993+00:00",
+      "last_record": "2026-10-06T08:00:45.277491+00:00",
+      "declarations": [
+        "實際只讀自己的 task.txt、指定 reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r2b1_c 的本批輸出；未讀連結、repo 其他檔案、gate 原碼、private、packets、state、預期或他人答案，未搜尋網路或 repo。",
+        "本批只讀 gate next r2b1_c 第 2 批文字與指定 views.png（view_image）；前文僅用 gate 先前已揭露的本 case 內容，及指定三份指引與自己的 task.txt。未讀其他教材、答案、未來內容、gate 原碼或 repo 搜尋；各 case 未互借知識。",
+        "本批只讀 gate next r2b1_c 第 3 批；沿用同 case 已揭露前文與指定指引，沒有讀任何額外來源、他人答案、後文、原碼或搜尋 repo/網路。未看新圖片（gate 本批無圖）。",
+        "只讀 gate next r2b1_c 第 4 批 M19796 u4；沿用 gate 已揭露的同 case 前文和既讀指引，没有讀連結、22.2 以後、其他來源、答案、gate 原碼或搜索。沒有新圖片讀取。",
+        "只讀 gate next r2b1_c 第 5 批 M19796 u5；未執行課文程式、未讀 helper 實作、連結或未揭露教材。僅沿用同 case 已讀段落和指定指引。",
+        "只讀 gate next r2b1_c 第 6 批 M19796 u6；引用只來自本 case 已揭露段落和實際可見前文。未開原始 DINO 論文、main_dino.py、notebook、下一節連結，未讀其他 reader、答案、private、packets、state、gate 原碼，未搜尋 repo 或網路，未執行課文程式。此前圖片讀取僅 gate 指定 views.png。"
+      ]
+    },
+    {
+      "reader_id": "r2b1_ca",
+      "rounds": 7,
+      "first_reveal": "2026-10-06T07:49:55.394202+00:00",
+      "last_record": "2026-10-06T08:05:49.949040+00:00",
+      "declarations": [
+        "已讀指定task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md及gate next r2b1_ca首次stdout的全部來源與前文；未讀其他教材、raw/state/private/packets/gate.py源碼或外部資料；只寫及讀自己的scratch。",
+        "本輪只讀gate next r2b1_ca第二批來源stdout與自己已保存資料、指引；另用view_image讀本段列出的views.png。未讀raw/state/private/packets/gate.py實作、未搜尋repo或外部資料；網站未驗證。",
+        "只讀本輪gate stdout來源與自己的已保存來源筆記；本段無圖片新增。累計只讀task、四份指引、gate來源和指定views.png；未讀禁讀範圍、repo其他資料或外部資料，網站未驗證。",
+        "只讀gate本輪來源與自己的來源記錄、四份指引；未讀22.2/22.3連結、其它教材、禁讀資料或外部資料；網站未驗證。",
+        "只讀gate本輪u5與自己已保存來源筆記；未執行教學程式/notebook，未讀helper實作或其它連結、禁讀資料；網站未驗證。",
+        "只讀gate本輪u6與自己的來源筆記；未開啟論文、官方程式、下一節或任何外部連結；累計只讀task、四份指引、gate本輪已揭露各段與前文、gate指定views.png和自己的scratch。未讀raw/state/private/packets/gate.py源碼，未搜尋repo；網站未驗證。",
+        "實際讀取task.txt、四份指定指引、六批gate逐段來源及前文、gate指定views.png，並經gate取得凍結讀者紀錄。每批來源判斷已先保存並record，從未覆寫。比較stdout完整存自己的comparison2.stdout.json；第一次摘要誤印primary_records造成顯示截斷，已通知root，未重跑next，後續按同一已揭露JSON的case/unit/answer与inventory切片完整讀取。未讀raw/state/private/packets/gate.py源碼、未搜尋repo或外部資料；僅讀寫自己scratch，未執行教材程式/notebook、未讀外部連結，網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r2b2_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:55:36.820958+00:00",
+      "last_record": "2026-10-06T08:04:06.150322+00:00",
+      "declarations": [
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r2b2_a 輸出的第一批當前段落與各自前文；未讀任何其他教材、他人紀錄、私有資料、gate 原碼、未揭露後文、參考連結或網路。自己的 JSON 暫存檔僅供提交。",
+        "只讀本 reader 的 task.txt、指定兩份指引與 gate next r2b2_a 第一、第二批輸出及各 case 的已給前文；僅寫自己的批次 JSON。未讀其他來源、他人紀錄、私有資料、gate 原碼、未揭露後文或網路。",
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md 與 frozen-skill.md、gate next r2b2_a 第一至第三批的已揭露內容和各 case 前文；只寫自己的暫存 JSON。沒有讀其他教材、他人答案、作者或評分資訊、private、packets、state、gate 原碼、參考連結、未揭露來源或網路，未看圖片或網站。已成功提交答案沒有回寫。"
+      ]
+    },
+    {
+      "reader_id": "r2b2_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:56:47.915752+00:00",
+      "last_record": "2026-10-06T08:03:39.857022+00:00",
+      "declarations": [
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate 本批 next 輸出的四個 case 和各自前文；未讀其他來源、其他紀錄、未揭露後文或 gate 原碼。未看圖片；網站未驗證。",
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate 第一、二批輸出的各 case 內容及各自前文；未讀其他來源、他人紀錄、未揭露後文或 gate 原碼。沒有看圖片；網站未驗證。",
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate 第一至第三批輸出的本次四個 case 和各自前文。未讀任何其他教材、他人答案、未揭露內容、private、packets、state 或 gate 原碼；未搜尋 repo 或網路。未看圖片，未驗證網站。"
+      ]
+    },
+    {
+      "reader_id": "r2b2_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:56:57.783923+00:00",
+      "last_record": "2026-10-06T08:05:49.285782+00:00",
+      "declarations": [
+        "已讀本 reader 的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r2b2_b2 第 1 批輸出的四個 case 前文 p 和 u1。未讀其他教材、參考連結、其他紀錄、預期答案、private、packets、state、gate.py 原碼或後文；未搜尋 repo 或網路。",
+        "截至第 2 批，只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate 第 1、2 批各 case 的 p、u1、u2。未讀其他來源、參考連結、他人答案、預期答案、private、packets、state、gate.py 原碼或未揭露後文；未搜尋 repo 或網路。",
+        "截至第 3 批，只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate 第 1 至 3 批各 case 的 p、u1、u2、u3。未讀其他教材、參考連結、他人紀錄、預期答案、private、packets、state、gate.py 原碼或未揭露來源；未搜尋 repo 或網路。沒有圖片被 gate 列出，未作網站驗證、模型執行或程式實驗。"
+      ]
+    },
+    {
+      "reader_id": "r2b2_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T07:58:09.735840+00:00",
+      "last_record": "2026-10-06T08:09:49.807181+00:00",
+      "declarations": [
+        "只讀 /workspace/work/stability-experiment-2026-10-06/r2b2_c/task.txt、指定 reader-instructions.md、frozen-skill.md、structured-addendum.md，及 gate next r2b2_c 揭露的第一批四個 case 與各自前文。未讀其他教材、紀錄、private、packets、state、gate.py 原碼或參考連結，未搜尋 repo 或網路。",
+        "只讀指定 task.txt、三份指引及 gate 第一、二批目前／先前揭露內容；另讀寫自己的 batch1 草稿以保留格式拒絕版本。未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼或參考連結，未搜尋 repo 或網路。",
+        "只讀指定 task.txt、三份指引及 gate 第一至三批揭露的各 case 與各自前文；另讀寫自己的草稿以保存／提交紀錄。未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼或參考連結，未搜尋 repo 或網路，未看任何圖片（gate 三批均無圖片）。"
+      ]
+    },
+    {
+      "reader_id": "r2b2_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T07:59:36.964996+00:00",
+      "last_record": "2026-10-06T08:15:08.503962+00:00",
+      "declarations": [
+        "已讀本 reader 的 task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md，及 gate next r2b2_ca 揭露第1批 u1 與各 case 前文。gate stdout 先保存 batch01.json 再讀。同 case 來源分開判斷；未讀 private/packets/state/raw、gate.py 源碼、其他教材或外部資料；無圖、網站未驗證。",
+        "先前允許讀取加 gate 第2批四 case 的 u2；stdout 保存 batch02.json 後閱讀；只重讀自己 source01.json 的已保存清單。未讀讀者答案或 private/packets/state/raw、gate.py 源碼、其他教材、外部資料；網站未驗證。",
+        "先前允許四份指引與 gate u1/u2，再讀 gate 第3批 u3；stdout 保存 batch03.json 後閱讀；重讀自己 source02.json 保存清單。未讀首次讀者答案、private/packets/state/raw、gate.py 源碼、其他教材或外部資料。無圖，網站未驗證。",
+        "實際只讀 task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；執行指定 gate next/record 命令。先逐批保存 gate source stdout batch01–03.json，再讀並保存 source01–03.json，成功 record 後才取下一批；source01–03保持原樣。一次 next 得 pending_primary 存 batch04.json 後停止，收到 root followup 才恢復 next。比較階段 stdout 完整保存 comparison.json；結構檢查誤輸出 primary_records 遭工具顯示截斷，已通知/root，未重新 next，後續只分片讀同一允許 comparison.json 的 case/units/answers/inventory/unknowns。只重讀自己的 scratch 來源/判斷與比較 JSON。未讀 private/packets/state/raw、gate.py 原碼、其它教材、外部資料，未搜尋repo、無圖片，網站未驗證；未改教材/SKILL/首次讀者凍結答案、未訓練。"
+      ]
+    },
+    {
+      "reader_id": "r2b3_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:03:14.712386+00:00",
+      "last_record": "2026-10-06T08:12:28.375090+00:00",
+      "declarations": [
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next r2b3_a 的第 1 批輸出；未讀其他教材、原始連結、他人紀錄、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路。",
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md、gate 第 1 與第 2 批輸出及自己的草稿；未讀其他教材、原始連結、他人紀錄、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路。",
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md、gate 第 1 至第 3 批輸出及自己的草稿；未讀其他教材、原始連結、他人紀錄、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路。沒有讀取圖片，因各段 gate 均列出空 images。"
+      ]
+    },
+    {
+      "reader_id": "r2b3_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:04:30.369477+00:00",
+      "last_record": "2026-10-06T08:12:44.245276+00:00",
+      "declarations": [
+        "只讀 /workspace/work/stability-experiment-2026-10-06/r2b3_b1/task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r2b3_b1 揭露的本批四 case 前文 p 與 u1；未讀其他教材、紀錄、私有檔、gate 原碼或外部連結，未搜尋 repo／網路。共用檔案系統僅依指示隔離。",
+        "本批只讀 gate next r2b3_b1 揭露的四 case u2，使用各自已讀 p／u1 和指定指引；另只寫自己的 batch 草稿並執行指定 gate record。未讀其他來源、未來段落、他人答案、私有檔或 gate 原碼，未搜尋。",
+        "本批只讀 gate next r2b3_b1 揭露的四 case 頁末 u3，並使用各自先前已揭露 p／u1／u2 和指定指引；未跨 case 借知識或引文。另只寫自己的批次 JSON 並執行指定 gate 命令。未讀未揭露內容、其他紀錄、private／packets／state／raw、gate 原碼、作者／評分資訊或參考連結，未搜尋 repo／網路。"
+      ]
+    },
+    {
+      "reader_id": "r2b3_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:04:43.062128+00:00",
+      "last_record": "2026-10-06T08:12:23.712124+00:00",
+      "declarations": [
+        "本批只讀 /workspace/work/stability-experiment-2026-10-06/r2b3_b2/task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r2b3_b2 揭露的當前四 case u1 與各自 prerequisite；未讀其他教材、紀錄、連結、程式原碼、未揭露內容，未搜尋 repo 或網路。",
+        "本批只讀 gate next r2b3_b2 第二批揭露的各 case u2；推理僅使用同 case 已揭露 u1／prerequisite。此前已讀本人 task.txt、指定 reader-instructions.md 與 frozen-skill.md；未讀其他来源、他人答案、未揭露後文或程式原碼，未搜尋 repo 或網路。",
+        "本批只讀 gate next r2b3_b2 第三批揭露的各 case u3；使用各自已讀 prerequisite、u1、u2，未跨 case 借知識。實際其他讀取僅本人 task.txt、指定 reader-instructions.md 與 frozen-skill.md；未讀他人／預期答案、未揭露来源、原始參考連結、gate 實作、private、packets、state 或 raw，未搜尋 repo 或網路；未做網站、程式或模型實驗。"
+      ]
+    },
+    {
+      "reader_id": "r2b3_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:06:23.864029+00:00",
+      "last_record": "2026-10-06T08:15:38.958192+00:00",
+      "declarations": [
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next 揭露的本批內容與各 case 前文；未讀其他教材、紀錄、private、packets、state、gate.py 原碼或作者／評分資訊；未搜尋 repo 或網路。自己的草稿檔僅寫入指定 scratch。",
+        "只讀本 reader 的 task.txt、三份指定指引，以及 gate 揭露第 1、2 批與各 case 自己的前文；沒有讀其他來源、未揭露段落、他人紀錄或 gate 原碼；未搜尋 repo 或網路。自己只寫指定 scratch。",
+        "只讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate 揭露第 1～3 批和各 case 的指定前文；未讀其他教材、其他紀錄、private、packets、state、gate.py 原碼或任何作者／評分資訊；未搜尋 repo 或網路，沒有看原始參考連結。僅於指定 scratch 寫自己的草稿與產生草稿用程式。"
+      ]
+    },
+    {
+      "reader_id": "r2b3_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T08:06:38.792704+00:00",
+      "last_record": "2026-10-06T08:22:05.306989+00:00",
+      "declarations": [
+        "實際讀取 task.txt、指定 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r2b3_ca 第1批 stdout 已保存的 gate-next-01.json。沒有讀其他教材、讀者答案、private/packets/state/raw、gate.py 原碼、外部來源或圖片；未測網站。",
+        "新增讀取 gate next r2b3_ca 第2批已保存 stdout gate-next-02.json；只用先前允許的指引及第1批來源，未讀讀者答案、其他教材、圖片、private/packets/state/raw 或 gate.py 原碼；網站未驗證。",
+        "新增讀取 gate next r2b3_ca 第3批已保存 stdout gate-next-03.json；使用先前允許指引與本case u1/u2，不跨case借用，未讀讀者答案、其他教材、圖片、private/packets/state/raw 或 gate.py 原碼；網站未驗證。",
+        "實際讀task.txt、auditor-instructions.md及允許reader-instructions.md/frozen-skill.md/structured-addendum.md；依gate逐段讀四case的u1/u2/u3並先保存獨立來源判斷，record均成功；曾next返回pending_primary即停止，收到followup後僅經gate取得首次讀者已凍結比較資料，完整stdout保存gate-next-05.json再按case/unit讀取。第一次比較摘要腳本錯將primary_records全文列印而工具畫面截斷，完整保存檔仍在，未重試next，只切片同一已揭露檔。另讀自身已保存gate來源檔供逐字與時序核對，寫自己的建檔腳本及最終紀錄；沒有讀raw/state/private/packets、gate.py原碼、其他教材、預期答案或外部資料，沒有圖片可讀，未測網站，不改教材/SKILL/原答案。"
+      ]
+    },
+    {
+      "reader_id": "r2b4_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:11:38.229319+00:00",
+      "last_record": "2026-10-06T08:21:29.181197+00:00",
+      "declarations": [
+        "已讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate next r2b4_a 第一批輸出的四個 case 前文和 u1。未讀其它教材、參考連結、他人紀錄、預期答案、後文、private、packets、state 或 gate 原碼；未搜尋 repo／網路；未看圖片。",
+        "本批新增讀取只有 gate next r2b4_a 第二批四個 case 的 u2；已讀指定 task.txt、兩份指引及 gate 第一批。未讀任何其它教材、連結、他人紀錄、預期答案、未揭露後文、private、packets、state 或 gate 原碼；未搜尋 repo／網路；未看圖片。",
+        "本批新增讀取只有 gate next r2b4_a 第三批四個 case 的 u3；已讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 第一、二批。沒有讀其它教材、參考連結、他人紀錄、預期答案、未揭露後文、private、packets、state 或 gate 原碼；沒有搜尋 repo／網路；沒有看圖片；没有執行模型、程式實驗或網站測試。各 case 獨立作答。"
+      ]
+    },
+    {
+      "reader_id": "r2b4_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:13:09.353173+00:00",
+      "last_record": "2026-10-06T08:20:08.904693+00:00",
+      "declarations": [
+        "實際讀取：本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate next r2b4_b1 第一批輸出（各 case 的 p、u1）。未讀其他來源、連結、原始教材、他人紀錄、private、packets、state 或 gate 原碼；未搜尋 repo 或網路。",
+        "本批實際只讀 gate next r2b4_b1 第二批的四個 u2；前文限第一批已揭露 p、u1 及指定 task.txt、reader-instructions.md、frozen-skill.md。未讀其他來源、他人紀錄、未揭露段落或 gate 原碼，未搜尋 repo 或網路。",
+        "本批實際只讀 gate next r2b4_b1 第三批的四個 u3；使用的既有內容限各自 case 已揭露的 p、u1、u2，及指定 task.txt、reader-instructions.md、frozen-skill.md。未跨 case 借知識，未讀任何未揭露來源、其他紀錄、private、packets、state、gate 原碼或原始參考連結；未搜尋 repo 或網路。無圖片可讀，未做網站或模型／程式實驗。"
+      ]
+    },
+    {
+      "reader_id": "r2b4_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:13:12.676034+00:00",
+      "last_record": "2026-10-06T08:19:48.603115+00:00",
+      "declarations": [
+        "實際只讀 /workspace/work/stability-experiment-2026-10-06/r2b4_b2/task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next r2b4_b2 第1批輸出的四個 case 當前段落及各自前文；未讀參考連結、repo 其他來源、其他答案、後文、private、packets、state 或 gate 原碼，未搜尋 repo／網路。",
+        "只讀先前申報的 task.txt、兩份指定指引與 gate 第1、2批輸出；未讀未揭露內容、參考連結、他人答案、repo 其他來源、private、packets、state 或 gate 原碼，未搜尋網路／repo。寫入自己的 batch1.json 並由 gate record 提交；本批只寫自己的草稿。",
+        "只讀任務 task.txt、指定 reader-instructions.md、frozen-skill.md 及 gate next r2b4_b2 依序揭露的第1至3批各 case 內容和各自前文；寫入自己的 batch1、batch2 草稿並成功 record。本次未读任何未揭露來源、其他讀者或預期答案、參考連結、repo 其他內容、private、packets、state 或 gate 原碼，未搜尋 repo／網路，未看圖片或網站。"
+      ]
+    },
+    {
+      "reader_id": "r2b4_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:13:24.851638+00:00",
+      "last_record": "2026-10-06T08:21:54.686246+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate 已揭露給 r2b4_c 的目前／先前批次；另存取自己的草稿與 JSON。未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼或連結，未搜尋 repo／網路；未看圖片，網站未驗證。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate 已揭露給 r2b4_c 的目前／先前批次；另存取自己的草稿與 JSON。未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼或連結，未搜尋 repo／網路；未看圖片，網站未驗證。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate 已揭露給 r2b4_c 的目前／先前批次；另存取自己的草稿與 JSON。未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼或連結，未搜尋 repo／網路；未看圖片，網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r2b4_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T08:15:55.513156+00:00",
+      "last_record": "2026-10-06T08:29:54.615364+00:00",
+      "declarations": [
+        "實際僅讀自己的 task.txt、實驗 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md 及 gate next r2b4_ca 揭露第一批 stdout（自存 gate-01.json）；未讀 gate 原碼、private、packets、state、raw，未搜尋 repo／外部資料、未看圖片或網站。",
+        "僅新增讀 gate 第二批揭露來源，自存 gate-02.json；第一批來源與指定指引仍在已讀範圍。未讀任何禁止資料、外部資料、圖片或網站。",
+        "僅新增讀 gate 第三批揭露來源，自存 gate-03.json，參照自己已見第一／二批。未看讀者答案、禁止資料、外部資料、圖片或網站。",
+        "實際讀取自己的 task.txt；指定 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；gate next 揭露來源三批（gate-01/02/03.json），第四次 pending_primary（gate-04.json），followup 後 gate 比較資料（gate-05.json），以及自己保存的來源判斷及核證草稿。只從已揭露 gate-05.json 按 case/unit/answer 分片核證；未讀 gate.py 原碼、private、packets、state、raw，未搜尋 repo 或外部資料，無圖片可看，網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r3b1_a",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T08:20:52.236879+00:00",
+      "last_record": "2026-10-06T08:32:42.531316+00:00",
+      "declarations": [
+        "讀取 /workspace/work/stability-experiment-2026-10-06/r3b1_a/task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r3b1_a 第一批輸出的各 case 前文 p 與 u1。未讀其他檔案、圖、原始連結、後文、他人紀錄、作者或評分資訊；未搜尋 repo 或網路。執行 gate 命令但未讀其實作。",
+        "本次只讀 gate 第二批的五個 u2，並用 view_image 看 gate 為 M19796 u2 列出的 images/views.png；亦使用上下文中的指定任務、指引、frozen-skill 與第一批各 case 自己的前文 p、u1。未讀其他來源、後文、他人紀錄、作者或評分資訊，未搜尋 repo 或網路，未讀 gate 實作。自己的 JSON 只作寫入提交。",
+        "本次只讀 gate 第三批五個 u3，使用先前已揭露的各 case 自己的 p/u1/u2 與指定指引。沒有新增檔案或图片读取，未读其他case知识作答案，未讀後文、原始參考連結、他人紀錄或評分資訊，未搜尋 repo／網路，未讀 gate 實作。只寫自己的暫存JSON並執行gate提交。",
+        "本次只讀 gate 第四批 M19796 u4，並使用該case已揭露的p/u1/u2/u3與指定指引。未開任何原始連結或未揭露後文，未讀其它檔案或圖片、他人紀錄、作者／評分資料，未搜尋 repo或網路，未讀gate實作。只寫自己的batch-04 JSON並執行gate提交。",
+        "本次只讀gate第五批M19796 u5，使用此case先前p/u1至u4及指定指引。未讀 helper 或程式實作，未執行教材程式，未開notebook或原始連結，未讀其它來源、他人紀錄、後文或評分資訊，未搜尋repo／網路，未讀gate實作。只寫自己的暫存JSON並用gate提交。",
+        "本次只讀gate第六批M19796 u6，包括該段揭露的教材『參考答案』註解；這是gate提供的本段正文，未另讀實驗預期答案或他人作答。使用此case先前已揭露p/u1至u5、u2指定圖片與指定指引。未開原始DINO論文、官方程式、其他參考連結或22.2以後內容，未搜尋repo／網路，未讀其他檔案、他人紀錄、作者／評分資訊或gate實作；只寫自己的暫存JSON及gate提交。"
+      ]
+    },
+    {
+      "reader_id": "r3b1_b1",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T08:20:40.234871+00:00",
+      "last_record": "2026-10-06T08:31:08.415090+00:00",
+      "declarations": [
+        "本批只讀自己的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next r3b1_b1 第1批輸出。未讀其他教材、他人紀錄、private、packets、state、gate.py 原碼、原始連結或網路；未搜尋 repo。",
+        "本批只讀 gate next r3b1_b1 第2批與它列出的 /workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/images/views.png，沿用第1批同case內容與指定指引。未讀其他来源、他人答案、後文、gate 原碼；未搜尋repo或網路。 gate拒絕圖中文字引文；本次僅以已揭露u2正文的逐字引文替換，原草稿另保留，判斷未改。",
+        "本批只讀gate next r3b1_b1第3批，使用同case第1、2批已揭露內容及指定指引；未讀其他来源、他人紀錄、後文或gate原碼，未搜尋repo或網路。",
+        "本批只讀gate next r3b1_b1第4批M19796/u4，沿用該case已揭露前文與u1-u3；未讀22.2/22.3連結或其他来源，未搜尋repo或網路。",
+        "本批只讀gate next r3b1_b1第5批M19796/u5與該case已讀前文；未讀helper原碼、執行模型/程式實驗、點連結、搜尋repo或網路。",
+        "本批只讀gate next r3b1_b1第6批M19796/u6，沿用此case已揭露p與u1-u5。曾看第2批列出views.png；未讀論文、官方main_dino.py、22.2/22.3或其他連結，未讀他人紀錄/私有來源，未搜尋repo或網路，未執行教材模型或程式實驗。網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r3b1_b2",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T08:20:49.297584+00:00",
+      "last_record": "2026-10-06T08:30:55.970152+00:00",
+      "declarations": [
+        "只讀本人 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next r3b1_b2 揭露的第一批各 case 前文及 u1；未讀其他教材、其他紀錄、預期答案、private、packets、state、gate.py 原碼或外部連結；沒有看圖片；網站未驗證。",
+        "本批只讀 gate next r3b1_b2 的各 case u2，使用已揭露 u1 與各自前文；另以 view_image 看 gate 列出的 /workspace/learn_to_yolo/reviews/clear-tutorial/stability-experiment-2026-10-06/images/views.png。未讀任何未揭露來源、其他紀錄、預期答案或 gate.py 原碼；網站未驗證。",
+        "本批只讀 gate next r3b1_b2 的各 case u3，使用各自已揭露前文與 u1/u2；沒有新增圖片或其他讀取，未讀全文、後文、其他紀錄、預期答案、私有資料或 gate.py 原碼；網站未驗證。",
+        "只讀 gate next r3b1_b2 本批 M19796/u4 及保留在上下文的同 case 前文、u1–u3；未開連結、其他教材、後文、他人紀錄、預期答案、私有檔案或 gate.py 原碼；沒有新增圖片；網站未驗證。",
+        "只讀 gate next r3b1_b2 的 M19796/u5 與同 case 已揭露前文、u1–u4；未執行正文指令或模型實驗，未讀 helper 實作、其他檔案、未揭露後文、外部連結或其他人紀錄；沒有新增圖片；網站未驗證。",
+        "只讀 gate next r3b1_b2 的 M19796/u6 與同 case 已揭露前文、u1–u5；未讀原論文、官方程式連結、後續22.2以後、其他紀錄、預期答案、私有檔案或 gate.py 原碼。唯一看過的圖片是此前 gate 列出的 views.png；未執行模型/程式實驗；網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r3b1_c",
+      "rounds": 6,
+      "first_reveal": "2026-10-06T08:22:12.711013+00:00",
+      "last_record": "2026-10-06T08:33:59.522733+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate next r3b1_c 本批揭露的各 case u1 和前文；未讀其他教材、他人答案、後文、private、packets、state、gate 原碼或外部連結，未搜尋 repo／網路。自己的 JSON 與生成草稿寫在指定 scratch；網站未驗證。",
+        "除已申報 task 與三份指定指引，只讀 gate 已揭露前文及 u1/u2；本批另以 view_image 看 gate 指定 views.png。讀自己的生成草稿 helper，未讀其他教材、他人答案、後文、private、packets、state、gate 原碼或外部連結，未搜尋 repo／網路；網站未驗證。",
+        "只讀指定 task、三份指引及 gate 截至本批的各case前文/u1/u2/u3，另已看gate指定views.png；本批讀自己的round2草稿及helper建立新JSON。未讀未揭露來源、他人答案、private、packets、state、gate原碼、外部連結，未搜尋repo／網路；未改已保存答案，網站未驗證。",
+        "只讀指定task與三份指引、gate截至本批揭露的前文及各case單位；本case僅u1至u4，已看指定views.png。讀自己的helper建立本批草稿，未讀22.2/22.3連結、未揭露來源、他人答案、private、packets、state或gate原碼，未搜尋repo／網路。網站未驗證，未修改既有紀錄。",
+        "只讀指定task與三份指引、gate已揭露前文/各case單位；本case本批讀u5，先前至u4並看指定views.png。未執行教材程式、未讀helper實作、22.2/22.3連結、任何未揭露來源或他人紀錄，未搜尋repo／網路，網站未驗證，未改已保存答案。",
+        "只讀指定task與reader-instructions/frozen-skill/structured-addendum及gate依次揭露的批次；本case只用其前文與u1至u6，未跨case借知識。曾看gate指定views.png，讀自己的helper生成草稿。未讀任何外部連結、完整後文、他人答案、private、packets、state、gate原碼，未搜尋repo／網路，未執行教材程式或網站檢查，未改已記入原始答案。共享檔案系統僅指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r3b1_ca",
+      "rounds": 7,
+      "first_reveal": "2026-10-06T08:22:49.974649+00:00",
+      "last_record": "2026-10-06T08:40:39.225237+00:00",
+      "declarations": [
+        "已讀 task.txt、允許的 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；執行 gate next，讀取本次輸出保存的 batch01-visible.json 結構及所有五 case 的 u1/prerequisite。只讀此指定來源與自有 scratch；未讀 private/packets/state/raw/gate.py 原碼，未搜尋 repo/外部資料，未測網站。",
+        "只續讀 gate 本次 batch02-visible.json 五個 u2，並用 view_image 看本段指定 images/views.png；已讀 batch01/prerequisite 和四份允許指引及 task.txt；寫讀自有 scratch。未讀 private/packets/state/raw/gate.py 原碼，未搜尋 repo/外部資料，未測網站。",
+        "續讀 gate batch03-visible.json 五個 u3，沿用已公開 batch01–02/prerequisite、四份指引與已查看 views.png；只讀寫自有 scratch。未讀 private/packets/state/raw/gate.py 原碼，未搜尋 repo/外部資料，網站未驗證。",
+        "續讀 gate batch04-visible.json 的 M19796/u4；沿用已公開前段及 prerequisite、四份指引、已看 gate views.png；只讀寫自有 scratch。未讀 private/packets/state/raw/gate.py 原碼，未搜尋 repo/外部資料，網站未驗證。",
+        "續讀 gate batch05-visible.json 的 M19796/u5；沿用已公开前段/prerequisite、指引及已看 views.png；只讀寫自有 scratch。未執行教材程式，未讀 private/packets/state/raw/gate.py 原碼，未搜尋 repo/外部資料，網站未驗證。",
+        "續讀 gate batch06-visible.json 的 M19796/u6；沿用已公開前段/prerequisite、四份指引與已看 gate views.png；只讀寫自有 scratch。沒有開文內外部/後節連結、未執行教材程式，未讀 private/packets/state/raw/gate.py 原碼，未搜尋 repo/外部資料，網站未驗證。",
+        "先讀task.txt及四份允許指引；來源階段僅讀gate的六批可見來源與本段指定views.png，保存source01–06並成功record後才取比較。曾取得pending_primary後停止，收到root followup才再次gate next；比較stdout保存batch08-visible.json，先仅列结构keys/counts，再按case/unit/answer切片读取六份凍結primary_records（五case所有已公開單位）。核證时只讀已保存可見來源、上述比較資料與自有scratch；未讀private/packets/state/raw/gate.py原碼，未搜尋repo/外部資料、未開文內後節/外部連結、未執行教材程式或訓練、網站未驗證。原始來源與首次讀者記錄保持不變。"
+      ]
+    },
+    {
+      "reader_id": "r3b2_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:28:28.546590+00:00",
+      "last_record": "2026-10-06T08:37:42.905617+00:00",
+      "declarations": [
+        "已讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate next r3b2_a 第 1 批輸出（包括各 case 的實際前文）。未讀其他來源、他人紀錄、後文或 gate 原碼；未搜尋 repo 或網路。",
+        "實際讀取僅為本 reader 的 task.txt、指定兩份指引及 gate 第 1、2 批輸出；本次新增來源只有第 2 批。未讀其他 case 的來源檔、後文、他人答案或 gate 原碼，未搜尋 repo 或網路。",
+        "實際讀取僅為本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 及 gate 第 1 至 3 批輸出。本次新增來源只有第 3 批；未讀其他來源、後文、他人紀錄、private、packets、state 或 gate 原碼，未搜尋 repo 或網路，未執行模型、程式實驗或網站測試。"
+      ]
+    },
+    {
+      "reader_id": "r3b2_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:30:35.173966+00:00",
+      "last_record": "2026-10-06T08:38:06.214263+00:00",
+      "declarations": [
+        "已讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate next r3b2_b1 第 1 批的四個 case u1 及各自前文；只寫自己的 scratch。沒有讀其他教材、其他紀錄、private、packets、state、gate.py 原碼、預期答案、未揭露後文或網路。",
+        "已讀指定 task.txt、reader-instructions.md、frozen-skill.md、gate next r3b2_b1 第 1 批 u1 與各 case 前文，以及第 2 批 u2；寫入自己的 scratch 並執行自己的 JSON 產生腳本。未讀其他教材、其他紀錄、private、packets、state、gate.py 原碼、預期答案、未揭露後文或網路。",
+        "已讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate next r3b2_b1 揭露的三批 u1/u2/u3、各 case 的指定前文；只寫自己的 scratch 與執行自己的 JSON 產生腳本。沒有讀其他教材、其他紀錄、private、packets、state、gate.py 原碼、作者／評分資訊、預期答案、未揭露後文或網路；沒有圖片來源可讀，網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r3b2_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:31:51.577099+00:00",
+      "last_record": "2026-10-06T08:40:31.164174+00:00",
+      "declarations": [
+        "實際只讀自己的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate next r3b2_b2 第一批揭露的四個 case 與其前文；未讀其他來源、原始連結、圖片、他人答案或後文。",
+        "本批只讀 gate next r3b2_b2 第二批四個 u2，使用同 case 已揭露的 u1 與前文及已讀指定指引；此前另讀自己的 task.txt。未讀其他來源、圖片、原始連結、後文或他人答案。",
+        "本批只讀 gate next r3b2_b2 第三批四個 u3；使用各自 case 已揭露 u1、u2、前文與指定 reader-instructions.md、frozen-skill.md。此前另讀自己的 task.txt。未讀任何其他來源、他人答案、原始連結、未揭露後文或圖片；網站未驗證。"
+      ]
+    },
+    {
+      "reader_id": "r3b2_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:31:53.271743+00:00",
+      "last_record": "2026-10-06T08:39:45.812103+00:00",
+      "declarations": [
+        "已讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 及 gate next r3b2_c 第 1 批揭露內容與各 case 前文；只寫自己的草稿，未讀其他來源、其他讀者紀錄、未揭露後文、private、packets、state 或 gate 原碼，未搜尋 repo 或網路。",
+        "累計只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md、gate next r3b2_c 第1至2批及其前文，與自己的草稿；未讀其他來源或紀錄、未揭露後文、private、packets、state、gate 原碼，未搜尋 repo 或網路。",
+        "累計只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md、gate next r3b2_c 第1至3批及其提供前文，與自己的草稿。未讀其他來源、他人或預期答案、未揭露後文、private、packets、state 或 gate 原碼；未搜尋 repo 或網路，未檢查網站、未執行教材程式或模型實驗。"
+      ]
+    },
+    {
+      "reader_id": "r3b2_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T08:33:20.613126+00:00",
+      "last_record": "2026-10-06T08:47:04.203061+00:00",
+      "declarations": [
+        "讀取任務 task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r3b2_ca 第1批 stdout 自有 scratch gate-001.json 中的4個 case u1 與各自 prerequisite；未讀其他資料、未讀 gate 原碼／raw／state／private／packets，未搜尋、未測網站。",
+        "沿用已申報指引與第1批來源，新增僅讀 gate 第2批自有 scratch gate-002.json 中4個 case u2；未讀首次讀者答案／raw／state／private／packets／gate原碼或其他教材，未搜尋、未測網站。",
+        "沿用已申報指引及來源u1/u2，新增僅讀gate第3批自有 scratch gate-003.json中4個case u3；沒有首次讀者答案，未讀禁止資料、未搜尋或測網站。",
+        "僅讀指定task.txt、auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；來源階段逐次讀gate揭露並保存的gate-001/002/003.json及自己source-001/002/003.json。pending_primary僅保存gate-004.json後待命，root followup後才執行next並保存gate-005.json。比较階段只按case/unit/answer切片讀該已揭露JSON的12個checkpoint，並用自己已揭露來源核對逐字引文。自有build-source及build-audit脚本僅處理這些已授權scratch。未讀raw/state/private/packets、gate原码、預期答案或其他教材；未搜索repo／外部资料，未測试網站或查看圖片（各段images=[]）。來源與首次讀者原始记錄未改寫。"
+      ]
+    },
+    {
+      "reader_id": "r3b3_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:38:01.804299+00:00",
+      "last_record": "2026-10-06T08:47:25.597806+00:00",
+      "declarations": [
+        "實際讀取：本 reader 的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r3b3_a 第一批輸出的四個案例前文與 u1。未讀其它教材、紀錄、private、packets、state、gate.py 原碼、參考連結或未揭露後文；未搜尋 repo 或網路。無圖片；網站未驗證。",
+        "實際讀取範圍仍為本 reader 的 task.txt、指定兩份指引及 gate 已揭露第一、第二批；本次新增只讀四個案例的 u2。未讀其它教材、紀錄、private、packets、state、gate.py 原碼、參考連結或後文，未搜尋 repo 或網路。無圖片；網站未驗證。",
+        "實際讀取：本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md 與 gate 第一至第三批揭露內容。這次只新增四個案例 u3；未讀其它教材、其他紀錄、private、packets、state、gate.py 原碼、參考連結或未揭露後文，未搜尋 repo 或網路。未看圖片，網站未驗證。各 case 獨立使用其自己的前文。"
+      ]
+    },
+    {
+      "reader_id": "r3b3_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:38:22.949023+00:00",
+      "last_record": "2026-10-06T08:47:12.028963+00:00",
+      "declarations": [
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 第1批揭露的各 case 前文及 u1；未讀其他檔案、連結、他人紀錄、後文或 gate 原碼，未搜尋 repo／網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 第1、2批揭露內容；寫入自己的 batch-01、02 草稿並執行 gate record，未讀其他來源、他人答案、後文、gate 原碼，未搜尋 repo／網路。",
+        "只讀指定 task.txt、reader-instructions.md、frozen-skill.md 與 gate 第1至3批揭露的內容；寫入自己的三份草稿並依序 record。未讀其他教材、參考連結、他人紀錄、預期答案、後文、private／packets／state、gate 原碼，未搜尋 repo／網路。未執行模型、程式實驗或網站測試。"
+      ]
+    },
+    {
+      "reader_id": "r3b3_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:38:54.733957+00:00",
+      "last_record": "2026-10-06T08:45:34.498008+00:00",
+      "declarations": [
+        "實際只讀指定 task.txt、reader-instructions.md、frozen-skill.md 及 gate next r3b3_b2 第 1 批輸出；未讀其它教材、連結、他人紀錄、預期答案、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路。",
+        "實際只讀指定 task.txt、reader-instructions.md、frozen-skill.md 及 gate next r3b3_b2 已揭露第 1、2 批輸出；只寫自己的 batch JSON 並執行指定 gate record，未讀其它來源、後文、他人紀錄、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路。",
+        "實際只讀指定 task.txt、reader-instructions.md、frozen-skill.md 及 gate next r3b3_b2 已揭露第 1、2、3 批輸出；只寫自己的 batch JSON 並執行指定 gate record。未讀其它教材、任何原始參考連結、後文、他人答案或紀錄、作者／評分資訊、private、packets、state、gate.py 原碼；未搜尋 repo 或網路，未測網站或執行模型實驗。共用檔案系統只有指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r3b3_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:40:58.946623+00:00",
+      "last_record": "2026-10-06T08:48:30.585261+00:00",
+      "declarations": [
+        "已讀自己的 task.txt、指定 reader-instructions.md、frozen-skill.md、structured-addendum.md，以及 gate next r3b3_c 第 1 批前文與 u1；未讀其他教材、紀錄、private、packets、state、gate.py 原碼、參考連結或網路；未搜尋 repo。共用檔案系統僅指示隔離。",
+        "只讀自己的 task.txt、指定三份指引與 gate 第 1、2 批已揭露前文／u1／u2；未讀其他答案或未揭露來源，未讀 gate 原碼或私有檔案，未搜尋 repo／網路。自己的 JSON 由安全 Python 寫入，未回寫第 1 批判斷。共用檔案系統僅指示隔離。",
+        "只讀自己的 task.txt、指定 reader-instructions.md／frozen-skill.md／structured-addendum.md，與 gate 第 1 至 3 批已揭露前文、u1、u2、u3；不同 case 不借知識或引文。未讀其他教材、他人答案、private、packets、state、gate.py 原碼、參考連結或未揭露後文，未搜尋 repo 或網路。未看圖片、未測網站或執行模型／程式實驗。自己的 JSON 由安全 Python 寫入，未改已記錄判斷。共享檔案系統只具指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r3b3_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T08:41:21.922643+00:00",
+      "last_record": "2026-10-06T08:54:47.709965+00:00",
+      "declarations": [
+        "實際只讀自有 task.txt、指定 auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md 及 gate next 第一批保存的自有 batch_01.json；未讀其他教材、讀者答案、raw/private/packets/state/gate.py 原碼；未看圖或網站。",
+        "只讀指定 task/四指引、gate目前及先前揭露的自有 batch_01.json、batch_02.json，及自己生成來源記錄；未讀讀者答案或raw/private/packets/state/gate.py原碼、未搜尋repo、未看圖或網站。",
+        "只讀指定task、四指引，gate已揭露自有batch_01/02/03.json與自製source_02.json；未取讀者答案，未讀raw/private/packets/state/gate.py原碼，未搜索repo/外部資料，未看圖或網站。",
+        "實際存取：自有task.txt；指定auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；經指定gate next保存的自有batch_01/02/03來源、batch_04 pending_primary、root followup後batch_05比較JSON；自己生成source_01/02/03、build_audit.py及本核證檔。來源三段先獨立保存且gate record成功才取得首次讀者答案；comparison按case/unit/answer切片讀取。沒有直接讀raw/private/packets/state或gate.py原碼，沒有搜尋repo或外部資料，沒有圖像或網站檢查，未訓練、未修改教材或原始讀者答案。引用存在檢查只對照gate揭露來源，語義支持另逐claim人工核證；未跨case借用。"
+      ]
+    },
+    {
+      "reader_id": "r3b4_a",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:46:11.753032+00:00",
+      "last_record": "2026-10-06T08:54:44.777182+00:00",
+      "declarations": [
+        "只讀分派的 task.txt、指定 reader-instructions.md、frozen-skill.md 及 gate 第一批輸出；沒有搜尋 repo、讀取連結、未揭露來源或他人紀錄。",
+        "只讀分派 task.txt、指定兩份指引及 gate 第一、第二批內容；未讀連結、後文、其他讀者紀錄或 repo 其他檔案，沒有搜尋。",
+        "只讀分派 task.txt、reader-instructions.md、frozen-skill.md 與 gate 第1至3批目前已揭露內容；未讀其他來源、連結、後文、他人答案，未搜尋 repo 或網路。"
+      ]
+    },
+    {
+      "reader_id": "r3b4_b1",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:46:21.723290+00:00",
+      "last_record": "2026-10-06T08:55:48.910727+00:00",
+      "declarations": [
+        "實際只讀自己的 task.txt、指定 reader-instructions.md 與 frozen-skill.md，以及 gate next r3b4_b1 第一批輸出；未讀其連結、其他教材、其他紀錄、private、packets、state 或 gate.py 原碼，未搜尋 repo 或網路。",
+        "只讀自己的 task.txt、指定兩份指引及 gate r3b4_b1 已揭露的第一、第二批；本批只新增 gate next 第二批輸出，未讀其他來源、原碼、其他紀錄或連結，未搜尋 repo／網路。",
+        "只讀自己的 task.txt、指定 reader-instructions.md／frozen-skill.md 與本 reader 已揭露批次。第三批因 exec 傳輸斷線未收到原輸出，依協調者授權只讀自己的 recovered-current-batch.json：協調者恢復已揭露但傳輸丟失的目前批次。我未讀 state、packets、private、gate.py 原碼、其他紀錄、教材連結或未揭露來源，未搜尋 repo／網路。"
+      ]
+    },
+    {
+      "reader_id": "r3b4_b2",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:48:05.891196+00:00",
+      "last_record": "2026-10-06T08:56:59.061055+00:00",
+      "declarations": [
+        "僅讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate next r3b4_b2 揭露的第 1 批；未搜尋 repo、網路，未讀指引連結、gate 原碼、其他紀錄、private、packets 或 state。",
+        "僅讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate 揭露的第 1、2 批。僅寫自己的 batch 草稿並執行指定 gate 命令；未搜尋 repo、網路，未讀其他來源或紀錄。",
+        "僅讀本 reader 的 task.txt、指定 reader-instructions.md、frozen-skill.md，以及 gate 揭露的第 1、2、3 批；僅寫自身草稿、執行指定 gate next/record。未讀任何連結教材、其他讀者答案、作者／評分資訊、private、packets、state 或 gate 原碼，未搜尋 repo 或網路，未執行模型、程式實驗或網站測試。"
+      ]
+    },
+    {
+      "reader_id": "r3b4_c",
+      "rounds": 3,
+      "first_reveal": "2026-10-06T08:48:12.537661+00:00",
+      "last_record": "2026-10-06T08:57:17.320666+00:00",
+      "declarations": [
+        "本批只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md 與 gate next r3b4_c 第 1 批輸出；未讀連結、其他教材、他人紀錄、private、packets、state 或 gate.py 原碼；只寫自己的草稿。共享檔案系統未技術隔離。",
+        "累計只讀指定 task.txt、三份審閱指引、gate 第 1～2 批揭露與自己的草稿（為修正第 1 批格式）；未讀其他教材、連結、他人紀錄、private、packets、state 或 gate.py 原碼。本批無圖片；共享檔案系統未技術隔離。",
+        "累計只讀指定 task.txt、reader-instructions.md、frozen-skill.md、structured-addendum.md、gate 第 1～3 批揭露及自己的草稿（第 1 批格式修正）；未讀其他來源、連結、他人答案、private、packets、state 或 gate.py 原碼。只執行指定 gate next/record 與自有草稿寫入程式；未搜尋 repo、未上網、未改教材、未跑模型或網站。三批均無 gate 圖片。共享檔案系統只有指示隔離。"
+      ]
+    },
+    {
+      "reader_id": "r3b4_ca",
+      "rounds": 4,
+      "first_reveal": "2026-10-06T08:48:21.754622+00:00",
+      "last_record": "2026-10-06T09:05:24.943710+00:00",
+      "declarations": [
+        "實際讀取：自有task.txt；指定auditor-instructions.md、reader-instructions.md、frozen-skill.md、structured-addendum.md；gate next r3b4_ca第1批stdout已存自有gate-next-01.json，讀其結構及四case的u1與prerequisite。未讀其他教材、repo搜尋、raw/state/private/packets、gate.py原碼、未讀首次讀者答案，未測網站。",
+        "本輪僅執行gate next第2批，stdout存自有gate-next-02.json後讀結構与四case u2；再讀自有已記錄source-01.json以引用既有判斷。允許指引与u1/prerequisite範圍同先前；沒有其他資料存取、repo搜尋、raw/state/private/packets或gate.py原碼、首次讀者答案，未測網站。",
+        "本輪僅gate next第3批stdout自有gate-next-03.json的結構與四case u3，並讀自有source-01/02.json以接續原判斷。累積允許指引、gate來源u1/u2/u3和prerequisite；未讀首次讀者答案及其他來源，未讀raw/state/private/packets或gate.py原碼、不搜repo、不測網站。",
+        "實際讀取：自有task.txt、指定auditor-instructions.md/reader-instructions.md/frozen-skill.md/structured-addendum.md；gate第1至3批四case prerequisite/u1/u2/u3，全部先保存stdout自有gate-next-01/02/03.json并保存source-01/02/03.json后record成功；第4批只有pending_primary，告知root後结束待命；收到followup後仅gate next第5批比較stdout存自有gate-next-05.json，先看keys/counts/case_id/unit_id结构，再逐case/unit/answer读全部冻结记录。AP三unit一次切片工具呈现截断，已告知root且没有重試next，只从同一完整scratch按u2小片恢复，全部160 claims完成。亦读自有已存來源/判斷以对照，并执行本自有JSON写入/引用字面与覆盖核对脚本。未读raw/state/private/packets/预期答案、gate.py原码、其他教材或外部资料，未搜尋repo，未測网站、未看图片（gate全部images=[]）、未修改來源教材/SKILL/原始讀者答案，未训练。"
+      ]
+    }
+  ],
+  "claims": 7468,
+  "audited_claim_entries": 1988,
+  "chronology_errors": [],
+  "audit_coverage": [
+    {
+      "reader_id": "r1b1_ca",
+      "case_id": "M19796",
+      "required_claims": 46,
+      "audit_entries": 46,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b1_ca",
+      "case_id": "M91299",
+      "required_claims": 33,
+      "audit_entries": 33,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b1_ca",
+      "case_id": "M20204",
+      "required_claims": 40,
+      "audit_entries": 40,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b1_ca",
+      "case_id": "M81954",
+      "required_claims": 35,
+      "audit_entries": 35,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b1_ca",
+      "case_id": "M36704",
+      "required_claims": 35,
+      "audit_entries": 35,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b2_ca",
+      "case_id": "M46675",
+      "required_claims": 41,
+      "audit_entries": 41,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b2_ca",
+      "case_id": "M78184",
+      "required_claims": 48,
+      "audit_entries": 48,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b2_ca",
+      "case_id": "M22957",
+      "required_claims": 43,
+      "audit_entries": 43,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b2_ca",
+      "case_id": "M19340",
+      "required_claims": 45,
+      "audit_entries": 45,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b3_ca",
+      "case_id": "M16388",
+      "required_claims": 38,
+      "audit_entries": 38,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b3_ca",
+      "case_id": "M83522",
+      "required_claims": 44,
+      "audit_entries": 44,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b3_ca",
+      "case_id": "M63770",
+      "required_claims": 42,
+      "audit_entries": 42,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b3_ca",
+      "case_id": "M66540",
+      "required_claims": 42,
+      "audit_entries": 42,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b4_ca",
+      "case_id": "M30083",
+      "required_claims": 35,
+      "audit_entries": 35,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b4_ca",
+      "case_id": "M72209",
+      "required_claims": 36,
+      "audit_entries": 36,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b4_ca",
+      "case_id": "M66211",
+      "required_claims": 36,
+      "audit_entries": 36,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r1b4_ca",
+      "case_id": "M47282",
+      "required_claims": 43,
+      "audit_entries": 43,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b1_ca",
+      "case_id": "M22957",
+      "required_claims": 32,
+      "audit_entries": 32,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b1_ca",
+      "case_id": "M46675",
+      "required_claims": 32,
+      "audit_entries": 32,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b1_ca",
+      "case_id": "M19340",
+      "required_claims": 29,
+      "audit_entries": 29,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b1_ca",
+      "case_id": "M19796",
+      "required_claims": 50,
+      "audit_entries": 50,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b1_ca",
+      "case_id": "M78184",
+      "required_claims": 32,
+      "audit_entries": 32,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b2_ca",
+      "case_id": "M66540",
+      "required_claims": 35,
+      "audit_entries": 35,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b2_ca",
+      "case_id": "M16388",
+      "required_claims": 33,
+      "audit_entries": 33,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b2_ca",
+      "case_id": "M83522",
+      "required_claims": 40,
+      "audit_entries": 40,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b2_ca",
+      "case_id": "M63770",
+      "required_claims": 38,
+      "audit_entries": 38,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b3_ca",
+      "case_id": "M47282",
+      "required_claims": 49,
+      "audit_entries": 49,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b3_ca",
+      "case_id": "M30083",
+      "required_claims": 47,
+      "audit_entries": 47,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b3_ca",
+      "case_id": "M72209",
+      "required_claims": 53,
+      "audit_entries": 53,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b3_ca",
+      "case_id": "M66211",
+      "required_claims": 49,
+      "audit_entries": 49,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b4_ca",
+      "case_id": "M81954",
+      "required_claims": 39,
+      "audit_entries": 39,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b4_ca",
+      "case_id": "M36704",
+      "required_claims": 42,
+      "audit_entries": 42,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b4_ca",
+      "case_id": "M20204",
+      "required_claims": 45,
+      "audit_entries": 45,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r2b4_ca",
+      "case_id": "M91299",
+      "required_claims": 46,
+      "audit_entries": 46,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b1_ca",
+      "case_id": "M63770",
+      "required_claims": 31,
+      "audit_entries": 31,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b1_ca",
+      "case_id": "M83522",
+      "required_claims": 29,
+      "audit_entries": 29,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b1_ca",
+      "case_id": "M19796",
+      "required_claims": 50,
+      "audit_entries": 50,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b1_ca",
+      "case_id": "M16388",
+      "required_claims": 27,
+      "audit_entries": 27,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b1_ca",
+      "case_id": "M66540",
+      "required_claims": 30,
+      "audit_entries": 30,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b2_ca",
+      "case_id": "M47282",
+      "required_claims": 38,
+      "audit_entries": 38,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b2_ca",
+      "case_id": "M30083",
+      "required_claims": 33,
+      "audit_entries": 33,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b2_ca",
+      "case_id": "M66211",
+      "required_claims": 38,
+      "audit_entries": 38,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b2_ca",
+      "case_id": "M72209",
+      "required_claims": 39,
+      "audit_entries": 39,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b3_ca",
+      "case_id": "M91299",
+      "required_claims": 34,
+      "audit_entries": 34,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b3_ca",
+      "case_id": "M81954",
+      "required_claims": 32,
+      "audit_entries": 32,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b3_ca",
+      "case_id": "M20204",
+      "required_claims": 37,
+      "audit_entries": 37,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b3_ca",
+      "case_id": "M36704",
+      "required_claims": 37,
+      "audit_entries": 37,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b4_ca",
+      "case_id": "M19340",
+      "required_claims": 32,
+      "audit_entries": 32,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b4_ca",
+      "case_id": "M46675",
+      "required_claims": 43,
+      "audit_entries": 43,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b4_ca",
+      "case_id": "M78184",
+      "required_claims": 43,
+      "audit_entries": 43,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    },
+    {
+      "reader_id": "r3b4_ca",
+      "case_id": "M22957",
+      "required_claims": 42,
+      "audit_entries": 42,
+      "missing_claim_keys": [],
+      "extra_claim_keys": [],
+      "duplicate_keys": 0
+    }
+  ],
+  "workload_by_role": {
+    "a": {
+      "contexts": 12,
+      "record_characters": 458720,
+      "source_note_count": 162,
+      "checkpoint_count": 153,
+      "active_segment_seconds": 6541.956971999999
+    },
+    "b1": {
+      "contexts": 12,
+      "record_characters": 448353,
+      "source_note_count": 162,
+      "checkpoint_count": 153,
+      "active_segment_seconds": 5951.560920000001
+    },
+    "b2": {
+      "contexts": 12,
+      "record_characters": 440633,
+      "source_note_count": 162,
+      "checkpoint_count": 153,
+      "active_segment_seconds": 5813.5080259999995
+    },
+    "c": {
+      "contexts": 12,
+      "record_characters": 853891,
+      "source_note_count": 162,
+      "checkpoint_count": 153,
+      "active_segment_seconds": 6649.334345
+    },
+    "ca": {
+      "contexts": 12,
+      "record_characters": 1579766,
+      "source_note_count": 162,
+      "checkpoint_count": 0,
+      "active_segment_seconds": 7442.200135000001
+    }
+  }
+}
