@@ -1,0 +1,83 @@
+{
+  "mode": "root non-blind source self-check; drafts revised before finalization",
+  "draft_sha256": "2e8163aabf47250a1a66b660b97ab7764916a8abf0fd9b3e15e2ef816438e586",
+  "decisions": [
+    {
+      "id": "MS001",
+      "initial_candidate": "softmax 的基礎介紹晚於規則提醒。",
+      "decision": "維持增加理解負擔。",
+      "reason": "保留 L30／32 已教 logits／交叉熵與 L166 的局部說明；L257 的功能定義不能回填 L32。完整公式延後則合理。"
+    },
+    {
+      "id": "MS002",
+      "initial_candidate": "首次介紹明說ViT全名與切塊轉向量；整體attention分類模型角色仍需連接後段。",
+      "decision": "改列選讀改善，並修正頁面自查的暫定描述。",
+      "reason": "L5、11、15、31、48 的正文已接原圖、attention、分類與 CLS；逐步展開可成立，不能要求一步講完模型或假稱全靠導覽。"
+    },
+    {
+      "id": "MS003",
+      "initial_candidate": "名稱是否完整展開，和功能／用途是否未教分開查。",
+      "decision": "RNG 早期介紹、FCOS／TOOD 引文列名稱補充，均為選讀改善。",
+      "reason": "08.2 RNG 中文及用途充分，英文在 21.4 L31 才明寫；FCOS／TOOD 僅歷史來源，非本節完整方法教學。"
+    },
+    {
+      "id": "not-issue-MLP-LN",
+      "initial_candidate": "21.3 MLP 只出現中文；LN 是否少英文全名。",
+      "decision": "不列缺漏。",
+      "reason": "21.2 L52 已展開 MLP 和 LayerNorm 全名、作用與分工；21.3 合理使用已教前文。",
+      "evidence": [
+        {
+          "page": "docs/lessons/21-attention.md",
+          "line": 52,
+          "quote": "先知道這條完整路徑裡各部件的分工就夠了：Transformer block 用 attention 讓位置互相讀取，再用 **MLP（Multi-Layer Perceptron，多層感知器）**這個小型全連線網路修改每個 token 內的特徵。**LayerNorm（Layer Normalization，層正規化）**整理每個 token 自己的特徵尺度。MLP 與 LayerNorm 都對各 token 使用同一套規則，不在這一步混合不同位置；residual 則把同一位置的修正加回原值，和第 3.1 節相同。因此，交換 patch 順序後，這些步驟的輸出也跟著同樣交換；它們不會讓固定在第 0 槽的 CLS 多出位置線索。具體順序與公式留到下一節。"
+        }
+      ]
+    },
+    {
+      "id": "current-DINO",
+      "initial_candidate": "檢查現行 22.1 是否仍只有 view 局部操作。",
+      "decision": "本輪未發現原先的介紹缺漏。",
+      "reason": "L7 方法、模型分工與無類別標籤目的，L9 下游用途及需評估的界線，L45 本節只生成 view，已於相關操作前交代。",
+      "evidence": [
+        {
+          "page": "docs/lessons/22-views.md",
+          "line": 7,
+          "quote": "本章使用 **DINO（self-distillation with no labels，無標籤的自蒸餾）**來學影像特徵。已學的小型 ViT 負責把圖片轉成表示，DINO 則指定如何訓練它：從同一張圖做出不同看法，讓模型學著保留它們共同的內容。這樣，只有圖片、沒有人工類別答案時，也能用圖片本身製造學習目標，不必沿用上一章對照紅藍答案的做法。"
+        },
+        {
+          "page": "docs/lessons/22-views.md",
+          "line": 9,
+          "quote": "「自蒸餾」指模型用自己逐步形成的輸出來教另一份模型。這裡有 teacher（教師）與 student（學生）兩份副本：教師給出目標，學生學著回答；教師的權重緩慢追蹤學生，並不是一份已經知道正確類別的答案模型。具體更新方式在 [22.3 節](22-distillation.md)再拆開算。訓練後保留產生特徵的 backbone，把新圖片轉成整圖或逐 patch 的向量，交給分類、定位等後續任務；後續任務仍可能需要自己的標籤。我們希望特徵能供這些任務使用，是否真的有用，要到 [22.4 節](22-features.md)評估，不能只憑訓練 loss 判定。"
+        },
+        {
+          "page": "docs/lessons/22-views.md",
+          "line": 45,
+          "quote": "這一節先做資料操作，不更新 ViT。下面使用本節的真實 helper，產生兩批 view；`generator` 記錄一串亂數的位置，同一種子加上同樣的呼叫順序可以重做同一組 view。"
+        }
+      ]
+    }
+  ],
+  "draft_cleanup": {
+    "why": "避免頁面四題的敘述被誤貼成其他輔助／歷史方法的理由；原句必須支持該欄的對象。",
+    "reason_corrections": "對輔助／歷史方法改成該方法自己的解釋；沒有覆寫任何既有實驗／盲讀紀錄。",
+    "quote_corrections": [
+      "ResNet 加入殘差與 identity 定義",
+      "PR／AP50 補精確率召回率與 50 的意義",
+      "adaptive pool 改引用正文定義",
+      "anchor ignore 改用自身規則和理由",
+      "FPN 區分主例和原始方法",
+      "cosine 診斷改用定義而非一次結果",
+      "TAL 補四步依據",
+      "LayerNorm／MLP 引用前文與自身用途",
+      "checkpoint／RNG 改引用存檔定義",
+      "centering／sharpening 分別引用作用",
+      "DINO 補本節 view 操作的關係"
+    ],
+    "added_entries": [
+      "21.2 MLP 首次分工概覽",
+      "21.2 LayerNorm 首次分工概覽",
+      "08.2 RNG state 存檔"
+    ],
+    "line_field_renamed": "first_use_line 改 introduction_anchor_line，避免把定位行號當成已完成雙時點首次閱讀紀錄。"
+  }
+}

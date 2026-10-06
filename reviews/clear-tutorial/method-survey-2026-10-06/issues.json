@@ -1,0 +1,118 @@
+{
+  "source_commit": "838ecb7c008183e6048eb417fb46d1472ab35f9c",
+  "issues": [
+    {
+      "id": "MS001",
+      "severity": "burden",
+      "kind": "介紹／時序",
+      "location": "docs/lessons/01-small-cnn.md:32、166；首次完整定義於257",
+      "known": "L30 logits 定義、L32 交叉熵用途和直接傳 logits 的規則已教；L166 也明說 softmax 後是機率並給數字例。",
+      "missing": "L32 首次提醒前，尚未直接說明 softmax 把 logits 轉成各類機率的基本功能；功能完整定義在 L257 選讀。",
+      "impact": "讀者可以照規則執行程式，但理解分數如何轉機率、為何不能重複轉換，要自行連接或先去後方選讀；不是整節 CNN 未教。",
+      "evidence": [
+        {
+          "line": 30,
+          "quote": "模型最後會給每張圖兩個分數，順序固定為「紅、藍」，整批輸出形狀是 `[8,2]`。這些還沒轉成機率的分數叫 **logits**。取分數較大的位置，就是預測類別；這個動作叫 `argmax`。例如 `[2,1]` 的答案是 0。"
+        },
+        {
+          "line": 32,
+          "quote": "訓練時把 logits 和正確類別交給 `cross_entropy`（交叉熵）。它衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。**直接交入 logits**，不用先做 softmax。這次先抓住這個用途，完整公式放在頁尾選讀。"
+        },
+        {
+          "line": 166,
+          "quote": "- 把 softmax 後的機率再交給 `cross_entropy`。它內部還會再做一次 softmax，等於做了兩次。程式不會報錯，但兩類時機率被壓在約 0.27～0.73 之間，loss 最低只能到約 0.31，永遠降不到 0。例如 [0.9, 0.1] 再做一次 softmax，會變成約 [0.69, 0.31]。"
+        },
+        {
+          "line": 257,
+          "quote": "    softmax 把一張圖的兩個 logits \\(z_0,z_1\\) 換成機率："
+        }
+      ],
+      "later_resolution": {
+        "line": 257,
+        "quote": "    softmax 把一張圖的兩個 logits \\(z_0,z_1\\) 換成機率："
+      },
+      "suggested_fix": "L32 補一句分數轉成各類機率的基本作用，並接交叉熵內部處理；完整公式仍留選讀。",
+      "severity_label": "增加理解負擔",
+      "first_visible_evidence": [
+        {
+          "line": 30,
+          "quote": "模型最後會給每張圖兩個分數，順序固定為「紅、藍」，整批輸出形狀是 `[8,2]`。這些還沒轉成機率的分數叫 **logits**。取分數較大的位置，就是預測類別；這個動作叫 `argmax`。例如 `[2,1]` 的答案是 0。"
+        },
+        {
+          "line": 32,
+          "quote": "訓練時把 logits 和正確類別交給 `cross_entropy`（交叉熵）。它衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。**直接交入 logits**，不用先做 softmax。這次先抓住這個用途，完整公式放在頁尾選讀。"
+        }
+      ],
+      "status": "open; 教材未改",
+      "checkpoint_basis": "依來源順序重建可見內容；沒有獨立首次閱讀者當場反應"
+    },
+    {
+      "id": "MS002",
+      "severity": "optional",
+      "severity_label": "選讀改善",
+      "kind": "導讀安排",
+      "location": "docs/lessons/21-patches.md:5",
+      "known": "全名、原圖轉 token 的問題、attention 輸入與 CLS 分類目的均在本頁交代。",
+      "missing": "開頭尚無一句把 patch、attention、CLS 與分類串成整體路線的摘要。",
+      "impact": "增加開場方向感；現有分段仍可支持當前切塊與投影操作，不列必要介紹缺漏。",
+      "evidence": [
+        {
+          "line": 5,
+          "quote": "[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。**Vision Transformer（視覺 Transformer），簡稱 ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。"
+        },
+        {
+          "line": 11,
+          "quote": "沿用第 1 章的答案規則：**紅矩形是類別 0，藍矩形是類別 1**。現在每張圖仍是 32×32 RGB，但矩形的寬、高、位置和亮度會變，背景也有少量暗色雜訊。這些變化的抽樣不依賴類別；兩類都是矩形，所以答案不代表形狀種類。"
+        },
+        {
+          "line": 15,
+          "quote": "圖號 0～3 只用來找圖片，答案 0／1 才表示紅／藍。上圖是實際訓練材料的四張，沒有把矩形位置當成答案。這條支線最後會用不同 seed 生成的圖片測試；此刻先處理「怎麼讀圖」，還沒有訓練模型。"
+        },
+        {
+          "line": 31,
+          "quote": "attention 不直接使用那 192 個原始值。本例用同一個可學線性轉換，把每塊的 192 個值變成 D=32 個特徵；這個輸出叫 **patch embedding（小塊的向量表示）**。D 是每個 token 的特徵數，不是圖片的邊長。"
+        },
+        {
+          "line": 48,
+          "quote": "最後仍要回答整張圖是紅或藍。我們在 16 個 patch 前面添一個 **CLS（classification，分類）token**：一個可學的 32 維向量，作為整圖的彙整位置。它不是由某個 patch 切出來，也不是正確類別答案。不同圖片一開始取得同一個 CLS 初值；後面讓它讀取各圖內容，才會形成不同的整圖表示。"
+        }
+      ],
+      "suggested_fix": "可在開頭簡述圖片→patch 向量→attention→整圖表示→分類；不要提前堆入後續公式。",
+      "status": "optional; 教材未改"
+    },
+    {
+      "id": "MS003",
+      "severity": "optional",
+      "severity_label": "選讀改善",
+      "kind": "名稱補充",
+      "location": "docs/lessons/08-own-data.md:264；12-anchor-free.md:9；12-assignment.md:11",
+      "known": "RNG state 的中文含義和用途已教；FCOS／TOOD 是歷史來源，當前 anchor-free／TAL 的作用也已交代。",
+      "missing": "08.2 的 RNG 首次名稱說明沒有英文全名；FCOS／TOOD 引文僅用縮寫。",
+      "impact": "名稱查詢與來源對照較不方便；不能因此判成方法目的完全未知。FCOS／TOOD 並非此節要完整教授的方法。",
+      "evidence": [
+        {
+          "page": "docs/lessons/08-own-data.md",
+          "line": 264,
+          "quote": "    - 亂數狀態（RNG state）：亂數產生器目前的內部狀態，本例存了 Python、NumPy 與 PyTorch 各自的狀態。存下來，之後的隨機步驟才能重現。"
+        },
+        {
+          "page": "docs/lessons/12-anchor-free.md",
+          "line": 9,
+          "quote": "歷史機制：YOLOv8 讓特徵圖上的每個候選點預測它到框四邊的距離，不需要預先給 anchor 尺寸。YOLOv8 是 Ultralytics 公司在 2023 年發布的版本，沒有發表正式論文；本節對照的是它的原始碼（頁尾連結）。用點到四邊的距離表示框，更早的 [FCOS](https://arxiv.org/abs/1904.01355)（2019）就用過。"
+        },
+        {
+          "page": "docs/lessons/12-assignment.md",
+          "line": 11,
+          "quote": "本節的挑法叫 task-aligned（任務對齊）：讓分類分數高的候選，剛好也是框最準的候選，也就是分類和定位兩個任務看中同一批候選。YOLOv8 使用的 task-aligned assignment（任務對齊分配）出自 [TOOD 論文](https://arxiv.org/abs/2108.07755)的 Task Alignment Learning（TAL，任務對齊學習）；task-aligned assignment 是 TAL 裡挑正樣本的那一部分。本節的規則分四步："
+        }
+      ],
+      "later_resolution": {
+        "page": "docs/lessons/21-training.md",
+        "line": 31,
+        "quote": "這次不是只更新 logits：patch 投影、CLS、位置向量、兩個 blocks 的 LN／QKV／輸出投影／MLP，以及分類 head 都交給 optimizer。batch 抽樣與 dropout 會用到 RNG（Random Number Generator，亂數產生器），決定這次的隨機選擇。一次更新先用 `train()` 啟用 dropout，再算 loss、清梯度、反傳、檢查梯度，最後 `optimizer.step()` 更新參數。完整程式的前半段如下："
+      },
+      "suggested_fix": "在 RNG 首次功能介紹旁補英文全名；歷史引文可用完整論文名稱。21.4 已展開 RNG，不需再次修補。",
+      "status": "optional; 教材未改"
+    }
+  ]
+}
