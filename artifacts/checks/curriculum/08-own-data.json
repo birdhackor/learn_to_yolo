@@ -1,7 +1,7 @@
 {
   "id": "08-own-data",
   "passed": true,
-  "executed_at_utc": "2026-10-06T05:23:05.439757+00:00",
+  "executed_at_utc": "2026-10-06T11:36:41.740182+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -28,7 +28,7 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 1.8648,
+  "process_wall_seconds": 1.846,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "rejected source leakage : source leakage\nrejected malformed box rows : box/label row counts differ\nrejected box row length with matching label count : each box row must have exactly four coordinates\nrejected boolean class id : class ids must be integer indices; bool is invalid\nrejected empty-image dimensions : width/height must be positive integers, including empty images\nrejected nonfinite coordinate : coordinates must be finite numbers\nrejected actual image/annotation size mismatch\n6 real PNG files loaded/verified; counts by split {'train': 2, 'validation': 2, 'test': 2}\nsynchronized input box [[10.666666984558105, 15.375, 32.0, 26.125]]\nnew class 2; head (2, 4, 4, 8) one training step 1.4407\n",
   "stderr": "",

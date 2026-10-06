@@ -1,6 +1,6 @@
 # 21.3 ViT Transformer：從一串小塊得到整圖答案
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-transformer.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-transformer.ipynb){ .md-button }
 
 紅矩形回答 0，藍矩形回答 1。輸入仍是 32×32 RGB；[前兩節](21-patches.md)已經準備好 16 個 patch 加 CLS，共 `[B,17,32]` 的 tokens，也知道 attention 能讓它們互相讀取。**怎麼把這個讀取步驟接成完整的圖片分類模型？** 本節走完 Transformer block 到兩個類別分數的路徑。
 
@@ -98,7 +98,7 @@ Y &= U+\operatorname{MLP}(\operatorname{LN}_2(U)).
 
 原論文依據：[ViT §3.1 式 (2)～(4)](https://arxiv.org/html/2010.11929#S3.SS1) 定義 Pre-LN、attention／MLP 兩條 residual 與最終 CLS 的 LN；MLP 使用 GELU。[§4.1 Table 1](https://arxiv.org/html/2010.11929#S4.SS1) 的 ViT-Base 是深度 12、寬度 768、MLP 3072、12 heads。本例是 2／32／64／4，並直接從小資料訓練；分類 head 採單一線性層，沒有重現論文預訓練時含隱藏層的 head，也沒有大規模預訓練。
 
-[上一節：21.2 小塊交換內容](21-attention.md) · [下一節：21.4 訓練、測試與還原](21-training.md) · [在 Colab 重做模型檢查](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-transformer.ipynb)
+[上一節：21.2 小塊交換內容](21-attention.md) · [下一節：21.4 訓練、測試與還原](21-training.md) · [在 Colab 重做模型檢查](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-transformer.ipynb)
 
 <!-- curriculum-evidence:start -->
 

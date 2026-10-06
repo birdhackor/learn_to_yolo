@@ -1,6 +1,6 @@
 # 22.1 沒有紅藍標籤，同一張圖的兩個 view 能教什麼？
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/22-views.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-views.ipynb){ .md-button }
 
 前文用 32×32 RGB 矩形，讓 ViT 讀圖片，再對照「紅或藍」答案更新。現在把訓練時的顏色答案收起來，只留下圖片。這一節的問題是：**沒有人工類別答案，我們能從同一張圖自己製造什麼學習訊號？**
 

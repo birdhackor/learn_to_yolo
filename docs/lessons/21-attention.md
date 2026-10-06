@@ -1,6 +1,6 @@
 # 21.2 ViT attention：讓小塊交換內容
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-attention.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-attention.ipynb){ .md-button }
 
 [上一節](21-patches.md)把一張 32×32 RGB 圖切成 16 個 patch，投影成 32 維向量，加上 CLS 和位置向量。紅矩形的答案仍是 0、藍矩形仍是 1。**現在，每個小塊怎麼取得其他小塊的內容？** 本節把第 15.1 節的 Q/K/V 讀取法用到這 17 個 tokens。
 
@@ -89,7 +89,7 @@ attention 圖同樣有範圍：高權重表示這層這個 head 從某來源讀�
 
 機制來源：[ViT 原論文 Appendix A](https://arxiv.org/html/2010.11929#A1) 定義多 head self-attention；[§3.1](https://arxiv.org/html/2010.11929#S3.SS1) 說明位置 embedding；Appendix D.4 提供原論文的位置設定對照。本文的交換檢查是課堂機制實驗，沒有重做論文的 ImageNet 對照。
 
-[上一節：21.1 圖片切塊](21-patches.md) · [下一節：21.3 完整 Transformer block](21-transformer.md) · [在 Colab 重做交換](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-attention.ipynb)
+[上一節：21.1 圖片切塊](21-patches.md) · [下一節：21.3 完整 Transformer block](21-transformer.md) · [在 Colab 重做交換](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-attention.ipynb)
 
 <!-- curriculum-evidence:start -->
 

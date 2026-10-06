@@ -1,6 +1,6 @@
 # 22.4 凍結特徵後，能分辨沒看過的紅藍矩形嗎？
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/22-features.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-features.ipynb){ .md-button }
 
 前面已經完成小型 DINO 的更新路徑，並確認 checkpoint 可以接續。接下來的問題是：**不再改 backbone，只讀它產生的特徵，能不能回答獨立圖片的紅藍顏色？** 這一步才開始使用紅藍標籤；它測的是特徵對這個用途是否可用。
 

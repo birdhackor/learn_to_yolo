@@ -1,6 +1,6 @@
 # 11.1 CSP：分一部分通道走較短的路
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/11-csp.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/11-csp.ipynb){ .md-button }
 
 卷積網路常分成幾個 stage（階段）。同一個 stage 裡的特徵解析度相同，通常連續做好幾層卷積，每層都讓全部通道（channel）參與。一層 3×3 卷積的輸入、輸出都是 C 個通道時，參數與計算量大約和 C² 成正比。第 1 章提過：輸入、輸出通道數一起加倍，成本約變成 4 倍。所以讓全部通道走過每一層，成本很高。本節要問：能不能只讓一半通道做這串卷積，另一半直接繞過去，最後再把兩半接回來、混合一次，輸出仍保有原本的通道數？CSP 就是這樣做的。
 
@@ -89,7 +89,7 @@ ReLU 沒有參數，不影響參數數。`nn.Conv2d` 預設帶 bias（每個輸�
 
 ## 執行與核對
 
-[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/11-csp.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-csp.py`。程式先核對串接與相加的小例子，再對 Full 與 CSP 各做一輪：
+[在 Colab 執行](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/11-csp.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/11-csp.py`。程式先核對串接與相加的小例子，再對 Full 與 CSP 各做一輪：
 
 1. forward：把隨機輸入（shape `[2,8,8,8]`）送進模型。
 2. 算 loss：把輸出的每個值平方後取平均，等於以全 0 為目標的 MSE（均方誤差）。

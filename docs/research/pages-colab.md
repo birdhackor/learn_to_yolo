@@ -84,7 +84,7 @@ build job 的 `GITHUB_TOKEN` 只有 workflow 層級設定的 `contents: read`；
 
 各節頁首的 Colab 按鈕與環境格（各節 notebook 的第二格）都固定到同一個發布 tag，也就是 `section-map.json` 裡該節的 `source_ref`。`scripts/build_lesson_notebooks.py --ref <tag>` 會一起寫入 `source_ref`、notebook metadata、環境格要 clone 的 tag 與頁面上的 Colab 網址；`validate_lessons.py` 檢查頁面的 Colab 連結與 notebook metadata 都對上 `source_ref`，`validate_site.py` 再檢查產生的頁面。Colab 從 GitHub 讀取這個 tag 上的 notebook，所以 tag 要先推到 GitHub。
 
-本版 52 節與 notebook 固定到 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準。既有 `lessons-v0.5.0` 的公開網站與環境格驗證保留原本範圍，不表示新增的 10 節已在 Colab 或公開網站測過。支線的預設實驗有 CPU 實測，沒有新增 GPU 訓練或 DINOv3 實作；23.1 的官方預訓練特徵操作另選，第一次需下載約 84.2 MiB 官方權重；它沿用 notebook 的 PyTorch／NumPy／Pillow，預設實驗不自動取得官方模型。
+本版 52 節與 notebook 固定到 `lessons-v0.6.1`；公開入口驗證以保存紀錄中的 tag 與結果為準。既有 `lessons-v0.5.0` 的公開網站與環境格驗證保留原本範圍，不表示新增的 10 節已在 Colab 或公開網站測過。支線的預設實驗有 CPU 實測，沒有新增 GPU 訓練或 DINOv3 實作；23.1 的官方預訓練特徵操作另選，第一次需下載約 84.2 MiB 官方權重；它沿用 notebook 的 PyTorch／NumPy／Pillow，預設實驗不自動取得官方模型。
 
 各節 notebook 的最後一格是該節的完整實驗程式（與 `lesson_cases/<節>.py` 逐字相同），存著執行紀錄 `artifacts/checks/curriculum/<節>.json` 裡的 CPU 輸出。`zensical build` 不讀 `notebooks/`，不會改動這些輸出。
 

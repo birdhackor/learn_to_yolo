@@ -1,7 +1,7 @@
 {
   "id": "12-assignment",
   "passed": true,
-  "executed_at_utc": "2026-10-06T05:28:01.088700+00:00",
+  "executed_at_utc": "2026-10-06T11:36:45.977002+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/12-assignment.py": "c5a878e08249a513b5a5f5432615f714522f5fbaec92c4484e05bfb75b9249bb"
   },
-  "process_wall_seconds": 1.8999,
+  "process_wall_seconds": 2.0675,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "inside-masked score * IoU^2: [[0.225, 0.311, 0.0, 0.0], [0.0, 0.147, 0.567, 0.0]]\ncandidate owner (-1 background): [0, 0, 1, -1]\nforeground target: [1.0, 1.0, 1.0, 0.0]\ngradient: [-0.125, -0.125, -0.125, 0.125]\nempty image owner: [-1, -1, -1, -1]\nexercise: move predicted box p1 to GT B; owner: [0, 1, 1, -1]\n",
   "stderr": "",

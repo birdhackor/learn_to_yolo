@@ -1,6 +1,6 @@
 # 16.1 YOLO26 DFL-free：移除 bins，仍要把框學好
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/16-dfl-free.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/16-dfl-free.ipynb){ .md-button }
 
 若部署需求重視簡潔，可以直接預測四個距離嗎？第 12 章其實看過兩種做法。12.1 節讓每條邊直接輸出 1 個數，再經 softplus 變成正數。12.4 節的 DFL 改成每條邊輸出 K 個 logits，分別對應 0、1、…、K−1 格這 K 個距離刻度（bin），softmax 後取期望值當距離。DFL 多了相鄰兩個 bin 的監督（12.4 節的 DFL target），代價是 head 的輸出變多；匯出（export：把 PyTorch 模型轉成 ONNX、TensorRT 等部署格式，[第 20 章](20-deployment.md)實作）時，也多了幾種運算要處理。
 

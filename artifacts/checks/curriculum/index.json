@@ -5,7 +5,7 @@
     {
       "id": "00-warmup",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:18:11.296673+00:00",
+      "executed_at_utc": "2026-10-06T11:36:36.919599+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -23,14 +23,14 @@
       "dependencies_sha256": {
         "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
       },
-      "process_wall_seconds": 1.7625,
+      "process_wall_seconds": 2.3506,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "01-small-cnn",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:03:41.040647+00:00",
+      "executed_at_utc": "2026-10-06T11:36:39.904816+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -48,7 +48,7 @@
       "dependencies_sha256": {
         "lesson_cases/01-small-cnn.py": "f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16"
       },
-      "process_wall_seconds": 2.4358,
+      "process_wall_seconds": 2.984,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
@@ -512,7 +512,7 @@
     {
       "id": "08-own-data",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:23:05.439757+00:00",
+      "executed_at_utc": "2026-10-06T11:36:41.740182+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -539,7 +539,7 @@
         "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
         "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
       },
-      "process_wall_seconds": 1.8648,
+      "process_wall_seconds": 1.846,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
@@ -729,14 +729,14 @@
     {
       "id": "12-anchor-free",
       "passed": true,
-      "executed_at_utc": "2026-10-05T10:39:55.288850+00:00",
+      "executed_at_utc": "2026-10-06T11:36:43.909331+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
       "machine": {
         "os": "Linux-6.18.44-x86_64-with-glibc2.41",
         "architecture": "x86_64",
-        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
         "logical_cpus": 5,
         "threads": 2,
         "python": "3.12.14",
@@ -747,7 +747,7 @@
       "dependencies_sha256": {
         "lesson_cases/12-anchor-free.py": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c"
       },
-      "process_wall_seconds": 3.84,
+      "process_wall_seconds": 2.1559,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
@@ -779,7 +779,7 @@
     {
       "id": "12-assignment",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:28:01.088700+00:00",
+      "executed_at_utc": "2026-10-06T11:36:45.977002+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -797,7 +797,7 @@
       "dependencies_sha256": {
         "lesson_cases/12-assignment.py": "c5a878e08249a513b5a5f5432615f714522f5fbaec92c4484e05bfb75b9249bb"
       },
-      "process_wall_seconds": 1.8999,
+      "process_wall_seconds": 2.0675,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
@@ -1153,7 +1153,7 @@
     {
       "id": "21-patches",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:03:45.869116+00:00",
+      "executed_at_utc": "2026-10-06T11:36:47.139691+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -1180,7 +1180,7 @@
         "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
         "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
       },
-      "process_wall_seconds": 1.1471,
+      "process_wall_seconds": 1.1728,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },

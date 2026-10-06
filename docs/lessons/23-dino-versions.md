@@ -1,6 +1,6 @@
 # 23.1 DINO 版本：從整張圖的答案，走到 patch 的關係
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/23-dino-versions.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/23-dino-versions.ipynb){ .md-button }
 
 前置：[特徵有沒有用](22-features.md)。上一節已把 tiny DINO 的特徵凍結，再用有標籤的資料評估；現在換成官方預訓練模型，看看它能交出哪兩種特徵。
 

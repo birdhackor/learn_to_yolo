@@ -1,6 +1,6 @@
 # 21.4 ViT training：更新參數，也能從中途接回來
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-training.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-training.ipynb){ .md-button }
 
 [上一節](21-transformer.md)接好完整 TinyViT。**這個小模型真的能學會紅藍分類，並在存檔後接著同一次訓練嗎？** 本節把前面的模型一起更新，再測試未參與更新的圖，最後檢查 checkpoint 還原。
 
@@ -123,7 +123,7 @@ def train_step(model, optimizer, dataset, batch_size):
 
 現在已經有一個能輸出整圖 CLS 與逐 patch 表示的小型 ViT。下一節保留它的讀圖路徑，換掉「靠紅／藍標籤學習」的訊號：同一張圖做成兩種視角，讓兩邊的表示對齊。
 
-[上一節：21.3 完整 Transformer](21-transformer.md) · [下一節：22.1 DINO 的兩種視角](22-views.md) · [在 Colab 重做訓練](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-training.ipynb)
+[上一節：21.3 完整 Transformer](21-transformer.md) · [下一節：22.1 DINO 的兩種視角](22-views.md) · [在 Colab 重做訓練](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-training.ipynb)
 
 <!-- curriculum-evidence:start -->
 

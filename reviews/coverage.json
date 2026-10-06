@@ -8,32 +8,32 @@
  },
  "docs/index.md": {
   "review": "reviews/index.md",
-  "review_sha256": "aa140fa6bc32fc86dc4b4b172d5d1a624d62cd5903bc96eb5111d14c21a89fcb",
+  "review_sha256": "75f5e16f73d832b5a177b5fd0e6328fea54f562cabeccb0fe8af385a826fd3ed",
   "covered": {
-   "docs/index.md": "6148d033f9784f5ef4f25270db0b6ea98f05ba4d4c7b80065738a3014c4bdb04",
+   "docs/index.md": "72999695d69b622f0b7c095852a101600ce4948dfee3efa1ef50beead613de65",
    "docs/assets/diagrams/classification-vs-detection.svg": "a050400b9fe7e35a06073ca97ab15ee893ce1fef62bc57236707539a00d1c90e"
   }
  },
  "docs/learning-path.md": {
   "review": "reviews/learning-path.md",
-  "review_sha256": "e4f41f08f5ddcac2cc51d685b1ee922e283b011c3155bf06c32d41cfb6f55b68",
+  "review_sha256": "f545072dfa594db14414dc2e3012ce5f9d9039b741ab4f8f4956ad94a48146eb",
   "covered": {
-   "docs/learning-path.md": "52ea69edd417c873f2768fd1ed5b9a4844b7e5f3987140613f06d3cbefdceef3"
+   "docs/learning-path.md": "af9902f3ec41f27926a4ba5730a8c20ebafb2693c3810c639badd85c51b9cd0c"
   }
  },
  "docs/lessons/00-warmup.md": {
   "review": "reviews/00-warmup.md",
-  "review_sha256": "86d19a107f6b445f6f1d30f983c72c38e024141f29820bcf3681e8175efe2982",
+  "review_sha256": "16d8978e9032464cfe82adeb6e8854cf89d29ab267dd8504ca755700a3ceb9c2",
   "covered": {
-   "docs/lessons/00-warmup.md": "df312b8e82181d34d1bb83a742f3301631743957e9f8850ade8044988ecded2b",
+   "docs/lessons/00-warmup.md": "074614ff0e36693c1e709d69f1aff632d810e1da2ce7c50d5827964218d76257",
    "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
   }
  },
  "docs/lessons/01-small-cnn.md": {
   "review": "reviews/01-small-cnn.md",
-  "review_sha256": "80bde823be1d4170eb013536046d90df3813eba35aa7d1442d242740709efa75",
+  "review_sha256": "af771d4008a9f0f0b82c4a0fde890a8cd50d084e370d62e0cf4d3c934220ef71",
   "covered": {
-   "docs/lessons/01-small-cnn.md": "7e3ed7955b603554f7e99b9d69cbb469e5934b572430a7a3d9a84e2cb6557c22",
+   "docs/lessons/01-small-cnn.md": "21db30975d4b6dae0919c1742c5346803a5a8f2b6cd17de63f27c3beb81b33ab",
    "docs/assets/diagrams/01-cnn-flow.svg": "3be7ea88f32a75002ba0d9d09e4629f03de3ef2111922356c297af4fbf4dc965",
    "docs/assets/diagrams/01-cnn-materials.svg": "13e9618efcc9b18b43766dbf0c0872b14f05aca561e576d17c3107b95666a3f9",
    "docs/assets/diagrams/01-convolution-window.svg": "c8b8706ca476ea6725bea4fd32a6c293bf6a4e3aec5f1e10e8f9ae171b1bbc70",
@@ -234,9 +234,9 @@
  },
  "docs/lessons/08-own-data.md": {
   "review": "reviews/08-own-data.md",
-  "review_sha256": "804a29d6ec8d6ef8c35a1469600d6a9e520ce5fa20998393d973e1e24c5459ba",
+  "review_sha256": "4d62cc64c02f858b25f808b0abbb42f44e420eda10e07ff5e367b8ce31076c0a",
   "covered": {
-   "docs/lessons/08-own-data.md": "02df973f993b6720e2a616dca4c9aaa0c784109fdbaa8b565688277638223386",
+   "docs/lessons/08-own-data.md": "a3f2a691bd0a008493d48ca7300b41da898f4ba182280d6efc496df87c1ad4e1",
    "docs/assets/diagrams/08-custom-learning.svg": "83036ad187af44e64bf54200e47b47b414dfab96ef03b4e5db79321d187f09a7",
    "docs/assets/diagrams/08-custom-loss-readable.svg": "a4d3ce1757586212317e71d15b8212a0780ee30e502e5e28c39959be628b11ed",
    "docs/assets/diagrams/08-custom-predictions-labelled.svg": "5e9ea0a6edb6b46cbbc8cc0b8952600ebd0f90a42a09d94e30454f626187380a",
@@ -349,18 +349,18 @@
  },
  "docs/lessons/12-anchor-free.md": {
   "review": "reviews/12-anchor-free.md",
-  "review_sha256": "ee47b9ebf38e02d9fe48efea2b39ef2947c1d77e086cb12cc8e908f948c7fd6b",
+  "review_sha256": "0b37a1647012ee022c8674b4d40b86fc09c4931e28e86b8ce63d2a5b9dd0cc56",
   "covered": {
-   "docs/lessons/12-anchor-free.md": "183d9cddc2880f150ae106baae5fcd3918f05e24fa44edbd544c879fb06635a9",
+   "docs/lessons/12-anchor-free.md": "c3f5f1df66bab891dbcfc0548f673794ee30db38ae29c3c59e4029afd4d2f365",
    "docs/assets/diagrams/12-anchor-free.svg": "0f43b6c74f090473582866c4dc56949c8fd55267e4a5b99f2e499f5382774548",
    "lesson_cases/12-anchor-free.py": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c"
   }
  },
  "docs/lessons/12-assignment.md": {
   "review": "reviews/12-assignment.md",
-  "review_sha256": "80c84885e9e3e7663331b2c6d861717532593618f0758f0c1a5ab51fa73fcdf2",
+  "review_sha256": "c3f0ebcbb6fbf0f7ea40f305aa81653ede4d105392a8f822f79f1692e608e910",
   "covered": {
-   "docs/lessons/12-assignment.md": "ca28050973e20a820a6d96701083f251b2752daa80146a8c572d027d01fbb6ca",
+   "docs/lessons/12-assignment.md": "eb6d814a8c5689ba3f35c575a6f4b6f8cff6b5f69a9c58d0b8c4b2e5d258288b",
    "docs/assets/diagrams/12-assignment.svg": "4a3817c274012a7838e95b9b0a9d8188259eea8f5a23869b819df21722e700b2",
    "lesson_cases/12-assignment.py": "c5a878e08249a513b5a5f5432615f714522f5fbaec92c4484e05bfb75b9249bb"
   }
@@ -535,9 +535,9 @@
  },
  "docs/lessons/21-patches.md": {
   "review": "reviews/21-patches.md",
-  "review_sha256": "8b3b82dc58284da16c50ae8a3da7a934db323032a2f176c3e705aff2aac13412",
+  "review_sha256": "5220947beed4ebdb6aaee60b714c1b1c30585eaef80f2fa21a441363c7550c60",
   "covered": {
-   "docs/lessons/21-patches.md": "6b8380d99540dd93623c310516d5a51dbf8a4ec53c37e5b73b03637a758fcfa1",
+   "docs/lessons/21-patches.md": "6c006b2de61a1ef2a3e230233982b90c18dca82371d2c8158a36e3db159caa6b",
    "docs/assets/diagrams/21-materials.svg": "f6326e65d13df7a41a46377cd7b8bb468e5a8c37b318e33cc33a797c81cf1391",
    "docs/assets/diagrams/21-patch-grid.svg": "5a5ba8c89227d49f38627ff7bb434be054c2313cbf6d8d1b3cb879c2833b3ede",
    "docs/assets/diagrams/21-token-position.svg": "0588efde6f7cad857cd2a849933b8ed80f3b3f84c230d922787b1897c9038135",
@@ -727,16 +727,16 @@
  },
  "docs/planning/outline.md": {
   "review": "reviews/planning-outline.md",
-  "review_sha256": "74d6099a2e3c1d3c35e4e0b5c97bc08c5dfe14fc48529277ca6dc9683599e041",
+  "review_sha256": "e410f322af2887e5edc2fae1a1195f54bcfc16ff2ba03a2a1f9a1f124883a737",
   "covered": {
-   "docs/planning/outline.md": "79cad9144383945c241c88afce646361b997ded34f66c4bc45485e22c2210fd4"
+   "docs/planning/outline.md": "4c3813d3571e14dac5be25474e26cd1e0e51e232f30eaff261bdde1749bda75c"
   }
  },
  "docs/preparation/architecture.md": {
   "review": "reviews/preparation-architecture.md",
-  "review_sha256": "93029c68182651baf8610887b1bae1e79a44ecc20f8c4da3e5ae0ac52e282974",
+  "review_sha256": "87276d5f3a2d9c9fb36063a2160695a0f85d89de6d4db407a67a1fd2181145a0",
   "covered": {
-   "docs/preparation/architecture.md": "332a358c6ca996717d8f9677be654717efb94e1c330ff640d68de77384986411"
+   "docs/preparation/architecture.md": "10a83479416a6277390238401221686aa0dcbab62ea20487e777fc1a70d6595f"
   }
  },
  "docs/preparation/data.md": {
@@ -777,9 +777,9 @@
  },
  "docs/research/pages-colab.md": {
   "review": "reviews/research-pages-colab.md",
-  "review_sha256": "ebe608350626bda6a29de0d0ee37f766e48d64c527141675f76582e2fee3befd",
+  "review_sha256": "e9915ebf41b05df4653fc4858f3cd18445c59669465fcce6eb1278f678376f5e",
   "covered": {
-   "docs/research/pages-colab.md": "c880316068a3d6f12d1262123ec8141d5a6c8c62b4ffe6c0a2dd4addf9fc79b8"
+   "docs/research/pages-colab.md": "d1dfcfcb4aa797291cc585b02379fd56849de2f8b69316d1f1d8e6c0302e93f8"
   }
  },
  "docs/research/version-sources.md": {
@@ -791,16 +791,16 @@
  },
  "docs/status.md": {
   "review": "reviews/status.md",
-  "review_sha256": "95e094e6606c99ed46fcf48e7520357edf23d79d9b559df84db40d789c820e03",
+  "review_sha256": "2785c6d0622e914a0436009edfd8b096e0cf9cc408b6463a806c0c13103b6237",
   "covered": {
-   "docs/status.md": "efdb872e44de60969b78363e319ca352f222237ce3f64a2cd2b2583f09a33910"
+   "docs/status.md": "28404fe8cd9eadcea9c1d3df287caf35ceddff72b6ba4f04438f9a9b59b34e23"
   }
  },
  "docs/validation/curriculum.md": {
   "review": "reviews/validation-curriculum.md",
-  "review_sha256": "bd0a3ebf9c9b0841e08cf56c09fd9a39921bc2782cb7b9aa450043a351c7b41b",
+  "review_sha256": "f6791b5d23cb22e446ce09c4e4bab8200739720ffdf1225ce9a634808a9716d0",
   "covered": {
-   "docs/validation/curriculum.md": "f673be7eae52c4a3d8085ec58d7b458536d980234ebaefa737fb9362a6c77cee"
+   "docs/validation/curriculum.md": "3a686cdf19a0891d113c5d9104967bc53dc0a8f5075337be11e9ffb095e19dce"
   }
  },
  "docs/validation/gpu-smoke.md": {

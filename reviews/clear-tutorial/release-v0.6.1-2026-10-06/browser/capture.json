@@ -1,0 +1,225 @@
+{
+  "scope": "五個修改段落，1280／390px 實際 Zensical 渲染；可展開區先打開。僅截圖與幾何檢查，不自行當成視覺已通過。",
+  "records": [
+    {
+      "page": "01-small-cnn",
+      "viewport_width": 1280,
+      "url": "http://127.0.0.1:8765/lessons/01-small-cnn/",
+      "screenshot": "01-small-cnn-1280.png",
+      "layout": {
+        "clientWidth": 688,
+        "scrollWidth": 688,
+        "box": {
+          "x": 288.5,
+          "y": 395.515625,
+          "width": 688,
+          "height": 108,
+          "top": 395.515625,
+          "right": 976.5,
+          "bottom": 503.515625,
+          "left": 288.5
+        },
+        "text": "訓練時把 logits 和正確類別交給 cross_entropy（交叉熵）。softmax 把一張圖的各個 logits 換成類別機率：分數越大，機率越大，各類機率合計為 1。交叉熵衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。PyTorch 的這個函式會在內部處理分數到機率的計算，因此直接交入 logits，不用先做 softmax。這次先抓住這個用途，完整公式放在頁尾選讀。"
+      },
+      "status": 200
+    },
+    {
+      "page": "21-patches",
+      "viewport_width": 1280,
+      "url": "http://127.0.0.1:8765/lessons/21-patches/",
+      "screenshot": "21-patches-1280.png",
+      "layout": {
+        "clientWidth": 688,
+        "scrollWidth": 688,
+        "box": {
+          "x": 288.5,
+          "y": 322.75,
+          "width": 688,
+          "height": 54,
+          "top": 322.75,
+          "right": 976.5,
+          "bottom": 376.75,
+          "left": 288.5
+        },
+        "text": "本支線會讓這些向量透過已學的 attention 互相讀取內容，再彙整整圖的表示，交給分類頭回答顏色。本節先準備這串向量；後三節依序接上讀取、完整分類模型與訓練。"
+      },
+      "status": 200
+    },
+    {
+      "page": "08-own-data",
+      "viewport_width": 1280,
+      "url": "http://127.0.0.1:8765/lessons/08-own-data/",
+      "screenshot": "08-own-data-1280.png",
+      "layout": {
+        "clientWidth": 632,
+        "scrollWidth": 632,
+        "box": {
+          "x": 328.5,
+          "y": 427.265625,
+          "width": 632,
+          "height": 46.0625,
+          "top": 427.265625,
+          "right": 960.5,
+          "bottom": 473.328125,
+          "left": 328.5
+        },
+        "text": "亂數狀態（RNG state）：RNG 是 Random Number Generator（亂數產生器），state 是它目前的內部狀態。本例存了 Python、NumPy 與 PyTorch 各自的狀態。存下來，之後的隨機步驟才能重現。"
+      },
+      "status": 200
+    },
+    {
+      "page": "12-anchor-free",
+      "viewport_width": 1280,
+      "url": "http://127.0.0.1:8765/lessons/12-anchor-free/",
+      "screenshot": "12-anchor-free-1280.png",
+      "layout": {
+        "clientWidth": 688,
+        "scrollWidth": 688,
+        "box": {
+          "x": 288.5,
+          "y": 445.75,
+          "width": 688,
+          "height": 108,
+          "top": 445.75,
+          "right": 976.5,
+          "bottom": 553.75,
+          "left": 288.5
+        },
+        "text": "歷史機制：YOLOv8 讓特徵圖上的每個候選點預測它到框四邊的距離，不需要預先給 anchor 尺寸。YOLOv8 是 Ultralytics 公司在 2023 年發布的版本，沒有發表正式論文；本節對照的是它的原始碼（頁尾連結）。用點到四邊的距離表示框，更早的 FCOS：Fully Convolutional One-Stage Object Detection（全卷積單階段物件偵測）（2019）就用過。"
+      },
+      "status": 200
+    },
+    {
+      "page": "12-assignment",
+      "viewport_width": 1280,
+      "url": "http://127.0.0.1:8765/lessons/12-assignment/",
+      "screenshot": "12-assignment-1280.png",
+      "layout": {
+        "clientWidth": 688,
+        "scrollWidth": 688,
+        "box": {
+          "x": 288.5,
+          "y": 649.75,
+          "width": 688,
+          "height": 108,
+          "top": 649.75,
+          "right": 976.5,
+          "bottom": 757.75,
+          "left": 288.5
+        },
+        "text": "本節的挑法叫 task-aligned（任務對齊）：讓分類分數高的候選，剛好也是框最準的候選，也就是分類和定位兩個任務看中同一批候選。YOLOv8 使用的 task-aligned assignment（任務對齊分配）出自 TOOD：Task-aligned One-stage Object Detection（任務對齊的單階段物件偵測）的 Task Alignment Learning（TAL，任務對齊學習）；task-aligned assignment 是 TAL 裡挑正樣本的那一部分。本節的規則分四步："
+      },
+      "status": 200
+    },
+    {
+      "page": "01-small-cnn",
+      "viewport_width": 390,
+      "url": "http://127.0.0.1:8765/lessons/01-small-cnn/",
+      "screenshot": "01-small-cnn-390.png",
+      "layout": {
+        "clientWidth": 343,
+        "scrollWidth": 343,
+        "box": {
+          "x": 16,
+          "y": 342.421875,
+          "width": 343,
+          "height": 216,
+          "top": 342.421875,
+          "right": 359,
+          "bottom": 558.421875,
+          "left": 16
+        },
+        "text": "訓練時把 logits 和正確類別交給 cross_entropy（交叉熵）。softmax 把一張圖的各個 logits 換成類別機率：分數越大，機率越大，各類機率合計為 1。交叉熵衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。PyTorch 的這個函式會在內部處理分數到機率的計算，因此直接交入 logits，不用先做 softmax。這次先抓住這個用途，完整公式放在頁尾選讀。"
+      },
+      "status": 200
+    },
+    {
+      "page": "21-patches",
+      "viewport_width": 390,
+      "url": "http://127.0.0.1:8765/lessons/21-patches/",
+      "screenshot": "21-patches-390.png",
+      "layout": {
+        "clientWidth": 343,
+        "scrollWidth": 343,
+        "box": {
+          "x": 16,
+          "y": 413.3125,
+          "width": 343,
+          "height": 108,
+          "top": 413.3125,
+          "right": 359,
+          "bottom": 521.3125,
+          "left": 16
+        },
+        "text": "本支線會讓這些向量透過已學的 attention 互相讀取內容，再彙整整圖的表示，交給分類頭回答顏色。本節先準備這串向量；後三節依序接上讀取、完整分類模型與訓練。"
+      },
+      "status": 200
+    },
+    {
+      "page": "08-own-data",
+      "viewport_width": 390,
+      "url": "http://127.0.0.1:8765/lessons/08-own-data/",
+      "screenshot": "08-own-data-390.png",
+      "layout": {
+        "clientWidth": 287,
+        "scrollWidth": 287,
+        "box": {
+          "x": 56,
+          "y": 404.296875,
+          "width": 287,
+          "height": 92.125,
+          "top": 404.296875,
+          "right": 343,
+          "bottom": 496.421875,
+          "left": 56
+        },
+        "text": "亂數狀態（RNG state）：RNG 是 Random Number Generator（亂數產生器），state 是它目前的內部狀態。本例存了 Python、NumPy 與 PyTorch 各自的狀態。存下來，之後的隨機步驟才能重現。"
+      },
+      "status": 200
+    },
+    {
+      "page": "12-anchor-free",
+      "viewport_width": 390,
+      "url": "http://127.0.0.1:8765/lessons/12-anchor-free/",
+      "screenshot": "12-anchor-free-390.png",
+      "layout": {
+        "clientWidth": 343,
+        "scrollWidth": 343,
+        "box": {
+          "x": 16,
+          "y": 644.3125,
+          "width": 343,
+          "height": 189,
+          "top": 644.3125,
+          "right": 359,
+          "bottom": 833.3125,
+          "left": 16
+        },
+        "text": "歷史機制：YOLOv8 讓特徵圖上的每個候選點預測它到框四邊的距離，不需要預先給 anchor 尺寸。YOLOv8 是 Ultralytics 公司在 2023 年發布的版本，沒有發表正式論文；本節對照的是它的原始碼（頁尾連結）。用點到四邊的距離表示框，更早的 FCOS：Fully Convolutional One-Stage Object Detection（全卷積單階段物件偵測）（2019）就用過。"
+      },
+      "status": 200
+    },
+    {
+      "page": "12-assignment",
+      "viewport_width": 390,
+      "url": "http://127.0.0.1:8765/lessons/12-assignment/",
+      "screenshot": "12-assignment-390.png",
+      "layout": {
+        "clientWidth": 343,
+        "scrollWidth": 343,
+        "box": {
+          "x": 16,
+          "y": 328.3125,
+          "width": 343,
+          "height": 243,
+          "top": 328.3125,
+          "right": 359,
+          "bottom": 571.3125,
+          "left": 16
+        },
+        "text": "本節的挑法叫 task-aligned（任務對齊）：讓分類分數高的候選，剛好也是框最準的候選，也就是分類和定位兩個任務看中同一批候選。YOLOv8 使用的 task-aligned assignment（任務對齊分配）出自 TOOD：Task-aligned One-stage Object Detection（任務對齊的單階段物件偵測）的 Task Alignment Learning（TAL，任務對齊學習）；task-aligned assignment 是 TAL 裡挑正樣本的那一部分。本節的規則分四步："
+      },
+      "status": 200
+    }
+  ]
+}

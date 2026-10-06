@@ -1,0 +1,11 @@
+{
+  "base_commit": "561860b0a07d88eaff4c79bdabe6bafb011e69cc",
+  "files": {
+    "docs/lessons/00-warmup.md": "ac4664034f6494dee85e1bffb8249fb648ab9f401ae0fb2e730ae5eab13aa012",
+    "docs/lessons/01-small-cnn.md": "247dc91d3f2c1139406df56fffaa6bb9a4749afbb0970c0ee2bb40f97643495c",
+    "docs/lessons/08-own-data.md": "88e71965337bd660209d7b621ac41fd00d917c6595f7872b65abbe7a1a07f4b9",
+    "docs/lessons/12-anchor-free.md": "f8ed33d6d3fe15613500c98b3b293991f3db023f084c6fe621b6d25b2224697b",
+    "docs/lessons/12-assignment.md": "6698350719a18166f9ebf0fd0132fdcd51f893e4cb98b00d7fb4adb1b59e29df",
+    "docs/lessons/21-patches.md": "3c174b6f6c80e3849ac2ca2c141af1b61bcb470ff173b99402f4ef52dc846ba0"
+  }
+}

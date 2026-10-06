@@ -1,6 +1,6 @@
 # 22.2 一直回答相同向量，也算兩個 view 一致嗎？
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/22-collapse.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-collapse.ipynb){ .md-button }
 
 上一節把同一張紅色矩形變成兩個 view，要求模型對它們給出相近的表示。現在換到第二張藍色矩形：我們仍希望它的兩個 view 相近，卻不希望所有圖片都變成同一份答案。本節的問題是：**只要求同圖一致，為什麼還不足以得到可用的特徵？**
 

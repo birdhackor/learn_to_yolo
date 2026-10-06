@@ -1,6 +1,6 @@
 # 16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/16-inference-head.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/16-inference-head.ipynb){ .md-button }
 
 訓練時有兩個 head，不代表部署時也要執行兩個。部署是把訓練好的模型放到實際使用的環境（例如伺服器、手機），只做推論、不再訓練。本節用一個小模型示範：怎樣把 YOLO26 這類雙 head 模型訓練用的輔助 head，從部署模型真正拿掉，並確認留下的部分算出的數和原本一致。讀完本節，你能把雙 head 模型改寫成只含推論所需部分的部署模型，也能用參數名稱、逐值比對和手算例子，確認沒有拿錯權重、也沒有解錯框。
 

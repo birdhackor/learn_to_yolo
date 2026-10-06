@@ -1,14 +1,14 @@
 {
   "id": "12-anchor-free",
   "passed": true,
-  "executed_at_utc": "2026-10-05T10:39:55.288850+00:00",
+  "executed_at_utc": "2026-10-06T11:36:43.909331+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/12-anchor-free.py": "db623f3fedbbb57779640ef0b14cd897309ba728dc43bd96cc1f0fdb2b88b08c"
   },
-  "process_wall_seconds": 3.84,
+  "process_wall_seconds": 2.1559,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "target ltrb in feature cells: [[2.0, 1.5, 1.5, 1.0]]\ndecoded target pixels: [[12.0, 16.0, 40.0, 36.0]]\ndistance loss 0.376236 -> 0.000012\nlearned box pixels: [[12.01, 16.03, 39.97, 35.94]]\noutside point requires a negative distance: assignment is still necessary\n",
   "stderr": "",

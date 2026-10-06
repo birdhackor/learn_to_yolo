@@ -1,6 +1,6 @@
 # 3.2 ResNet projection shortcut：對齊形狀也在學轉換
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/03-projection.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/03-projection.ipynb){ .md-button }
 
 ResNet 把 block 分成幾個 stage（階段）。同一個 stage 裡，各 block 輸出的特徵圖（卷積層輸出的 `[C,H,W]` 數值）H、W 都相同；進入下一個 stage 時，通常由新 stage 的第一個 block 縮小 H、W 並增加 channel。例如本節主分支輸出 `[B,6,2,2]`，輸入卻是 `[B,3,4,4]`，兩者直接相加不合法。Projection shortcut（投影捷徑）先把輸入轉成和主分支相同的 shape，才加入主分支。通常只有這種 shape 改變的 block 用 projection，其餘 block 仍用上一節的 identity shortcut。
 

@@ -1,0 +1,151 @@
+{
+  "checkpoint": "names-local",
+  "review_type": "名稱局部檢查；不是完整首次閱讀，也不是整頁驗收。",
+  "scope": {
+    "read": [
+      "reader-input/08-name-context.txt L259-L268",
+      "reader-input/12-anchor-name-context.txt L1-L11",
+      "reader-input/12-assignment-name-context.txt L1-L18"
+    ],
+    "limitations": "沒有完整讀過第8章及第12章的實際前文；只判斷本批名稱的中文意義和局部分工，不能判定整章介紹順序、完整可操作性或來源正確性。未提供新增名稱名目清單，以下檢查可見的主要英文專名，其他術語只記局部可讀程度。",
+    "images": "仍未實看正文圖片。",
+    "unprovided_content_read": false
+  },
+  "main_name_checks": [
+    {
+      "name": "RNG state",
+      "location": "08-name-context L264",
+      "quote": "亂數狀態（RNG state）：RNG 是 Random Number Generator（亂數產生器），state 是它目前的內部狀態。本例存了 Python、NumPy 與 PyTorch 各自的狀態。存下來，之後的隨機步驟才能重現。",
+      "understanding": "RNG是產生亂數的東西，state是它當前的狀態；checkpoint保存各套件的這種狀態，以便重現後面的隨機步驟。",
+      "status": "明說",
+      "readability": "足夠",
+      "division": "與L263的Adam梯度平均／步數狀態、L265的學習率調整規則不同；沒有把它們混成同一種狀態。",
+      "necessary_issue": null
+    },
+    {
+      "name": "FCOS",
+      "location": "12-anchor-name-context L9",
+      "quote": "用點到四邊的距離表示框，更早的 [FCOS：Fully Convolutional One-Stage Object Detection（全卷積單階段物件偵測）](https://arxiv.org/abs/1904.01355)（2019）就用過。",
+      "understanding": "FCOS是一個先前使用點到四邊距離表示的偵測方法／論文名稱；英文全名有中文意思，此处是歷史參照。",
+      "status": "明說＋推得（方法／論文身份）",
+      "readability": "足夠",
+      "division": "不把FCOS等同本節小實驗或YOLOv8。L11另說本節是一候選點四正距離，不重現整套YOLOv8；這處名稱不要求先掌握完整FCOS。",
+      "necessary_issue": null
+    },
+    {
+      "name": "TOOD",
+      "location": "12-assignment-name-context L11",
+      "quote": "[TOOD：Task-aligned One-stage Object Detection（任務對齊的單階段物件偵測）](https://arxiv.org/abs/2108.07755)",
+      "understanding": "TOOD是task-aligned assignment所引用的偵測論文／方法名稱，英文和中文可對上『任務對齊、單階段、物件偵測』。",
+      "status": "明說＋推得（論文／方法身份）",
+      "readability": "足夠",
+      "division": "引用的TOOD與它的TAL機制分開命名，没有把TOOD當成當前四步分配規則的別名。",
+      "necessary_issue": null
+    },
+    {
+      "name": "Task Alignment Learning／TAL",
+      "location": "12-assignment-name-context L11",
+      "quote": "Task Alignment Learning（TAL，任務對齊學習）；task-aligned assignment 是 TAL 裡挑正樣本的那一部分。",
+      "understanding": "TAL是任務對齊學習；本節的assignment只取其中挑正樣本的部分，不代表全部TAL。",
+      "status": "明說",
+      "readability": "足夠",
+      "division": "L11先說task-aligned是分類與定位看中同一批候選；L13-L16給本例四步，L18明說只是TAL部分结构及来源差异，边界可读。",
+      "supporting_quote": {
+        "lines": "L18",
+        "quote": "本例只示範 TAL 的部分結構，不能稱為完整的 TAL。"
+      },
+      "necessary_issue": null
+    },
+    {
+      "name": "task-aligned assignment",
+      "location": "12-assignment-name-context L11",
+      "quote": "本節的挑法叫 task-aligned（任務對齊）：讓分類分數高的候選，剛好也是框最準的候選，也就是分類和定位兩個任務看中同一批候選。",
+      "understanding": "用分類和定位品質共同挑哪些候選值得當正樣本；任務對齊不是把兩份tensor在形狀上對齊。",
+      "status": "明說",
+      "readability": "足夠",
+      "division": "L5先定义样本分配，L11给这一种分配的目的，再接资格／品质／名额／冲突；与L18推论去重复的NMS不同。",
+      "necessary_issue": null
+    }
+  ],
+  "supporting_local_terms": [
+    {
+      "name": "checkpoint",
+      "lines": "08-name-context L260",
+      "quote": "checkpoint（存檔）除了權重，還存了 optimizer 狀態、已完成的步數與亂數狀態，目的是之後能接著訓練。",
+      "assessment": "中文『存檔』及保存内容／用途可讀；L266把CPU重新載入一致與跨裝置逐位相同分開，局部角色清楚。"
+    },
+    {
+      "name": "scheduler",
+      "lines": "08-name-context L265",
+      "quote": "scheduler：依步數調整 learning rate 的規則。本例固定 learning rate，所以 scheduler 欄存成 None。",
+      "assessment": "中文功能已足以辨認這個欄位；不同於Adam狀態及RNG state。"
+    },
+    {
+      "name": "Git LFS",
+      "lines": "08-name-context L268",
+      "quote": "Git LFS（Git 存放大檔案的擴充功能）",
+      "assessment": "雖未展開英文字母全名，中文已說明功能；本段只辨認檔案存放位置，足夠。"
+    },
+    {
+      "name": "Anchor-free／assignment",
+      "lines": "12-anchor-name-context L5",
+      "quote": "Anchor-free（不用 anchor）就是不使用這種預設的寬高模板；本節的做法是讓每個候選點直接預測它到框左、上、右、下四條邊的距離。",
+      "assessment": "不用anchor的意思具體，且同段另說仍保留候選點與責任分配，局部分工清楚。"
+    },
+    {
+      "name": "encode／decode",
+      "lines": "12-anchor-name-context L11",
+      "quote": "encode：框換成距離；decode：距離換回框",
+      "assessment": "兩個方向明確，不需只靠英文猜。"
+    },
+    {
+      "name": "Smooth L1",
+      "lines": "12-anchor-name-context L11",
+      "quote": "Smooth L1（一種 loss，定義見下文）",
+      "assessment": "目前知道角色是loss，定義預告在下文；本局部不能替整頁判斷是否已教好，不因截斷要求此處展開。"
+    },
+    {
+      "name": "DFL",
+      "lines": "12-anchor-name-context L11",
+      "quote": "DFL（Distribution Focal Loss）再把每條邊改成輸出一個機率分佈：距離是 0 格、1 格、2 格……各有多少機率，最後取期望值當距離。",
+      "assessment": "没有中文全名，但这处是后节预告，有中文功能说明，局部足够；不作为本节当下必须操作的方法验收。"
+    },
+    {
+      "name": "sample assignment",
+      "lines": "12-assignment-name-context L5",
+      "quote": "這一步叫樣本分配（sample assignment）。這裡的 sample 就是第 5 章說的正／負樣本，不是「範例」。",
+      "assessment": "中文翻译及sample意义明确；没有读第5章全文，但本句已经说明当前用法。"
+    },
+    {
+      "name": "ground truth／GT",
+      "lines": "12-assignment-name-context L7",
+      "quote": "物件的標註叫真值（ground truth，簡稱 GT：人工標註的框和類別）",
+      "assessment": "真值所指内容明确，和候选预测不同。"
+    },
+    {
+      "name": "top-k",
+      "lines": "12-assignment-name-context L15",
+      "quote": "每個 GT 把合格的候選依品質由大到小排，只留前 k 名；本例 k=2，也就是 top-2。",
+      "assessment": "名额步骤与质量步骤不同，中文动作可读。"
+    },
+    {
+      "name": "CIoU",
+      "lines": "12-assignment-name-context L18",
+      "quote": "Ultralytics 解衝突時比的是 CIoU。",
+      "assessment": "此局部未解释CIoU；不知道完整前文是否介绍。这里只标注官方实作差异，本例第4步已明确用IoU，因此暂不判为新增名称必要缺漏。"
+    },
+    {
+      "name": "NMS",
+      "lines": "12-assignment-name-context L18",
+      "quote": "本節不改變推論時的 NMS（刪除重複框的步驟）。",
+      "assessment": "局部中文用途与推论阶段清楚，和训练时assignment分工明确。"
+    }
+  ],
+  "later_local_clarification": {
+    "earlier_checkpoint": "first-reader-21-end.json L91當場疑點",
+    "newly_visible_at": "08-name-context L260",
+    "change": "現在局部讀到checkpoint（存檔）的明确中文意义与保存内容；这批后见信息不逆填21开头或节末原始答案。"
+  },
+  "necessary_issues": [],
+  "conclusion": "主要新增英文专名均有可读的中文意义及局部分工；本局部范围内没有必要名称问题。不能把此结论当成第8或第12章整页验收。"
+}

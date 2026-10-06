@@ -1,6 +1,6 @@
 # 5 多物件輸出與責任分配：哪個預測負責哪個物件
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/05-assignment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/05-assignment.ipynb){ .md-button }
 
 第 4 章的單物件定位器每張圖只輸出一個框，但真實圖片可能沒有物件，也可能有好幾個。只把 head 改成「輸出更多框」還不夠：訓練時還要告訴每個輸出位置該學哪個物件，以及哪些位置該學「這裡沒有物件」。本節用一張固定有兩個物件的圖，一步步把標註變成訓練用的 target，並決定每一格各算哪幾項 loss。讀完本節，你能手算一個框由哪一格負責、target 是哪四個數，也能說明為什麼同一格放不下兩個物件。前置只需懂 xyxy、中心寬高（cxcywh）與分類 loss，見第 4 章〈[單物件分類與定位](04-localization.md)〉。
 

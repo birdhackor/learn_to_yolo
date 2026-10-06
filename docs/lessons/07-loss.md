@@ -1,6 +1,6 @@
 # 7.3 Grid MiniYOLO：loss 必須能手算
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/07-loss.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-loss.ipynb){ .md-button }
 
 上一節把標註框換成每一格的訓練目標（target）；本節把 target 和模型每格的輸出接起來，算出 loss。讀完你能用紙筆算出三項 loss，以及 objectness（這格有沒有物件）與正格類別 logits 的梯度，也知道沒有物件的圖要怎麼處理。
 

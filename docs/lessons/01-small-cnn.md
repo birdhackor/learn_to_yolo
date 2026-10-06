@@ -1,8 +1,8 @@
 # 1 VGG 風格小 CNN：讓局部圖樣重複使用
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/01-small-cnn.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/01-small-cnn.ipynb){ .md-button }
 
-上一節讓一個權重學會把 2 變成 4。現在換成圖片：**看到紅矩形，回答 0；看到藍矩形，回答 1。** 我們要做的 **CNN（Convolutional Neural Network，卷積神經網路）**怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。
+上一節讓一個權重做了一次更新，把預測從 2 拉近答案 4。現在換成圖片：**看到紅矩形，回答 0；看到藍矩形，回答 1。** 我們要做的 **CNN（Convolutional Neural Network，卷積神經網路）**怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。
 
 先看完整的 8 張材料。每張是 32×32 的黑底圖，矩形都是 12×12，只改顏色與位置。圖號用來辨認圖片，類別編號才是模型要學的答案。
 
@@ -29,7 +29,7 @@ RGB 圖可以看成三張疊在一起的數值表：紅、綠、藍各一張。�
 
 模型最後會給每張圖兩個分數，順序固定為「紅、藍」，整批輸出形狀是 `[8,2]`。這些還沒轉成機率的分數叫 **logits**。取分數較大的位置，就是預測類別；這個動作叫 `argmax`。例如 `[2,1]` 的答案是 0。
 
-訓練時把 logits 和正確類別交給 `cross_entropy`（交叉熵）。它衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。**直接交入 logits**，不用先做 softmax。這次先抓住這個用途，完整公式放在頁尾選讀。
+訓練時把 logits 和正確類別交給 `cross_entropy`（交叉熵）。**softmax** 把一張圖的各個 logits 換成類別機率：分數越大，機率越大，各類機率合計為 1。交叉熵衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。PyTorch 的這個函式會在內部處理分數到機率的計算，因此**直接交入 logits**，不用先做 softmax。這次先抓住這個用途，完整公式放在頁尾選讀。
 
 ## 卷積為什麼能重複使用權重
 

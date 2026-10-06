@@ -146,7 +146,7 @@
 | 22. DINO 核心（4 節） | [視圖](../lessons/22-views.md)、[collapse](../lessons/22-collapse.md)、[teacher／student](../lessons/22-distillation.md)、[特徵評估](../lessons/22-features.md)：訓練時不看類別標籤，如何形成可用特徵？ | 能區分訓練訊號與下游評估，核對停止梯度、teacher 更新及特徵分散；與同起點隨機特徵比較，分數相同時不能宣稱自監督改善 |
 | 23. 版本與定位（2 節） | [版本與可選預訓練操作](../lessons/23-dino-versions.md)、[patch 特徵接回定位](../lessons/23-detection-bridge.md)：特徵能做什麼，還缺哪些任務輸出？ | 區分 DINO／DINOv2／DINOv3 的原始來源；凍結 backbone，只訓練一個框與類別的 head；逐圖算 IoU 與聯合正確，不把結果當成多物件 AP |
 
-本支線的 DINO 是 2021 年的自監督影像特徵方法，與同名的 DETR 系列偵測器不同。預設課堂實驗都已用 CPU 核對，資料由固定 seed 畫出，不需下載權重；官方預訓練特徵另選。沒有新增 GPU 訓練或 DINOv3 實作，也不訓練原論文規模的模型。新版配對目標為 `lessons-v0.6.0`；教材整合、審查與發布的狀態見[驗證範圍](../status.md)。
+本支線的 DINO 是 2021 年的自監督影像特徵方法，與同名的 DETR 系列偵測器不同。預設課堂實驗都已用 CPU 核對，資料由固定 seed 畫出，不需下載權重；官方預訓練特徵另選。沒有新增 GPU 訓練或 DINOv3 實作，也不訓練原論文規模的模型。新版配對目標為 `lessons-v0.6.1`；教材整合、審查與發布的狀態見[驗證範圍](../status.md)。
 
 ## 貫穿全書的資料、檢查與實驗約定
 

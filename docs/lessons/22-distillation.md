@@ -1,6 +1,6 @@
 # 22.3 Teacher 怎麼提供答案，又不跟著 student 一起塌縮？
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/22-distillation.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-distillation.ipynb){ .md-button }
 
 [上一節](22-collapse.md)看到，一致的常數回答也能把簡單 loss 降到 0。現在仍用同一張矩形的兩個 view，讓一個模型讀 view 1，提供另一個模型讀 view 2 時要接近的分佈。本節要回答：**DINO 的答案怎麼產生、誰會被梯度更新，以及這些更新怎麼分開？**
 

@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0
+rootdir: /workspace/learn_to_yolo
+collected 101 items
+
+tests/test_checkpoint.py ..                                              [  1%]
+tests/test_core.py .......................                               [ 24%]
+tests/test_custom_data_report.py .....................................   [ 61%]
+tests/test_notebook_bootstrap.py ......                                  [ 67%]
+tests/test_release_verification.py .....                                 [ 72%]
+tests/test_result_figure_reflow.py ....                                  [ 76%]
+tests/test_review_coverage.py .                                          [ 77%]
+tests/test_self_distillation.py ...........                              [ 88%]
+tests/test_vision_transformer.py ............                            [100%]
+
+============================= 101 passed in 6.57s ==============================

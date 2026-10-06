@@ -1,0 +1,15 @@
+{
+  "base_commit": "561860b0a07d88eaff4c79bdabe6bafb011e69cc",
+  "new_ref": "lessons-v0.6.1",
+  "authored_body_changes_excluding_version_and_footer": [
+    "docs/lessons/01-small-cnn.md",
+    "docs/lessons/08-own-data.md",
+    "docs/lessons/12-anchor-free.md",
+    "docs/lessons/12-assignment.md",
+    "docs/lessons/21-patches.md"
+  ],
+  "all_52_notebook_case_code_unchanged": true,
+  "all_52_notebook_saved_stdout_unchanged": true,
+  "all_52_notebook_refs_updated": true,
+  "model_lesson_script_and_skill_code_unchanged": true
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "filename": "pytorch-functional-v2.9.1.py",
+    "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.9.1/torch/nn/functional.py",
+    "sha256": "5e96bb0880a4c6f4c0ae34c00a894e152412e68f6ffd073d2b442907eedeb5fa",
+    "bytes": 244561
+  },
+  {
+    "filename": "ultralytics-tal-441632.py",
+    "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/tal.py",
+    "sha256": "c69ec67990777a4d13df219ef9b254085b2df283fbe5fd283245b76d6b461b3c",
+    "bytes": 27549
+  },
+  {
+    "filename": "ultralytics-loss-441632.py",
+    "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/utils/loss.py",
+    "sha256": "8eb4e089b7c36cef13bb872f9aa37e346da5c022bcfd979e11e7a57a0666b106",
+    "bytes": 73120
+  },
+  {
+    "filename": "ultralytics-head-441632.py",
+    "url": "https://raw.githubusercontent.com/ultralytics/ultralytics/441632cdfd19e22e60a4b1b1999d46326ca51ec4/ultralytics/nn/modules/head.py",
+    "sha256": "6b118882874ee2550b2c5c819a712774e1c729faf9fdc5ae6f068996c9893d02",
+    "bytes": 88508
+  }
+]

@@ -1,6 +1,6 @@
 # 23.2 圖片特徵怎麼接回「紅藍與框在哪裡」？
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/23-detection-bridge.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/23-detection-bridge.ipynb){ .md-button }
 
 [22.4 節](22-features.md)用 CLS 特徵讀整張圖的顏色；[上一節](23-dino-versions.md)又區分了原始 DINO、後續版本與預訓練模型的範圍。現在回到本書一直關心的問題：**保留小型自監督 ViT，能不能接一個新 head，同時回答矩形是紅或藍、框在哪裡？**
 

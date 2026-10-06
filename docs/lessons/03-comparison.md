@@ -1,6 +1,6 @@
 # 3.3 Plain／residual 對照：先控制比較條件
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/03-comparison.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/03-comparison.ipynb){ .md-button }
 
 Residual 有直接路徑，是否就一定比 plain 更準？讀完你會知道：公平的對照要固定哪些條件、輸出怎麼讀，以及這種小實驗能寫出什麼程度的結論。前置是知道卷積與交叉熵；本節會重述 shortcut 的公式。
 

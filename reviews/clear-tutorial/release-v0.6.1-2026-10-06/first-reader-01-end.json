@@ -1,0 +1,467 @@
+{
+  "checkpoint": "01-end",
+  "scope": {
+    "newly_read": "reader-input/01-rest.txt L33-L309",
+    "available_prior": "00-prior；原始 01-start；01-corrected-start",
+    "unprovided_content_read": false,
+    "images": "仍未實看任何正文圖片，所有視覺、曲線與圖板描述均只依文字，未驗證。",
+    "original_answers": "不改 first-reader-01-start.json；本檔記節末理解與後來釐清位置。"
+  },
+  "reading_trace": {
+    "understanding": "卷積用同一個局部濾鏡掃不同位置；兩組卷積／ReLU／pooling 取得特徵，GAP 收起位置，head 給紅／藍分數。訓練是否接通與分類是否學好有不同證據。",
+    "reread": [
+      "L48 的『兩次卷積接 ReLU』起初可能讀成只在第二次卷積後接 ReLU；L86、L88 程式明確顯示每次卷積各接一個 ReLU，已釐清。",
+      "L143-L158 重新核對兩次實驗：40 步不是接著三步跑；步數、optimizer、學習率都不同。"
+    ],
+    "remaining_unknown": [
+      "未實看材料、掃窗、流程圖、錯誤圖板、曲線與感受野圖，因此不能驗證圖文吻合。",
+      "没有未參與訓練資料的結果；不能從已讀內容回答新圖片準確率。"
+    ]
+  },
+  "four_questions": [
+    {
+      "question": "1 新主要概念／方法是什麼、角色與前文關係？",
+      "claims": [
+        {
+          "answer": "卷積靠局部連接和權重共用，讓同一種局部計算用於不同位置；權重仍由前文的梯度更新學習。",
+          "status": "明說＋前文",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L36",
+              "quote": "卷積（convolution）先看一小塊鄰近區域，再用**同一套權重**去看下一塊。這套權重叫 **filter（濾鏡）**，也常叫 kernel（卷積核）。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L44",
+              "quote": "卷積省參數的原因是**局部連接加上權重共用**，不是圖片比較小。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L251",
+              "quote": "本節模型的濾鏡不是人工設計的，而是訓練時用梯度調整出來的權重。"
+            }
+          ]
+        },
+        {
+          "answer": "兩個 block 是特徵 backbone；GAP 與線性 head 把每圖特徵轉為分類分數。ReLU、pooling 分別加入非線性與縮小高寬。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L48",
+              "quote": "本節的 **block** 是「兩次卷積接 ReLU，再一次 pooling」。兩個 block 串起來叫 **backbone（提取特徵的主幹）**；最後把特徵變成類別分數的部分叫 **head**。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L58",
+              "quote": "中間加入 ReLU，多層才能表示這類單次乘加做不到的變化；這叫加入**非線性**。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L72",
+              "quote": "本節只要回答紅或藍，位置不是答案的一部分，所以先用 GAP 得到每圖 8 個特徵，再由 `Linear(8,2)` 變成兩個分數。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "2 為何在這裡教／回應什麼問題？",
+      "claims": [
+        {
+          "answer": "先前只更新一個乘法模型；現在具體解釋圖片的局部乘加與跨位置共用，接住開頭的讀圖問題。",
+          "status": "明說＋前文",
+          "evidence": [
+            {
+              "source": "01-corrected-start",
+              "lines": "L5",
+              "quote": "我們要做的 **CNN（Convolutional Neural Network，卷積神經網路）**怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L40",
+              "quote": "一個濾鏡同時讀 R、G、B 各一個 3×3 小塊，共 27 個值。把它們分別乘權重、相加，再加一個 bias，就得到這個位置的一個輸出數值。"
+            }
+          ]
+        },
+        {
+          "answer": "本次答案只有顏色，所以可先平均掉特徵位置；當問題變成物件在哪裡，這個選擇需要調整。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L72",
+              "quote": "本節只要回答紅或藍，位置不是答案的一部分，所以先用 GAP 得到每圖 8 個特徵"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L74",
+              "quote": "省下的代價是空間資訊被收起來。要回答「物件在哪裡」，我們就得重新保留它；[第 4 章](04-localization.md)會處理這個問題。"
+            }
+          ]
+        },
+        {
+          "answer": "兩個實驗使我分開流程接通、資料已學會、泛化這三層結論。",
+          "status": "明說＋推得",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L139",
+              "quote": "**參數有更新，不等於分類已學好。** 圖上的圖片都是訓練用的資料，也不是獨立測試。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L156",
+              "quote": "它支持「模型能學會這 8 張圖」，**不支持「新圖也都能分對」**。要談泛化，就需要未參與訓練的資料。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "3 如何用／輸入輸出及後用？",
+      "claims": [
+        {
+          "answer": "[8,3,32,32] 經兩個 block 到 [8,8,8,8]；GAP／flatten 到 [8,8]，head 到 [8,2] logits。交叉熵以正確類別產生 loss，再 backward／step。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L64",
+              "quote": "於是「兩次卷積 → pooling」把 `[8,3,32,32]` 變成 `[8,4,16,16]`；第二個 block 再變成 `[8,8,8,8]`。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L111-L116",
+              "quote": "features = model.features(images)                    # [8,8,8,8]\nsummary = model.pool(features).flatten(1)             # [8,8]\nlogits = model.head(summary)                          # [8,2]\nloss = torch.nn.functional.cross_entropy(logits, labels)\nloss.backward()\noptimizer.step()"
+            }
+          ]
+        },
+        {
+          "answer": "可沿模型定義和形狀核對流程；完整程式三次更新用 SGD，而重跑 40 步另從初始權重用 Adam。寬度練習把 channel 數改大，用公式核對參數與 MAC。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L125",
+              "quote": "完整程式固定 `torch.manual_seed(7)`，用 SGD、學習率 0.1，在這 8 張圖上更新三次。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L143",
+              "quote": "**重新從初始權重開始**更新 40 次。這次使用 **Adam（Adaptive Moment Estimation，自適應矩估計）**、學習率 0.01。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L168",
+              "quote": "把 `model = SmallCNN()` 改成 `model = SmallCNN(width=8)`。執行前，先用本節的公式手算："
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "4 例子或說明支持什麼及不能推出什麼？",
+      "claims": [
+        {
+          "answer": "手設邊緣濾鏡的乘加例子支持濾鏡能對特定局部圖樣有反應；不能認定此模型真的學了這個手設濾鏡。",
+          "status": "明說＋推得",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L251",
+              "quote": "所以這個濾鏡遇到「左暗右亮」的邊緣，輸出才大；在一片同色的區域，輸出是 0。本節模型的濾鏡不是人工設計的，而是訓練時用梯度調整出來的權重。"
+            }
+          ]
+        },
+        {
+          "answer": "2、6 交換後仍平均為 4，說明 GAP 這一步不留位置；不能只靠此例推出整個模型對所有平移都完全不變。",
+          "status": "明說（平均）＋推得（結論限度）",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L70",
+              "quote": "若兩個位置的值是 2、6，平均是 4；交換它們，平均還是 4。平均這一步本身不保留「哪個值在哪裡」。"
+            }
+          ]
+        },
+        {
+          "answer": "三步的有限梯度與權重改變支持訓練流程接通，但全猜藍仍未学好；40 步八張全對支持學會這批圖、利用顏色差異，不支持新圖都對或只是多跑步數造成改善。",
+          "status": "明說；圖板／曲線未驗證",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L133",
+              "quote": "程式確認圖片形狀與數值、每層輸出、參數數量、首層梯度是有限值，並確認首層權重真的改變。這些表示一次訓練流程接通了。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L137",
+              "quote": "三步後 8 張圖全部猜 1，也就是藍色；紅圖 0、2、4、6 全錯。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L154",
+              "quote": "圖 1／4、圖 3／6 各自位置相同而顏色不同，模型能給出不同答案，因此結果利用了顏色差異；只看位置做不到這件事。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L143",
+              "quote": "步數和 optimizer 同時改了，所以不能把差異只歸功於步數。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L156",
+              "quote": "它支持「模型能學會這 8 張圖」，**不支持「新圖也都能分對」**。"
+            }
+          ]
+        },
+        {
+          "answer": "參數、MAC 手算支持比較結構成本；不能直接換算速度，寬度練習也不足以判定較準。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-rest",
+              "lines": "L121",
+              "quote": "這是計算量粗估，不包含 ReLU、pooling 與資料搬移，也不能直接換成執行秒數。"
+            },
+            {
+              "source": "01-rest",
+              "lines": "L183",
+              "quote": "3 步、單一 seed、8 張圖，不足以判定寬模型比較準。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "named_methods": [
+    {
+      "name": "卷積／filter",
+      "identity": {
+        "quote": "先看一小塊鄰近區域，再用**同一套權重**去看下一塊。這套權重叫 **filter（濾鏡）**",
+        "lines": "L36",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "局部讀值、共用權重的操作已明確。"
+      },
+      "purpose": {
+        "quote": "卷積省參數的原因是**局部連接加上權重共用**",
+        "lines": "L44",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "接住不同位置重复使用與成本問題。"
+      },
+      "step_relation": {
+        "quote": "把它們分別乘權重、相加，再加一個 bias，就得到這個位置的一個輸出數值。",
+        "lines": "L40",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "輸入 RGB 小塊如何成為特徵圖的一格已能對應。"
+      }
+    },
+    {
+      "name": "ReLU",
+      "identity": {
+        "quote": "把負值變 0，正值保留",
+        "lines": "L56",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "有公式及 [-2,3] 例子。"
+      },
+      "purpose": {
+        "quote": "多層才能表示這類單次乘加做不到的變化；這叫加入**非線性**。",
+        "lines": "L58",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "用途與純乘加限制相連。"
+      },
+      "step_relation": {
+        "quote": "nn.Conv2d(3, width, 3, padding=1), nn.ReLU(),",
+        "lines": "L86",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "程式顯示每次卷積後接 ReLU。"
+      }
+    },
+    {
+      "name": "max pooling",
+      "identity": {
+        "quote": "把每個 2×2 小塊縮成一個數：只留下最大值。",
+        "lines": "L62",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "例子及 stride 2 已可理解。"
+      },
+      "purpose": {
+        "quote": "讓後面的層少看一些位置",
+        "lines": "L60",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "用途是縮小空間，不是新分類答案。"
+      },
+      "step_relation": {
+        "quote": "「兩次卷積 → pooling」把 `[8,3,32,32]` 變成 `[8,4,16,16]`",
+        "lines": "L64",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "所在 block 與形狀變化清楚。"
+      }
+    },
+    {
+      "name": "GAP",
+      "identity": {
+        "quote": "把每個 channel 的 8×8 共 64 個數平均成一個。",
+        "lines": "L70",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "操作、輸出和位置資訊代價都交代。"
+      },
+      "purpose": {
+        "quote": "本節只要回答紅或藍，位置不是答案的一部分",
+        "lines": "L72",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "選擇與当前任務相連。"
+      },
+      "step_relation": {
+        "quote": "先用 GAP 得到每圖 8 個特徵，再由 `Linear(8,2)` 變成兩個分數。",
+        "lines": "L72",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "backbone 到 head 的接口明确。"
+      }
+    },
+    {
+      "name": "Adam",
+      "identity": {
+        "quote": "Adam 也是 optimizer，會用過去梯度及其平方的平均，調整各參數的更新量。",
+        "lines": "L143",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "已有类别与更新作用，不需為读此结果先求完整公式。"
+      },
+      "purpose": {
+        "quote": "重新從初始權重開始**更新 40 次。這次使用 **Adam",
+        "lines": "L143",
+        "status": "明說＋推得",
+        "adequacy": "足夠",
+        "reason": "是第二個學習實驗的更新器；不需解释為何它必然勝過 SGD。"
+      },
+      "step_relation": {
+        "quote": "步數和 optimizer 同時改了，所以不能把差異只歸功於步數。",
+        "lines": "L143",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "清楚它替代第一個實驗的 SGD，結果比較有边界。"
+      }
+    },
+    {
+      "name": "感受野",
+      "identity": {
+        "quote": "這個可能影響它的範圍叫 **感受野（receptive field）**。",
+        "lines": "L66",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "知道指原图范围，選讀有逐層尺寸與回推。"
+      },
+      "purpose": {
+        "quote": "較深的特徵能結合較大範圍",
+        "lines": "L66",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "帮助理解多層局部运算为何能讀更大區域。"
+      },
+      "step_relation": {
+        "quote": "視窗邊長 k，每層讓範圍增加 `(k−1)×原本間距`；stride 2 再把間距加倍。",
+        "lines": "L230",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "選讀能沿卷積与 pooling 逐层核对，不需新增機制。"
+      }
+    },
+    {
+      "name": "VGG 風格",
+      "identity": {
+        "quote": "本節沿用它的幾條設計規則（3×3 卷積重複堆疊、2×2 的 max pooling、每次 pooling 後 channel 加倍",
+        "lines": "L308",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "借用範圍和改成 GAP 的区别已釐清。"
+      },
+      "purpose": {
+        "quote": "它是教學用的 CNN，不是 VGG16 的重現",
+        "lines": "L308",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "本節载体身份明确。"
+      },
+      "step_relation": {
+        "quote": "本節只有 4 層卷積；原版末端是三層很大的全連線層",
+        "lines": "L308",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "前文两 block 到 GAP/head 已完整衔接；没有误认为原版结构。"
+      }
+    },
+    {
+      "name": "cross_entropy／softmax／argmax",
+      "identity": {
+        "quote": "交叉熵取「正確類別 y 的機率」的負對數",
+        "lines": "L263",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "補上開頭預告的公式及 0.5→ln2 例子。"
+      },
+      "purpose": {
+        "quote": "正確類別的機率越接近 1，loss 越接近 0；機率越小，loss 越大。",
+        "lines": "L263",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "loss 與相信正確答案的關係明確。"
+      },
+      "step_relation": {
+        "quote": "loss = torch.nn.functional.cross_entropy(logits, labels)\nloss.backward()\noptimizer.step()",
+        "lines": "L114-L116",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "早期对接更新流程的推测已由本节程序确认；argmax 仍是预测操作。"
+      }
+    }
+  ],
+  "later_clarifications": [
+    {
+      "earlier": "開頭把上節說成已學會 2→4",
+      "at": "01-corrected-start L5",
+      "now": "明確說一次更新並拉近答案，已解決。"
+    },
+    {
+      "earlier": "同一套權重如何在不同位置用：未知，合理待教",
+      "at": "01-rest L36-L44",
+      "now": "局部掃窗共用同一 filter，RGB 27 值乘加加 bias，输出 channel 与省參數原因已清楚。"
+    },
+    {
+      "earlier": "四層卷積如何連接：未知",
+      "at": "01-rest L48-L101",
+      "now": "兩 block，各兩次卷積／ReLU 再 pooling；GAP 接 head，全部形狀与程式已給。"
+    },
+    {
+      "earlier": "cross_entropy 如何接上更新：用前文推得",
+      "at": "01-rest L110-L116",
+      "now": "程式明說 logits→loss→backward→step。"
+    },
+    {
+      "earlier": "三步、40步只有安排，結果未知",
+      "at": "01-rest L125-L158",
+      "now": "文字報告三步全猜藍；40步訓練圖全對，限制明確；圖片仍未驗證。"
+    },
+    {
+      "earlier": "交叉熵完整公式合理待教",
+      "at": "01-rest L257-L289",
+      "now": "選讀补公式、ln2 起點与float32零 loss／非零梯度，沒有形成主線門檻。"
+    }
+  ],
+  "necessary_issues": [],
+  "conclusion": "原先唯一必要文字问题已局部修正；在已读文字范围内，节末没有新的必要缺漏。图像验收仍未完成。"
+}

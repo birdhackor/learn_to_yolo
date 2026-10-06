@@ -1,6 +1,6 @@
 # 12.3 Sample assignment：哪個候選值得被教
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/12-assignment.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-assignment.ipynb){ .md-button }
 
 密集偵測器對一張影像輸出許多候選，標註卻可能只有兩個物件。訓練時要決定哪些候選當正樣本、各自學哪個物件，其餘的學背景；這一步叫樣本分配（sample assignment）。這裡的 sample 就是第 5 章說的正／負樣本，不是「範例」。第 5、7 章的規則是「物件中心所在的格負責」，只看標註，訓練前就能算好，而且永遠不變。本節的規則改用模型當下的分類分數和預測框，所以每訓練一步，誰當正樣本都可能改變。
 
@@ -8,7 +8,7 @@
 
 讀完本節，你能手算一個小例子裡每個候選歸哪個 GT，並說明這個結果怎麼變成 loss 的 target。前置：12.1 節的候選點與四邊距離、IoU（兩框交集面積÷聯集面積），以及分類 logits（還沒經過 sigmoid 的分類分數）。
 
-本節的挑法叫 task-aligned（任務對齊）：讓分類分數高的候選，剛好也是框最準的候選，也就是分類和定位兩個任務看中同一批候選。YOLOv8 使用的 task-aligned assignment（任務對齊分配）出自 [TOOD 論文](https://arxiv.org/abs/2108.07755)的 Task Alignment Learning（TAL，任務對齊學習）；task-aligned assignment 是 TAL 裡挑正樣本的那一部分。本節的規則分四步：
+本節的挑法叫 task-aligned（任務對齊）：讓分類分數高的候選，剛好也是框最準的候選，也就是分類和定位兩個任務看中同一批候選。YOLOv8 使用的 task-aligned assignment（任務對齊分配）出自 [TOOD：Task-aligned One-stage Object Detection（任務對齊的單階段物件偵測）](https://arxiv.org/abs/2108.07755)的 Task Alignment Learning（TAL，任務對齊學習）；task-aligned assignment 是 TAL 裡挑正樣本的那一部分。本節的規則分四步：
 
 1. **資格**：候選的參考點要嚴格落在 GT 框內。
 2. **品質**：品質（程式變數 `metric`）＝該 GT 類別的分類 score ×（預測框與 GT 的 IoU）²，越大越適合負責這個 GT。一般式是 score^α × IoU^β，本例取 α=1、β=2。

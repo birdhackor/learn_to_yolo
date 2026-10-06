@@ -4,7 +4,7 @@
 
 採用 **Zensical** 的 modern 主題：Markdown 與小型圖片建成純靜態 GitHub Pages。`zensical.toml` 管理中文導覽、內建搜尋、深淺色模式與快速換頁；`requirements-docs.txt` 固定建置版本。獨立 `.ipynb` 放在同一個 repository，網頁以 Colab URL 連過去。網站依賴與模型依賴分開，建置網站不需要 GPU、PyTorch 或訓練資料。
 
-本次配對範圍是 52 節：原第 0–20 章的 42 節主線，以及從 15.1 attention 分岔的第 21–23 章 10 節 ViT／DINO 選讀支線。本版教材與 notebook 固定為 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準，既有 `lessons-v0.5.0` 紀錄保留原本範圍。
+本次配對範圍是 52 節：原第 0–20 章的 42 節主線，以及從 15.1 attention 分岔的第 21–23 章 10 節 ViT／DINO 選讀支線。本版教材與 notebook 固定為 `lessons-v0.6.1`；公開入口驗證以保存紀錄中的 tag 與結果為準，既有 `lessons-v0.5.0` 紀錄保留原本範圍。
 
 Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag（已發布的固定版本標籤）再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
 

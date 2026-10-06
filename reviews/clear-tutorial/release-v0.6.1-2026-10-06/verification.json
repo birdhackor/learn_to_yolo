@@ -1,0 +1,79 @@
+{
+  "recorded_at_utc": "2026-10-06T11:54:01.362692+00:00",
+  "source_base": "561860b0a07d88eaff4c79bdabe6bafb011e69cc",
+  "target_ref": "lessons-v0.6.1",
+  "source_fingerprints_matched": true,
+  "raw_review_json_parsed": true,
+  "third_review_unresolved_required_issues": 0,
+  "ten_viewed_screenshot_fingerprints_matched": true,
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "scripts/validate_preparation.py"
+      ],
+      "returncode": 0,
+      "output": "Dataset manifest, section pairing, notebook code and website publication boundaries: OK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_lessons.py"
+      ],
+      "returncode": 0,
+      "output": "52 lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_curriculum_evidence.py"
+      ],
+      "returncode": 0,
+      "output": "52 lesson records and 12 supplementary records match the current code\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_site.py"
+      ],
+      "returncode": 0,
+      "output": "{\"builder\": \"zensical\", \"version\": \"0.0.67\", \"html_pages\": 70, \"lesson_pages\": 52, \"all_local_links_and_anchors\": \"passed\", \"colab_pairs\": \"passed\", \"markdown_rendering\": \"passed: tables, numbered lists, admonitions, math, links and no text parsed as tags\", \"search_language\": [\"zh-TW\"], \"all_lessons_indexed\": true, \"artifact_files\": 190, \"artifact_bytes\": 10034852, \"artifact_boundaries\": \"passed\"}\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "output": ""
+    }
+  ],
+  "prior_completed_checks": [
+    {
+      "command": ".venv-model/bin/python -m pytest tests/",
+      "result": "101 passed",
+      "log": "pytest.log"
+    },
+    {
+      "command": ".venv-docs/bin/zensical build --clean --strict",
+      "result": "passed; final corrected source",
+      "log": "build.log"
+    },
+    {
+      "command": ".venv-model/bin/python scripts/verify_curriculum.py --section 00-warmup --section 01-small-cnn --section 08-own-data --section 12-anchor-free --section 12-assignment --section 21-patches",
+      "result": "6 passed; stdout unchanged",
+      "log": "curriculum-refresh.log"
+    }
+  ],
+  "limits": [
+    "Local bounded release-delta review; not a new full-book blind acceptance.",
+    "Public tag/site/bootstrap verification is performed after tag creation and saved separately.",
+    "No Google-hosted Colab runtime test."
+  ],
+  "staged_diff_check": {
+    "authored_files": "passed",
+    "frozen_raw_input_exception": "434 numbered empty lines retain their original L<number>: prefix space; supplied input bytes and fingerprints preserved",
+    "other_whitespace_issues": 0
+  }
+}

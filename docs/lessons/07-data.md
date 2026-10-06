@@ -1,6 +1,6 @@
 # 7.1 Grid MiniYOLO：先讓資料可以被檢查
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/07-data.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-data.ipynb){ .md-button }
 
 前置：[多物件責任分配](05-assignment.md)、[座標轉換](04-coordinates.md)。本節要解決的問題是「模型讀進去的畫素（pixel），是否仍與框描述同一個物件」。若藍色矩形的框移到紅色矩形上，訓練可以照常降低某個 loss，卻是在學錯的任務。這是因為 loss 只比較模型輸出和標註，不會檢查標註是否真的框在那個物件上；標註一致地錯，模型就一致地學錯。
 

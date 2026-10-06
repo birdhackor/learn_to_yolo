@@ -1,6 +1,6 @@
 # 12.4 DFL：把一條邊距離學成分佈
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/12-dfl.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-dfl.ipynb){ .md-button }
 
 一條邊的距離，能不能不只輸出一個數，而是說成「比較接近 1 格，但也有一部分落在 2 格」？本節就把這個距離學成一組機率。讀完你能手算這種寫法的 loss、梯度，以及怎麼把機率還原成距離，也能說出它多付了哪些代價。
 

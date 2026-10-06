@@ -1,0 +1,374 @@
+{
+  "checkpoint": "01-start",
+  "role": "首次閱讀者",
+  "scope": {
+    "read": [
+      "reader-input/00-prior.txt L1-L245",
+      "reader-input/01-start.txt L1-L32"
+    ],
+    "unprovided_content_read": false,
+    "images": "正文圖片尚未實看；只讀到 L9 的替代文字與 L11 的文字解讀，視覺未驗證，未讀 SVG 原碼。",
+    "background": "基本 Python/PyTorch、NN/CNN；學過微積分與線代，但不假設熟練。",
+    "answers_preserved": "本檔為此批讀完時的原始理解，之後的新資訊不改寫本檔。"
+  },
+  "reading_trace": {
+    "initial_understanding": "先把上一節的更新流程換成紅／藍圖片分類；本節要解釋 CNN 讀圖及同一套權重為何能在不同位置使用。",
+    "conjectures": [
+      "標題的『局部圖樣重複使用』與 L5 的同一套權重用在不同位置應指同一件核心事，但目前不知道實際如何做到，不能當成已教完。",
+      "cross_entropy 產生的 loss 應接上前文 backward／step 的更新流程；這是用前文推得，這批沒有展示本節更新程式。"
+    ],
+    "reread": [
+      "核對前文 L55、L94、L109 與本節 L5：前文確實教了更新流程，但實際一次更新只答到 3.6，因此『學會把 2 變成 4』使我停下核對。",
+      "重看本節 L28-L32：類別 0/1 是位置索引，輸出分數依紅、藍排列；交叉熵收分數和正確類別，不先手動 softmax。"
+    ]
+  },
+  "four_questions": [
+    {
+      "question": "1 新主要概念／方法是什麼、角色與前文關係？",
+      "claims": [
+        {
+          "answer": "從單一數值的訓練更新，轉到 CNN 圖片分類；要理解讀圖和不同位置共用權重。",
+          "status": "明說＋前文",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L5",
+              "quote": "現在換成圖片：**看到紅矩形，回答 0；看到藍矩形，回答 1。** 我們要做的 **CNN（Convolutional Neural Network，卷積神經網路）**怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。"
+            },
+            {
+              "source": "00-prior",
+              "lines": "L94",
+              "quote": "**forward 算答案，loss 算錯多少，backward 算該怎麼調，step 才真的調。**之後模型變大，這條關係仍然相同。"
+            }
+          ]
+        },
+        {
+          "answer": "VGG 是這個小 CNN 借用的設計習慣：堆小 3×3 卷積、逐步縮小高寬；此處只有四層卷積。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L13",
+              "quote": "本節借用 **VGG** 的設計習慣：堆疊小的 3×3 卷積，中間逐步縮小高寬。VGG 的名稱來自提出它的牛津大學 Visual Geometry Group（視覺幾何研究團隊）。模型只有四層卷積，不是完整 VGG16。"
+            }
+          ]
+        },
+        {
+          "answer": "圖片以 NCHW 存成 batch；分類輸出是 logits，argmax 用來回答類別，交叉熵用來衡量錯誤。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L28",
+              "quote": "這個順序叫 **NCHW**：N 張圖、C 個 channel、高 H、寬 W。"
+            },
+            {
+              "source": "01-start",
+              "lines": "L30",
+              "quote": "這些還沒轉成機率的分數叫 **logits**。取分數較大的位置，就是預測類別；這個動作叫 `argmax`。"
+            },
+            {
+              "source": "01-start",
+              "lines": "L32",
+              "quote": "交叉熵衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "2 為何在這裡教／回應什麼問題？",
+      "claims": [
+        {
+          "answer": "前文已完成一個數的更新，並預告把输入換成圖片；此節具體回答小 CNN 如何讀圖，以及位置變了為何仍能用同一套權重。",
+          "status": "明說＋前文",
+          "evidence": [
+            {
+              "source": "00-prior",
+              "lines": "L109",
+              "quote": "這個例子確認了一次參數更新，還沒有學習圖片。下一節把輸入換成圖片，看看小 CNN 如何回答紅、藍分類；資料與模型會變大，但仍會用到這五行。"
+            },
+            {
+              "source": "01-start",
+              "lines": "L5",
+              "quote": "我們要做的 **CNN（Convolutional Neural Network，卷積神經網路）**怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。"
+            }
+          ]
+        },
+        {
+          "answer": "刻意讓同位置出現不同答案，是讓我知道顏色必須被用到；這批小資料方便理解實驗。",
+          "status": "明說；圖像未驗證",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L11",
+              "quote": "注意圖 1 和圖 4：矩形位置相同，答案卻不同。圖 3 和圖 6 也是如此。因此只記住「矩形在哪裡」不可能把 8 張全答對；模型需要利用顏色。這個安排是為了看懂小實驗，還不是對真實圖片的能力測試。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "3 如何用／輸入輸出及後用？",
+      "claims": [
+        {
+          "answer": "給模型 8 張 RGB 圖，float32 的輸入形狀為 [8,3,32,32]；正確答案是用 long 存的八個 0/1。",
+          "status": "明說",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L19",
+              "quote": "8 張圖片合成一個 **batch（一批）**，PyTorch 卷積接收的形狀是 `[8,3,32,32]`："
+            },
+            {
+              "source": "01-start",
+              "lines": "L28",
+              "quote": "圖片用 `float32`，也就是 32 位元浮點數；答案則是 8 個整數 `[0,1,0,1,0,1,0,1]`，用 PyTorch 的 `long` 型別存。"
+            }
+          ]
+        },
+        {
+          "answer": "模型每張輸出紅、藍兩個 logits，整批 [8,2]；argmax 取位置作預測。訓練把 logits 與正確類別直接交給 cross_entropy；loss 應再用於前文的 backward／step。",
+          "status": "明說（輸出及交叉熵）＋推得（接更新流程）",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L30",
+              "quote": "模型最後會給每張圖兩個分數，順序固定為「紅、藍」，整批輸出形狀是 `[8,2]`。"
+            },
+            {
+              "source": "01-start",
+              "lines": "L32",
+              "quote": "訓練時把 logits 和正確類別交給 `cross_entropy`（交叉熵）。"
+            },
+            {
+              "source": "01-start",
+              "lines": "L32",
+              "quote": "PyTorch 的這個函式會在內部處理分數到機率的計算，因此**直接交入 logits**，不用先做 softmax。"
+            },
+            {
+              "source": "00-prior",
+              "lines": "L94",
+              "quote": "**forward 算答案，loss 算錯多少，backward 算該怎麼調，step 才真的調。**"
+            }
+          ]
+        },
+        {
+          "answer": "後文預計走讀圖、一次更新，再做 3 步流程確認與 40 步這批圖分類；目前我還不能自己寫出四層 CNN 的完整 forward。",
+          "status": "明說（安排）＋未知（forward 細節）",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L13",
+              "quote": "先走完讀圖與一次更新，再看兩個 CPU 實驗：3 步確認流程，40 步檢查是否能分對這批圖。"
+            }
+          ],
+          "assessment": "合理待教，因為這裡明說接著才走讀圖與更新。"
+        }
+      ]
+    },
+    {
+      "question": "4 例子或說明支持什麼及不能推出什麼？",
+      "claims": [
+        {
+          "answer": "按文字描述，同位置不同標籤的配對排除只靠位置全答對；不能推出目前模型已用顏色，或能分類真實圖片。",
+          "status": "明說（配對與限制）＋推得（未證明模型行為）；圖像未驗證",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L11",
+              "quote": "因此只記住「矩形在哪裡」不可能把 8 張全答對；模型需要利用顏色。這個安排是為了看懂小實驗，還不是對真實圖片的能力測試。"
+            }
+          ]
+        },
+        {
+          "answer": "黑、紅、藍的三個數說明 channel 數值怎樣編碼顏色；沒有提供把 CNN 從輸入推到兩個分數的計算示例。",
+          "status": "明說（編碼）＋未知（CNN 計算）",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L17",
+              "quote": "RGB 圖可以看成三張疊在一起的數值表：紅、綠、藍各一張。每一張叫一個 **channel（通道）**。本節顏色數值介於 0 和 1；黑色是 `[0,0,0]`，純紅是 `[1,0,0]`，純藍是 `[0,0,1]`。"
+            }
+          ],
+          "assessment": "目前不用補算例；讀圖過程合理待教。"
+        },
+        {
+          "answer": "[2,1] 支持 argmax 是取最大分數的位置，故預測紅色類別 0；不能把 2、1 直接讀成機率。",
+          "status": "明說＋推得",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L30",
+              "quote": "這些還沒轉成機率的分數叫 **logits**。取分數較大的位置，就是預測類別；這個動作叫 `argmax`。例如 `[2,1]` 的答案是 0。"
+            }
+          ]
+        },
+        {
+          "answer": "3 步與 40 步是後文檢查目的的安排，這批內容尚未展示成功結果。",
+          "status": "明說（安排）＋未知（結果）",
+          "evidence": [
+            {
+              "source": "01-start",
+              "lines": "L13",
+              "quote": "再看兩個 CPU 實驗：3 步確認流程，40 步檢查是否能分對這批圖。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "named_methods": [
+    {
+      "name": "CNN",
+      "identity": {
+        "quote": "CNN（Convolutional Neural Network，卷積神經網路）",
+        "lines": "01-start L5",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "知道名稱及本節的圖片分類角色；不必在開頭先重教全部 NN。"
+      },
+      "purpose": {
+        "quote": "怎麼讀圖？為什麼同一套權重能用在不同位置？這是本節的主要問題。",
+        "lines": "01-start L5",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "清楚知道這次要解決的問題。"
+      },
+      "step_relation": {
+        "quote": "先走完讀圖與一次更新，再看兩個 CPU 實驗",
+        "lines": "01-start L13",
+        "status": "明說",
+        "adequacy": "合理待教",
+        "reason": "流程位置已交代；局部圖樣及共用權重的做法尚未教，但下一段讀圖應接住。"
+      }
+    },
+    {
+      "name": "VGG 設計習慣",
+      "identity": {
+        "quote": "本節借用 **VGG** 的設計習慣：堆疊小的 3×3 卷積，中間逐步縮小高寬。",
+        "lines": "01-start L13",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "知道借用的具體設計，不必先熟悉完整 VGG16。"
+      },
+      "purpose": {
+        "quote": "讓局部圖樣重複使用",
+        "lines": "01-start L1",
+        "status": "推得",
+        "adequacy": "足夠",
+        "reason": "依標題及 L5，理解這個 VGG 風格小 CNN 是教局部讀圖與跨位置使用權重的載體；未宣稱必須選 VGG。"
+      },
+      "step_relation": {
+        "quote": "模型只有四層卷積，不是完整 VGG16。先走完讀圖與一次更新",
+        "lines": "01-start L13",
+        "status": "明說",
+        "adequacy": "合理待教",
+        "reason": "知道要讀的是哪個模型，四層如何連接可等接下來的讀圖。"
+      }
+    },
+    {
+      "name": "argmax",
+      "identity": {
+        "quote": "取分數較大的位置，就是預測類別；這個動作叫 `argmax`。",
+        "lines": "01-start L30",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "這個二類例子的動作已可執行。"
+      },
+      "purpose": {
+        "quote": "就是預測類別",
+        "lines": "01-start L30",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "把分數轉成模型的類別回答。"
+      },
+      "step_relation": {
+        "quote": "模型最後會給每張圖兩個分數，順序固定為「紅、藍」",
+        "lines": "01-start L30",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "接在模型 logits 輸出後；[2,1]→0 使索引和類別對得上。"
+      }
+    },
+    {
+      "name": "cross_entropy",
+      "identity": {
+        "quote": "交叉熵衡量模型有多不相信正確答案：正確類別的機率越高，loss 越小。",
+        "lines": "01-start L32",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "已有能理解用途的 loss 意義，完整公式明說放頁尾選讀。"
+      },
+      "purpose": {
+        "quote": "訓練時把 logits 和正確類別交給 `cross_entropy`（交叉熵）。",
+        "lines": "01-start L32",
+        "status": "明說＋前文",
+        "adequacy": "足夠",
+        "reason": "本節用它算分類 loss；loss 用於更新的角色已有前文 L94。"
+      },
+      "step_relation": {
+        "quote": "直接交入 logits，不用先做 softmax。",
+        "lines": "01-start L32",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "輸入介面及與 softmax 的先後已清楚；無需此時知道內部公式。"
+      }
+    },
+    {
+      "name": "softmax",
+      "identity": {
+        "quote": "**softmax** 把一張圖的各個 logits 換成類別機率：分數越大，機率越大，各類機率合計為 1。",
+        "lines": "01-start L32",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "知道輸入、輸出及機率性質。"
+      },
+      "purpose": {
+        "quote": "正確類別的機率越高，loss 越小。",
+        "lines": "01-start L32",
+        "status": "推得",
+        "adequacy": "足夠",
+        "reason": "用它的機率意義來理解交叉熵如何衡量不相信正確答案。"
+      },
+      "step_relation": {
+        "quote": "PyTorch 的這個函式會在內部處理分數到機率的計算，因此**直接交入 logits**，不用先做 softmax。",
+        "lines": "01-start L32",
+        "status": "明說",
+        "adequacy": "足夠",
+        "reason": "不需要另加 softmax 才能訓練。"
+      }
+    }
+  ],
+  "necessary_issues": [
+    {
+      "location": "01-start L5",
+      "issue": "『上一節讓一個權重學會把 2 變成 4』和实际前文的一次更新結果不一致。",
+      "reader_effect": "我原本以為上一節已得到目標 4，回讀才確認它只示範一次更新，預測是 3.6。這會混淆『做了一步訓練』和『已學到目標』。",
+      "evidence": [
+        {
+          "source": "01-start",
+          "lines": "L5",
+          "quote": "上一節讓一個權重學會把 2 變成 4。"
+        },
+        {
+          "source": "00-prior",
+          "lines": "L55",
+          "quote": "用新 w 再算一次：預測 \\(1.8\\times2=3.6\\)，loss 是 \\((3.6-4)^2=0.16\\)。"
+        },
+        {
+          "source": "00-prior",
+          "lines": "L109",
+          "quote": "這個例子確認了一次參數更新，還沒有學習圖片。"
+        }
+      ],
+      "status": "需補／修正"
+    }
+  ],
+  "reasonable_pending": [
+    "卷積如何讀局部圖樣、如何在不同位置用同一套權重：本節主要問題已提出，但這批尚未解答，可等讀圖段落。",
+    "四層卷積與縮小高寬的具體連接：已預告接著走讀圖，合理待教。",
+    "交叉熵完整公式：L32 明說用途先行、頁尾選讀，目前不是必要缺漏。",
+    "圖片內容與文字配對是否吻合：尚未實看，不能下驗證結論。"
+  ]
+}

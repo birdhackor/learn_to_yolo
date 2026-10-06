@@ -1,8 +1,10 @@
 # 21.1 ViT patches：把圖片排成一串小塊
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-patches.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-patches.ipynb){ .md-button }
 
 [第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。**Vision Transformer（視覺 Transformer），簡稱 ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。
+
+本支線會讓這些向量透過已學的 attention 互相讀取內容，再彙整整圖的表示，交給分類頭回答顏色。本節先準備這串向量；後三節依序接上讀取、完整分類模型與訓練。
 
 這四節是從第 15 章分出的自選支線。你可以先讀 [1：小 CNN](01-small-cnn.md)、[3.1：identity shortcut](03-identity.md)與 [15.1：attention](15-attention-bridge.md)，再從這裡往下走；完成 YOLO 主線不需要先完成這條支線。
 
@@ -90,7 +92,7 @@ attention 不直接使用那 192 個原始值。本例用同一個可學線性�
 
 本節採用 [ViT 原論文 §3.1 的式 (1)](https://arxiv.org/html/2010.11929#S3.SS1)：patch 投影、可學 CLS 和位置向量。這裡把圖、向量寬度與深度大幅縮小，目的是在 CPU 看清楚流程；它不是原論文預訓練的大模型。
 
-[下一節：21.2 patch 之間怎麼交換內容](21-attention.md) · [在 Colab 重做切塊](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/21-patches.ipynb)
+[下一節：21.2 patch 之間怎麼交換內容](21-attention.md) · [在 Colab 重做切塊](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-patches.ipynb)
 
 <!-- curriculum-evidence:start -->
 

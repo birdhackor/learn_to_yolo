@@ -1,0 +1,29 @@
+{
+  "checkpoint": "01-correction",
+  "scope": "只比對已提供的原始 01-start 與 01-corrected-start；未讀下一批。圖片仍未驗證。",
+  "changes": [
+    {
+      "lines": "L5",
+      "original_quote": "上一節讓一個權重學會把 2 變成 4。",
+      "corrected_quote": "上一節讓一個權重做了一次更新，把預測從 2 拉近答案 4。",
+      "assessment": "足夠，原必要問題已解決。",
+      "understanding": "現在理解為做一步更新後向答案靠近，沒有以為上一節已達到 4。",
+      "evidence": [
+        {
+          "source": "00-prior",
+          "lines": "L55",
+          "quote": "用新 w 再算一次：預測 \\(1.8\\times2=3.6\\)，loss 是 \\((3.6-4)^2=0.16\\)。"
+        },
+        {
+          "source": "00-prior",
+          "lines": "L109",
+          "quote": "這個例子確認了一次參數更新，還沒有學習圖片。"
+        }
+      ],
+      "status": "明說＋前文"
+    }
+  ],
+  "other_changes_observed": "L1-L4、L6-L32 未見內容變動。",
+  "necessary_issues": [],
+  "original_checkpoint": "first-reader-01-start.json 保持原樣；本檔只追加修正核回。"
+}

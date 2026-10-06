@@ -6,7 +6,7 @@
 
 本次工作版安排 52 節：第 0–20 章的原有 42 節主線，加上第 21–23 章的 10 節 ViT／DINO 選讀支線。主線順序不變；學過 CNN、ResNet 與 [15.1 attention](docs/lessons/15-attention-bridge.md) 後，可分岔讀 [21.1 圖片切成 patch](docs/lessons/21-patches.md)，理解圖片如何交給 Transformer、自監督特徵如何學習，再接回單物件定位。只讀網頁也能學；每節配對一本獨立 notebook。
 
-本版教材與 notebook 固定到 `lessons-v0.6.0`；公開入口驗證以保存紀錄中的 tag 與結果為準。既有 `lessons-v0.5.0` 的發布驗證與依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做的主線審查保留原本範圍；[原始閱讀紀錄與處理](reviews/clear-tutorial/16f6910/)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查也保存在 [`reviews/`](reviews/)，不改標成盲讀，也不當成新支線的審查。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[驗證範圍](docs/status.md)。模型是教學用的簡化版，不是原版的完整重現。
+本版教材與 notebook 固定到 `lessons-v0.6.1`；公開入口驗證以保存紀錄中的 tag 與結果為準。既有 `lessons-v0.5.0` 的發布驗證與依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做的主線審查保留原本範圍；[原始閱讀紀錄與處理](reviews/clear-tutorial/16f6910/)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查也保存在 [`reviews/`](reviews/)，不改標成盲讀，也不當成新支線的審查。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[驗證範圍](docs/status.md)。模型是教學用的簡化版，不是原版的完整重現。
 
 2026-10-06 已依新版四題重新審閱全部 52 節，保留分段閱讀、修正、非作者技術核對與前後銜接紀錄，見[本輪總覽](reviews/clear-tutorial/full-review-2026-10-06/README.md)。四題仍有 DINO 介紹漏抓與逐項引用缺陷，不能把保存答案當成嚴格盲讀全面合格；原始紀錄及獨立裁定一併保留。
 

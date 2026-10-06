@@ -1,6 +1,6 @@
 # 15.1 Feature map 到 attention：四個位置怎麼互相讀取
 
-[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.0/notebooks/15-attention-bridge.ipynb){ .md-button }
+[在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/15-attention-bridge.ipynb){ .md-button }
 
 3×3 卷積在每個位置都用同一組濾鏡，一層只讀以自己為中心的 3×3 格。這組權重訓練完就固定，不管輸入哪張圖都一樣。特徵圖很大時，要讓左上角知道右下角的資訊，得疊很多層卷積。attention（注意力）換一種讀法：每個位置一層就能讀所有位置，而且「讀誰多一點」是用當下的特徵算出來的，換一張圖就不同。
 
