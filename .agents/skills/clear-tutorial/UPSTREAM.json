@@ -6,9 +6,9 @@
   "original_import_commit": "439603b0380ee6e75b85fb8e8cf5d5ef3aa4872f",
   "checksum_scope": "The hashes below describe the pinned upstream originals, not the locally adapted working files.",
   "local_adaptations": [
-    "SKILL.md: preserve original learning questions, distinguish claims from explanations, and return from local properties to the nearest unanswered question.",
-    "references/review-protocol.md: seal independent judgments before cross-audits/history; distinguish source material from reviewer-added needs and check a qualifier's incremental purpose without rejecting valid inference.",
-    "references/writing-prompt.md and references/calibration.md: keep concise author instructions and cross-domain positive/negative calibration without same-course repair answers.",
+    "SKILL.md: retain original questions, commitment/support coverage and action semantics; assess the nearest local explanation before whole-lesson impact while preserving valid inference.",
+    "references/review-protocol.md: align existing impact/severity fields with local explanation; optional relocation is a repair, not proof of sufficiency; seal independent evidence before peers/history.",
+    "references/writing-prompt.md and references/calibration.md: cross-domain reason contrasts for commitment coverage, local obligations, choice needs and object pairing with harmless and sufficient boundaries.",
     "references/project-context.md: keep YOLO reader background, technical facts and repository checks for authors, coordinators and technical reviewers.",
     "references/review-example-10-5.md: remove the external VLM case from the active skill and preserve it unchanged in repository review history."
   ],
