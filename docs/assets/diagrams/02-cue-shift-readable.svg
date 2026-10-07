@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 420" role="img" aria-labelledby="title desc"><title id="title">真正線索保持不變，偶然線索反轉</title><desc id="desc">紅類的a一直是負0.2，藍類的a一直是正0.2。訓練時紅的b為負1、藍的b為正1；驗證把b反轉，類別仍由a決定。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647b"/></marker></defs>
+<rect width="560" height="420" rx="14" fill="#f8fafc"/>
+<text x="280" y="38" font-family="Noto Sans CJK TC, sans-serif" font-size="25" text-anchor="middle" font-weight="bold" fill="#172b46">答案由 a 決定，b 只是偶然線索</text>
+<text x="140" y="85" font-family="Noto Sans CJK TC, sans-serif" font-size="24" text-anchor="middle" font-weight="bold" fill="#b91c1c">紅：類別 0</text>
+<text x="420" y="85" font-family="Noto Sans CJK TC, sans-serif" font-size="24" text-anchor="middle" font-weight="bold" fill="#1d4ed8">藍：類別 1</text>
+<rect x="26" y="112" width="228" height="78" rx="8" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="140" y="143" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">訓練</text>
+<text x="140" y="176" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">a=−0.2，b=−1</text>
+<path d="M140 196 L140 265" fill="none" stroke="#52647b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="200" y="238" font-family="Noto Sans CJK TC, sans-serif" font-size="20" text-anchor="middle" font-weight="normal" fill="#172b46">只改 b</text>
+<rect x="306" y="112" width="228" height="78" rx="8" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="420" y="143" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">訓練</text>
+<text x="420" y="176" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">a=0.2，b=1</text>
+<path d="M420 196 L420 265" fill="none" stroke="#52647b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="480" y="238" font-family="Noto Sans CJK TC, sans-serif" font-size="20" text-anchor="middle" font-weight="normal" fill="#172b46">只改 b</text>
+<rect x="26" y="275" width="228" height="78" rx="8" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="140" y="306" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">驗證</text>
+<text x="140" y="339" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">a=−0.2，b=1</text>
+<rect x="306" y="275" width="228" height="78" rx="8" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="420" y="306" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">驗證</text>
+<text x="420" y="339" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">a=0.2，b=−1</text>
+<text x="280" y="396" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">a 與類別的關係不變；只靠 b 就會失敗</text>
+</svg>

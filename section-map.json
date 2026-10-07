@@ -14,7 +14,7 @@
     },
     {
       "id": "00-warmup",
-      "title": "一次學習的超短暖身",
+      "title": "A.0 神經網路與第一次學習",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/00-warmup.md",
@@ -24,7 +24,7 @@
     },
     {
       "id": "01-small-cnn",
-      "title": "VGG 風格小 CNN",
+      "title": "A.1 CNN 如何讀圖",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/01-small-cnn.md",
@@ -34,7 +34,7 @@
     },
     {
       "id": "02-diagnostics",
-      "title": "訓練診斷",
+      "title": "A.2 訓練診斷",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/02-diagnostics.md",
@@ -44,7 +44,7 @@
     },
     {
       "id": "03-identity",
-      "title": "ResNet identity shortcut",
+      "title": "A.3.1 ResNet 原樣捷徑",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/03-identity.md",
@@ -54,7 +54,7 @@
     },
     {
       "id": "03-projection",
-      "title": "ResNet projection shortcut",
+      "title": "A.3.2 ResNet 投影捷徑",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/03-projection.md",
@@ -64,7 +64,7 @@
     },
     {
       "id": "03-comparison",
-      "title": "Plain／residual 對照",
+      "title": "A.3.3 Plain／residual 對照",
       "kind": "lesson",
       "status": "ready",
       "page": "docs/lessons/03-comparison.md",

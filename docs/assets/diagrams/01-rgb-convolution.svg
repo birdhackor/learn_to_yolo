@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" role="img" aria-labelledby="title desc"><title id="title">RGB的一個3乘3濾鏡有三層權重</title><desc id="desc">R、G、B的3乘3區域各乘對應通道權重，再將三份加總，加一個bias，得到一個輸出值。空間3乘3，輸入深度3，所以有27個權重。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647b"/></marker></defs>
+<rect width="560" height="440" rx="14" fill="#f8fafc"/>
+<text x="280" y="37" font-family="Noto Sans CJK TC, sans-serif" font-size="26" text-anchor="middle" font-weight="bold" fill="#172b46">同一個空間位置，讀三個通道</text>
+<rect x="22" y="62" width="225" height="59" rx="8" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="135" y="100" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">R 的 3×3：9 個值</text>
+<text x="272" y="100" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">×</text>
+<rect x="298" y="62" width="235" height="59" rx="8" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="415" y="100" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">R 的 9 個權重</text>
+<rect x="22" y="142" width="225" height="59" rx="8" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="135" y="180" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">G 的 3×3：9 個值</text>
+<text x="272" y="180" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">×</text>
+<rect x="298" y="142" width="235" height="59" rx="8" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="415" y="180" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">G 的 9 個權重</text>
+<rect x="22" y="222" width="225" height="59" rx="8" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="135" y="260" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">B 的 3×3：9 個值</text>
+<text x="272" y="260" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">×</text>
+<rect x="298" y="222" width="235" height="59" rx="8" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="415" y="260" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">B 的 9 個權重</text>
+<path d="M135 284 L220 320" fill="none" stroke="#52647b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M415 284 L340 320" fill="none" stroke="#52647b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="115" y="324" width="330" height="58" rx="8" fill="#ffedd5" stroke="#94a3b8" stroke-width="2"/>
+<text x="280" y="361" font-family="Noto Sans CJK TC, sans-serif" font-size="23" text-anchor="middle" font-weight="normal" fill="#172b46">三份乘加的總和 + 一個 bias</text>
+<text x="280" y="417" font-family="Noto Sans CJK TC, sans-serif" font-size="24" text-anchor="middle" font-weight="bold" fill="#172b46">→ 一個輸出通道的一個值</text>
+</svg>

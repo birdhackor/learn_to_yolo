@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" role="img" aria-labelledby="title desc"><title id="title">2乘2最大池化</title><desc id="desc">將4乘4矩陣分成四塊2乘2，每塊各取最大值，依原本排列形成2乘2矩陣。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#52647b"/></marker></defs>
+<rect width="560" height="300" rx="14" fill="#f8fafc"/>
+<text x="280" y="37" font-family="Noto Sans CJK TC, sans-serif" font-size="26" text-anchor="middle" font-weight="bold" fill="#172b46">2×2 取最大值，步幅 2</text>
+<rect x="28" y="72" width="46" height="46" rx="0" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="51.0" y="103.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">1</text>
+<rect x="74" y="72" width="46" height="46" rx="0" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="97.0" y="103.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">6</text>
+<rect x="120" y="72" width="46" height="46" rx="0" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="143.0" y="103.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">2</text>
+<rect x="166" y="72" width="46" height="46" rx="0" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="189.0" y="103.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">8</text>
+<rect x="28" y="118" width="46" height="46" rx="0" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="51.0" y="149.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">3</text>
+<rect x="74" y="118" width="46" height="46" rx="0" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="97.0" y="149.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">4</text>
+<rect x="120" y="118" width="46" height="46" rx="0" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="143.0" y="149.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">5</text>
+<rect x="166" y="118" width="46" height="46" rx="0" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="189.0" y="149.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">0</text>
+<rect x="28" y="164" width="46" height="46" rx="0" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="51.0" y="195.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">9</text>
+<rect x="74" y="164" width="46" height="46" rx="0" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="97.0" y="195.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">1</text>
+<rect x="120" y="164" width="46" height="46" rx="0" fill="#ffedd5" stroke="#94a3b8" stroke-width="2"/>
+<text x="143.0" y="195.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">7</text>
+<rect x="166" y="164" width="46" height="46" rx="0" fill="#ffedd5" stroke="#94a3b8" stroke-width="2"/>
+<text x="189.0" y="195.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">2</text>
+<rect x="28" y="210" width="46" height="46" rx="0" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="51.0" y="241.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">0</text>
+<rect x="74" y="210" width="46" height="46" rx="0" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="97.0" y="241.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">3</text>
+<rect x="120" y="210" width="46" height="46" rx="0" fill="#ffedd5" stroke="#94a3b8" stroke-width="2"/>
+<text x="143.0" y="241.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">4</text>
+<rect x="166" y="210" width="46" height="46" rx="0" fill="#ffedd5" stroke="#94a3b8" stroke-width="2"/>
+<text x="189.0" y="241.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">6</text>
+<path d="M238 165 L326 165" fill="none" stroke="#52647b" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="350" y="119" width="46" height="46" rx="0" fill="#fee2e2" stroke="#94a3b8" stroke-width="2"/>
+<text x="373.0" y="150.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">6</text>
+<rect x="396" y="119" width="46" height="46" rx="0" fill="#dbeafe" stroke="#94a3b8" stroke-width="2"/>
+<text x="419.0" y="150.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">8</text>
+<rect x="350" y="165" width="46" height="46" rx="0" fill="#dcfce7" stroke="#94a3b8" stroke-width="2"/>
+<text x="373.0" y="196.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">9</text>
+<rect x="396" y="165" width="46" height="46" rx="0" fill="#ffedd5" stroke="#94a3b8" stroke-width="2"/>
+<text x="419.0" y="196.0" font-family="Noto Sans CJK TC, sans-serif" font-size="22" text-anchor="middle" font-weight="normal" fill="#172b46">7</text>
+<text x="120" y="284" font-family="Noto Sans CJK TC, sans-serif" font-size="24" text-anchor="middle" font-weight="normal" fill="#172b46">4×4</text>
+<text x="395" y="250" font-family="Noto Sans CJK TC, sans-serif" font-size="24" text-anchor="middle" font-weight="normal" fill="#172b46">2×2</text>
+</svg>

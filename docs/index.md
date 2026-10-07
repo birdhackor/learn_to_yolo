@@ -1,50 +1,57 @@
-# 從一個小 CNN，走到你看得懂的 YOLO
+# 從圖片分類，走到你看得懂的 YOLO
 
-把一張圖片交給模型，它能回答「這張圖是紅色方塊」。如果我們還想知道方塊在哪裡呢？模型就要多給一個框，標出位置。
+人看一張照片，很快就能認出貓、車子或行人。但對電腦來說，照片起初只是許多數字：哪一組數字代表貓？光線變了、貓轉過身，還認得出來嗎？這曾是人工智慧（AI，Artificial Intelligence）很難跨過的一道門檻。
 
-這是本教材要帶你走過的改變：從**整張圖的分類**，走到**物件的類別與位置**。後者叫物件偵測（object detection）。
+## 電腦怎麼開始看懂圖片
 
-![同一張黑底紅色方塊圖：分類回答紅色，偵測還要給出位置框](assets/diagrams/classification-vs-detection.svg){ width="520" }
+早期的影像辨識，常由人先設計規則，或挑出邊緣、紋理等特徵，再交給傳統機器學習（ML，Machine Learning）方法分類。這些方法能解決一些問題，但面對種類多、背景雜、外觀變化大的照片，很難靠有限的手工設計涵蓋所有情況。
 
-上圖是兩種任務的答案示意。藍框表示希望模型找出的位置；它是人事先畫好的範例答案。
+轉折需要的不只有一個更好的公式。李飛飛與研究團隊推動的 **ImageNet**，讓研究者能取得大量帶有類別標註的圖片，並在共同的任務上比較進步。到了 **2012 年**，Alex Krizhevsky、Ilya Sutskever 與 Geoffrey Hinton 團隊的 **AlexNet**，在 ImageNet 影像辨識競賽中大幅領先其他方法。大量資料、卷積神經網路與 GPU 運算在這裡交會，成為現代深度學習快速發展的重要轉折。
 
-**YOLO（You Only Look Once，只看一次）**是一系列物件偵測模型，讓圖片經過一次網路的前向計算，就同時預測物件的類別與位置；之後仍可能需要篩選或去除重複框。本教材用 PyTorch（深度學習函式庫）寫很小的模型，讓你親手看懂它們怎麼算、怎麼學，以及不同版本為什麼改設計。我們把這些教學用偵測器稱為 **MiniYOLO**。
+卷積神經網路並非那年才出現。這次突破讓大家更清楚看見：與其把辨識線索逐項寫死，也可以讓多層網路從資料中學出有用的表示。後來的 **VGG** 用堆疊小卷積探索更深的網路；**ResNet** 則讓很深的網路更容易訓練。本書先學它們的核心做法，是因為偵測器也需要先從圖片讀出有用的特徵。
 
-[從第 0 章暖身開始](lessons/00-warmup.md){ .md-button .md-button--primary }
+## 認出一張圖，還不夠應付一個場景
+
+手寫數字辨識是一個容易想像的分類任務：一張圖給一個答案，例如「7」。照片分類也可以問「這張圖主要是什麼？」這種**整圖分類**只要求輸出類別；圖裡仍可能有背景或其他物件，CNN、VGG、ResNet 本身也沒有只能看一個物件的限制。
+
+換成路口監視器，問題就變了。同一畫面有三個行人、兩輛車，我們需要逐一知道「是什麼」與「在哪裡」。通常用 **bounding box（BBOX，包圍框）**標出物件範圍。這叫**物件偵測（object detection）**。如果畫面持續更新，還得夠快，才有時間回應正在移動的人與車；這也是自動駕駛等應用重視偵測速度的原因。
+
+![同一張圖的兩種答案：分類只回答紅色方塊，偵測還要給位置框](assets/diagrams/classification-vs-detection.svg){ width="520" }
+
+上圖用一個方塊把差別縮小給你看：分類回答類別，偵測還回答範圍。藍框是人畫好的示意答案；後面會讓模型學著預測它，再擴展到同圖多個物件。
+
+**YOLO（You Only Look Once，只看一次）**在 2015 年提出，把類別與位置放在一次網路前向計算中預測，成為即時物件偵測的重要路線之一。偵測方法早在 YOLO 之前就存在；YOLO 的吸引力在於把流程整合得很直接，兼顧速度與辨識。不同版本之後仍可能需要篩選或去除重複框。
+
+## 本書沿著這些問題往前走
+
+我們用 PyTorch（Python 的深度學習函式庫）做很小的模型。先把一個神經元如何計算、梯度下降如何訓練弄懂，再讓 CNN 讀圖；之後才加上位置、同圖多物件與 YOLO 的不同設計。本書的教學用偵測器稱為 **MiniYOLO**。
+
+[從 A.0：神經網路與第一次學習開始](lessons/00-warmup.md){ .md-button .md-button--primary }
 [檢視完整閱讀路線](learning-path.md){ .md-button }
 
-## 這裡怎麼學
+1. **A／第 0–3 章：模型怎麼學？**從神經元與梯度下降走到小 CNN，再檢查訓練問題、認識 ResNet 的捷徑。
+2. **B／第 4–8 章：怎麼多回答位置與物件？**加入框，接起資料、訓練、推論與評估，再使用自己的圖片。
+3. **C／第 9–16 章：YOLO 為什麼改設計？**用小實驗看不同版本想解決的問題、收益與代價。
+4. **D／第 17–20 章：怎麼用起來？**完成結業任務，再按需求選讀影片、追蹤與部署。
 
-整條路線圍繞四個問題：
+全書有 52 節，包含主線 42 節與 ViT／DINO 選讀支線 10 節。[閱讀路線](learning-path.md)列出順序與支線的先備章節。每節有獨立 notebook，不必先執行上一節；閱讀則沿用已教的概念。
 
-1. **模型怎麼從圖片學會分類？**第 0–3 章從一次參數更新開始，接上小 CNN，再認識 ResNet 的捷徑連接。
-2. **除了類別，怎麼學會位置與多個物件？**第 4–8 章加入框，走過資料、訓練、推論與評估；第 7 章把這些接成可訓練的小偵測器，第 8 章接自己的圖片與資料。
-3. **YOLO 各版本在解決什麼問題？**第 9–16 章用簡化實驗看 anchor、多尺度、anchor-free、不同 head 與 loss 等改動，連同收益與代價一起理解。
-4. **怎麼把模型用起來？**第 17–20 章有結業任務，以及影片、tracking 和部署選修。
+## 開始前需要什麼
 
-每一節都先從一個具體問題與小例子開始，再看程式、結果和練習。**只讀網頁也能學習**；想動手時，點頁首的 Colab 按鈕，在 Google 的線上 Python 環境執行。目前安排 52 節：上面的第 0–20 章主線有 42 節，另有 10 節 ViT／DINO 選讀支線；每節配對獨立 notebook，不必先跑上一節的程式。閱讀需要的前文會在各節開頭指出。
+會基本 Python，包含 `class`；數學用到高中程度的函數、指數與對數、向量與矩陣。神經網路、卷積、導數與連鎖律會在需要時用例子說明。用過 PyTorch 會比較輕鬆，也可以從本書開始學它在這些實驗中的用法。
 
-學過 CNN、ResNet 與 [15.1 attention](lessons/15-attention-bridge.md) 後，還可以問另一個問題：直接把圖片切成小塊交給 Transformer，會得到什麼特徵？[第 21–23 章選讀支線](lessons/21-patches.md)沿紅／藍矩形例子，從小 ViT 的分類，走到 DINO（2021）的自監督特徵，再接回單物件定位。主線仍可接著讀 15.2 與後續 YOLO 章節。DINO（2021）是學影像特徵的方法，與同名的 DETR 系列偵測器不同。
+**只讀網頁也能學。**必要解釋、手算和圖解都在本文；頁末選讀留給重做實驗或想多了解細節的人。想動手時，點頁首 Colab 按鈕，使用 Google 的線上 Python 環境。
 
-## 開始前與實驗範圍
-
-需要會基本 Python，也看得懂 `class` 的寫法。跑過一次 PyTorch、聽過神經網路和卷積會比較輕鬆。數學不必熟背：第 0 章會用數字回想梯度，之後公式都會連到例子。更完整的先備知識與選讀路線見[閱讀路線](learning-path.md)。
-
-各節實驗使用 CPU，資料由程式畫出。你會先用紅、藍等彩色幾何圖形，檢查模型是否真的更新、框是否找對，再用小實驗理解各種機制。這些受控題目讓我們容易看清每一步；真實照片上的偵測效果仍需要另外訓練與評估，詳見[驗證範圍](status.md)。
-
-新的 ViT／DINO 支線目前有 CPU 實測，沒有新增 GPU 訓練或 DINOv3 實作。本版 notebook 固定到 `lessons-v0.6.1`；公開入口驗證以保存紀錄中的 tag 與結果為準，既有主線紀錄保留原本範圍。
+本書的小實驗使用 CPU，資料由程式畫出。彩色幾何圖形能讓我們看清模型讀了什麼、參數是否更新、答案是否正確；真實照片的效果需要另外訓練與評估，實測範圍見[驗證範圍](status.md)。現有 notebook 固定使用 `lessons-v0.6.1` 的實驗程式。
 
 ??? note "第一次執行程式"
 
-    Colab 執行程式需要 Google 帳號；各節 notebook 的第一格會準備環境，最後一格是可修改的完整實驗。[第 0 章](lessons/00-warmup.md)有操作步驟。
+    Colab 需要 Google 帳號。notebook 第一格準備環境，最後一格是可修改的完整實驗；[A.0](lessons/00-warmup.md)會說明怎麼操作。網頁與 notebook 保存了實際輸出，重跑時部分訓練數字或計時可能略有不同。
 
-    網頁與 notebook 中已保存的結果是教材的實際執行紀錄。你重跑之後，計時或訓練數字可能略有不同；手算例子則可逐項核對。
+??? note "故事的原始來源與教材查詢"
 
-??? note "查資料或維護教材"
-
-    - [術語快速查](glossary.md)：遇到名詞時查它在本書的意思。
-    - [GPU／checkpoint 實測](validation/gpu-smoke.md)：另做的 L4 短訓練與存檔續訓檢查。
-    - [全套實驗與審查](validation/curriculum.md)：逐節執行紀錄與驗證方法。
-    - [資料來源與授權](preparation/data.md)、[網站發布步驟](preparation/publish.md)：資料及維護操作。
-    - [公開課程研究](planning/course-research.md)與[讀者心得](planning/feedback.md)：課程安排的參考。
-    - [Colab 環境檢查](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/main/notebooks/00_environment_check.ipynb)：檢視 Python、PyTorch 與 GPU 資訊。
+    - [ImageNet（2009）](https://www.image-net.org/static_files/papers/imagenet_cvpr09.pdf)：資料集的建立目標與作者。
+    - [AlexNet（2012）](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)：ImageNet 競賽結果、深層 CNN 與 GPU 訓練。
+    - [VGG（2014）](https://arxiv.org/abs/1409.1556)、[ResNet（2015）](https://arxiv.org/abs/1512.03385)、[YOLO（2015）](https://arxiv.org/abs/1506.02640)：本文提到的設計來源。
+    - [術語快速查](glossary.md)、[實驗與查證](validation/curriculum.md)、[GPU／checkpoint 實測](validation/gpu-smoke.md)。
+    - [資料來源與授權](preparation/data.md)、[網站發布步驟](preparation/publish.md)、[公開課程研究](planning/course-research.md)與[讀者心得](planning/feedback.md)。

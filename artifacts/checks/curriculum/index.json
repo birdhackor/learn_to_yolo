@@ -5,7 +5,7 @@
     {
       "id": "00-warmup",
       "passed": true,
-      "executed_at_utc": "2026-10-06T11:36:36.919599+00:00",
+      "executed_at_utc": "2026-10-07T07:12:43.254330+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -23,14 +23,14 @@
       "dependencies_sha256": {
         "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
       },
-      "process_wall_seconds": 2.3506,
+      "process_wall_seconds": 2.1888,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "01-small-cnn",
       "passed": true,
-      "executed_at_utc": "2026-10-06T11:36:39.904816+00:00",
+      "executed_at_utc": "2026-10-07T07:12:47.269147+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -48,21 +48,21 @@
       "dependencies_sha256": {
         "lesson_cases/01-small-cnn.py": "f15df5625a39f5aeb9bf85eff12a6fab32f23def8d9b89065fcf0bbd2a28ca16"
       },
-      "process_wall_seconds": 2.984,
+      "process_wall_seconds": 4.0136,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "02-diagnostics",
       "passed": true,
-      "executed_at_utc": "2026-10-05T07:17:48.211171+00:00",
+      "executed_at_utc": "2026-10-07T07:12:49.408216+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
       "machine": {
         "os": "Linux-6.18.44-x86_64-with-glibc2.41",
         "architecture": "x86_64",
-        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
         "logical_cpus": 5,
         "threads": 2,
         "python": "3.12.14",
@@ -73,14 +73,14 @@
       "dependencies_sha256": {
         "lesson_cases/02-diagnostics.py": "37675b437fe818c4c4e56b87bb5dcf76a5defb649fa8d37a30acbcc1d651ead2"
       },
-      "process_wall_seconds": 2.6694,
+      "process_wall_seconds": 2.1371,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "03-identity",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:03:42.904837+00:00",
+      "executed_at_utc": "2026-10-07T07:12:51.605701+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -98,21 +98,21 @@
       "dependencies_sha256": {
         "lesson_cases/03-identity.py": "5b90ff32f504ebb96a831727e2dcd10b98640398148146f301a5e51bab0fc26d"
       },
-      "process_wall_seconds": 1.8621,
+      "process_wall_seconds": 2.1965,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "03-projection",
       "passed": true,
-      "executed_at_utc": "2026-10-05T10:23:44.965617+00:00",
+      "executed_at_utc": "2026-10-07T07:12:53.690379+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
       "machine": {
         "os": "Linux-6.18.44-x86_64-with-glibc2.41",
         "architecture": "x86_64",
-        "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
         "logical_cpus": 5,
         "threads": 2,
         "python": "3.12.14",
@@ -123,14 +123,14 @@
       "dependencies_sha256": {
         "lesson_cases/03-projection.py": "7239239d4f1f464ea44e865d83129d0551830ed3bab84c20d0c18839754be2a1"
       },
-      "process_wall_seconds": 3.032,
+      "process_wall_seconds": 2.0835,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },
     {
       "id": "03-comparison",
       "passed": true,
-      "executed_at_utc": "2026-10-06T05:03:44.730043+00:00",
+      "executed_at_utc": "2026-10-07T07:12:55.776126+00:00",
       "python": "3.12.14",
       "torch": "2.9.1+cpu",
       "device": "cpu",
@@ -148,7 +148,7 @@
       "dependencies_sha256": {
         "lesson_cases/03-comparison.py": "8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b"
       },
-      "process_wall_seconds": 1.8247,
+      "process_wall_seconds": 2.0862,
       "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
       "exit_code": 0
     },

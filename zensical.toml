@@ -24,13 +24,13 @@ nav = [
     { "GPU／checkpoint 實測" = "validation/gpu-smoke.md" },
     { "全套實驗與審查" = "validation/curriculum.md" },
   ] },
-  { "A. 先讓 CNN 學得動" = [
-    { "0 一次學習的超短暖身" = "lessons/00-warmup.md" },
-    { "1 VGG 風格小 CNN" = "lessons/01-small-cnn.md" },
-    { "2 訓練診斷" = "lessons/02-diagnostics.md" },
-    { "3.1 ResNet identity shortcut" = "lessons/03-identity.md" },
-    { "3.2 ResNet projection shortcut" = "lessons/03-projection.md" },
-    { "3.3 Plain／residual 對照" = "lessons/03-comparison.md" },
+  { "A. 從神經網路到能學的 CNN" = [
+    { "A.0 神經網路與第一次學習" = "lessons/00-warmup.md" },
+    { "A.1 CNN 如何讀圖" = "lessons/01-small-cnn.md" },
+    { "A.2 訓練診斷" = "lessons/02-diagnostics.md" },
+    { "A.3.1 ResNet 原樣捷徑" = "lessons/03-identity.md" },
+    { "A.3.2 ResNet 投影捷徑" = "lessons/03-projection.md" },
+    { "A.3.3 Plain／residual 對照" = "lessons/03-comparison.md" },
   ] },
   { "B. 從分類走到可評估的偵測" = [
     { "4.1 單物件分類與定位" = "lessons/04-localization.md" },

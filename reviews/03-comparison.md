@@ -348,3 +348,16 @@
 - 另一位讀者的前文→本節→後文與網站：[第三輪紀錄](clear-tutorial/full-review-2026-10-06/rechecks/transitions-visual.json)。52節正文有閱讀紀錄；實看圖／公式的頁面與截圖另列，不將捕捉或DOM載入當成每張圖可讀。本頁圖內部分小字在手機仍偏小；相鄰正文提供必要對應，保留為可選的可讀性改善，對應 TVIS04。
 
 本輪未留下已裁定的必要問題。所有讀者均為 AI，沒有真人學生學習效果驗收。原首讀中仍有漏報、引用未支持全部主張及明說／推論混分，見[獨立裁定](clear-tutorial/full-review-2026-10-06/rechecks/record-adjudication.md)；不能宣稱四題保證抓到所有缺漏或原始紀錄嚴格規則全合格。程式與依賴、正式CPU紀錄、Notebook、建置和全站掃描的實際檢查見[驗證結果](clear-tutorial/full-review-2026-10-06/verification.json)。本頁最新文字、所用SVG／raster圖片與實驗依賴綁定在[coverage.json](coverage.json)。
+
+
+## 2026-10-07 新 SKILL 改寫：作者自查
+
+本次範圍：本節新版正文、必要圖、程式摘錄與配對 notebook。先前的獨立查核結論對應當時舊稿，不能拿來宣稱本次大幅改寫已獨立通過。此次由參與撰寫的作者核對概念順序、主文是否依賴選讀、數字、圖文對應與前後銜接；沒有逐段盲讀、獨立審查者或真人讀者測試，新稿仍待使用者閱讀回饋。
+
+- [概念覆蓋與本文路線](clear-tutorial/opening-a-2026-10-07/concepts-and-author-check.md)：38 個必要概念／轉換檢查點，逐項列先備、位置、角色與小變化。
+- [首次使用原句](clear-tutorial/opening-a-2026-10-07/first-use-excerpts.md)：當場的實際原文，明記為作者自查。
+- [來源核對](clear-tutorial/opening-a-2026-10-07/sources.md)、[14 個手算與變化實測](clear-tutorial/opening-a-2026-10-07/example-checks.json)。
+- [網站實際頁面](clear-tutorial/opening-a-2026-10-07/browser-check.json)：8 個入口／A 頁在 1280 與 390 像素寬的檢查；圖片載入、MathJax 與整頁寬度正常，選讀預設收折。作者另視覺檢查新增圖、手機捷徑圖及主要數學段落。
+- [修改範圍](clear-tutorial/opening-a-2026-10-07/scope-check.json)：B 以後課文與 notebook、所有實驗與模型原始碼未改；閱讀路線 B 起維持原文。
+
+六節主實驗已在 CPU 重跑，僅更新其執行證據；A.1 與 A.3.3 的40步實驗也重跑並核對保存值。這些檢查支持數字與實作一致，不替代首次閱讀驗收。覆蓋指紋記錄的是本次作者實際查過的版本。
