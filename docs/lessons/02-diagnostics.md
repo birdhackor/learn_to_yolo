@@ -1,5 +1,18 @@
 # A.2 訓練診斷：有更新、學會舊題、答對新題是三件事
 
+<details class="chapter-a-toc">
+<summary>本頁目錄</summary>
+<ul>
+<li><a href="#loss">故障一：loss 算得出來，前面的層卻收不到梯度</a></li>
+<li><a href="#2">故障二：兩類模型收到類別 2</a></li>
+<li><a href="#_1">評估新題之前，先把資料的工作分開</a></li>
+<li><a href="#_2">故障三：參數有學，卻學了靠不住的線索</a></li>
+<li><a href="#cnn">回到 CNN：下一步該查什麼</a></li>
+<li><a href="#_3">停一下：別把三種問題混成一種</a></li>
+<li><a href="#_4">實際執行紀錄</a></li>
+</ul>
+</details>
+
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/02-diagnostics.ipynb){ .md-button }
 
 [A.1](01-small-cnn.md)的 CNN 跑了三步，權重有變，卻仍答錯一半；另一個 40 步實驗能把訓練圖全答對。我們接著問：**怎麼判斷模型卡在哪裡，哪些結果才支持它學會了？**
@@ -44,7 +57,7 @@ assert not torch.equal(before, body.weight)
 
 這裡保存 `before` 的 detach 是合理的：它只是在計算路徑之外取一份數值紀錄，沒有截斷 loss。`clone()` 再複製一份獨立儲存，否則保存的參照可能跟著原權重一起變，失去比較意義。`assert` 用來確認預期成立，不是額外的學習步驟。
 
-診斷要連看三件事：**loss 接到參數、梯度是有限值、step 後參數真的改變。**某個權重的一次梯度為 0 不一定有錯；如果所有該學的層長期都收不到訊號，才需要追查計算路徑與資料。
+診斷要連看三件事：**loss 接到參數、梯度是有限值、step 後參數真的改變。**任何本來應該學習的層若收不到梯度（`None`），都值得檢查是否被截斷、未接到 loss 或設定有誤。某個參數在某一步梯度為 0 或很小，則不自動代表故障。
 
 ## 故障二：兩類模型收到類別 2
 

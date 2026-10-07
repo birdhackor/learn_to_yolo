@@ -237,3 +237,13 @@ top-1 定義「模型給分最高的類別不是正確類別的圖片，占全�
 - [修改範圍](clear-tutorial/opening-a-2026-10-07/scope-check.json)：B 以後課文與 notebook、所有實驗與模型原始碼未改；閱讀路線 B 起維持原文。
 
 六節主實驗已在 CPU 重跑，僅更新其執行證據；A.1 與 A.3.3 的40步實驗也重跑並核對保存值。這些檢查支持數字與實作一致，不替代首次閱讀驗收。覆蓋指紋記錄的是本次作者實際查過的版本。
+
+## 2026-10-08：定版 SKILL 與 A 章修後複查
+
+本次範圍：本節修改處、必要前文與過渡；projection 正文不變，僅手機目錄。五輪完整來源覆核後選第四輪實測最佳版本，仍只抓回 9 項既知必要問題中的 3 項，三項使用者優先問題均漏抓；不宣稱穩定全抓。比較與選版見[本次決定](clear-tutorial/final-selection-2026-10-08/final-decision.md)，十份原始報告與指紋保留。
+
+教材修正明確使用既知問題提示，與獨立抓漏分開記錄。作者按定版 SKILL 修正後，另由未參與作者的[技術／銜接審閱者](clear-tutorial/final-selection-2026-10-08/post-repair/technical.json)及[實際頁面審閱者](clear-tutorial/final-selection-2026-10-08/post-repair/visual.json)覆核指定焦點；圖中字體調整另有[小變更紀錄](clear-tutorial/final-selection-2026-10-08/post-repair/technical-delta.json)。所查焦點無未解必要問題，不是逐段盲讀、真人學生驗收或全書新審閱。
+
+[實際 Chromium 頁面與操作](clear-tutorial/final-selection-2026-10-08/post-repair/browser.json)涵蓋 8 頁的 1280×844 與 390×844 尺寸、公式、圖片、手機內嵌目錄與橫向表格；其他尺寸／瀏覽器及完整選讀未驗。[手工機制核對](clear-tutorial/final-selection-2026-10-08/post-repair/hand-checks.json)支持新增算例一致，不當成訓練效果證據。六節 A 主實驗在 CPU 重跑通過；兩份 40 步結果沿用仍符合原程式指紋的保存紀錄。
+
+[修正處置](clear-tutorial/final-selection-2026-10-08/repair-decisions.json)與[範圍比對](clear-tutorial/final-selection-2026-10-08/post-repair/scope-check.json)保存依據。B 以後的 92 個課文／notebook、路線 B 起段落及所有原實驗程式不變；公開程式 tag 仍是 lessons-v0.6.1。覆蓋指紋更新只綁定本次實際查核版本與上述範圍。

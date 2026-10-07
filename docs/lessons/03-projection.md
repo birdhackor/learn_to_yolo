@@ -1,5 +1,18 @@
 # A.3.2 形狀不同怎麼相加：投影捷徑也會學
 
+<details class="chapter-a-toc">
+<summary>本頁目錄</summary>
+<ul>
+<li><a href="#_1">兩條路各怎麼改形狀</a></li>
+<li><a href="#11">1×1 只是不看鄰居，仍然能看所有通道</a></li>
+<li><a href="#_2">核對程式：主分支與捷徑一起訓練</a></li>
+<li><a href="#_3">第一個實驗：先手工指定權重，看它讀了什麼</a></li>
+<li><a href="#p">第二個實驗：P 不是固定的尺寸修補</a></li>
+<li><a href="#_4">停一下：分開空間、通道與原樣通過</a></li>
+<li><a href="#_5">實際執行紀錄</a></li>
+</ul>
+</details>
+
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/03-projection.ipynb){ .md-button }
 
 [A.3.1](03-identity.md)的原樣捷徑要求 x 和 F(x) 形狀相同。現在希望下一階段**把空間縮小，並增加特徵通道**：從 `[1,3,4,4]` 變成 `[1,6,2,2]`。主分支已經改形狀，原輸入就不能直接加上去。

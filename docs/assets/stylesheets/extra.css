@@ -14,3 +14,37 @@
   max-width: 100%;
   overflow-x: auto;
 }
+
+/* Opening and chapter A provide a native, in-flow mobile table of contents. */
+.md-typeset details.chapter-a-toc {
+  display: none;
+}
+
+@media screen and (max-width: 44.984375em) {
+  body:has(.chapter-a-toc) .md-sidebar-button[for="__toc"] {
+    display: none;
+  }
+
+  .md-typeset details.chapter-a-toc {
+    display: block;
+  }
+
+  body:has(.chapter-a-toc) .md-typeset table:not([class]) {
+    display: table;
+    overflow: visible;
+  }
+
+  body:has(.chapter-a-toc) .md-typeset table:not([class]) th:first-child,
+  body:has(.chapter-a-toc) .md-typeset table:not([class]) td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--md-default-bg-color);
+    box-shadow: 1px 0 0 var(--md-default-fg-color--lightest);
+  }
+
+  body:has(.chapter-a-toc) .md-typeset table code {
+    white-space: nowrap;
+    word-break: normal;
+  }
+}

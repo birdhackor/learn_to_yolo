@@ -1,10 +1,24 @@
 # A.3.3 有沒有捷徑：怎麼比較才知道差在哪裡
 
+<details class="chapter-a-toc">
+<summary>本頁目錄</summary>
+<ul>
+<li><a href="#_1">兩個模型只在哪裡不同</a></li>
+<li><a href="#seed">起跑線相同，不只是寫同一個 seed</a></li>
+<li><a href="#_2">先看三次更新：它們都有動嗎</a></li>
+<li><a href="#40">再看 40 次：這個設定能學到什麼</a></li>
+<li><a href="#_3">捷徑沒有參數，為什麼仍有成本</a></li>
+<li><a href="#a">A 章走完之後，下一個問題是位置</a></li>
+<li><a href="#_4">停一下：什麼改動會破壞比較</a></li>
+<li><a href="#_5">實際執行紀錄</a></li>
+</ul>
+</details>
+
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/03-comparison.ipynb){ .md-button }
 
 [A.3.1](03-identity.md)讓我們理解原樣捷徑，[A.3.2](03-projection.md)處理了變形狀的捷徑。現在回到 A.1 的紅／藍分類：**在其餘條件相同時，多一條原樣捷徑，這個小網路的訓練會怎樣？**
 
-這次只研究同形狀 block。一個普通 **plain** 模型只走 F(x)，一個 **residual** 模型走 x+F(x)。比較要控制條件，否則看見不同結果，也不知道是捷徑、資料還是初始化造成的。
+這次只研究同形狀 block。一個普通 **plain** 模型的 block 學完整映射 H(x)，一個 **residual** 模型的 block 走 x+F(x)，由主分支 F 提供修正。比較要控制條件，否則看見不同結果，也不知道是捷徑、資料還是初始化造成的。
 
 ## 兩個模型只在哪裡不同
 
@@ -25,9 +39,9 @@ def forward(self, x):
 | loss | 兩類交叉熵 |
 | optimizer／學習率 | SGD／0.1 |
 | 更新次數 | 同樣 3 次，再另做同樣 40 次 |
-| block 輸出 | plain 給 F(x)，residual 給 x+F(x) |
+| block 輸出 | plain 給 H(x)，residual 給 x+F(x) |
 
-這個簡化模型沒有原版 ResNet 的 BatchNorm、分階段下採樣與完整訓練設定，也沒有 block 相加後的 ReLU。結論針對這個機制實驗。
+這個簡化模型沒有原版 ResNet 的 BatchNorm（批次正規化）、分階段下採樣與完整訓練設定，也沒有 block 相加後的 ReLU。結論針對這個機制實驗。
 
 ## 起跑線相同，不只是寫同一個 seed
 
@@ -89,7 +103,7 @@ plain 的 loss 停在約 0.693，接近 A.1 中兩類各給 0.5 的交叉熵基�
 
 還需要在相加前保留 x。因此「參數一樣」不代表計算與記憶體完全一樣。
 
-完整程式也印出三步耗時，範圍包含前向、loss、反向、更新與記錄，並先在丟棄的模型副本上暖機，避免第一個模型承擔全部首次啟動成本。這段時間很短、容易受機器影響；它不是純推論速度，本文也不用它判斷誰比較快。
+完整程式會先暖機：在正式計時前複製模型，替副本另建相同設定的 SGD，完整做一次前向、loss、反向與更新，再棄用副本。這樣先執行訓練步驟的首次啟動工作，同時保留正式模型的初始權重。之後才計時三次正式更新，包含前向、loss、反向、更新與記錄，不包含暖機。這段時間很短、容易受機器影響；它不是純推論速度，本文也不用它判斷誰比較快。
 
 ## A 章走完之後，下一個問題是位置
 
@@ -137,11 +151,11 @@ plain 的 loss 停在約 0.693，接近 A.1 中兩類各給 0.5 的交叉熵基�
     plain step=0, loss=0.6938, stem_grad_norm=0.000984
     plain step=1, loss=0.6937, stem_grad_norm=0.001001
     plain step=2, loss=0.6936, stem_grad_norm=0.001011
-    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0075
+    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0092
     residual step=0, loss=0.6921, stem_grad_norm=0.146701
     residual step=1, loss=0.6888, stem_grad_norm=0.147590
     residual step=2, loss=0.6855, stem_grad_norm=0.146128
-    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0080
+    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0091
     Same initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.
     ```
 

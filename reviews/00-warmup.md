@@ -421,3 +421,13 @@ artifacts/checks/curriculum/00-warmup.json
 ### 同輪手機公式複查
 
 作者在 390px 頁面發現第一個神經元算式與完整文字尺寸公式需要橫向滑動才能讀完。已將 A.0 算式分三行，A.1 改以當場定義的 I、P、K、S 寫公式；兩個重點算式現在可在本文寬度內完整顯示。只複查受影響的 A.0／A.1 桌面與手機頁，並檢查 A 章主文顯示公式的寬度；量測見 `clear-tutorial/opening-a-2026-10-07/math-width.json`。A.1 的雙矩陣範例仍有 4px 的容器差值，其數字可讀，不以此宣稱所有公式在所有裝置均完全無捲動。
+
+## 2026-10-08：定版 SKILL 與 A 章修後複查
+
+本次範圍：本節修改處、必要前文與過渡；projection 正文不變，僅手機目錄。五輪完整來源覆核後選第四輪實測最佳版本，仍只抓回 9 項既知必要問題中的 3 項，三項使用者優先問題均漏抓；不宣稱穩定全抓。比較與選版見[本次決定](clear-tutorial/final-selection-2026-10-08/final-decision.md)，十份原始報告與指紋保留。
+
+教材修正明確使用既知問題提示，與獨立抓漏分開記錄。作者按定版 SKILL 修正後，另由未參與作者的[技術／銜接審閱者](clear-tutorial/final-selection-2026-10-08/post-repair/technical.json)及[實際頁面審閱者](clear-tutorial/final-selection-2026-10-08/post-repair/visual.json)覆核指定焦點；圖中字體調整另有[小變更紀錄](clear-tutorial/final-selection-2026-10-08/post-repair/technical-delta.json)。所查焦點無未解必要問題，不是逐段盲讀、真人學生驗收或全書新審閱。
+
+[實際 Chromium 頁面與操作](clear-tutorial/final-selection-2026-10-08/post-repair/browser.json)涵蓋 8 頁的 1280×844 與 390×844 尺寸、公式、圖片、手機內嵌目錄與橫向表格；其他尺寸／瀏覽器及完整選讀未驗。[手工機制核對](clear-tutorial/final-selection-2026-10-08/post-repair/hand-checks.json)支持新增算例一致，不當成訓練效果證據。六節 A 主實驗在 CPU 重跑通過；兩份 40 步結果沿用仍符合原程式指紋的保存紀錄。
+
+[修正處置](clear-tutorial/final-selection-2026-10-08/repair-decisions.json)與[範圍比對](clear-tutorial/final-selection-2026-10-08/post-repair/scope-check.json)保存依據。B 以後的 92 個課文／notebook、路線 B 起段落及所有原實驗程式不變；公開程式 tag 仍是 lessons-v0.6.1。覆蓋指紋更新只綁定本次實際查核版本與上述範圍。
