@@ -2,60 +2,58 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/09-anchors.ipynb){ .md-button }
 
-本節把第 7 章的寬高寫法換成 YOLOv2 的 anchor 寫法（簡化版），每格也從一個槽變成兩個槽。槽（slot）是第 5 章介紹過的概念，指一個可以輸出框的位置。讀完你能手算一個框的訓練 target（中心比例與寬高修正量），也能說出全部 32 個槽（4×4 格，每格 2 個）中，哪個負責學物件、哪個不算 loss、哪些學背景。
+[第 7 章的 targets](07-targets.md) 已經能把紅框 `[8,12,24,28]` 交給中心所在的格子，讓這格學中心位置、寬高與類別。現在保留這個任務，改問寬高的起點：若訓練資料反覆出現幾種尺寸，能否先給模型這些參考尺寸，再讓它學每個物件相對於參考值的差異？
 
-前置：第 7 章的 [grid targets](07-targets.md)（標註框怎麼變成每格的訓練目標）與 [loss](07-loss.md)（三項 loss 怎麼算）。
-
-第 7 章讓每格直接回歸 normalized 寬高。回歸（regression）是讓模型輸出連續的數值去逼近目標，和高中統計「迴歸直線」的迴歸是同一個英文詞。normalized 寬高是寬、高各除以整張圖邊長 64 的比例，例如紅框寬 16/64=0.25。
-
-可是真實資料裡，物件的形狀常集中在幾種，例如車多半寬扁、行人多半瘦高。本節要問：如果先備好幾個常見寬高當起點，模型只回歸修正量，由它決定起點要放大或縮小幾倍，會不會比較合適？這些事先給定、訓練中不更新的參考寬高叫 anchor（錨框），YOLOv2 論文稱為先驗（prior）。anchor 只管尺寸，沒有綁定某一類。
-
-歷史機制：[YOLO9000: Better, Faster, Stronger](https://arxiv.org/abs/1612.08242) 這篇論文提出改良版偵測器 YOLOv2，以及能偵測 9000 多類物件的延伸版 YOLO9000。和本節有關的是 YOLOv2 引入的三項設計：尺寸聚類（把訓練框的寬高分成幾群，用每群的代表尺寸當 anchor；下一節詳講）、anchor 框，以及限制中心在格內的框參數化。參數化是指決定用哪幾個數字、什麼公式來描述一個框。
-
-本節簡化：64×64 圖、4×4 格，每格兩個以 pixel 為單位的 anchor `[16,16]`、`[8,8]`（寬, 高）。只用一個人工物件學習責任分配與 offset（中心在格內的偏移），不重現 Darknet-19（YOLOv2 論文用的主幹網路，有 19 個卷積層；本節用不到）或完整 YOLOv2 訓練。
-
-本節的設計只改兩件事：寬高怎麼表示，以及每格有幾個槽、由哪個槽負責。第 10 章的多尺度（用不同解析度的格子分別預測大小物件）先不加。另外，本節程式把中心、寬高、objectness、類別四項 loss 直接相加，沒有沿用第 7 章框 loss 乘 5 的權重；這不影響本頁的任何數字，但也是和第 7 章不同的地方。anchor 是否真能讓偵測變好，本節沒有證據；要用同一份資料、相同設定（包括 loss 權重）各訓練一次再比較才知道。
+這些固定的參考寬高叫 **anchor（錨框）**，也叫尺寸先驗（prior）。它不是已找到的物件，不帶類別，也不靠梯度更新。第 7 章直接學寬、高各佔全圖多少；這裡改學「相對於 anchor，要放大或縮小幾倍」。回歸（regression）在這裡就是預測連續數值。本節還把每格的一個槽（slot，可各自輸出一個框的位置）增加成兩個，每槽使用自己的 anchor。
 
 ## 同一個紅框，換成 anchor 寫法是哪幾個數字
 
-這裡說的「數字」不是模型權重，而是描述一個框的四個數 tx、ty、tw、th，也就是上面說的框參數化。先看這四個數怎麼還原成框（decode）：
+仍用 64×64 pixel 圖、4×4 格，每格寬 16 pixel。兩個 anchor 是 `[16,16]` 與 `[8,8]`（寬、高，pixel）。紅框中心是 `(16,20)`、寬高是 `(16,16)`；中心仍由格 `(gx=1,gy=1)` 負責。把中心除以 16，再扣掉整數格座標，得到格內比例 `(ox,oy)=(0,0.25)`。
+
+先看寬高如何改寫。假如 anchor 寬是 16，紅框寬也是 16，所需倍率為 1；若 anchor 寬是 8，所需倍率為 2。模型不用直接輸出這個倍率，而是輸出它的自然對數：
 
 \[
-c_x=(g_x+\sigma(t_x))\times16,\qquad c_y=(g_y+\sigma(t_y))\times16,
+t_w=\ln(w/a_w),\qquad t_h=\ln(h/a_h).
 \]
+
+`w,h` 是物件寬高，`a_w,a_h` 是這個槽的 anchor 寬高；兩者同為 pixel，所以比值沒有單位。ln 是以 e≈2.718 為底的自然對數，程式裡的 `log` 也是 ln。解碼時用它的反函數 exp 還原：
 
 \[
-w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
+w=a_w e^{t_w},\qquad h=a_h e^{t_h}.
 \]
 
-\(c_x\)、\(c_y\) 是框中心，w、h 是寬高，單位都是 pixel。σ 是 sigmoid（不是統計的標準差）。\(g_x\)、\(g_y\) 是這個槽所在格的整數格座標（第幾欄、第幾列，從 0 起算）；下面紅框的例子裡，這一格就是負責格 (1,1)。\(a_w\)、\(a_h\) 是這個槽的 anchor 寬、高。16=64/4，是每格的 pixel 寬，也就是 stride（相鄰兩格在圖上相隔的 pixel 數）。這是特徵圖的 stride，就是第 1 章算感受野時說的「間距」；它和第 1 章介紹卷積、pooling 時「視窗每次移動幾格」的 stride 意思不同，兩種意思並列在[術語快速查](../glossary.md)的 stride 條目（①②）。\(e^{t_w}\) 也寫成 exp(tw)；完整程式用 `.exp()` 計算。
+這樣模型可輸出任何實數，解出的寬高仍為正。`tw=0` 時倍率是 1、框寬等於 anchor；`tw=ln2≈0.693` 時寬放大 2 倍；`tw=−ln2` 時縮成一半。anchor 16 始終是 16，改變的是預測框的寬。把 sigmoid 再套在 tw 上會破壞這個用途：exp(sigmoid(tw)) 只在 1 到 e 之間，連縮小成一半也表示不了。
 
-中心公式和第 7 章相同；本節改的是寬高表示與每格的槽數。
+中心的解碼沿用第 7 章：
 
-本節的 log（例如程式裡的 `torch.log`、輸出的 log wh）都是自然對數 ln：以 e≈2.718 為底，不是高中課本不寫底數時的以 10 為底。exp(t)=\(e^t\) 是 ln 的反函數，例如 ln2≈0.693，所以 \(e^{0.693}\approx2\)。
+\[
+c_x=(g_x+\sigma(t_x))\times16,\qquad c_y=(g_y+\sigma(t_y))\times16.
+\]
 
-為什麼寬高要用 exp？模型輸出的 tw 可以是任何實數，但寬一定要是正數。\(e^{t_w}\) 永遠大於 0，所以寬高不會算成負的。tw=0 時 \(e^0=1\)，框剛好等於 anchor，這就是「起點」的意思。tw=ln2≈0.693 時倍率是 2：預測寬 = anchor 寬 16 × 2 = 32，anchor 本身仍是 16。tw=−ln2 時倍率是 0.5，預測寬縮成 8。倍率一定為正，但修正值 tw 可正可負；放大 2 倍和縮小一半的 tw 大小相同，只差正負號。
+σ 是 sigmoid；gx、gy 是從 0 起算的欄、列編號。16 是特徵位置在輸入圖上的間距，也就是本頁的 stride，與第 1 章的感受野「間距」相同；它不是卷積視窗每次移動幾格的那個 stride。
 
-**訓練 target 和原始輸出要分開看。** 本例中心 loss 比較 `sigmoid(tx,ty)` 與格內比例 `(ox,oy)`；寬高 loss 直接比較原始 `(tw,th)` 與 `(ln(w/aw),ln(h/ah))`。所以訓練的四項答案是 `[ox,oy,ln(w/aw),ln(h/ah)]`，不是四個 raw logits。這點和第 7 章不同：第 7 章的寬高也先經 sigmoid，才與全圖比例比較。
+**進 loss 的中心答案是比例，不是 raw tx、ty。** 本例比較 sigmoid(tx,ty) 和 `(0,0.25)`，寬高則直接比較 raw tw、th 和 ln 比值。例如誤把 ox=0 填成 tx=0，sigmoid(0)=0.5，中心就變成 `(1+0.5)×16=24`，不是 16。
 
-接著用紅框 `[8,12,24,28]`（xyxy，單位 pixel）算出真正放進 loss 的 target：
+## 先選尺寸起點，再決定誰負責
 
-1. **中心與寬高**：中心 ((8+24)/2, (12+28)/2) = (16,20)，寬高 (24−8, 28−12) = (16,16)。
-2. **負責格**：中心除以格寬 16 得 (1, 1.25)，取 floor（向下取整）得 gx=1、gy=1，和第 7 章是同一格。gx、gy 是整數格座標。
-3. **格內比例**：ox = cx/16 − gx = 16/16 − 1 = 0，oy = cy/16 − gy = 20/16 − 1 = 0.25。decode 時要讓 σ(tx)=ox、σ(ty)=oy。注意 tx、ty 是模型的原始 logits，不是格內比例，所以本節另用 ox、oy 表示比例。若誤把比例 0 當成 tx=0，sigmoid(0)=0.5，中心 x 就會解成 (1+0.5)×16=24，而不是 16。
-4. **選 anchor**：本節的 anchor 只有寬高、沒有自己的位置（框的中心由格子與 tx、ty 決定），所以把物件和 anchor 的中心疊在一起，只比寬高。這樣算的 IoU 叫尺寸 IoU。中心重合時，交集 = min(w₁,w₂) × min(h₁,h₂)，尺寸 IoU = 交集 ÷ (w₁h₁ + w₂h₂ − 交集)。紅框 16×16 對 `[16,16]` 是 1；對 `[8,8]` 是 64/(256+64−64) = 0.25，所以尺寸 IoU 是 [1, 0.25]。尺寸 IoU 最大的 anchor 叫 best anchor，這裡是第 0 個，所以 best=0，選 `[16,16]`。
+同一格的兩個槽，哪個較適合學這個 16×16 紅框？anchor 沒有位置，選尺寸時把兩框中心疊在一起，只算**尺寸 IoU**。交集寬、高取各自較小者，交集面積除以聯集面積：
 
-    ![格 (1,1) 的兩個 anchor 以紅框中心 (16,20) 為中心疊上：16×16 的尺寸 IoU 1，是 positive；8×8 的尺寸 IoU 0.25，是 ignore](../assets/diagrams/09-anchors.svg)
+\[
+I=\min(w_1,w_2)\min(h_1,h_2),\qquad \mathrm{size\ IoU}=I/(w_1h_1+w_2h_2-I).
+\]
 
-    圖中兩個紫色虛線框是格 (1,1) 兩個槽的 anchor，比尺寸時中心都疊在紅框中心 (16,20)：16×16 和紅框重合，尺寸 IoU 1 最大，所以是 positive；8×8 是同一格的另一個槽，尺寸 IoU 0.25 大於 0.2，所以是 ignore。這兩種狀態的規則見下方〈一格兩槽，不等於兩種類別〉。
+16×16 對 16×16 是 1；對 8×8 是 `64/(256+64−64)=0.25`。最大者叫 best anchor，所以本例選第 0 個、16×16。這只是用 GT 在訓練時挑負責槽；推論沒有 GT 可用，兩個槽都會輸出候選。
 
-5. **tw、th**：把 \(w=a_w\times e^{t_w}\) 兩邊除以 \(a_w\)，得 \(e^{t_w}=w/a_w\)；再取 ln，得 \(t_w=\ln(w/a_w)\)。th 同理。選 `[16,16]` 時，tw = ln(16/16) = 0、th = ln(16/16) = 0；若選 `[8,8]`，則是 ln(16/8) = ln2 ≈ 0.693147。都是同一個物件，只是起點不同。
-本例的四項訓練答案因此是 **`[0, 0.25, 0, 0]`**，只用在負責的 positive 槽；框與類別 loss 都不算其他槽。它們在完整程式中的名字如下：
+![格 (1,1) 的兩個 anchor 疊在紅框中心：16×16 的尺寸 IoU 1，8×8 的尺寸 IoU 0.25](../assets/diagrams/09-anchors.svg)
 
-| 進 loss 的答案 | 程式中的來源 | 預測值先做什麼 |
+紫色虛線框表示兩個尺寸起點，兩者都疊在紅框中心 `(16,20)`。較大的和紅框重合，選它後 `tw=ln(16/16)=0`、`th=0`。同一個物件若用 8×8 起點，兩項都要 ln2≈0.693147。這讓尺寸先驗的用途可見：接近物件的 anchor 已提供大部分尺寸，模型只學剩下的修正；這不代表實際訓練一定更準。
+
+因此負責槽的四項訓練答案是 **`[0,0.25,0,0]`**：前兩項是格內中心比例，後兩項是寬高的 ln 修正量。
+
+| 答案 | 程式中的來源 | 拿來比較的預測 |
 | --- | --- | --- |
-| 中心比例 `(ox,oy)=(0,0.25)` | `offsets` | `raw[pos][:,:2].sigmoid()` |
-| 寬高修正量 `(tw,th)=(0,0)` | `torch.log(wh/anchors[best])` | `raw[pos][:,2:4]`，不經 sigmoid |
+| `(ox,oy)=(0,0.25)` | `offsets` | `raw[pos][:,:2].sigmoid()` |
+| `(tw,th)=(0,0)` | `torch.log(wh/anchors[best])` | `raw[pos][:,2:4]` |
 
 ??? note "反解中心 raw 值，只用來核對 decode"
 
@@ -71,33 +69,21 @@ w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
 
 ## 一格兩槽，不等於兩種類別
 
-輸出的形狀是 `[B,4,4,A,5+C]`，本例 A=2、C=2。A 是每格的槽數，等於 anchor 數；C 是類別數，B 是圖片數。每格的槽 0 固定用 `[16,16]` 解碼，槽 1 固定用 `[8,8]` 解碼。五個軸依序是 [圖片, 格列 y, 格欄 x, 槽, 7 個數]。7 個數就是 5+C：4 個框數、1 個 obj（objectness logit：這個槽有沒有負責的物件）、C=2 個類別 logits，依序是 tx、ty、tw、th、obj、class0、class1。
+每個槽都輸出 `[tx,ty,tw,th,obj,class0,class1]` 七個數；最後兩項是自己的類別 logits，所以兩個槽都可預測紅類或藍類。輸出 shape 是 `[B,4,4,A,5+C]`，軸依序是圖片、格列 y、格欄 x、槽、輸出數。本例 A=2、C=2，shape 為 `[B,4,4,2,7]`。增加類別只增加最後一軸；C=3 時變成 8 個數，候選仍是 32 個。
 
-每個槽的 7 個數裡，最後兩個就是類別 logits，所以兩個槽都可以預測紅類或藍類：槽和類別互不綁定。候選數從 16 格增加到 4×4×2=32 個槽；類別數改成 3 時，候選數仍是 32，只是最後一軸由 7 變 8。
+增加槽後，沒被選為 best 的槽是否全要學背景？圖裡 8×8 槽雖不是最佳，仍在同一責任格，尺寸也有些接近。本節選擇暫不壓低它的 objectness，稱為 **ignore**。這個教學規則是：同格、非 best，而且尺寸 IoU **大於 0.2**。其他格即使有物件畫素，仍是 negative；negative 表示沒分到負責物件，不表示感受野裡完全沒有物件。
 
-推論時沒有真值可以用來選 anchor。這時 32 個槽都用自己的 anchor 解碼成候選框，再像第 7 章一樣過 score 門檻（拿每個候選自己的分數去比）與 NMS。本節程式不含推論。
+| 狀態 | 哪些槽 | 數量 | objectness | 框與類別 |
+| --- | --- | --- | --- | --- |
+| positive | 格 (1,1) 的 best 槽 0 | 1 | 目標 1 | 學紅框與 class 0 |
+| ignore | 同格的槽 1，尺寸 IoU 0.25>0.2 | 1 | 不算 loss | 不算 loss |
+| negative | 其他 15 格各兩槽 | 30 | 目標 0 | 不算 loss |
 
-訓練時才用真值決定哪個槽負責。本節採用的責任規則：
-
-- **positive**：第 4 步選出的 best anchor 對應的槽，負責學這個物件。本例是格 (1,1) 的槽 0。
-- **ignore**：同一格的其他槽，若和物件的尺寸 IoU 大於 0.2，就什麼 loss 都不算。本例格 (1,1) 的槽 1（8×8，尺寸 IoU 0.25）就是 ignore。
-- **negative**：其餘的槽，objectness 目標是 0，表示這個槽沒有分到負責的物件；不學框與類別。
-
-為什麼加上 ignore？8×8 槽雖然不是 best anchor，卻在同一責任格，尺寸也有幾分像（尺寸 IoU 0.25），仍可作為這個物件的備選槽。本例選擇暫不把這類備選槽的 objectness 壓向 0，只讓 best 槽學這個物件的框與類別。ignore 由「同格、非 best、尺寸 IoU 大於 0.2」判定；其他格即使看得到部分物件畫素，仍照 negative 處理。0.2 是為了示範 ignore 而選的教學門檻，這是自訂規則，和原版不同。
+objectness BCE 只平均非 ignore 的 **31 個槽**。raw 全 0 時 sigmoid(obj)=0.5；每個 obj logit 的梯度為 `(0.5−target)/31`，所以 positive 約 −0.0161、negative 約 +0.0161、ignore 是 0。第 7 章單圖是 16 格，分母不同，不能沿用那裡的 ±0.03125。
 
 ??? note "原版 YOLOv2 的 ignore 規則"
 
     [YOLOv2 論文](https://arxiv.org/abs/1612.08242)沒有說明 ignore。官方 Darknet 的 [region_layer.c](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/src/region_layer.c#L236-L306) 比的是每個槽解碼後的預測框（含位置）與 GT 的一般 IoU；最大值超過 0.6（[yolov2-voc.cfg](https://github.com/pjreddie/darknet/blob/f6afaabcdf85f77e7aff2ec55c020c0e297c77f9/cfg/yolov2-voc.cfg#L257) 的 thresh）便不計 objectness loss，範圍不限同格，也不是 anchor 尺寸。負責某個 GT 的槽是例外，仍算 objectness。本節的規則不代表原版其他訓練細節。
-
-因此本例有 1 個 positive、1 個 ignore、30 個 negative。各自算哪些 loss：
-
-| 狀態 | 本例的槽 | 個數 | objectness loss | 框 loss | 類別 loss |
-| --- | --- | --- | --- | --- | --- |
-| positive | 格 (1,1) 的槽 0 | 1 | 算，目標 1 | 算 | 算 |
-| ignore | 格 (1,1) 的槽 1 | 1 | 不算 | 不算 | 不算 |
-| negative | 其他 15 格 × 每格 2 槽 | 30 | 算，目標 0 | 不算 | 不算 |
-
-ignore 不參與 objectness loss，所以 objectness BCE 是對 31 個槽（1 positive + 30 negative）取平均，不是第 7 章單張圖的 16 格。
 
 ??? note "手算：零 logit 時的 objectness 梯度"
 
@@ -117,7 +103,7 @@ ignore 不參與 objectness loss，所以 objectness BCE 是對 31 個槽（1 po
 
     `raw.grad` 是 backward 存在 raw 上的梯度，形狀和 raw 一樣是 [1,4,4,2,7]。`[0,1,1,:,4]` 依序取第 0 張圖、格列 y=1、格欄 x=1、兩個槽全取（`:`），最後的 4 是 7 個數裡的編號（從 0 起編：0 到 3 是 tx、ty、tw、th，4 是 obj）。所以它是格 (1,1) 兩個槽的 obj 梯度，約為 [−0.0161, 0]：槽 0 是 positive，槽 1 是 ignore。`[0,0,0,:,4]` 是格 (0,0) 兩個 negative 槽的 obj 梯度，約為 [0.0161, 0.0161]。加上的這一行會最先印出，排在完整程式本身的四行輸出之前。
 
-下面直接摘錄完整程式，用同一組名稱：`wh` 是紅框寬高 `[16,16]`，`offsets` 是中心比例 `[0,.25]`；`pos`／`ignore` 是 `[1,4,4,2]` 的布林 mask。`[None]` 在最前面加一軸，讓兩項答案變成 `[1,2]`，對齊唯一的 positive 槽。
+下面摘錄完整 loss。`pos`、`ignore` 是 `[1,4,4,2]` 的布林 mask；`wh=[16,16]`，`offsets=[0,0.25]`，`[None]` 加一軸成 `[1,2]`，對齊唯一正槽。
 
 ``` { .python data-excerpt="lesson_cases/09-anchors.py" }
 ious = size_iou(wh[None],anchors)[0]   # [1,.25]
@@ -132,46 +118,23 @@ classification = F.cross_entropy(raw[pos][:,5:],torch.tensor([0]))
 loss = regression+objectness+classification
 ```
 
-`regression` 是中心與寬高兩項 MSE 相加。`objectness` 比較有效槽的 obj logit 與 `obj_target`（positive=1、negative=0）；`classification` 只取 positive 槽的兩個類別 logits，答案是 class 0。
+中心、寬高兩項 MSE 加成 `regression`；`classification` 只讀正槽的類別 logits，答案為 class 0。這裡四項直接相加，沒有沿用第 7 章框 loss 乘 5 的權重，所以也不能把兩節 loss 當成效果對照。
 
 ## 這次單步更新能核對什麼
 
-本節程式沒有 CNN，也沒有輸入圖片。它直接建立一個形狀 [1,4,4,2,7]、全為 0 的 tensor raw，假裝它是模型輸出，並用 `torch.nn.Parameter` 包起來，讓 optimizer 直接更新這 224 個數字。anchor `[16,16]`、`[8,8]` 是固定常數，不會被訓練。
+執行 `PYTHONPATH=. python lesson_cases/09-anchors.py`，或用頁首 Colab。程式沒有圖片與 CNN，直接把全零的 `raw [1,4,4,2,7]` 設為 `nn.Parameter`，由 SGD 更新這 224 個數字；兩個 anchor 固定不變。
 
-一次 SGD 更新會改變 positive 槽的中心、obj 與類別 logits，以及 30 個 negative 槽的 obj。ignore 槽完全不變；positive 的 tw、th 初值已等於 target 0，這一步也不變。程式以斷言核對 ignore 梯度為 0、非 positive 的框梯度為 0，並比對更新前後的 `raw` 確實不同。這是在核對責任規則，還不是 anchor 偵測器的效果評測。
+一次更新會改 positive 的中心、obj、類別，以及 negative 的 obj。positive 的 tw、th 已等於 target 0，這一步不變；ignore 全部不變。斷言核對尺寸 IoU、反解中心值與 sigmoid 比例、encode→decode 誤差小於 0.02 pixel、ignore 的七項梯度為 0、非 positive 的框梯度為 0，以及更新前後 raw 不同。這些檢查回答的是「答案表示與責任遮罩接對了嗎」。
 
-??? example "執行單步實驗與輸出核對"
+輸出四行依序是尺寸 IoU 與 best/log wh、格內比例與 encoded logits、`1 1 30` 三種槽數、decode 框約 `[8.0016,12,24.0016,28]`。最後的 `one slot update completed` 是固定字樣，實際更新項目如上，不是量出只更新一槽。沒有看圖的模型，這次也沒有 AP 可報。
 
-    可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/09-anchors.py`。
+## 多一個尺寸起點，仍有哪些限制
 
-    應看到四行輸出，裡面的數都在上面算過：第 1 行是尺寸 IoU `[1.0, 0.25]`、best anchor `0` 與 log wh `[0.0, 0.0]`；第 2 行是格內比例 `[0.0, 0.25]` 與 encode 出的兩個 logits（約 −9.21024、−1.09861）；第 3 行是 positive／ignore／negative 的槽數 `1 1 30`；第 4 行是 decode 回來的框，約 [8.0016, 12, 24.0016, 28]。
+anchor 也可能讓同格兩物件分到不同槽。例如一個 16×16、一個 8×8，各選自己的 best；第 7 章一格一槽則會衝突、拋出 ValueError。但兩個都 16×16 時仍選槽 0，衝突沒有消失。本節程式只處理一物件，這段是責任容量的概念例子。
 
-    第 4 行的 `one slot update completed` 是 print 的固定字樣，不是計算出的更新槽數；實際改變的項目見上方單步說明。
+代價是要決定 anchor 尺寸、數量、assignment 與 ignore。候選多了，解碼、score 篩選與 NMS 的工作也增加。推論時全部 32 槽先用各自 anchor 解碼，再走第 7 章的分數門檻與 NMS；本節程式尚未做推論。
 
-    印出這些結果之前，完整程式會先用斷言（assert：條件不成立就報錯停下，用來自動核對答案）核對七項，全部通過才會印出。其中三項核對手算的數：尺寸 IoU 是 [1, 0.25]；兩個 logits 約是 −9.21024 與 −1.09861；這兩個 logits 經 sigmoid 後是 0.0001 與 0.25，也就是 clamp 後的格內比例。另外四項是：
-
-    1. encode 再 decode 回到 [8,12,24,28]，誤差在 0.02 pixel 以內。
-    2. ignore 槽的 7 個輸出梯度全為 0，因為它不參與任何 loss。
-    3. 非 positive 槽的 tx、ty、tw、th 梯度全為 0，因為只有負責的槽學框。
-    4. 做一次 SGD 更新後，raw 的數值確實改變。
-
-    這些檢查都通過，只表示框的編碼、mask 與梯度在這個例子裡接對了；不代表已做出會看圖的 anchor 偵測器，也沒有 AP（平均精確率）可報告。
-
-
-## 收益與代價
-
-好的先驗讓尺寸修正量更接近 0。tw=0 時 exp(0)=1，框就等於 anchor；anchor 越接近真實尺寸，要學的修正量越小（本例選 16×16 時 target tw=0，選 8×8 就要學到 ln2≈0.693）。本節程式的 raw 初值全為 0，起點正好就是 anchor 尺寸，所以尺寸接近的 anchor 先提供了較貼近真值的起始框，模型再學相對於它的差異。資料形狀越集中，越容易挑到這樣的 anchor。
-
-多槽也增加每格容量。例如同一格有 16×16 與 8×8 兩個物件（本節程式只處理一個物件，這是概念上的例子）：照尺寸 IoU，前者選槽 0、後者選槽 1，兩個物件各由一個槽負責；第 7 章每格只有一個槽，同一格遇到第二個物件就會拋 ValueError。但若兩個物件都是 16×16，都會選槽 0，仍然衝突。anchor 不保證任何兩個物件都能分開。
-
-代價是 anchor 的個數與尺寸、責任分配（assignment）規則和 ignore 規則都要自己設定。候選數增加，也提高後處理（模型輸出之後的 decode、score 門檻、NMS 等步驟）的成本。exp 也增長得很快：tw=5 時 e⁵≈148，16 pixel 的 anchor 會變成約 2375 pixel，遠超過 64 pixel 的圖。訓練時要記錄 tw、th 的範圍，並檢查 loss 和輸出是否仍是有限值（不是 inf 無限大，也不是 NaN 這種算不出來的無效值）。
-
-常見錯誤：
-
-- **把槽 0（anchor 0）固定為紅類**：槽和類別互不綁定；每個槽都有自己的一份類別 logits，都要能預測任何類別。
-- **該只比尺寸的地方用了位置 IoU**：選 best anchor 和下一節的尺寸聚類，都該把兩框中心疊在一起、只比寬高；若改用會受兩框位置影響的一般 IoU 就錯了。本節的 anchor 只存寬高、沒有自己的位置，混入位置會讓中心偏移影響選哪個槽。
-- **在 exp 前多套 sigmoid**：exp(sigmoid(tw)) 只能落在 1 到 e≈2.718 之間，框永遠不會比 anchor 小，也放大不超過約 2.7 倍。例如 8×8 物件配 16×16 anchor 需要 0.5 倍，就學不到。
-- **先驗單位不一致**：例如 anchor 存的是 pixel 值，decode 卻當成「格」單位再乘一次 stride。數字例見上方摺疊區〈如果 anchor 改用「格」當單位〉。
+exp 還會快速放大輸出：tw=5 時 e⁵≈148，16 pixel 起點會解成約 2375 pixel。要記錄 tw、th 範圍，檢查 loss 和框是否有限。若要知道 anchor 對偵測有沒有幫助，需固定資料、loss 權重和訓練設定做新舊對照；本例只有機制證據。
 
 自主練習（手算即可，不必改程式；先自己算，再展開答案）：
 
@@ -184,7 +147,9 @@ loss = regression+objectness+classification
 
     **第 2 題**：對 16×16，交集 = min(32,16) × min(16,16) = 256，尺寸 IoU = 256/(512+256−256) = 0.5。對 8×8，交集 = 8×8 = 64，尺寸 IoU = 64/(512+64−64) = 0.125。所以 best=0，槽 0（16×16）是 positive。槽 1 的 0.125 沒有大於 0.2，不設 ignore，是 negative。計數是 1／0／31：同格的槽 1 加上其他 15 格 × 每格 2 槽，共 31 個 negative。
 
-下一節只改 anchor 尺寸的選法：用尺寸聚類，從訓練資料的框尺寸找出 anchor。
+[YOLO9000 論文](https://arxiv.org/abs/1612.08242)中的 YOLOv2 使用 anchor 尺寸修正與格內中心限制，並用尺寸聚類找先驗。本頁只保留這些表示與責任關係，沒有 Darknet-19 主幹或完整 YOLOv2 訓練。
+
+手填尺寸只示範了起點的角色。接下來用訓練框的尺寸選起點，才知道這份資料常出現什麼寬高。
 
 <!-- curriculum-evidence:start -->
 

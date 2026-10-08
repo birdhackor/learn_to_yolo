@@ -1,7 +1,7 @@
 {
   "id": "11-iou-loss",
   "passed": true,
-  "executed_at_utc": "2026-10-08T03:55:09.165191+00:00",
+  "executed_at_utc": "2026-10-08T05:13:29.138561+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/11-iou-loss.py": "ddce126434321bddf95543a02f21b082602024b3ba0ef6992cf8b2be70647325"
   },
-  "process_wall_seconds": 1.8671,
+  "process_wall_seconds": 1.9017,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "GIoU gradient [0.02, 0.0] after 1-pixel real SGD move 1.179487\ninitial losses {'iou': 1.0, 'giou': 1.2, 'diou': 1.310345, 'ciou': 1.310345}\nnon-overlap plain IoU center gradient [0.0, 0.0]\nDIoU center after one real step [38.7515, 20.0] loss 1.294497\nexact boxes: all four losses zero\n",
   "stderr": "",

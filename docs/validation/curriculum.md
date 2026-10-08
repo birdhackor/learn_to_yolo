@@ -148,6 +148,8 @@ AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有�
 
 ## 發布後的公開驗證
 
+本次 B–E 敘事重寫的驗證，另存於[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7)。網頁文字與圖解修訂，實驗程式與 Colab notebook 的程式碼仍沿用 `lessons-v0.6.1`；下文各次 tag 發布驗證保留原日期與範圍。
+
 2026-10-08 的網頁文字與圖解修訂，公開驗證另存於[本輪審閱紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair)。這次比對當次嚴格建置與公開網站的正文、圖檔，並核對 52 個 Colab notebook 的程式碼儲存格。實驗程式沒有改動，入口仍使用 `lessons-v0.6.1`；下文的 tag 發布驗證保留原本日期與範圍。
 
 網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.6.1`）。下文說明本版的驗證流程；連結紀錄實際驗證的版本以各自的 `source_ref` 為準。`lessons-v0.5.0` 的紀錄只涵蓋原有 42 節，不驗證新增的十節。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：

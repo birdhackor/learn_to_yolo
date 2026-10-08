@@ -1,7 +1,7 @@
 {
   "id": "09-anchors",
   "passed": true,
-  "executed_at_utc": "2026-10-08T03:55:07.297690+00:00",
+  "executed_at_utc": "2026-10-08T05:13:18.543861+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/09-anchors.py": "7a7e8c431340e33f55fc8afc90136b225d18387940d6677eab9e8aecacd31469"
   },
-  "process_wall_seconds": 1.8471,
+  "process_wall_seconds": 2.0738,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "size IoU [1.0, 0.25] best anchor 0 log wh [0.0, 0.0]\nratio offsets [0.0, 0.25] encoded logits [-9.210240364074707, -1.0986123085021973]\npositive/ignore/negative 1 1 30\ndecoded [8.00160026550293, 12.0, 24.00160026550293, 28.0] one slot update completed\n",
   "stderr": "",

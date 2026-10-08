@@ -252,3 +252,8 @@ grep 查證：
 本附頁由獨立銜接與技術審閱者核對當前來源；頁內既有審閱歷史的接觸另記，未冒稱完全無歷史提示。範圍起點為93dc8d8；首讀、技術與銜接角色分開，原答未回寫。
 
 本頁未有需要新增修正的來源缺口；保留原文的通過依據在本輪原答與覆核。必要與可選建議均由主 Agent 逐項裁定，詳見[決策表](clear-tutorial/remainder-2026-10-08-93dc8d8/coordinator/decisions.json)及[本輪範圍](clear-tutorial/remainder-2026-10-08-93dc8d8/README.md)。修後的技術、圖文、銜接與實頁範圍見[技術複查](clear-tutorial/remainder-2026-10-08-93dc8d8/technical/post-repair.json)、[銜接複查](clear-tutorial/remainder-2026-10-08-93dc8d8/audit/post-repair.json)和 [post-repair](clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair/)；不把局部複查稱作全書新首讀，也不等同真人學生測試。
+
+
+## 2026-10-08：B–E重寫的有界維護段落
+
+B段改為分類→定位→多物件→人工規則→可訓練/評估流程；E footer區分固定實驗tag與持續修訂網頁，原A入口不變。 源文已對照與核對，technical/final-delta及transition有界維護檢查另存於[本輪紀錄](clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/README.md)。390/1280px焦點capture在visual/local-closure-final；主Agent實看手機新增段落，未重新把全篇當首讀。前輪紀錄不回寫，新部署另保存實際結果。

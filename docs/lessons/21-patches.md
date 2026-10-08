@@ -1,40 +1,40 @@
-# 21.1 ViT patches：把圖片排成一串小塊
+# 21.1 ViT patches：先把圖片變成可讀取的小塊
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-patches.ipynb){ .md-button }
 
-[第 15.1 節](15-attention-bridge.md)把 CNN 的特徵圖排成 tokens，再讓位置互相讀取。**如果直接從原圖開始，一個 token 要裝什麼？** 這是本節的主要問題。**Vision Transformer（視覺 Transformer），簡稱 ViT**，把圖切成不重疊的小塊，再把每塊轉成向量。
+[15.1 節](15-attention-bridge.md)讓特徵圖上的位置互相讀取：每個位置先有一個向量，attention 再決定從誰讀多少。現在從原圖出發，還沒有 CNN 提供的特徵圖。**要讓 attention 讀圖片，先交給它哪些向量？**
 
-本支線會讓這些向量透過已學的 attention 互相讀取內容，再彙整整圖的表示，交給分類頭回答顏色。本節先準備這串向量；後三節依序接上讀取、完整分類模型與訓練。
+**ViT（Vision Transformer，視覺 Transformer）**選擇先把圖片切成固定大小的小塊，每塊轉成一個向量，再讓這些向量交換資訊。先看它如何準備讀圖的材料。
 
-這四節是從第 15 章分出的自選支線。你可以先讀 [1：小 CNN](01-small-cnn.md)、[3.1：identity shortcut](03-identity.md)與 [15.1：attention](15-attention-bridge.md)，再從這裡往下走；完成 YOLO 主線不需要先完成這條支線。
+## 看同樣的顏色題，改變讀圖方式
 
-## 同一種矩形，先只回答顏色
-
-沿用第 1 章的答案規則：**紅矩形是類別 0，藍矩形是類別 1**。現在每張圖仍是 32×32 RGB，但矩形的寬、高、位置和亮度會變，背景也有少量暗色雜訊。這些變化的抽樣不依賴類別；兩類都是矩形，所以答案不代表形狀種類。
+答案沿用[小 CNN](01-small-cnn.md)的規則：紅矩形是類別 0，藍矩形是類別 1。下面是實際訓練資料的前四張圖。
 
 ![seed101訓練資料的第0至3張實際圖片；答案依序為1、1、1、0，每張都是32乘32RGB](../assets/diagrams/21-materials.svg)
 
-圖號 0～3 只用來找圖片，答案 0／1 才表示紅／藍。上圖是實際訓練材料的四張，沒有把矩形位置當成答案。這條支線最後會用不同 seed 生成的圖片測試；此刻先處理「怎麼讀圖」，還沒有訓練模型。
+圖號 0～3 用來找到某一張圖片；答案 0／1 才表示紅／藍。兩類都是矩形，寬高、位置、亮度及暗色背景雜訊的抽樣不依賴類別。因此要回答的是顏色，位置和形狀種類都不是類別答案。
 
-一張圖的 PyTorch shape 是 `[1,3,32,32]`，軸順序仍是 NCHW：一張圖、三個顏色 channel、高、寬。值介於 0 和 1。32×32 是原圖的 pixel 尺寸，下面的 4×4 則是小塊排列的格數，兩者不要混在一起。
+每張原圖是 32×32 RGB，三個顏色通道的值介於 0 和 1。一張圖在 PyTorch 裡寫成 `[1,3,32,32]`：一張、三通道、高、寬。這裡仍可用 CNN 分類；我們換的是準備特徵與交換資訊的方式，並沒有換答案規則。
 
-## 8×8 的小塊，變成 192 個數
+## 每個 token 先負責一塊圖
 
-**Patch** 是切出來的小塊。本例邊長 P=8 pixel，不重疊、沒有 padding，所以每列 4 塊，共 4×4=16 塊。順序由上到下逐列，每列由左到右，和第 15.1 節攤平特徵圖的順序相同。
+**Patch** 就是切出來的小塊。把原圖用邊長 8 pixel 的視窗切開，不重疊、不補邊，每列有 4 塊，共 16 塊。
 
 ![實際訓練圖3切成4乘4塊；1至16是patch編號，每塊8乘8pixel，依列排列](../assets/diagrams/21-patch-grid.svg)
 
-看圖中的 patch 1～16：這些號碼是閱讀用的編號。每塊含 R、G、B 各一張 8×8 數值表，攤平後有 `3×8×8=192` 個數。實作在塊內先排完 R 的 64 個 pixel，再排 G，最後排 B；每個 channel 內也按列排列。因此整圖的原始 patches 是 `[1,16,192]`：一張圖、16 塊、每塊 192 個像素值。切塊與攤平只是重排資料，沒有可學參數。
+沿圖中編號讀：先從左到右排完第一列，再往下排下一列，直到 patch 16。這與 15.1 把特徵圖攤平的 row-major 順序相同。4×4 是小塊的排列格數；32×32 才是原圖的 pixel 尺寸。
 
-注意紅矩形跨過多個格子。patch 邊界是固定的切圖線，沒有在找物件邊界；一塊可以同時含背景和一部分矩形，也可以完全是背景。
+切圖線沒有在找矩形邊界。紅矩形跨過好幾塊，一塊可以混有矩形和背景，也可以全是背景。這種安排先把整張圖分成固定的讀取單位，物件的判斷留給後面的可學運算。
 
-## 同一個投影，把每塊變成 32 個特徵
+一塊包含 R、G、B 各 8×8 個值，攤平後是 `3×8×8=192` 個數。塊內先排 R 的 64 個 pixel，再排 G、B；每個通道內也按列排列。整圖因此得到 `[1,16,192]`：一張圖、16 塊、每塊 192 個像素值。這一步只重排資料，沒有可學參數。
 
-attention 不直接使用那 192 個原始值。本例用同一個可學線性轉換，把每塊的 192 個值變成 D=32 個特徵；這個輸出叫 **patch embedding（小塊的向量表示）**。D 是每個 token 的特徵數，不是圖片的邊長。
+## 共用一個投影，把像素變成特徵
 
-這和小 CNN 的共用權重有相似之處：16 塊都用同一套轉換。不過這裡只用 8×8 視窗、每次跳 8 pixel；在這一步，相鄰 patch 還沒有交換內容。32 個特徵也不是固定的 RGB 或座標，而是訓練會調整的組合。
+我們接著讓每塊用同一個可學轉換，將 192 個像素值組合成 32 個特徵。這叫 **patch embedding（小塊的向量表示）**；一塊的表示就是一個 patch token。
 
-實作用一個 `Conv2d(3,32,kernel_size=8,stride=8)` 完成這個投影。因為視窗剛好覆蓋一個 patch、沒有重疊，每個輸出位置的計算就是「192 個像素值各乘權重、相加、加 bias」，等同每塊共用一個 `Linear(192,32)`。輸出先是 `[1,32,4,4]`，再變成 tokens `[1,16,32]`。下面摘錄的 `self.projection` 就是這個卷積：
+共用轉換讓各塊都用同一種讀法：它在每個區域都計算相同的一組特徵，不為左上和右下另建不同的像素讀取器。32 是本例選定的表示寬度，不是圖片邊長，也沒有指定其中哪一維必須是紅色或座標。訓練會調整這些組合。在這一步，一塊仍只讀自己的像素，相鄰塊還沒有交換內容。
+
+實作用 `Conv2d(3,32,kernel_size=8,stride=8)`。每次視窗剛好蓋住一塊、跳到下一塊；每個輸出特徵都是「192 個值各乘權重、相加、加 bias」。因此它等同對每塊套用同一個 `Linear(192,32)`。輸出先是 `[1,32,4,4]`，再把每個位置的 32 個值排成一列，得到 `[1,16,32]`。
 
 ``` { .python data-excerpt="miniyolo/vision_transformer.py" }
     def forward(self, images):
@@ -43,62 +43,76 @@ attention 不直接使用那 192 個原始值。本例用同一個可學線性�
         return self.projection(images).flatten(2).transpose(1, 2)
 ```
 
-`flatten(2)` 把 4×4 攤成 16 個位置；`transpose(1,2)` 讓每一列裝一塊的 32 個特徵。這和第 15.1 節的軸轉換相同，只是起點從 CNN 特徵圖換成 patch 投影。
+這裡 `self.projection` 就是上述卷積。`flatten(2)` 把 4×4 併成 16 個位置；`transpose(1,2)` 交換位置與特徵兩軸。與 15.1 的整理方法相同，但向量來源換成原圖的 patch 投影。
 
-## 添一個 CLS，再加每個槽位的位置向量
+## 分散的內容，要在哪裡彙整成整圖答案
 
-最後仍要回答整張圖是紅或藍。我們在 16 個 patch 前面添一個 **CLS（classification，分類）token**：一個可學的 32 維向量，作為整圖的彙整位置。它不是由某個 patch 切出來，也不是正確類別答案。不同圖片一開始取得同一個 CLS 初值；後面讓它讀取各圖內容，才會形成不同的整圖表示。
+現在有 16 份區域表示，最後卻只需要一個紅／藍答案。我們在序列前面加一個 **CLS token**；CLS 來自 classification（分類），它是專門放整圖表示的位置。
 
-序列變成 `[CLS, patch 1, …, patch 16]`，共 17 個 tokens，shape `[1,17,32]`。程式索引從 0 開始：索引 0 是 CLS，索引 1～16 才是圖中的 patch 1～16。
+CLS 起初是一個可學的 32 維向量。它不是切自某塊圖，也不是正確類別標籤；各張圖先取得相同初值。接上 attention 後，它才會讀到各張圖的內容，形成不同的整圖表示，供分類頭使用。
 
-光有一串內容向量，attention 沒有額外線索可以知道哪塊在左上、哪塊在右下。因此再準備 **position embedding（位置向量）**：17 個序列槽位各有一個可學的 32 維向量，加到該槽位的內容上。CLS 的槽位也有一份。這些是可學數字，不是直接寫入 `(x,y)` pixel 座標；「第幾槽」和原圖格子位置的對應，來自固定的排列順序。
+序列成為 `[CLS, patch 1, …, patch 16]`，共 17 個 tokens，shape 是 `[1,17,32]`。程式索引 0 是 CLS，索引 1～16 對應圖中的 patch 1～16。
+
+還有一件事：同一組 patch 內容，可以排成不同圖片。若只交出內容向量，attention 的共用讀法沒有額外線索知道哪塊在左上、哪塊在右下。**Position embedding（位置向量）**為每個序列槽位準備一個可學向量，加到放在那裡的內容上，讓「內容」同時帶著「所在槽位」的線索。
 
 ![手工流程示意：patch內容加上所屬槽位的位置向量，CLS同樣有位置向量，形成17個32維tokens](../assets/diagrams/21-token-position.svg)
 
-圖中的加號是逐特徵相加：例如只畫兩維的手工例子，內容 `[2,5]` 加位置 `[0.1,-0.2]` 得 `[2.1,4.8]`。實際向量有 32 維；加完仍是 32 維，不是串接成 64 維。這個兩維例子只說明加法，不是模型的實測特徵。
+圖中每個加號都是逐特徵相加。用兩維手工例子看：內容 `[2,5]` 加位置 `[0.1,-0.2]` 得 `[2.1,4.8]`。實際是 32 維加 32 維，結果仍為 32 維。這個例子只教加法，不是模型的實測特徵。
 
-``` { .python data-excerpt="miniyolo/vision_transformer.py" }
-    def embed_tokens(self, images, use_position=True):
-        patches = self.patch_embed(images)
-        tokens = torch.cat((self.cls_token.expand(images.shape[0], -1, -1), patches), dim=1)
-        if use_position:
-            tokens = tokens + self.pos_embed
-        return self.embedding_dropout(tokens)
-```
+17 個槽位各有一份位置向量，包括 CLS。它們不是直接寫入 `(x,y)` 像素座標；槽位與原圖格子的對應來自剛才固定的排列順序。位置線索讓模型能依排列處理內容，但本例的顏色答案本來就不依賴位置，不能因此宣稱它會提高分類正確率。
 
-`expand` 讓整批 B 張圖各有一份相同的 CLS 初值；`cat(...,dim=1)` 沿序列軸把它放到前面。`pos_embed` 的 shape 是 `[1,17,32]`，相加時對每張圖使用同一套位置向量。`embedding_dropout` 在訓練時隨機把一部分特徵設成 0，並縮放保留值；`eval()` 時關閉。下一小節的手工切塊核對實驗採預設 dropout=0，所以不會隨機刪特徵。
+??? note "對照 CLS 與位置的實作"
 
-## 用手工材料核對順序
+    ``` { .python data-excerpt="miniyolo/vision_transformer.py" }
+        def embed_tokens(self, images, use_position=True):
+            patches = self.patch_embed(images)
+            tokens = torch.cat((self.cls_token.expand(images.shape[0], -1, -1), patches), dim=1)
+            if use_position:
+                tokens = tokens + self.pos_embed
+            return self.embedding_dropout(tokens)
+    ```
 
-為了確認攤平沒有排錯，完整程式另做一張手工測試圖：第 k 塊（k 從 0 到 15）內部是同一個 RGB 值 `[k/16,0.25,0.75]`。也就是圖中 patch 1 對應 k=0，patch 16 對應 k=15。這張圖用來核對切塊順序，不是前面的矩形訓練資料。
+    `expand` 讓 B 張圖各取得相同的 CLS 初值，`cat(...,dim=1)` 把它加在序列前面。`pos_embed` 是 `[1,17,32]`，相加時各張圖用同一套位置向量。
 
-|閱讀用 patch 號|程式 k|該塊每個 pixel 的 RGB|
+    `embedding_dropout` 在訓練時隨機將部分特徵設為 0，再縮放保留值；`eval()` 時關閉。下面的切塊核對採預設 dropout=0，沒有這項隨機變化。
+
+## 用一張刻意設計的圖，核對排列有沒有錯
+
+真正的 32 維投影是可學的，尚未訓練時不容易直接看出每一維的意思。完整程式另造一張測試圖：第 k 塊內部全是 RGB `[k/16,0.25,0.75]`，k 從 0 到 15。再手動設定 **192→3 的投影**，讓輸出恰好是該塊的 R、G、B 平均。
+
+|閱讀用 patch 號|程式 k|塊內每個 pixel 的 RGB|
 |---|---:|---|
 |1|0|`[0,0.25,0.75]`|
 |2|1|`[0.0625,0.25,0.75]`|
 |16|15|`[0.9375,0.25,0.75]`|
 
-接著手動設定一個 **192→3 的測試投影**，讓輸出剛好是該塊 R、G、B 的平均。程式印出的 `projection_shape=[1,16,3]` 屬於這個手工投影；真正 TinyViT 的 `vit_patch_embedding_shape=[1,16,32]` 才是前面介紹的可學 32 維表示。這兩個寬度不同，是刻意讓排列結果容易核對。
+這張圖的 R 值逐塊增加，G、B 不變，所以輸出若依序為 `0、0.0625、…、0.9375`，就能直接核對 patch 是否排對。它不是前面的矩形訓練圖；3 維也是方便查順序的手工投影，不是 TinyViT 的表示寬度。
 
-實際輸出中，patch 的 R 平均按順序為 `0、0.0625、…、0.9375`，G、B 平均保持 0.25、0.75。TinyViT 另外核對 `[1,16,192] → [1,16,32] → [1,17,32]` 的 shape，以及 CLS 與位置相加的結果。給每塊相同內容時，不加位置的 patch 表示相同；加上位置後則不同。這些檢查確認輸入整理正確；沒有做 optimizer 更新，也沒有證明隨機模型學會紅藍分類。
+保存的實際輸出得到 `projection_shape=[1,16,3]`，RGB 平均符合設定；TinyViT 另核對 `[1,16,192] → [1,16,32] → [1,17,32]`。給各塊相同內容時，不加位置的 patch 表示相同，加位置後則不同。這些結果回答「輸入整理是否符合約定」，沒有 optimizer 更新，也還沒證明紅藍分類成功。
 
-## 小變化：把邊長從 8 改成 4
+## 換小塊之前，先算會增加什麼
 
-只改 patch 邊長 P=4，原圖仍是 32×32，embedding 的 D 仍是 32。先預測：有幾塊？每塊原始向量有幾個數？加 CLS 後有幾個 tokens？
+原圖仍是 32×32，表示寬度仍是 32，只把 patch 邊長從 8 改成 4：共有幾塊？每塊原始向量有幾個數？加 CLS 後有幾個 tokens？
 
 ??? note "參考答案"
 
-    每列 32/4=8 塊，共 64 塊；每塊有 `3×4×4=48` 個數；加 CLS 後有 65 個 tokens。patch 變小，一個 token 覆蓋的原圖範圍更小，但 tokens 增加了。下一節會看到互相讀取的成本增加多少。改 P 後要重新建立模型，位置向量的長度也要變成 65，不能沿用長度 17 的 checkpoint。
+    每列 8 塊，共 64 塊；每塊有 `3×4×4=48` 個數；加 CLS 後有 65 個 tokens。每個 token 覆蓋較小區域，但要處理的 tokens 更多。改 patch 大小須重新建立模型；位置向量也要從 17 槽變成 65 槽，不能直接沿用原 checkpoint。
 
-本節採用 [ViT 原論文 §3.1 的式 (1)](https://arxiv.org/html/2010.11929#S3.SS1)：patch 投影、可學 CLS 和位置向量。這裡把圖、向量寬度與深度大幅縮小，目的是在 CPU 看清楚流程；它不是原論文預訓練的大模型。
+現在已經把圖準備成一串帶位置線索的向量。[下一節](21-attention.md)讓它們互相讀取，並檢查增加 tokens 如何增加成對計算。
 
-[下一節：21.2 patch 之間怎麼交換內容](21-attention.md) · [在 Colab 重做切塊](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-patches.ipynb)
+??? note "支線入口與架構來源"
+
+    這條選讀支線以[第 1 章](01-small-cnn.md)的分類、[3.1 節](03-identity.md)的原樣捷徑及[15.1 節](15-attention-bridge.md)的 Q／K／V 為起點；不要求先讀完全部 YOLO 版本。
+
+    本節採用 [ViT 原論文 §3.1 式 (1)](https://arxiv.org/html/2010.11929#S3.SS1) 的 patch 投影、可學 CLS 與位置向量。圖、向量寬度與模型深度縮小到可在 CPU 看清流程，沒有載入原論文預訓練模型。
+
+[下一節：21.2 patch 交換內容](21-attention.md) · [在 Colab 核對切塊](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-patches.ipynb)
 
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-patches.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-patches.json)
 
 ??? example "展開本次實際輸出"
 

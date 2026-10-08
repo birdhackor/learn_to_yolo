@@ -2,40 +2,48 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/08-own-images.ipynb){ .md-button }
 
-前置：[完整推論](07-inference.md)、[座標轉換](04-coordinates.md)。本節處理單張非正方形圖片：讀取、RGB／CHW 轉換、letterbox、推論、框還原。它與「新增自己的類別」是兩件事；把照片放進模型不會讓紅／藍矩形模型自動認識汽車。
+第 7 章的圖片原本就是 64×64，解碼框可以直接疊回去。自己的圖片可能是 120×80：先縮放補邊才進模型，預測還要換回原圖才能畫對。模型權重也要從存檔載入，而非每次重新用隨機權重推論。
 
-本節程式新建一個與第 7 章同架構的 grid MiniYOLO（紅／藍兩類、4×4 格），沒有改架構，也沒有下載預訓練權重（pretrained weights：別人先在大型資料集上訓練好的參數）。為了讓沒有照片的人也能跑，程式先畫一張寬 120、高 80、黑底加紅色矩形的 PNG，存到 `artifacts/lesson-08-own-images/`，再用 Pillow（Python 的讀圖套件，程式裡寫成 `from PIL import Image`）讀回來。這張圖就是下面「120×80 圖片怎麼進 64×64 網路」的例子。
+這一頁沿用紅藍兩類的 GridDetector，處理讀圖、letterbox、載入 checkpoint 與框還原。把照片送進去，不會讓這個模型自動認識汽車；新增類別需要下一頁的標註與重新訓練。讀完能沿著同一張非正方形圖片追蹤 shape、座標和類別順序。
 
-接著程式在 CPU 上真的訓練 3 步，把模型存成 checkpoint，重新載入後再對圖片推論。checkpoint 是訓練時存下的檔案，含權重與設定，之後可以載回來推論或接著訓練。訓練 3 步，是為了讓存進檔案的是真的更新過的參數，又能很快走完「訓練 → 存檔 → 載入 → 推論」；3 步還學不會偵測。程式另外用一份手填的已知答案來驗證座標換算。所以本節的檢查只用來驗證權重的存檔與載入、讀圖流程與座標換算，不代表照片的偵測效果。
+## 同一個紅框，先縮小再補邊
 
 ![非正方形圖片的縮放與 padding](../assets/diagrams/08-own-images.svg)
 
-圖右整個正方形是 64×64 的輸入，中間深色部分是縮小後的原圖（寬 64、高 43）。圖中灰色只是用來標示 padding；程式實際補 0，也就是黑色。
+本例原圖寬 120、高 80，紅框 `[20,10,60,30]`，寬高 40×20 pixel。圖右整個正方形是 64×64 輸入，中間深色內容寬 64、高 43；灰色標示 padding，程式實際補黑色 0。這是座標示意圖，還沒有模型預測。
 
-## 120×80 圖片怎麼進 64×64 網路
+沿用第 4 章的 letterbox：保持比例，把原圖放進輸入，再補剩餘邊。理想比例為 `min(64/120,64/80)=64/120≈.533333`，寬縮到 64，高理想為 42.6667，但實際影像要取整成 43。
 
-原圖寬 120、高 80，紅框 `[20,10,60,30]`，寬高 40×20。影像 `[80,120,3]` uint8 經 `convert('RGB')`、`permute(2,0,1)`、除以 255，得到 `[3,80,120]` float32。透明圖或灰階圖同樣要先轉 RGB：帶透明度的 PNG 通常是 RGBA，有 4 個 channel；灰階圖只有 1 個 channel，讀成陣列時甚至只剩 `[H,W]` 兩個軸。模型第一層卷積固定吃 3 個 channel，不轉的話，後面的 `permute` 或第一層卷積就會報錯；`convert('RGB')` 會把它們統一成 3 個 channel。但它只是把透明度丟掉，不會鋪上背景色：透明的地方會露出檔案裡存的 RGB 值（常是黑色，但不保證）。要固定背景色，先建一張同尺寸、填滿指定顏色的 RGB 底圖（例如 `background = Image.new('RGB', image.size, (255, 255, 255))`），再以透明度當遮罩把圖貼上去（`background.paste(image, mask=image.getchannel('A'))`）。這裡的遮罩是 0 到 255 的比例：0 的地方保留底色，255 的地方用原圖，中間的值兩者按比例混合。
+所以實作記兩個實際比例 `sx=64/120`、`sy=43/80=.5375`。高還差 21 列，上補 `21//2=10`、下補 11；左右不補。框先乘比例，再加左／上 padding：
 
-從讀檔到送進模型，shape 依序變成：
+| 原圖邊界 | 換算 | 輸入邊界 |
+| --- | --- | --- |
+| x1=20、x2=60 | ×64/120+0 | 10.6667、32 |
+| y1=10、y2=30 | ×43/80+10 | 15.375、26.125 |
 
-`[80,120,3]` uint8（HWC）→ `permute`、轉 float、除以 255 → `[3,80,120]` float32 → letterbox（見下方）→ `[3,64,64]` → `unsqueeze(0)` 加 batch 軸 → `[1,3,64,64]`
+輸入框約 `[10.6667,15.375,32,26.125]`。還原則先減 padding，再分別除 sx、sy，回到 `[20,10,60,30]`。只用理想 .533333 還原 y，會算成約 10.08、30.23；內容下緣 y=53 甚至還原為約 80.6。差別來自高被取整成 43，不能省略實際比例。
 
-所以模型實際接收 `[1,3,64,64]` 的 NCHW：batch 大小為 1（NCHW 的 N 就是 batch，不是框的個數）、RGB、float32、值域 `[0,1]`。
+letterbox 回傳的 metadata 就是這張圖的變換紀錄：
 
-等比例 letterbox 要讓整張圖放進 64×64，寬和高都不能超出，所以縮放比例取兩個方向中較小的一個：scale=min(64/120, 64/80)=min(0.5333, 0.8)。因此理想 scale=`64/120=.533333`，由較長的寬決定。寬剛好縮成 64，左右不補 padding；高理想為 42.6667，但影像高度必須是整數，實際取 43，所以實作儲存 `sx=64/120`、`sy=43/80=.5375`。高度還差 64−43=21 列：上方補 `21//2=10` 列，下方補剩下的 11 列，也就是上 padding=10，下 padding=11。
+手機上可左右滑動表格，查看完整欄位。
 
-框的換算是先乘實際比例、再加 padding：
+| 欄位 | 本例 | 順序／用途 |
+| --- | --- | --- |
+| original_size | `(80,120)` | H、W |
+| resized_size | `(43,64)` | H、W |
+| padding | `(0,10)` | left、top |
+| scale_xy | `(64/120,43/80)` | sx、sy；還原使用它 |
+| scale | `64/120` | 理想比例 |
 
-- x1=20×64/120+0≈10.67，x2=60×64/120+0=32
-- y1=10×0.5375+10=15.375，y2=30×0.5375+10=26.125
+這是 `miniyolo.geometry` 的欄位名，第 4 章手寫版本的 `original_hw` 在這裡叫 `original_size`。意義相同，每張圖仍必須帶自己的 metadata，不能拿批次第一張的紀錄還原其他圖。
 
-所以輸入框約為 `[10.6667,15.375,32,26.125]`。
+## 從 PNG 到模型的四個軸
 
-還原則反過來：x 減 left padding 再除以 sx，y 減 top padding 再除以 sy，得到原框 `[20,10,60,30]`。若只記理想 scale，把 y 也除以 0.533333，就會出現取整造成的誤差：y1 會算成 (15.375−10)/0.5333≈10.08、y2≈30.23，而不是 10、30；整張圖的下緣 53 會算成約 80.6，超出原圖高度 80。x 方向的寬 120×64/120 剛好是 64，sx 就等於理想 scale，所以不受影響。誤差的來源是高度 42.67 先被取整成 43，實際比例變成 0.5375。
+Pillow 的 `Image.open(...).convert('RGB')` 先統一三個顏色通道；轉成 NumPy 陣列後是 `[80,120,3]` uint8，0～255。用 `permute(2,0,1)` 換成 CHW、轉 float32、除 255，才符合第 7 章資料契約。
 
-letterbox 回傳的 metadata 裡兩種順序並存，取值時要看欄位名稱：`original_size`、`resized_size` 是先高後寬的 `(H,W)`，本例是 (80,120)、(43,64)；`padding` 是 `(left,top)`、`scale_xy` 是 `(sx,sy)`，都是先 x 後 y，本例是 (0,10)、(0.5333,0.5375)。metadata 裡的 `scale` 是理想比例；有 `scale_xy` 時，還原用的是 `scale_xy`。本節用的是 `miniyolo.geometry` 的 letterbox，欄位名稱和第 4 章程式裡自己寫的版本不同（例如第 4 章的 `original_hw`，在這裡叫 `original_size`），意思相同。必須讓每張圖帶自己的 metadata，不能拿 batch 第一張的去還原全部圖片。
+形狀一路是：`[80,120,3]` → `[3,80,120]` → letterbox `[3,64,64]` → 加 batch 軸 `[1,3,64,64]`。NCHW 的 N=1 指圖片數，與框數無關。
 
-下面是推論核心步驟的簡化版，改寫自 `scripts/detect_image.py` 的 `detect_image()`，逐行加了註解（用到的 import 與完整程式開頭相同）：
+以下是 `scripts/detect_image.py` 推論核心的簡化示意，使用與完整程式相同的 imports：
 
 ```python
 # 'my.png' 換成你的圖片；.copy() 複製成可寫入的陣列，避免 torch.from_numpy 發出警告
@@ -52,22 +60,21 @@ with torch.inference_mode():
 original_boxes = undo_letterbox(pred['boxes'], meta)  # 用這張圖自己的 meta 還原到原圖座標
 ```
 
-傳空框表示推論時沒有 GT，不表示原圖裡沒有物件。模型看到的是補過 padding 的 64×64 圖，decoder 輸出的也是這個座標系的 pixel xyxy。最後才還原到原圖、裁切到原圖範圍內並畫框。
 
-## 可核對的快速實驗
 
-可以用頁首的「在 Colab 執行本節」按鈕執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`。輸出共 7 行，依序對應下面四項檢查：
+傳空框表示推論時沒有 GT，不代表圖中沒有物件。模型和 decoder 都在 64×64 補邊後座標運作，最後用這張圖的 meta 還原。
 
-1. 第 1–2 行是往返（roundtrip）：框先經 letterbox 換到輸入座標，再用 undo_letterbox 還原。應看到原圖 shape `(3,80,120)`、上面算出的輸入框與 metadata，最後回到 `[20,10,60,30]`。float32 的計算有極小的捨入誤差（例如 60 實際算出 59.999996…），所以程式把框座標四捨五入到小數第 4 位才印出；assert 也用 `torch.allclose`，只檢查還原的框和原框非常接近，不要求完全相等。
-2. 第 3–5 行是存檔、重新載入與推論：程式先在 CPU 上做 3 次參數更新，存成 checkpoint，再用 `weights_only=True` 讀回（意思見下方「實際載入模型，推論指定圖片」），確認重新載入前後的 logits 逐值相等。接著用 `scripts/detect_image.py` 的 `detect_image()` 真正讀取 PNG 推論：只留 score 至少 0.25 的框（0.25 是顯示門檻，決定要畫出哪些框），存下 PNG（原圖疊上留下的框，沒有框時就是原圖）與記錄原圖座標的 JSON。程式檢查 `detect_image()` 回傳的報告（也就是寫進 JSON 的內容）記下的 `score_threshold` 是 0.25，而且每個框的 score 都至少 0.25。第 3 行最後印出留下的框數與這個門檻，第 4 行是 PNG 與 JSON 的路徑，第 5 行是固定的提醒：這些只證明流程接得通，不代表照片的偵測品質。3 步模型還學不會偵測，所以框數不論多少都不算偵測結果，也不能用來判斷權重有沒有套用（那是前面「logits 逐值相等」這項檢查的工作）；兩種 score 門檻的差別，見下方「CLI 的步驟與預設門檻」。
-3. 第 6 行：類別數與設定（config）不一致的 checkpoint 必須被拒絕。程式故意存一個有 3 個類別名稱、config 卻寫 2 類的檔案，載入時應報錯。
-4. 第 7 行是手填的已知答案：程式做一份「完美」的模型輸出。負責紅框的那一格：框值設成解碼後剛好得到輸入座標裡的紅框，objectness logit 填 10，類別 logits 填 10 與 −10（紅類較高）。其他格的 objectness logit 都填 −20。這份輸出經過 decode 和 undo_letterbox 後，應回到約 `[20,10,60,30]` 的原框。
+灰階與 RGBA 也要先 convert RGB，否則軸數或卷積通道不符。若檔案有透明度，直接轉 RGB 只是丟掉 alpha，不會自動合成指定底色；處理透明圖時要先決定背景。
 
-## 實際載入模型，推論指定圖片
+??? note "透明 PNG 的背景如何固定"
 
-第 7 章的訓練程式是一個 CLI（command-line interface，命令列程式：在終端機或 Colab cell 打指令、加參數來執行的程式）。它存下的 checkpoint 讀回來是一個 Python dict，分成幾個欄位：`model_state_dict` 是權重；`config` 記錄 image_size、grid_size、width 等設定；`class_names` 是照順序排好的類別名稱；另外還有 optimizer 狀態等推論用不到的欄位。
+    透明處仍有檔案儲存的 RGB，直接 convert 會露出它，常為黑色但不保證。要合成白底，可先建 `background = Image.new('RGB',image.size,(255,255,255))`，再 `background.paste(image,mask=image.getchannel('A'))`。alpha 遮罩 0 保留底色、255 使用原色，中間值按比例混合。
 
-`model_state_dict` 本身也是 dict，稱為 state_dict：key 是參數的名稱，value 是對應的 tensor（有 BatchNorm 的模型還會存 `running_mean` 這類不是參數的 buffer；本書的模型沒有 buffer，所以這裡全是參數）。例如兩類、width 8 的模型，`head.weight` 對應一個 shape 為 `[7,32,1,1]` 的 tensor。state_dict 只存這些數字，不存模型結構（有哪些層、層與層怎麼接），所以要先用 config 和類別數新建一個同結構的 GridDetector，再用 `load_state_dict` 依參數名稱把數字填回去。要傳進去的是 `checkpoint['model_state_dict']`，不能把整個 checkpoint dict 直接送進 `load_state_dict`。image_size 不必給模型，它是給 letterbox 和 decode 用的。`scripts/detect_image.py` 的載入函式 `load_grid_checkpoint()` 就是這樣重建與載入的；下面摘錄它的關鍵幾行，`...` 是省略的檢查（見後文）：
+## 載入的是哪個模型、哪套類別
+
+checkpoint 是保存模型權重與設定的檔案。這裡讀回 Python dict：`model_state_dict` 裝權重，`config` 記 image_size／grid_size／width，`class_names` 是有順序的類別名稱。第 7 章存檔還可含 optimizer 狀態等推論用不到的欄位。
+
+state_dict 是參數名稱到 tensor 的對照，例如兩類 width 8 的 `head.weight` 為 `[7,32,1,1]`。它不保存模型的層與接法，因此先按 config 重建同結構 GridDetector，再載入權重：
 
 ``` { .python data-excerpt="scripts/detect_image.py" }
 def load_grid_checkpoint(path):
@@ -82,26 +89,45 @@ def load_grid_checkpoint(path):
     return model, config, classes
 ```
 
-`map_location='cpu'` 把檔案裡的 tensor 都載到 CPU，所以在 GPU 上存的檔，沒有 GPU 的電腦也能讀。`weights_only=True` 不是「只讀權重」，而是只允許還原 tensor、數字、字串、list、dict 這類單純的資料。`torch.load` 底層用 pickle（Python 把物件存成檔案的格式），來路不明的檔案可能夾帶會被執行的程式碼。這個設定只還原允許清單裡的型別；檔案要求呼叫清單以外的函式或類別時，會直接報錯、不執行。PyTorch 官方的說法是「就目前所知是安全的」，所以來路不明的檔案，最好只在隔離的環境（例如容器或虛擬機）中載入。config 與 class_names 也是這類單純資料，所以照樣讀得到。
 
-`load_state_dict` 依參數名稱（key）填值。`strict=True` 要求名稱一一對上：檔案缺了模型需要的參數（或 buffer），或多出模型沒有的，都會報錯。shape 對不上時，不論 strict 怎麼設都會報錯；例如用 3 個類別名稱建模型，新模型的 `head.weight` 是 `[8,32,1,1]`，就對不上檔案裡兩類模型的 `[7,32,1,1]`。
 
-`load_grid_checkpoint()`（CLI 和本節完整程式都用它）在上面 `...` 省略的地方還多做幾項檢查，例如：config 的 image_size、grid_size、width 都要是正整數；類別名稱不能是空的，也不能重複；config 若有 num_classes，必須等於名稱個數。上面快速實驗第 6 行那個故意做壞的檔案（config 寫 2 類，卻有 3 個類別名稱），就是被 num_classes 這一項擋下的，還沒走到 `load_state_dict`。
+傳給 `load_state_dict` 的是 `checkpoint['model_state_dict']`，不是整個 checkpoint。image_size 用於 letterbox、decode，不是模型建構參數。`strict=True` 要求名稱一一對上；參數／buffer 缺少或多出會報錯，shape 不同無論 strict 都會報錯。三類 head 為 `[8,32,1,1]`，不能直接接兩類的 `[7,32,1,1]`。
 
-類別名稱的順序必須和訓練時相同。class id 照 class_names 的索引對應：id 0 永遠是訓練時的第 0 類（紅矩形），id 1 是藍矩形。若把 class_names 改成 `['car','person']`，上面的檢查照樣全部通過，結果只是把紅矩形標成 car，模型並不會因此認得汽車。程式檢查不出這種錯，名稱順序要靠使用者自己對好。
+`load_grid_checkpoint` 還檢查尺寸設定為正整數、類別名稱非空且不重複，若有 config.num_classes，必須等於名稱數。這些只能抓格式，抓不到名稱被換錯：id 0、1 仍是訓練時紅、藍矩形，只將 class_names 改為 `['car','person']`，會把紅矩形顯示為 car，沒有學到汽車。類別順序必須與訓練相同。
 
-`scripts/detect_image.py`（包括 `load_grid_checkpoint()`）只接受本書 GridDetector 的存檔格式。如果檔案裡只有 `model.state_dict()`（沒有 config 和 class_names），要另外提供同樣的設定（config），以及照訓練順序排好的類別名稱。其他 YOLO 的權重（例如網路上下載的）模型結構不同，不能交給它。
+這個 loader 只接受本書 GridDetector 格式。只有 state_dict 的檔案要另外提供架構設定與有序類別；其他 YOLO 架構的權重不能直接交給它。
 
-在 repo 根目錄可先建立第 7 章的 160 步模型，再用完整的圖片 CLI 推論：
+??? note "torch.load 與 state_dict 的細節"
+
+    `map_location='cpu'` 將 tensor 載到 CPU，GPU 存檔也能在沒有 GPU 的機器讀取。`weights_only=True` 並非只讀權重，它允許 tensor、數字、字串、list、dict 等單純資料，所以 config、class_names 也讀得到。torch.load 使用 pickle，這個設定會拒絕允許清單之外的函式／類別；PyTorch 稱其「就目前所知是安全的」，不明來源檔案仍宜在隔離環境載入。
+
+    有 BatchNorm 的模型還有 running_mean 等 buffer，state_dict 也會存；本模型沒有 buffer。
+
+## 快速實驗如何分開檢查座標與權重
+
+頁首 notebook 不需自備圖片，程式先畫上面的黑底紅矩形，寫成 PNG 再讀回。在 CPU 用第 7 章生成圖訓練三步，保存 checkpoint、重建模型並載入。三步讓存檔參數確實更新，又能很快完成流程；沒有下載預訓練權重，也不以三步宣稱偵測品質。
+
+在 repo 根目錄可執行 `PYTHONPATH=. python lesson_cases/08-own-images.py`，七行輸出分別檢查：
+
+1. 前兩行是框座標往返：CHW `(3,80,120)`，輸入框與上面手算一致，還原約 `[20,10,60,30]`。float32 可能把 60 算為 59.999996…，因此 print 取四位小數，assert 用 allclose 容差。
+2. 第 3～5 行是存檔、載入、PNG 推論。重新載入前後同圖 logits **逐值相等**，才是權重套用成功的證據；框數不是。`detect_image()` 真正讀圖，只畫 score≥.25 的框，保存 PNG 與原圖座標 JSON，並核對記錄門檻與每框分數。三步模型的框數多少都不代表照片效果。
+3. 第 6 行故意保存三個類別名稱、config 卻寫兩類，要求載入時拒絕，不等 shape 錯才發現。
+4. 第 7 行以人工已知輸出檢查整段座標：紅框正格填能解碼出輸入框的四項，obj=10、紅藍類別 logits=10／−10，其他 obj=−20；decode 再 undo_letterbox 應回到原框。這份輸出不是模型學出的。
+
+## 用存好的模型，對指定圖片推論
+
+CLI（command-line interface／命令列介面）用指令與參數執行。先建立第 7 章 160 步模型，再換圖片路徑：
 
 ```bash
 python -m miniyolo.train --steps 160 --samples 32 --device cpu
 python scripts/detect_image.py --image my.png --checkpoint artifacts/runs/grid-learning/checkpoint.pt
 ```
 
-把 `my.png` 換成你的圖片路徑，jpg 也可以；也可以把 `--image` 指定為訓練 CLI 輸出的 `artifacts/runs/grid-learning/validation-00.png`，先核對紅／藍合成圖。手機照片常把拍攝方向記在 EXIF（Exchangeable Image File Format，可交換影像檔案格式）標籤裡；Pillow 讀檔時不會照這個標籤轉正，所以輸出的圖和座標，都以檔案實際存的像素方向為準。方向和相簿看到的不同時，先用 `PIL.ImageOps.exif_transpose()` 轉正、另存一張，再交給 CLI。兩行都不必加 `PYTHONPATH=.`：`python -m` 會從目前資料夾（repo 根目錄）找到 `miniyolo`，`scripts/detect_image.py` 則會自己把 repo 根目錄加進 Python 找模組的路徑。
+jpg 也可；先用訓練腳本的 `artifacts/runs/grid-learning/validation-00.png` 能對照紅藍合成圖。兩行在 repo 根目錄執行，不需 PYTHONPATH：`python -m` 由目前目錄找模組，detect_image 自行加入 repo 路徑。
 
-兩行的輸出預設都在 git 不追蹤的 `artifacts/runs/` 底下。第一行把 checkpoint、報告 `report.json` 等存在 `artifacts/runs/grid-learning/`，第二行讀的就是這裡的 checkpoint。第二行把疊框 PNG 存成 `artifacts/runs/predictions/my-image.png`，同檔名的 `my-image.json` 放在旁邊，記錄原圖座標的框、score、類別與所用的門檻；要換位置或檔名，就加 `--output`。CLI 最後印出一行摘要，含框數 `boxes`、`score_threshold`、`nms_iou`、輸出路徑 `output` 與 `class_names`。
+輸出預設為 `artifacts/runs/predictions/my-image.png` 和旁邊同名 JSON，可加 `--output` 改位置。橙框上寫類別與 score；JSON 保存原圖 boxes、scores、labels、class_names 與實際門檻。沒有框仍保存圖片與空陣列。CLI 摘要也列框數、score_threshold、nms_iou、路徑與類別。
+
+手機照片可能用 EXIF（Exchangeable Image File Format／可交換影像檔案格式）記旋轉方向。Pillow 不自動按這個標籤轉正，輸出與框以實際儲存畫素為準。若方向與相簿不同，先用 `PIL.ImageOps.exif_transpose()` 轉正另存，再推論。
 
 ### 在 Colab 用自己的照片
 
@@ -126,48 +152,22 @@ python scripts/detect_image.py --image my.png --checkpoint artifacts/runs/grid-l
 
     框的座標、分數與類別存在同資料夾的 `my-image.json`。
 
-### CLI 的步驟與預設門檻
 
-CLI 內部依序做這些事：
+## 畫框門檻與評估門檻各自留下什麼
 
-1. 載入 checkpoint，重建模型（就是上面的 `load_grid_checkpoint()`）。
-2. 用 Pillow 讀圖，轉成 RGB。
-3. 轉成 CHW 排列的 `[3,H,W]` float32（除以 255）。
-4. 依 checkpoint 的 image_size 做 letterbox。
-5. 加上 batch 軸。
-6. 用載入好的模型 forward。
-7. decode：只留 score 至少為 score 門檻的候選，再按類別分開做 NMS。
-8. 用 undo_letterbox 還原到原圖座標，刪掉面積為 0 的框。
-9. 存下疊框 PNG（框畫成橘色，左上方標類別名稱與 score），以及同檔名的 JSON（例如 `my-image.png` 配 `my-image.json`）。
+CLI 預設 score≥.25，為本書顯示門檻，不使用 checkpoint 裡評估的 .05。未訓練時每格約 `.12×.5=.06`，.05 會留下 16 個低分框；一堆框看不出學會什麼，也不能判斷權重是否載入。權重應由上面的同圖 exact logits 比對確認。
 
-沒有框時，仍會存下原圖和空的框陣列。完全落在 padding 裡的框，還原後面積是 0，會在第 8 步被刪掉。例如輸入框 `[20,2,30,8]` 整個落在上方 padding（y 小於 10）：還原後 y1=(2−10)/0.5375≈−14.9、y2=(8−10)/0.5375≈−3.7。undo_letterbox 會把座標裁到原圖範圍（x 在 0～120、y 在 0～80），兩者都變成 0，高度為 0，CLI 就把這種框丟掉。前面第一段範例程式沒有這一步，完整 CLI（`scripts/detect_image.py`）才有。
+`--score-threshold` 可指定顯示門檻，例如 .05 看低分候選；`--nms-iou` 可指定同類去重門檻。NMS 預設讀 config.nms_iou，本節與第 7 章皆為 .5，沒有該欄也採 .5。兩值須在 0～1，並印在摘要、保存到 JSON，才能知道實際畫了哪一組候選。
 
-??? note "量測速度時"
+完整 CLI 在還原時裁到原圖範圍，再丟零面積框。完全在上 padding 的輸入框 `[20,2,30,8]`，還原 y 約 −14.9、−3.7，裁到原圖後兩者都為 0，高度為零，會被刪除。前面的短示意程式只到 undo_letterbox，完整 CLI 才有刪框這一步。
 
-    若要量測速度，讀檔、縮放、模型、後處理要一起列出，而不是只報模型 forward。後處理指模型輸出之後的步驟：decode、score 篩選、NMS，以及把框還原到原圖座標。
+讀圖→RGB／CHW→letterbox→加 batch→模型→decode／NMS→還原／零面積過濾→PNG／JSON，都是推論的一部分。若量速度，讀檔、前處理、模型與後處理需各自交代，不能只報 forward。
 
-CLI 用兩個門檻。score 門檻預設是本書常用的顯示門檻 0.25（`scripts/detect_image.py` 裡的常數 `DISPLAY_SCORE_THRESHOLD`，和 `decode_grid` 的預設值相同），可用 `--score-threshold` 改。NMS 的 IoU 門檻預設用 checkpoint 設定（config）裡的 `nms_iou`，第 7 章的訓練 CLI 與本節程式存的都是 0.5；config 沒有這一項時也用 0.5，可用 `--nms-iou` 改。config 裡另外還存了 score 門檻 0.05（`score_threshold`），那是評估用的候選截斷門檻：算 AP 前只先刪掉分數極低的候選。它刻意設得很低，讓低分的候選也能留下來參與評估（見[獨立資料評估](07-heldout.md)）；CLI 畫框不用它。
+## 選 letterbox，需要承擔什麼
 
-為什麼不拿 0.05 畫框？未訓練的模型 objectness 的 bias 起點是 −2（見[三步訓練](07-training.md)）。score 是 sigmoid(obj) 乘上最大的類別機率，兩類的機率起初都約 0.5，所以每格 score 約 sigmoid(−2)×0.5≈0.06，本來就略高於 0.05。在 0.05 門檻下，就算完全沒訓練，或忘了用 `load_state_dict` 載入權重，4×4 的 16 格也全部通過，畫出來是一堆低分框，看不出模型學到了什麼。框數也不能用來判斷權重有沒有套用；權重已套用，靠的是快速實驗第 3 行的 exact logits（重新載入前後的 logits 逐值相等）。本節程式檢查每個留下的框 score 都至少 0.25，就是為了確定框是用顯示門檻篩出來的，不是用 checkpoint 裡的 0.05。
+letterbox 保留物件比例，本例 40×20 變約 21.3×10.75，仍近 2:1；代價是只有 64×43 是圖像內容，小物件也縮小，極端長寬比讓內容占比更低。直接拉正方形沒有 padding，但框變約 21.3×16，物件變形。
 
-要看更低分的候選，可以用 `--score-threshold` 調低，例如 `--score-threshold .05`；`--nms-iou` 也能另外指定。兩個門檻都要在 0 到 1 之間，否則 CLI 會報錯。實際用的值都會印在 CLI 的摘要裡，也記在 JSON 的 `score_threshold`、`nms_iou` 欄位。
-
-這個模型只學過紅／藍矩形。一般照片可以用來檢查讀圖和座標，但照片上的框不代表它認得汽車、行人等類別。要學自己的新類別，接下一節重新建立資料與訓練。
-
-## letterbox 還是直接拉伸？
-
-letterbox 的收益是物件不變形：40×20 的紅框縮完約 21.3×10.75，仍約 2:1。代價是 padding 占掉輸入：本例 64×64 的輸入裡，只有寬 64、高 43 的部分是原圖內容，小物件也被縮小；原圖長寬比越極端，真正來自原圖的畫素越少。
-
-直接拉成正方形沒有 padding，但物件會被壓扁或拉長：本例寬乘 64/120、高乘 64/80=0.8，40×20 的框會變成約 21.3×16。兩種做法只要記下實際的 sx、sy（letterbox 另外還要記下 left、top padding），都能把框還原。訓練用哪一種，推論就要用同一種；要比較兩者，得各自從訓練到推論都用同一種做法之後再比。
-
-本節程式補的 padding 值是 0，也就是黑色；第 7 章的合成訓練圖本身就是 64×64，沒有經過 letterbox，背景是 0 到 0.04 之間的隨機值，接近黑色。
-
-## 常見錯誤
-
-- 只 resize 圖，沒有跟著換算框。
-- 把「傳入空 GT」當成「圖片裡沒有物件」。
-- 先在補了 padding 的圖上畫框，再把那些框當成原圖座標。
-- 拿另一張圖的 metadata 來還原。
+兩者只要保存 sx／sy（letterbox 另存 padding）都能還原。訓練與推論必須用同一種前處理；比較兩者效果，也要各自訓練並用相同方式推論。本節補 0，第 7 章合成圖沒有 letterbox，背景為 0～.04 的近黑雜訊。原圖縮放時框也要一起換算；傳空 GT 不是空圖；padding 後座標不能直接當原圖，也不能借另一圖 metadata。
 
 ## 自主練習
 
@@ -182,8 +182,6 @@ letterbox 的收益是物件不變形：40×20 的紅框縮完約 21.3×10.75，
 ??? note "參考答案"
 
     約 `[60,40.93,90,70.70]`。還原是先減 padding、再除以實際比例：x1=(32−0)/(64/120)=60、x2=(48−0)/(64/120)=90；y1=(32−10)/0.5375≈40.93、y2=(48−10)/0.5375≈70.70。四個值都在原圖範圍內，不必裁切。
-
-下一節才增加類別、標註與重新訓練。
 
 ## 查看本節輸出檔
 

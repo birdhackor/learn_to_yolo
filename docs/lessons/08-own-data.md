@@ -2,20 +2,13 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/08-own-data.ipynb){ .md-button }
 
-前置：[自己的圖片推論](08-own-images.md)、[Grid MiniYOLO 資料](07-data.md)、[三步訓練與診斷](07-training.md)。你需要知道上一節的 letterbox 與 checkpoint 載入，以及第 7 章怎麼把標註打包成 batch、訓練 4×4 grid 的偵測器。
+上一節能將圖片送進模型、把框還原；模型認得什麼，仍由訓練時的類別與標註決定。現在加入黃色矩形：要讓資料明確寫出黃色 id，重建三類 head，再只用 train 更新權重。還要把不同來源留給 validation、test，才能知道模型是否只記住熟悉的背景。
 
-本節要解決兩個彼此獨立的問題：一是讓資料能表達新的類別，二是讓評估用的圖片來自模型沒見過的來源。讀完後，你能把自己的圖片和框寫成本書的標註格式、按來源切分 train／validation／test，再用同一套程式訓練、評估與存檔。先記住一件事：類別數改變後，模型必須重新訓練；只改顯示名稱，不能把「紅矩形」的權重變成認得「汽車」。
+先用六張自己寫成 PNG 的小圖，接通標註→Dataset→batch→target→一次更新，再用完整實驗看 loss 下降與獨立偵測是否一致。讀完能把自己的圖片與原圖框寫入 JSON，按來源切分，沿用第 7 章訓練、評估與存檔。這裡的圖仍為人工合成，不代表照片效果。
 
-本節使用本書自訂的 JSON 標註格式。JSON 是用純文字記錄清單 `[ ]` 與鍵值 `{ }` 的通用資料格式。框座標沿用前面的原圖 pixel xyxy（左上角的 x、y 與右下角的 x、y），並新增 class 2 黃矩形。這是本書自己的格式，並不宣稱與各種 YOLO 標註格式相容。
+## 黃色矩形的答案怎麼寫
 
-本節有兩個實驗：
-
-1. 主例（Colab 跑的就是它，不需下載資料）：程式自己畫 6 張小圖，寫成 PNG 與 JSON 檔：3 個來源各一張黃矩形、一張只有背景的空圖，三個來源的背景深淺（黑、深灰、灰）和黃矩形的位置、大小都不同。接著檢查格式、來源切分，以及跨 split 有沒有相同的圖，再讀成 batch，只拿 train 做一次參數更新，確認程式接得起來。
-2. 後半的完整實驗：程式生成 48 張合成圖（24 張 train、12 張 validation、12 張 test），只拿 24 張 train 訓練 1600 步，再評估、存檔並重新載入。
-
-兩者都是程式畫的合成圖，結果不代表模型在真實照片上的效果。
-
-## 固定一種可以查核的格式
+本書的 JSON 標註是純文字的清單 `[ ]` 與鍵值 `{ }`。以下是一張 120×80 圖的紀錄，黃色矩形使用上一節的框位置 `[20,10,60,30]`：
 
 ```json
 {
@@ -28,44 +21,34 @@
 }
 ```
 
-`classes` 陣列的索引就是 class id，從 0 起算：0 是紅矩形、1 是藍矩形、2 是黃矩形，所以上例的 `"labels": [2]` 表示黃矩形。`width`、`height` 是還沒前處理的原圖尺寸，框也用原圖 pixel；若做 letterbox，影像和框必須一起變換。
 
-`boxes` 和 `labels` 要一一對應：
+`classes` 的索引就是 class id：0 紅、1 藍、2 黃，因此 labels=[2]。width／height 是原圖尺寸，boxes 也是原圖 pixel xyxy 半開區間。不能先縮圖卻仍填原圖框；前處理會將兩者一起變換。這是本書自訂格式，不等同各種 YOLO 標註格式。
 
-- boxes 有幾列，labels 就要有幾個，每個框都要有類別。例如 `boxes=[[20,10,60,30]]` 配 `labels=[]` 會被拒絕。
-- 每列剛好四個數 `[x_min,y_min,x_max,y_max]`。寫成 `[[20,10],[60,30]]`（兩列、每列兩個數）會被拒絕；程式不會先 reshape，替你拼成一個框。
-- 沒有物件的圖寫 `boxes=[]`、`labels=[]`。Dataset 讀檔時會自動把空的 boxes 建成 shape `[0,4]` 的 tensor（`torch.empty(0,4)`），不必自己寫。這樣後面的程式拿到的框永遠是 `[N,4]`，空圖就是 N=0；若直接用 `torch.tensor([])`，shape 會是 `[0]`。
+每框一列四個數，每列配一個 label。`boxes=[[20,10,60,30]]` 配空 labels 會被拒絕；`[[20,10],[60,30]]` 是兩列、每列兩數，也會被拒絕，不會偷偷 reshape 成一框。空圖寫 boxes=[]、labels=[]；Dataset 會建立 `[0,4]` 的空框與 `[0]` 的 long labels，避免 `torch.tensor([])` 只有 `[0]` 的框 shape。
 
-這些規則分成兩類：程式會自動擋下的，以及程式查不到、要你自己看的。
+## 哪些錯誤程式能找，哪些要看圖
 
-程式會自動擋下的（建立 Dataset 時就會檢查）：
+建立 Dataset 時，先檢查所有 split，而非只查正在讀的 train。每筆 width／height 必須為正整數，空圖也一樣；每列四個有限座標，框／類別列數一致；`0≤x1<x2≤width`、`0≤y1<y2≤height`；id 為 0～類別數−1 的整數；圖檔都讀得到，實際尺寸也與紀錄相同。
 
-1. 每筆紀錄的 width、height 都是正整數，空圖也一樣。
-2. boxes 每列剛好是四個有限數字（不能是 NaN 或無限大），列數等於 labels 的個數。
-3. 框在圖內且面積為正：`0≤x_min<x_max≤width`、`0≤y_min<y_max≤height`。
-4. class id 是整數，且在 0 到「類別數−1」之間。程式寫成 `type(label) is int`，不用 `isinstance`。原因是 Python 的 bool 是 int 的子類別：`True == 1`，`isinstance(True, int)` 也成立。若 JSON 裡誤寫 `true`，用 isinstance 檢查，這個 true 會被當成 class 1 悄悄通過。
-5. 所有 split 的圖片都讀得到，實際尺寸等於紀錄的 width、height。
+id 檢查用 `type(label) is int`，不用一般 `isinstance`，因為 Python 的 bool 是 int 子類，`True==1`、`isinstance(True,int)` 都成立。JSON 誤寫 true 時，不能讓它悄悄變成藍色 id=1。
 
-程式查不到、要自己看的（把圖轉成 RGB，畫上標註框，也就是疊圖，用眼睛檢查）：
+但「框在圖內」不代表「框對物件」。漏掉第三個物件、把框畫歪，仍可能通過全部檢查。先轉 RGB，再畫標註疊圖確認每個物件。漏標會讓沒有 target 的那個位置被教成背景，傷害不只是少一筆資料。
 
-- 漏標：圖裡有物件，卻沒有對應的框。
-- 框錯位：框的位置或大小和物件對不上。
+## 相近畫面不能分到考題兩邊
 
-程式只能查結構與範圍，不能替你知道一張圖有沒有漏掉第三個物件。漏標的傷害也不只是少一點訓練資料：訓練時，那個物件所在的位置會被當成背景來教。
+假設 video_A 的 A0、A1 幾乎一樣。A0 放 train、A1 放 test，模型只要記住 A0 的背景與姿態，就容易通過 A1。這是資料洩漏（leakage）：評估資料的相似資訊已混入訓練，分數不能代表新來源的能力。
 
-## 按來源分組，先切分再調參
+因此同一個 source_id 整組進同一個 split。本節主例寫六張圖，每個來源一張黃矩形、一張空圖；各來源背景深淺（黑、深灰、灰）和物件位置、大小不同：
 
-假設 video_A 連拍的兩張 A0、A1 幾乎相同。若 A0 在 train、A1 在 test，模型只要記住 A0 的背景和姿態，就能答對 A1。test 分數會虛高，量到的是記性，而不是泛化。test 的資訊經由相似畫面混進訓練，這種情形叫資料洩漏（leakage）。
+| source_id | 圖片 | split／用途 |
+| --- | --- | --- |
+| video_A | A0、A1 | train：更新權重 |
+| video_B | B0、B1 | validation：挑學習率、步數、門檻等設定 |
+| video_C | C0、C1 | test：設定定案後只評一次 |
 
-所以要按來源切分：同一個 source_id 的圖，全部放在同一個 split。案例把 video_A 全放 train、video_B 全放 validation、video_C 全放 test，每組兩張。source_id 可以是一支影片、同一台攝影機同一天拍的一批、同一位病患，或同一個被拍的物體；依任務選一個能擋住相近畫面洩漏的單位。
+真實 source 可是一支影片、同攝影機同日拍攝、一位病患或同一個物體，依任務選能擋住近似資訊的單位；只是換檔名，不會變成新來源。
 
-切分固定後，train 用來更新權重；validation 用來挑設定（learning rate、訓練步數、門檻等超參數，不是權重）；test 等所有設定都決定後，只評估一次。
-
-資料太少時，可以按來源做交叉驗證：test 仍另外保留；把剩下的 source 分成 k 份（每份叫一個 fold），輪流拿一份當 validation、另外 k−1 份當 train，做 k 次再平均結果。分份時，同一個 source_id 的圖必須放在同一份。本書不示範，只提醒這個原則。
-
-案例的檢查函式 `validate_annotations`（在 `miniyolo/custom_data.py`，和 validation 資料無關）會記住每個 source_id 第一次出現在哪個 split；同一個來源若又出現在另一個 split，檢查就失敗。這個函式也拒絕重複的 path；建立 Dataset 時也會呼叫它。
-
-這個檢查只看 source_id 與 path，不打開圖片：同一張圖改名複製、再標成另一個來源，它擋不到。所以主例的完整程式（Colab 裡的那份）在 `validate_annotations(records,classes)` 之後，另外打開每張 PNG、解碼成 RGB，記住每張圖第一次出現在哪個 split；同一張圖若又出現在另一個 split，assert 就失敗。下面這段摘自完整程式，`records` 是那 6 筆紀錄，`root` 是存放圖片的暫存資料夾：
+`validate_annotations` 位於 `miniyolo/custom_data.py`，是格式檢查函式，不是 validation split。它記錄每個 source 第一次的 split，跨到另一組就拒絕，也拒絕重複 path；Dataset 建立時會呼叫。來源名卻不能保證畫素不同，所以主例另外逐張解碼 PNG 為 RGB，檢查完全相同圖片是否跨 split：
 
 ``` { .python data-excerpt="lesson_cases/08-own-data.py" }
 split_of_image = {}
@@ -75,17 +58,19 @@ for r in records:
     assert split_of_image.setdefault(key,r['split']) == r['split'],'same image in two splits'
 ```
 
-字典的 `setdefault(key, split)`：這個 key 第一次出現時，存入並回傳這個 split；之後再遇到同一個 key，回傳第一次存的 split。兩者不同，就是同一張圖跨了 split。key 裡放了尺寸，因為 120×80 與 80×120 的同色空圖，畫素位元組完全相同，少了尺寸會被當成同一張。主例三個來源的背景深淺與黃矩形位置都不同，所以通過。這只抓得到畫素完全相同的圖；真實資料還要盤點來源，後半的完整實驗也比對了跨 split 完全相同的 PNG 與 RGB。
 
-## 從圖片路徑到一個 batch
 
-`JsonDetectionDataset` 位於 `miniyolo/custom_data.py`。它是 PyTorch 的 Dataset：給它編號 i，就回傳第 i 張影像與標註，和第 7 章的 `ShapeDataset` 一樣。建立時要給標註檔，也可以指定資料根目錄（root）。JSON 裡的 `path` 是相對 root 的圖片路徑；沒指定 root 時，就用 JSON 檔所在的目錄。
+`setdefault` 第一次遇 key 時存入並回傳 split，以後回傳第一次的 split，與現在不同就表示同圖跨組。key 同時記 `(寬,高)` 和 RGB 位元組：120×80、80×120 的同色空圖會有相同畫素位元組，少尺寸會混成同圖。
 
-建立 Dataset 的那一行（初始化）會先檢查全部紀錄的類別、框、尺寸、來源與圖檔，再挑出指定的 split。所以就算只讀 train，validation 裡的錯誤資料也會在這時被抓出來。
+這只抓完全相同，不會抓相近影格，因此仍要人工盤點來源。資料少時可按 source 做 k 折交叉驗證：保留 test，剩餘來源分 k 份，輪流一份 validation、其餘 train，做 k 次再平均；同 source 不能跨 fold。本節不執行交叉驗證。
 
-讀每張圖時，先用 Pillow 的 `convert('RGB')` 轉成 RGB，再把 HWC 的 uint8 轉成 CHW 的 float32 並除以 255，最後把影像和 pixel xyxy 框一起 letterbox 到 64×64。120×80 圖上的 `[20,10,60,30]` 會變成約 `[10.6667,15.375,32,26.125]`，類別 2 不變。算法同上一節：x 乘 64/120；y 乘 43/80 再加上方 padding 10，例如 y1=10×43/80+10=15.375。Dataset 回傳 `[3,64,64]` 的影像，以及裝 boxes、labels 的字典；空圖的 boxes 仍是 `[0,4]`。
+## 路徑與原圖框，如何變成訓練 batch
 
-下面這段是換成自己資料時的寫法，要先準備好 my-data 資料夾（做法見本節最後）才跑得動；Colab 主例用的是程式產生的暫存資料。
+`JsonDetectionDataset` 和第 7 章 ShapeDataset 一樣，`dataset[i]` 回傳第 i 張圖與標註，來源改為 JSON 與圖檔。path 相對 root；若沒給 root，使用 JSON 所在目錄。初始化先核對全部圖檔、尺寸與標註，再選 split，所以 validation 壞資料也不會因為只讀 train 而藏起來。
+
+每圖 convert RGB、HWC uint8→CHW float32／255，再讓影像與框一起 letterbox 到 64×64。黃色框 `[20,10,60,30]` 變約 `[10.6667,15.375,32,26.125]`，仍為 class 2；y 乘 43/80 加上 padding 10，正是上一節的實際比例。回傳影像 `[3,64,64]` 與 boxes／labels dict，空框保留 `[0,4]`。
+
+準備自己的 `my-data` 後，可使用下面寫法；Colab 主例則改讀程式產生的暫存圖：
 
 ```python
 from miniyolo.custom_data import JsonDetectionDataset
@@ -98,15 +83,15 @@ images, annotations = next(iter(loader))  # 影像與同順序的 GT 標註（�
 classes = dataset.classes  # 保留 JSON 中有順序的類別對照
 ```
 
-`DataLoader` 每次從 dataset 取 batch_size 筆，交給 `collate_fn` 打包成一個 batch；`shuffle=False` 表示不打亂順序；`next(iter(loader))` 取出第一個 batch。
 
-換成自己的資料時，只要改 JSON 和 root 兩處，不必像第 7 章那樣在程式裡寫死畫素位置（例如 `image[0, 12:28, 8:24] = 1`）。`collate` 把影像疊成 `[B,3,64,64]`；每張圖的物件數不同，所以標註保留成長度 B 的 list。第 i 張影像對應第 i 筆標註，不能只重排影像或只重排標註。
 
-## 新類別如何改到 head
+DataLoader 取 batch_size 筆，交給 collate_fn 打包；shuffle=False 不改順序，`next(iter(loader))` 取第一批。影像疊成 `[B,3,64,64]`，各圖不同框數的標註保留長度 B 的 list。第 i 張圖必須對應第 i 份 GT，不能只重排其中一邊。此處 annotations 還是 letterbox 後的 GT，不是格子 target。
 
-head 在每一格輸出「5＋類別數」個數：4 個框的數、1 個 objectness，再加上每類一個 class logit。兩類時是 `5+2=7`，三類變成 `5+3=8`。本例輸出 `[B,4,4,8]`＝`[2,4,4,8]`，B=2 是 train 的兩張圖；每格 8 個數依序是 tx、ty、tw、th、obj，以及紅、藍、黃三個 class logits。框的四個數和 obj 都不變，只多了黃色的 class logit；正格的 class id=2 交給三類的交叉熵（cross entropy，CE）算分類 loss。
+## 多一類，多了哪個輸出
 
-所以 model 和 optimizer 都要重建。1×1 head 的權重 shape 從 `[7,32,1,1]` 變成 `[8,32,1,1]`，舊的兩類 checkpoint 直接載入，會因 shape 不符而報錯；也不能只把 labels 改成 2，就繼續套用兩類 head。實務上也可以沿用其他層的權重、只換 head 再訓練（微調，fine-tuning）；本節為了單純，從零訓練。
+每格原本四框數、一個 obj、兩個類別，共 7 項；黃色加入後成為 `5+3=8`，本批兩張 train 的 prediction 為 `[2,4,4,8]`。只新增黃色 class logit，框槽仍為一個；class id=2 現在能交給三類 CE。
+
+head.weight 因此從 `[7,32,1,1]` 變為 `[8,32,1,1]`，不能直接載入兩類 checkpoint，也不能只改 labels=2 而保留兩類輸出。這裡從零重建 model、target 與指向新參數的 optimizer：
 
 ```python
 import torch
@@ -124,15 +109,19 @@ loss.backward()
 optimizer.step()
 ```
 
-這裡 `grid_size=4` 表示每邊 4 格；`image_size=64` 是前處理後輸入圖的邊長（pixel）；`num_classes` 取自 JSON 裡固定順序的 classes。target 用的是 letterbox 後的框，不是原圖框。
 
-執行 [Colab 版本](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/08-own-data.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-data.py`。應看到 `rejected source leakage`、每個 split 2 筆、head `(2,4,4,8)`，最後完成一步 loss 為有限值的更新。
 
-完整程式（Colab 裡的那份）實際寫出六張 PNG（三個來源各一張黃矩形、一張空圖，背景深淺各不相同），確認跨 split 沒有畫素相同的圖，核對每個檔案的尺寸，讀入 train 的兩張，再做一次參數更新。它也故意送進幾種錯誤資料，確認都會被拒絕：框的列數或每列長度不對、class id 寫成 bool、空圖的寬高不是正數、座標不是有限數字，以及圖片實際尺寸和紀錄不符。
+target 讀的是前處理後 64×64 框；grid_size 是每邊格數，num_classes 由 JSON 的有序 classes 決定。若希望沿用其他層、只換 head 再訓練，那是微調（fine-tuning）的另一種做法；本節先從零接通完整流程。只換顯示名稱，舊權重仍在辨識舊類別。
 
-這些 source_id 和圖片都是 fixture（答案事先知道的人工測試資料），只用來測試程式的行為，不是六張真實照片的評估。它們寫在暫存目錄裡，程式結束時會自動刪除。
+## 執行六張圖的一次更新
 
-收益是新增類別與資料切分都有可重現的規則；代價是標註、檢查與整理來源都很花時間，新增類別也可能需要更多樣本並重新訓練。建議的順序是：先挑幾張圖畫標註疊圖，再用少量資料確認模型能 overfit（把訓練資料背熟），最後看沒參與訓練的圖有哪些漏檢與誤報；出問題時，照第 7 章的順序排查。
+在頁首 Colab 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/08-own-data.py`。程式實際寫六張 PNG／JSON，核對來源與跨 split 畫素、每圖尺寸，讀 train 兩張，最後做一次有限 loss 的更新。輸出應有 `rejected source leakage`、各 split 兩筆、同步換算框及 head `(2,4,4,8)`。
+
+它也故意送入錯誤資料：框列數／列長不符、bool id、空圖非正尺寸、非有限座標、實際圖片與紀錄尺寸不符，都要拒絕。這些是人工 fixture，確認輸入流程行為；檔案在暫存目錄，結束自動刪除，沒有六張照片的效果證據。
+
+新增類別後，還要有標好的訓練樣本才能學，有獨立樣本才能評。先畫疊圖，少量 overfit，再看新來源誤報／漏檢，沿用第 7 章診斷順序；標註、檢查來源需要時間，單有八項輸出不能保證能力。
+
+## 自主練習
 
 自主練習：
 
@@ -156,56 +145,52 @@ optimizer.step()
 
     只把 classes 裡某個舊名稱改成綠矩形是不行的：權重學到的仍是原本那一類。
 
-## 完整實驗：loss 下降，偵測也一定變好嗎？
 
-上面的一步更新只確認程式接得起來。現在用少量資料訓練完整模型，再看沒參與更新的圖：160 步時 loss 已下降，偵測卻幾乎失敗；從相同初始化重新訓練總共 1600 步，train 能背熟，validation／test 的表現仍有落差。最後再把同一流程換成自己的資料。
+## loss 已下降，偵測也變好了嗎
 
-實驗使用 `scripts/run_custom_data_learning.py`，沿用本節 Dataset、GridDetector、target、loss 與 checkpoint。程式生成 48 張非正方形 PNG 及 JSON：train 24、validation 12、test 12；每組有 3 張空圖，紅、藍、黃三類都有 GT。每 4 張圖是一個 source_id，共 12 個來源，整組切分而不跨 split。跨 split 也檢查過 PNG 檔與解碼 RGB，沒有完全相同的圖；這只能抓完全重複，不能代替真實連拍資料的來源盤點。這些來源和圖都是合成的。
+一次更新只接通流程。完整實驗用 `scripts/run_custom_data_learning.py` 生成 48 張非正方形 PNG 與 JSON：train 24、validation 12、test 12，每組三張空圖，紅藍黃各有 GT。每四張是一個 source，共 12 個，整組切分；跨 split PNG 與解碼 RGB 都無完全重複。這仍是合成來源，不取代照片來源盤點。
 
-所有圖與框先 letterbox 到 64×64，再從零訓練。設定在訓練前固定：
+圖與框一起 letterbox 到 64×64，從零訓練。width 8、4×4 grid、三類，共 15,544 參數；batch 8、Adam、lr=.01、CPU 2 threads，預先固定跑滿 1600 步。初始化 seed 7，資料 train 7、validation 700、新 test 7001。
 
-| 項目 | 設定 |
-|---|---|
-| 模型 | width 8（首層 channel 數）、4×4 grid、3 類，共 15,544 個參數 |
-| 訓練 | batch 8、Adam、learning rate 0.01、事先固定、跑滿的 1600 步、CPU 2 threads（執行緒） |
-| seed（亂數種子） | 模型初始化 7；資料 train 7、validation 700、test 7001 |
+評估在三個 split 一致使用 score≥.1 候選截斷、同類 NMS IoU=.5、配對 IoU=.5、all-points AP50；mAP50 是三類平均，不是 COCO AP 0.50:0.95。資料、類別數與截斷和第 7 章不同，不跨頁比 AP 高低。
 
-本節 mAP50 是三類 AP50 的平均。三個 split 使用同一套評估規則：候選截斷 score≥0.1、同類 NMS IoU 門檻 0.5、配對 IoU 門檻 0.5，以及第 6 章的 all-points 插值。三類都有 GT；這是本書 AP50，不是 COCO 的 AP 0.50:0.95。
+## 160 步的低末尾 loss，掩蓋了什麼
 
-### 160 步：末尾 loss 掩蓋了中途不穩
+第一個短實驗的完整 train loss（24 張一起算）從 1.55017 降至 .16977，但 train mAP50=.00680、validation=0。資料塗色與 JSON、21 個 GT 對 21 正格、非零 target wh、負格框零梯度都已核對，沒有發現資料或 mask 接錯。
 
-完整 train loss（24 張一起算）從 1.55017 降到 0.16977，train mAP50 卻只有 0.00680，validation 是 0。腳本已核對合成圖的塗色與 JSON 框一致、21 個 GT 對應 21 個正格、正格 target 寬高非零、負格 box 梯度為零，沒有發現標註、target 或 positive mask 接錯。
+![1600 步實測 minibatch loss；紅虛線標出第 160 步](../assets/diagrams/08-custom-loss-readable.svg)
 
-逐步 loss 顯示另一個問題：第 144–153 步大多約 0.01–0.04，第 158 步卻升到約 1.87，以分類 loss 為主；box loss 在第 157、159–160 步也升到約 0.02。160 步的評估落在這段不穩之後，正格預測框中甚至有一個高度只剩約 0.05 pixel。不能只由低 mAP 說「框還沒開始學」，也不能用最後一個總 loss 判斷整段訓練。
+曲線來自下面的第二次完整實驗，前 160 步與短實驗逐值相同。藍線是每次更新前八張 minibatch 的 loss，起點約 1.56；完整 train 起點 1.55017 用全部 24 張，分母與材料不同。紅虛線標短實驗結束，第 158 步附近可見尖峰。
 
-### 1600 步：背熟 train，仍不等於會泛化
+第 144～153 步大多約 .01～.04，第 158 步升到約 1.87，主要為分類項；box 在第 157、159～160 步也升至約 .02。短實驗評估正好在不穩段後，一個正格框高只剩約 .05 pixel。不能只用最後 total 判斷整段訓練，也不能從低 mAP 直接說框沒開始學。
 
-第二次實驗**從相同 seed 與初始化獨立重新訓練，共 1600 步**，沒有載入 160 步的 checkpoint 接著跑。train／validation 圖片、模型、Adam、learning rate 與門檻相同，所以前 160 步的 loss 逐值相同。舊 test（seed 7000）已看過，第二次改用事先固定的新 test（seed 7001），訓練結束只評一次；沒有用 test 選 seed、設定或最佳 checkpoint，用的是最後一步模型。
+## 1600 步背熟 train，獨立圖仍有落差
 
-| 品質檢查 | 本次結果 | 代表什麼 |
-|---|---|---|
-| 同一套完整 train loss，更新前／全部更新後 | 1.55017 → 0.000117048 | 同樣 24 張 train 圖，loss 幾乎降到 0 |
-| Train mAP50／precision／recall | 均為 1.0 | 21 個 GT 全部配對成功，也沒有多餘的框：這個小資料集已經 overfit（背熟） |
-| Validation mAP50 | 0.296296 | 沒參與更新的圖，低很多 |
-| 新的 Test mAP50 | 0.777778 | 用新 seed 生成、只評估一次的 test |
-validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當成穩定的泛化排名。這裡的資料、類別數和 score 截斷也與第 7 章不同，AP 不能直接跨頁比高低。提高候選截斷會刪更多低分框，AP 只會不變或下降。
+第二次由相同 seed 與初始化**獨立重新訓練總共 1600 步**，沒有接 160 步 checkpoint。train／validation、模型、Adam、lr 與門檻相同，所以前 160 步 loss 逐值一致。舊 test seed 7000 已看過，第二次改為事先固定 seed 7001，結束只評一次，使用最後一步模型；沒有用 test 選 seed、設定或 checkpoint。
 
-![1600 步實测 minibatch loss；紅虛線標出第160步](../assets/diagrams/08-custom-loss-readable.svg)
+手機上可左右滑動表格，查看完整欄位。
 
-先看曲線：藍線是每次更新前那批 8 張 minibatch 的 loss，起點約 1.56；表格起點 1.55017 則是全部 24 張 train 的 loss。紅色虛線是第 160 步，旁邊尖峰約在第 158 步；它標出短實驗在哪裡結束，後面才逐漸降到接近 0。
+| 品質檢查 | 結果 | 如何理解 |
+| --- | --- | --- |
+| 完整 train loss，更新前→全部更新後 | 1.55017 → 0.000117048 | 同樣 24 張 train，loss 接近 0 |
+| Train mAP50／precision／recall | 均為 1.0 | 21 個 GT 全部配對，沒有多餘框；小資料已 overfit |
+| Validation mAP50 | 0.296296 | 不參與更新的圖，表現低很多 |
+| 新 Test mAP50 | 0.777778 | 新 seed，只評一次的 test |
 
-![固定四張 validation 圖的實際預測與配對；綠虛線是 GT，橘框是預測](../assets/diagrams/08-custom-predictions-labelled.svg)
+validation、test 各只有九個物件，.296 與 .778 不能當穩定泛化排名。提高候選截斷會刪低分框，AP 只會不變或下降；改門檻讓畫面更乾淨，不等於學得更好。
 
-再看這四張 validation 圖：綠虛線是 GT，橘框是模型預測。每張圖的預測依 score 由高到低，從 #0 編號；框旁的編號與連線對應圖下同編號的類別、score 和配對結果，編號在不同圖會重新開始。判定仍按分數排序、一個同類 GT 最多配一次，IoU≥0.5 才是 TP；未配成的預測是 FP，沒被預測配到的 GT 是 FN。
+![固定四張 validation 圖的實際預測與配對](../assets/diagrams/08-custom-predictions-labelled.svg)
 
-- 紅圖：紅框 score 約 1.00、IoU 約 0.58，是 TP；額外黃框 score 約 0.16，圖中沒有黃色 GT，是 FP（和紅色 GT 的 IoU 約 0.24）。
-- 藍圖：score 約 0.46，IoU 約 0.41，只有一個 FP，藍 GT 同時是 FN。
-- 黃圖：score 約 0.99，IoU 約 0.42，也是一個 FP 加 FN。高分不表示位置正確。
-- 空圖：沒有 GT，也沒有預測框。
+綠虛線是 GT，橘框是模型預測。各圖 #k 依 score 從高到低、從 0 編號，框旁標記與連線對應圖下同編號的類別、score、配對結果；不同圖重新編號。同類 GT 最多配一次、IoU≥.5 才是 TP，沒配成的預測為 FP，未配到 GT 為 FN。
 
-圖與 AP 都使用 64×64 letterbox 座標。四張固定取各類第一張與第一張空圖，沒有按效果挑；其他 validation 圖也有誤報和漏檢，要回看整組 mAP50，不能只靠這四張判斷。各 split 的 TP、FP、FN 保存在紀錄的 `true_positives`、`false_positives`、`false_negatives`；[原始完整紀錄圖](../assets/diagrams/08-custom-learning.svg)保留原來的合併版，供對照。
+- 紅圖：紅框 score 約 1.00、IoU 約 .58，為 TP；額外黃框 score 約 .16，沒有黃色 GT，為 FP，與紅 GT 的 IoU 約 .24。
+- 藍圖：score 約 .46、IoU 約 .41，預測為 FP，藍 GT 同時為 FN。
+- 黃圖：score 約 .99、IoU 約 .42，也為 FP+FN；高分不代表框準。
+- 空圖：無 GT，也無預測。
 
-真實照片無法換 seed 就生成新 test。第一次看 test 前應定好設定；若看過後再調設定，要收集另一批新來源 test，或在報告中明說 test 已參與選擇。
+圖與 AP 皆用 64×64 letterbox 座標。固定取每類第一張與第一張空圖，沒有按效果挑選；其餘 validation 也有誤報漏檢，不能由四張代替整組 mAP。各 split 完整 TP／FP／FN 保存在 report 的 `true_positives`／`false_positives`／`false_negatives`；[原合併紀錄圖](../assets/diagrams/08-custom-learning.svg)可供對照。
+
+真實照片不能換 seed 生成新 test。第一次看 test 前定好設定；若看完再調，應另收新來源 test，或明說它已參與設定選擇。這份結果教的是：背熟 train、loss 下降與獨立偵測都要分開核對。
 
 ??? note "圖下說明的其他寫法"
 
@@ -217,7 +202,7 @@ validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當�
     - 「FP（沒有同類 GT，最大 IoU x）」：圖中沒有這一類的 GT，和其他 GT 的 IoU 也都不到 0.5；x 是其中最大的 IoU。
     - 一張圖超過 4 行時，第 4 行改寫成「……另有 N 項，見下方紀錄檔」，四張圖的下方再寫一行紀錄檔的路徑；完整清單在紀錄的 `validation_examples`。
 
-### 選讀操作：重跑與保存檢查
+## 選讀：重現實驗與保存狀態
 
 下列內容供重現實驗與查輸出使用。品質解讀以上面的結果和圖為主。
 
@@ -278,7 +263,7 @@ validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當�
     本次 CPU 訓練約 10.877 秒（紀錄的 `training_seconds`），只算訓練迴圈：每一步的 batch 索引、target 建立、前向／反向、有限梯度檢查、optimizer 與 loss 記錄。完整流程約 14.002 秒（`end_to_end_seconds`），另含資料生成與檢查（第二次獨立實驗還要用 160 步那次的 seed 重建那批資料來核對）、評估與訓練框的檢查、存檔、重新載入、原圖推論（包括另開程序執行 `scripts/detect_image.py`，連同那個程序的啟動與 import），以及其他輸出檔與 SVG；不含套件安裝、腳本自己的程序啟動與 import，以及最後寫出紀錄 JSON。這是一次小實驗的耗時，不是正式的效能測試。
 
 
-### 換成自己的 JSON 與圖片
+## 換成自己的 JSON 與圖片
 
 照下面的步驟準備資料：
 

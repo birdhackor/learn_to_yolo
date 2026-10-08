@@ -2,37 +2,17 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-heldout.ipynb){ .md-button }
 
-本節要分清楚兩件事：「評估程式跑通」和「模型真的在沒看過的圖片上找到物件」。讀完後，你能用答案已知的例子核對評估器，也知道要宣稱模型有效時，還得固定並保存哪些東西。
+解碼得到框，還沒回答「它找對多少物件」。要把預測與同圖同類的真值（GT）配對，才能算第 6 章的 precision、recall 與 AP50；要回答模型是否能處理新圖，還得讓這些圖不參與權重更新。
 
-前置：[完整推論](07-inference.md)（模型輸出怎麼變成框）、[AP50](06-evaluation.md)（TP、FP、FN 怎麼判定，AP 怎麼算）。
+先用一個故意誤報、重複與漏檢的人工例子核對評估器，再讓三步模型走一次獨立圖片管線。最後讀同一次 160 步實驗的結果。讀完能分開判斷評估計算是否正確、管線是否接通，以及獨立資料支持何種效果結論。
 
-本節分三個部分：
+## 有誤報又漏檢，AP 會怎麼變
 
-1. 用答案已知的人工例子，核對評估器算得對不對。
-2. 接上真正的模型：只訓練 3 步，就拿沒參與訓練的 held-out 圖片來評估。這一步只確認整條管線（模型→解碼→評估）能跑通，不看效果。
-3. 本節最後的補充：看一次訓練 160 步的實驗，在 validation／test 上的評估結果。
+兩張圖 A、B 各有一個紅類 GT，分別為 `[8,12,24,28]`、`[40,36,56,52]` pixel xyxy。B 只是借用先前藍框的位置，這份人工例子兩個 GT 的 class id 都為 0。圖 A 有三個人工預測，圖 B 沒有預測。
 
-評估程式能算出 AP（沒有報錯，也不是 NaN 這種算不出有效數值的結果），不代表模型學會了：剛初始化或只訓練幾步的模型也算得出 AP，在本節的資料上通常接近 0。要宣稱效果，還要保存資料切分、所用的模型權重（checkpoint：訓練時存下權重的檔案）、評估協議（事先固定、事後不改的評估規則：用哪些圖、各門檻、AP 算法），以及真值與預測框的疊圖（圖板）。
+這是 fixture（答案已知的固定測試輸入），直接交給評估器，不經 NMS；重複框故意保留，才能核對每個 GT 只配一次的規則。預測按 score 排序，在同圖、同類、尚未配過的 GT 中找最大 IoU，達 .5 才記 TP；配不成的預測為 FP，沒被配到的 GT 為 FN。
 
-本節沿用本書的 grid 教學模型。AP 的算法和第 6 章相同：IoU 門檻 0.5、all-points 插值、每個類別各算一個 AP。本節的數字都由本書的簡化評估器算出，不是 benchmark（基準測試）成績。benchmark 成績用官方資料與官方評估工具算出，可以和別人公開比較。和官方 VOC／COCO 評估差在哪裡，見下方摺疊區。
-
-??? note "和官方評估的差異"
-
-    Pascal VOC 和 COCO 是兩個著名的公開物件偵測資料集，各有官方的評估規則與程式。AP 的定義可參照 [Pascal VOC evaluation](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00044100000000000000)（VOC2012 開發套件文件的 3.4.1 節）。本節和官方做法的差別：
-
-    - **AP 面積的算法**：本節用 all-points 插值，每個 recall 改變的位置都算進來。VOC2007 用 11 點近似：只在 recall=0、0.1、…、1 這 11 個位置讀包絡高度再平均。VOC2010 起改用 all-points。COCO 則在每個 IoU 門檻下，只在 recall=0、0.01、…、1 這 101 個位置讀包絡高度再平均，也不是 all-points。
-    - **IoU 門檻**：本節只用 0.5 一個門檻。COCO 的主要指標寫成 AP@[.50:.95]，是 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻的 AP 平均，也對各類別平均（照本書用語，其實是 mAP）。
-    - **配對順序**：本書先排除已配對的真值（GT），再找 IoU 最高的；官方 VOC 則先在全部 GT 中找 IoU 最高的，再判斷它是否已配對；COCO 官方程式（pycocotools）的配對順序則和本書相同。同一張圖有互相重疊的 GT 時，兩種做法可能得到不同結果。[人工 AP 那一節](06-evaluation.md)列出了差異，以及它們在官方程式裡的出處。
-
-    以上只列主要差異。COCO 另有 crowd 區域、每張圖每個類別最多計 100 個預測等規則，見[第 6 章的摺疊區](06-evaluation.md)；所以把本節評估器在這 10 個門檻各跑一次再平均，也不等於 COCO 的 AP@[.50:.95]。
-
-## 人工失敗例先核對評估器
-
-先複習第 6 章的名詞。GT（ground truth）是標註的真值。TP 是和真值正確配對的預測；FP 是沒有正確配對的誤報；FN 是沒被任何預測配對到的真值，也就是漏檢。precision=`TP/(TP+FP)`，表示留下的預測中有多少是對的；recall=`TP/(TP+FN)`，表示真實物件中找到了多少。PR 是 precision–recall 曲線；AP（average precision）是插值後 PR 曲線下的面積；mAP 是各類 AP 的平均，本節只平均有 GT 的類別。
-
-評估時設 2 個類別（`num_classes=2`：class 0=紅、class 1=藍），但這組例子只有紅類的 GT 和預測。框以 pixel 座標 `[x1,y1,x2,y2]` 表示。兩張圖片各有一個紅類 GT：A 為 `[8,12,24,28]`，B 為 `[40,36,56,52]`。人工預測在 A 放三個框，B 完全漏掉。
-
-這份 fixture（事先手寫、答案已知的測試輸入）直接交給評估器，不先做 NMS。它故意留一個和正確框完全相同的重複框，用來檢查「每個 GT 只能配對一次」；所以它不是 NMS 後的模型結果。完整程式（Colab 最後一格）在 `main()` 一開始用 `targets`、`predictions` 兩個變數寫出這份 fixture，再用斷言（assert）核對下面算出的答案。
+手機上可左右滑動表格，查看完整欄位。
 
 | score 排序 | 框 | 位置與判定 | 累計 precision | 累計 recall |
 | --- | --- | --- | --- | --- |
@@ -40,31 +20,21 @@
 | 0.8 | `[0,0,4,4]` | A 的背景框，和 GT 沒有交集（IoU=0），FP | 0.5 | 0.5 |
 | 0.7 | `[8,12,24,28]` | A 同一 GT 的重複框，IoU=1，但 GT 已被 0.9 的框用掉，FP | 1/3 | 0.5 |
 
-B 的 GT 沒配到任何框，是 FN。GT 只能在同一張圖、同一類別裡被成功配對一次；A 的框不能拿去配 B。所以曲線最多只到 recall=0.5。
 
-all-points 插值在每個 recall 位置，取「往更高 recall 看過去的最高 precision」；第 6 章稱這條修平後的曲線為包絡。本例 recall 0 到 0.5 的高度是 1。recall 0.5 到 1 呢？沒有任何預測能讓 recall 超過 0.5；依定義會在 recall=1 補一個 precision=0 的終點，所以這段高度是 0。面積是 `1×.5+0×.5=.5`，即 AP50=0.5。換句話說，漏掉 B 讓 AP 最多只有 0.5。
 
-後兩個 FP 讓最後的 precision 降到 1/3，卻沒有降低這份例子的 AP：它們的分數 0.8、0.7 低於 TP 的 0.9，排在 TP 後面，recall 0 到 0.5 的包絡高度仍是 1。若背景框的分數改成 0.95、排到 TP 前面（順序變成 FP、TP、FP），這段高度只剩 0.5，AP50 會降到 0.25。
+B 的 GT 是 FN，A 的預測不能拿去配 B。三個預測只有一個 TP，因此最後 precision=`1/(1+2)=1/3`，recall=`1/(1+1)=.5`。前者分母是預測框，後者是 GT；不是圖片數。
 
-所以 AP=0.5 既不是最後的 precision（1/3），也不是 precision×recall（1/3×0.5=1/6）。第二類（藍色，class 1）沒有 GT，AP 回傳 None；本節 mAP 只平均有 GT 的類別，因而仍是 0.5。不要把沒有樣本的類別說成 AP=0 或 AP=1。
+AP50 看的是排序後的 precision–recall（PR）曲線，不只看最後一點。沿用 all-points 插值，對每個 recall 取往後的最高 precision，形成包絡。本例 recall 0～.5 的高度為 1；因為沒找到 B，.5～1 沒有新增 TP，補上 precision=0 的終點後高度為 0。因此面積 `1×.5+0×.5=.5`。
 
-## 接上真正的獨立圖片管線
+低分 FP 在 TP 後面，雖把最後 precision 降到 1/3，卻不改前半包絡。若背景框 score 改成 .95，順序成為 FP、TP、FP，前半高度只有 .5，AP50=.25。AP=.5 因而不是最後 precision，也不是 precision×recall=1/6；排序與漏檢都會影響它。
 
-完整程式用 `ShapeDataset` 畫出兩組圖：seed=7 的 4 張 train，和 seed=901 的 4 張 held-out，每張一個物件，固定 64×64。seed（亂數種子）決定一串亂數從哪裡開始，矩形的位置、大小、顏色都由這串亂數決定。seed=901 畫出的 4 張和 seed=7 的 4 張是不同的圖；seed=901 這批不參與參數更新，稱為 held-out（保留下來、不拿來訓練的資料）。這 4 張只用來確認評估接得通，不拿來挑設定，也不當成最後的成績。
+評估設定雖為 `num_classes=2`，藍類沒有 GT，AP 回傳 None，不平均進 mAP。因此這份 mAP 仍為 .5，不能把沒有樣本的類別當 0 分或滿分。
 
-只用 train 圖，以 Adam 優化器更新 3 次參數，再以 `eval()`、`inference_mode()` 在 held-out 圖上推論。從推論到評估，依序經過三個門檻：
+## 獨立圖的管線，先確認能跑通
 
-| 門檻 | 比較誰和誰 | 本例值 | 作用 |
-| --- | --- | --- | --- |
-| 候選截斷門檻 | 每個候選框自己的 score | 0.01 | 先刪掉分數極低的候選 |
-| NMS 的 IoU 門檻 | 同圖、同類的預測框互相比較 | 0.5 | 刪掉低分的重複框 |
-| 配對 IoU 門檻（matching IoU） | 預測框和同圖、同類、還沒被配對的 GT 比較 | 0.5 | 達到門檻就判 TP，並標記這個 GT 已配對 |
+完整程式生成 seed=7 的四張 train，以及 seed=901 的四張 held-out，每張 64×64、一個物件。seed 決定生成位置、大小與顏色的亂數序列；兩組圖不同。held-out 指保留、不拿來更新參數的資料。
 
-NMS（非極大值抑制）是 prediction 對 prediction，評估的 matching 是 prediction 對 GT；即使兩個門檻都是 0.5，也不是同一段程式。
-
-評估時候選門檻設得很低，是讓低分但正確的框也進入排序，PR 曲線才走得到較高的 recall；若先用顯示用的高門檻刪框，AP 只會持平或變低。顯示給使用者看的門檻是另一回事。
-
-完整程式裡，推論與評估是這幾行（網頁只加了中文註解）：
+只用 train 以 Adam 更新三次，再到 held-out 推論，並沿用上一節回傳的 boxes／scores／labels 格式交給評估器：
 
 ``` { .python data-excerpt="lesson_cases/07-heldout.py" }
 model.eval()  # 切換成評估模式
@@ -75,40 +45,79 @@ with torch.inference_mode():  # 推論時不記錄計算圖
 result = evaluate_ap(predicted,heldout_anns,num_classes=2,iou_threshold=.5)
 ```
 
-在 Colab 執行[本節 notebook](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-heldout.ipynb)，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`。輸出有兩行（頁尾有本次的執行紀錄）：
+`heldout_anns` 是逐圖 GT，不是 `build_targets` 的格子答案。評估要和原始物件配對，不能用格子 target 的四個比例算 IoU。此處圖本來就是 64×64，因此 GT 與預測都在同一輸入座標。
 
-- 第一行是人工 fixture，應核對 AP=0.5、precision=1/3、recall=0.5。
-- 第二行是三步模型的冒煙測試（smoke test）。開頭的英文 `3-step held-out PIPELINE SMOKE, not trained detector evidence`，意思是「三步模型的 held-out 管線冒煙測試，不是已訓練偵測器的證據」。
+這條路徑有三個不同門檻：
 
-冒煙測試只確認程式能從頭跑到尾、不報錯，不評好壞。這裡要確認的是：真實模型的輸出能直接交給 `evaluate_ap`。格式若不對，例如類別編號超出範圍、框的 x2 小於 x1，`evaluate_ap` 會直接報錯；此外完整程式只用斷言檢查 mAP 在 0 到 1 之間。三步模型幾乎還沒學，AP 是 0 或接近 0 都正常；本次 AP、precision、recall 全是 0.0，表示沒有任何預測框配對成功（同類且 IoU≥0.5）。評估器算得對不對，由前面的人工例子負責。
+手機上可左右滑動表格，查看完整欄位。
 
-這兩行的數字都是程式執行結果，不能當作從頭訓練已成功的效能證據。
+| 門檻 | 本例 | 比較與用途 |
+| --- | --- | --- |
+| 候選截斷 score | .01 | 每框自己的 score，先刪極低分候選 |
+| NMS IoU | .5 | 同圖同類的預測互相比，刪重複框 |
+| 配對 IoU | .5 | 預測與可用同類 GT 比，達到才記 TP |
 
-## 完成第 7 章還需要什麼
+評估保留低分候選，是讓它們也參與排序，避免先刪掉低分 TP 而失去高 recall。若先提高 score 截斷，AP 只能持平或下降。顯示給使用者的 .25 門檻則是畫多少框的選擇，不是這次評估規則。
 
-三步只能驗證程式可跑。完整的里程碑仍需要足夠的訓練，並在沒參與訓練的圖片上，觀察正確框、分類、漏檢和背景誤報。
+執行頁首 Colab，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-heldout.py`，第一行 `artificial evaluation fixture` 應為 AP=.5、precision=1/3、recall=.5；第二行為 `3-step held-out PIPELINE SMOKE, not trained detector evidence`。
 
-正式紀錄至少要保存下面這些項目。其中「資料」和「評估設定」就是評估協議，要事先固定；「模型」和「結果」是要和協議一起保存的紀錄：
+第二行是冒煙測試：確認模型→解碼→評估能跑通。格式錯誤，如類別越界、x2<x1，評估器會拒絕；完整程式另斷言 mAP 在 0～1。這次 AP、precision、recall 都為 0，沒有任何成功配對，符合三步模型尚未學好的情況。評估器算對不對由人工 fixture 核對，不能用零分結果反推它已正確；三步也不當最後效能成績。
 
-- **資料**：來源、各切分（split）的 seed，例如本節最後補充的 160 步實驗用 7／700／7000。
-- **模型**：架構，以及所用的 checkpoint。
-- **評估設定**：輸入尺寸、候選截斷門檻、NMS 的 IoU 門檻、配對 IoU 門檻、AP 算法。
-- **結果**：每類 AP、執行時間，以及成功與失敗的疊圖。
+## 什麼資料才足以回答「沒看過的圖也會」
 
-合成圖的獨立 seed，只是用同一套隨機畫矩形的規則再畫出一批圖，所以只能支持同一套規則下的結論，不能外推到照片。
+先固定資料與評估規則，再保存模型與結果，才知道一個分數由什麼條件產生：
 
-獨立切分的收益，是排除「模型只是記住訓練圖片」造成的錯覺；代價是可用的訓練資料變少，而且測試集小，結果的波動也大。
+| 紀錄 | 需要保存的內容 |
+| --- | --- |
+| 資料 | 來源、train／validation／test 切分與 seed |
+| 模型 | 架構、所用 checkpoint |
+| 評估規則 | 輸入尺寸、候選截斷、NMS、配對門檻與 AP 算法 |
+| 結果 | 每類 AP、時間，以及成功、誤報、漏檢的疊圖 |
 
-held-out 是統稱，validation 和 test 都屬於它（第 2 章〈[訓練診斷](02-diagnostics.md)〉講過）。若反覆用 held-out 的結果挑設定（學習率、門檻、步數等超參數），它就成了 validation。validation 可以多次看、用來挑設定；test 要等設定定案後只評一次。所以最終的 test 必須另外保留，不能每次都拿來改設定。
+資料與規則構成評估協議。模型參數可在訓練中改變，評估條件要事先固定，否則無法分辨分數變化來自模型還是規則。剛初始化模型也能算出合法 AP；有 checkpoint、有分數，都不單獨證明有效。
 
-真實影片更需要按來源分組，而不是只隨機切圖片。同一段影片相鄰的畫面幾乎一樣；若隨機把它們分到 train 和 test，test 等於考看過的題目，分數會虛高。所以同一段影片（或同一次拍攝）要整段放在同一邊。
+held-out 是統稱，validation、test 都屬於它。反覆用某批圖挑學習率、步數或門檻，它就是 validation；test 在設定定案後只評一次。本節 seed=901 的四張只核對管線，不挑設定、不當最後成績。
 
-常見錯誤：
+對生成矩形，獨立 seed 只代表同一規則生成的新樣本，不能外推照片。真實影片還要按來源分組：相鄰影格幾乎相同，隨機切圖片可能讓 train 與 test 共享近似畫面。應將同影片或同次拍攝整組放一邊。這樣排除記住相似圖的錯覺，代價是訓練資料少一部分，小 test 的分數也容易波動。
 
-- **每張圖各算 AP 再平均。** AP 要把所有圖的同類預測一起按分數排序；分開算會忽略「某張圖的高分誤報排在別張圖的正確框前面」，也讓每張圖的份量一樣。（本節的人工例子剛好兩種算法都是 0.5，看不出差別。）
-- **用顯示門檻截斷後算 AP，再和低門檻算出的 AP 比較。** 截斷後，能達到的最高 recall 可能變低；兩個 AP 的條件不同，不能直接比。
-- **讓重複框重複配同一個 GT。** 同一個 GT 只能配一個 TP；重複框若找不到別的 GT 可配，就算 FP。
-- **把沒有 GT 的類別記成 0，放進平均。** 這種類別的 AP 應記為 None，不放進平均。
+## 用同一套規則讀 160 步的實測
+
+這是〈[三步訓練與診斷](07-training.md)〉後半同一次實驗，不必重跑：32 張 train（seed 7）從零更新 160 次，validation／test 分別為 seed 700／7000 的 16 張；每張有 0～2 個紅藍矩形，含空圖。訓練前後各評一次 validation，test 結束後只評一次。程式沒有自動用 validation 挑設定，也未看 test 後回改。
+
+| 固定評估協議下的結果 | 數值 |
+| --- | --- |
+| 更新前 validation mAP50 | 0.0018 |
+| 更新後 validation mAP50 | 0.8036 |
+| 訓練結束後 test mAP50 | 0.7749 |
+| test precision／recall | 0.8824／0.7895 |
+
+這次候選 score≥.05，同類 NMS IoU=.5，配對 IoU=.5，平均有 GT 類別的 all-points AP50。前面的三步用 .01，是不同實驗；各自的訓練前後、validation／test 都維持同規則，但兩實驗 AP 不直接比較。
+
+test 共 19 個 GT，留下 17 個預測，TP=15、FP=2、FN=4，所以 precision=15/17、recall=15/19；紅 AP=.857、藍 AP=.693，平均約 .775。只多漏一個物件，recall 就差 `1/19≈.053`，約五個百分點。資料小、只跑一個 seed，validation .80 與 test .77 不能當穩定優劣。
+
+![四張獨立 validation 圖的真值與實測預測框](../assets/diagrams/07-grid-predictions-readable.svg)
+
+綠虛線是 GT，橙實線是預測，紅藍填色才是物件類別。各圖上方有圖號與 GT／預測數；框旁 #k 按 score 從 0 編號，對應下方同編號的類別、score、TP／FP 與可用同類 GT 最大 IoU。若沒有可配同類 GT，會明寫；未配到的 GT 另列 FN。score 1.000 是取三位小數的結果。
+
+圖片 0 的藍框 #0 上緣偏高，IoU≈.62，仍為 TP。紅框 #1 的 score=.980，IoU≈.47，未達 .5，因此是 FP，紅 GT 是 FN。這是 validation 唯一 FP：16 張共 18 個 GT、16 個預測、15 個 TP，precision=.9375=15/16。此處分母 16 是預測數，剛好等於圖片數。
+
+圖板固定看前四張，mAP 用全部 16 張。分數與框共同支持這條管線在受控矩形任務學得動；沒有照片、複雜背景或同格衝突，也沒有現代機制比較。設定與原始數值在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)，重跑路徑見訓練頁選讀；三步 notebook 不會產生這個 160 步 checkpoint。
+
+## 計算時別改掉評估的對象
+
+AP 要將全部圖片的同類預測一起排序，不能每圖算完再平均，那會漏掉跨圖的高分 FP 排序；本頁人工例子恰好兩種算法都 .5，不能用它證明可互換。同一 GT 最多一個 TP，沒有 GT 類別記 None，顯示高門檻與評估低截斷也不能混成同條件。
+
+本書 AP50 是教學評估器的結果，不是公開 benchmark（固定官方資料與工具的基準測試）成績，也不是 COCO AP@[.50:.95]。需要官方比較時，必須用相應資料與規則：
+
+??? note "和官方評估的差異"
+
+    Pascal VOC 和 COCO 是兩個著名的公開物件偵測資料集，各有官方的評估規則與程式。AP 的定義可參照 [Pascal VOC evaluation](https://www.robots.ox.ac.uk/~vgg/projects/pascal/VOC/voc2012/htmldoc/index.html#SECTION00044100000000000000)（VOC2012 開發套件文件的 3.4.1 節）。本節和官方做法的差別：
+
+    - **AP 面積的算法**：本節用 all-points 插值，每個 recall 改變的位置都算進來。VOC2007 用 11 點近似：只在 recall=0、0.1、…、1 這 11 個位置讀包絡高度再平均。VOC2010 起改用 all-points。COCO 則在每個 IoU 門檻下，只在 recall=0、0.01、…、1 這 101 個位置讀包絡高度再平均，也不是 all-points。
+    - **IoU 門檻**：本節只用 0.5 一個門檻。COCO 的主要指標寫成 AP@[.50:.95]，是 IoU 門檻 0.50、0.55、…、0.95 共 10 個門檻的 AP 平均，也對各類別平均（照本書用語，其實是 mAP）。
+    - **配對順序**：本書先排除已配對的真值（GT），再找 IoU 最高的；官方 VOC 則先在全部 GT 中找 IoU 最高的，再判斷它是否已配對；COCO 官方程式（pycocotools）的配對順序則和本書相同。同一張圖有互相重疊的 GT 時，兩種做法可能得到不同結果。[人工 AP 那一節](06-evaluation.md)列出了差異，以及它們在官方程式裡的出處。
+
+    以上只列主要差異。COCO 另有 crowd 區域、每張圖每個類別最多計 100 個預測等規則，見[第 6 章的摺疊區](06-evaluation.md)；所以把本節評估器在這 10 個門檻各跑一次再平均，也不等於 COCO 的 AP@[.50:.95]。
 
 ## 自主練習
 
@@ -139,46 +148,11 @@ held-out 是統稱，validation 和 test 都屬於它（第 2 章〈[訓練診�
 
     原本的 predictions 與斷言都要保留，不要改掉：以後若改壞了程式，原例子的答案一變，斷言就會報錯。這種用舊例子的固定答案防止程式被改壞的檢查，叫回歸測試（regression test），和框的「回歸」無關。
 
-## 補充：從評估角度看同一次 160 步實驗
-
-這和[三步訓練與診斷](07-training.md)那一頁的 160 步補充實驗是同一次實驗。它用同一套模型與程式從頭訓練（沒有載入任何預先訓練好的權重），在 32 張 train 圖（seed 7）上更新 160 次參數；另用 seed 700、7000 各畫 16 張圖，當 validation 和 test。圖都是 64×64 的紅／藍矩形，每張有 0～2 個物件（含空圖）。訓練設定、執行命令和 [loss 曲線](../assets/diagrams/07-grid-loss-readable.svg)都在該頁；這裡不必重跑，只從評估的角度看實測結果。
-
-| 固定評估協議下的結果 | 數值 |
-| --- | --- |
-| 更新前 validation mAP50 | 0.0018 |
-| 更新後 validation mAP50 | 0.8036 |
-| 訓練結束後的 test mAP50（只評一次） | 0.7749 |
-| test precision／recall | 0.8824／0.7895 |
-
-訓練程式在訓練前、後各評一次 validation，test 只在訓練結束後評一次；程式沒有根據 validation 自動挑設定，這組固定設定也沒有用 test 回頭修改模型。
-
-再看細一點的數字：
-
-- validation 16 張共 18 個物件，test 16 張共 19 個。
-- test 的每類 AP 是紅 0.857、藍 0.693，兩者平均（約 0.775）就是表中的 test mAP50。
-- precision 和 recall 是兩類合計。test 經過候選門檻與 NMS 後共有 17 個預測框，其中 15 個配對成功（TP 15、FP 2）；19 個物件找到 15 個（FN 4）。所以 precision=15/17≈0.8824、recall=15/19≈0.7895。
-
-測試集這麼小，只要多找到或多漏掉一個物件，recall 就差約 5 個百分點（1/19≈0.053）；這次也只跑了一組 seed。所以 validation 0.80 和 test 0.77 的差距，或兩個設定之間差幾個百分點，都不能當成穩定的優劣。
-
-這裡 mAP50 只平均有真值類別的 all-points 插值 AP，配對 IoU 門檻 0.5；decode 的候選截斷門檻是 score≥0.05，同類 NMS 的 IoU 門檻 0.5。它不是 COCO AP@[.50:.95]。160 步實驗用 `miniyolo.train` 的預設候選截斷門檻 0.05，前面三步案例用 0.01。兩個實驗各自事先固定門檻；同一實驗的訓練前後與 validation／test 都用同一組，跨實驗的 AP 不互相比較。
-
-![四張獨立 validation 圖的真值與實測預測框](../assets/diagrams/07-grid-predictions-readable.svg)
-
-圖的讀法：綠色虛線是真值（GT），橙色實線是預測框；矩形本身的紅、藍才是兩個類別（class 0=紅、class 1=藍）。每張圖上方寫著圖片編號，以及這張圖有幾個真值、幾個預測。每個預測框旁的 #k 對應各圖下方的兩行資料。第一行「#k 紅／藍 score s」是第 k 個預測（依 score 由高到低，從 0 編號）、預測類別（紅=class 0、藍=class 1）和 score s（取三位小數，1.000 是四捨五入的結果）。第二行是評估判定：先寫 TP 或 FP，後面是它和同類、還沒被配對的真值算出的最大 IoU，達到 0.5 就是 TP；若這張圖已沒有可配對的同類真值，第二行就寫「FP 沒有可配對的同類真值」。沒被任何預測配對到的真值，在圖下另列 FN。
-
-圖片 0 值得細看。左上藍色矩形的預測框 #0 上緣偏高，但和真值的 IoU 約 0.62，仍達到 0.5，標成 TP。右下紅色矩形的預測框 #1，圖下資料寫「#1 紅 score 0.980」：分數很高，和紅色真值的 IoU 卻只有約 0.47，未達 0.5，所以標成 FP；那個紅色真值因此沒被配對到，標成 FN（漏檢）。分數高不代表位置夠準。圖片 0 的 #1 也是 validation 唯一的 FP：validation 的 16 張圖經過候選門檻與 NMS 後，共留下 16 個預測框，其中 15 個配對成功、1 個是 FP，所以下方實測 JSON 裡 validation 的 precision 是 0.9375=15/16。這裡分母的 16 是預測框數，只是剛好和圖片數相同。
-
-這四張圖只是圖板，mAP 使用全部 16 張。其餘框都接近真值、mAP 從接近零上升，支持「這條管線能在受控任務上學得動」；它仍不能回答模型是否認得照片裡的行人，也沒有證明某個現代機制比較好。
-
-原始設定與數值保留在 [實測 JSON](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/grid-learning.json)。
-
-兩條操作路徑的目標不同：本節 notebook 的三步只驗證 held-out 評估接得通；160 步實驗才提供模型在合成資料上學到的結果。想重跑後者，可依[三步訓練頁的可選 Colab 操作](07-training.md)另開一格（cell）執行；不要把三步的輸出當成 160 步的 checkpoint。
-
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-heldout.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-heldout.json)
 
 ??? example "展開本次實際輸出"
 

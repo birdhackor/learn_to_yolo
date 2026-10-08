@@ -1,14 +1,14 @@
 {
   "id": "16-inference-head",
   "passed": true,
-  "executed_at_utc": "2026-10-05T10:40:00.241633+00:00",
+  "executed_at_utc": "2026-10-08T05:13:52.098464+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/16-inference-head.py": "e76f4949c12b64c8f1470fda2a8b23efff198eaa342950aaba9cd3dd924c9c3d"
   },
-  "process_wall_seconds": 4.948,
+  "process_wall_seconds": 2.0234,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "manual ltrb decode box: [[8.0, 32.0, 56.0, 64.0]]\nmanual class probabilities: [[0.5, 0.75]] ; winner label=1, score=0.75\ntraining output keys: ['many', 'one']\ndeploy boxes / scores / labels: (2, 3, 4) (2, 3) (2, 3)\nparameters training / deploy: 332 278\nretained one-head raw output vs reference, max abs difference: 0.0\ntop-k has no pairwise IoU/NMS; random toy predictions are not accuracy evidence\n",
   "stderr": "",

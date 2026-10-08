@@ -2,114 +2,92 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-data.ipynb){ .md-button }
 
-前置：[多物件責任分配](05-assignment.md)、[座標轉換](04-coordinates.md)。本節要解決的問題是「模型讀進去的畫素（pixel），是否仍與框描述同一個物件」。若藍色矩形的框移到紅色矩形上，訓練可以照常降低某個 loss，卻是在學錯的任務。這是因為 loss 只比較模型輸出和標註，不會檢查標註是否真的框在那個物件上；標註一致地錯，模型就一致地學錯。
+要讓第 5、6 章的格子偵測器真的從圖片學習，第一件事是確認：模型看到的物件，和標註交給它的答案是同一個。若藍色矩形的框寫到紅色矩形上，loss 仍可能下降，因為它只比較輸出與標註，不知道標註是否框對了物件。
 
-本節還沒有訓練，只確認資料契約。**資料契約**是資料和模型／loss 之間事先約好的格式：資料照這個格式給，模型和 loss 照這個格式讀。本節的契約有五條：
+先用一張能逐個畫素核對的圖，把圖片、框與類別接起來。讀完本節，你能將它們寫成模型需要的格式，保留沒有物件的圖片，並分辨「格式合法」與「標註對齊」這兩種檢查。
 
-- 影像、框、類別的 shape 和 dtype，照下面的表格。
-- 影像是 RGB，畫素值在 0 到 1 之間。
-- 框以畫素為單位，寫成 xyxy（左上角、右下角的座標），採半開區間。
-- 紅色的類別 id 是 0，藍色是 1。
-- 沒有物件的圖照樣保留：框的 shape 寫成 `[0,4]`，類別的 shape 寫成 `[0]`。
-
-有些違反契約的錯不會讓程式報錯：程式照跑、loss 照降，模型學到的卻是錯的。所以要在訓練前先核對。讀完本節，你能把一張圖和它的標註寫成這個格式，並用程式核對兩者是否描述同一個物件。
-
-歷史機制：YOLOv1 把圖片切成格子（grid），由物件中心所在的格子負責預測；原文是 [You Only Look Once (2016)](https://arxiv.org/abs/1506.02640)。本章簡化成 64×64 的兩色矩形、4×4 格、每格一個框、兩個互斥類別。網路、每格框數、confidence 和 loss 都不是原論文的設計；本章改用 objectness，只表示這格有沒有分配到物件。
-
-??? note "原論文的每格框數與 confidence"
-
-    原論文每格預測 2 個框。每個框各有一個 confidence，原文定義為 Pr(Object) × IOU：「有物件的機率」乘上「預測框與真值框的 IoU」（交集面積除以聯集面積）。本章每格只有一個框，也不使用這個定義。
+## 一個框如何對應到圖片
 
 ![兩色矩形與半開區間框](../assets/diagrams/07-data.svg)
 
-上圖把 64×64 的輸入放大 4 倍顯示。圖中的顏色只是為了方便看；實際的 (R,G,B) 值是背景 (0,0,0)、紅 (1,0,0)、藍 (0,0,1)。
+這張 64×64 圖放大 4 倍顯示。紅框是 `[8,12,24,28]`，藍框是 `[40,36,56,52]`；背景的 RGB 是 (0,0,0)，紅色是 (1,0,0)，藍色是 (0,0,1)。框沿用〈[座標轉換](04-coordinates.md)〉的 pixel xyxy：約定先 x 後 y，四個數依序是左上角、右下角的座標。
 
-## 同一個物件的第一站
+紅框的 x 範圍是 [8,24)，含 8、不含 24，因此紅畫素從 x=8 到 23，共 16 個；y 從 12 到 27，也是 16 個。這種半開區間的面積是 `(24−8)×(28−12)=256`，不必加 1，也正好與 Python 的切片 `a:b` 對齊。
 
-固定場景是一張 64×64 的圖，裡面有紅框 `[8,12,24,28]` 與藍框 `[40,36,56,52]`。本章會帶著這個紅框依序走過資料 → 訓練目標（target）→ loss → 推論。本節是第一站：先確認畫素和標註一致。
-
-框的順序是 `x1,y1,x2,y2`，單位是輸入圖片的畫素。框採半開區間：x 方向是 [8,24)，含 8、不含 24，所以紅色畫素的 x 是 8 到 23，共 24−8=16 個；y 方向是 [12,28)，紅色畫素的 y 是 12 到 27，也是 16 個。面積是 16×16=256，不必加 1。
-
-紅色的類別 id 是 0，藍色是 1。背景不算一個類別，所以沒有類別 2；背景改由下一節的 objectness=0 表示。
-
-完整程式這樣畫出這張圖，並寫下它的標註（中文註解是本頁加的）：
+完整程式用下面幾行建立圖與標註；中文註解是本頁加的：
 
 ``` { .python data-excerpt="lesson_cases/07-data.py" }
 import torch
 ...  # 省略：匯入 miniyolo.data、def main(): 與兩行不影響本節輸出的設定
-image = torch.zeros(3, 64, 64)  # 背景全是 0
-image[0, 12:28, 8:24] = 1  # 紅，索引順序是 channel,y,x
-image[2, 36:52, 40:56] = 1  # 藍
-# 一張圖一個標註 dict；N 是這張圖的框數（這裡 N=2）
-# boxes 是 [N,4] 的 xyxy 框，labels 是 [N] 的類別 id
+image = torch.zeros(3, 64, 64)
+image[0, 12:28, 8:24] = 1  # R 通道；tensor 索引是 channel,y,x
+image[2, 36:52, 40:56] = 1  # B 通道
+# 每個框配一個類別：0=紅，1=藍
 target = {"boxes": torch.tensor([[8., 12., 24., 28.], [40., 36., 56., 52.]]),
           "labels": torch.tensor([0, 1], dtype=torch.long)}
 ```
 
-這段程式有三個容易寫錯的地方：
+這裡有兩套順序要分清。框先 x 後 y，但影像的索引先 y 後 x，所以紅框對應 `image[0,12:28,8:24]`。類別 id 與顏色通道也是兩套編號：藍色的類別是 1，卻要畫在通道 2（B），通道 1 是 G。背景沒有第三個類別；格子偵測器用 objectness 表達沒有物件。
 
-- Python 切片 `a:b` 取 a、a+1、…、b−1，不含 b，本身就是半開區間。所以框 `[x1,y1,x2,y2]` 可以直接寫成 `image[c, y1:y2, x1:x2]`，不必加減 1。
-- 框是先 x 後 y，tensor 索引卻是先 y 後 x：紅框 `[8,12,24,28]` 對應 `image[0, 12:28, 8:24]`。
-- 通道（channel）0、1、2 依序是 R、G、B。類別 id 和通道索引是兩套編號：藍色是類別 1，卻畫在 `image[2]`（B 通道），不是 `image[1]`（G 通道）。
+可以先核對邊界：`image[0,12,8]=1` 是第一個紅畫素，`image[0,27,23]=1` 是最後一個。右邊的 `image[0,27,24]` 與下方的 `image[0,28,23]` 都是 0。紅、藍通道總和各是 `16×16=256`，綠通道是 0。
 
-注意名稱：程式變數 `target`（以及後面的 `targets`）在本節只是原始標註（GT，真值），每張圖一個 `{boxes, labels}` dict。下一節的 `build_targets` 才把它轉成每個格子的訓練目標（有哪些欄位，到時再逐一說明）；下一節說的 target 指的是這個。
+## 格式正確，還不代表框的位置正確
 
-下表列出資料契約規定的格式：
+資料和模型／loss 之間約好的格式叫**資料契約**。本章採用：
+
+手機上可左右滑動表格，查看完整欄位。
 
 | 欄位 | shape／型別 | 意義 |
 | --- | --- | --- |
-| image | `[3,64,64]` float32 | RGB、CHW、畫素值在 `[0,1]` |
-| boxes | `[N,4]` float32 | 這張圖片的框，以畫素為單位的 xyxy |
-| labels | `[N]` int64（就是 `torch.long`） | 每個框對應一個類別 id |
-| batch 影像（程式變數 `images`） | `[B,3,64,64]` | 即第 1 章的 NCHW（這裡的 N 就是 B，和框數 N 無關），可直接進 CNN |
-| batch 標註（程式變數 `targets`） | 長度 B 的 list | 每個元素是一張圖的 `{boxes, labels}` dict；各張的 N 可以不同 |
+| image | `[3,64,64]` float32 | RGB、CHW，畫素值在 `[0,1]` |
+| boxes | `[N,4]` float32 | 輸入圖 pixel 的 xyxy 半開區間框 |
+| labels | `[N]` int64（`torch.long`） | 和框同順序的類別 id：紅 0、藍 1 |
+| batch 影像 images | `[B,3,64,64]` | B 張圖，可直接進 CNN |
+| batch 標註 targets | 長度 B 的 list | 每張圖一個 `{boxes,labels}` dict，各張的 N 可以不同 |
 
-表中 N＝這張圖的框（物件）數，可以是 0；B＝一個 batch 的圖片數；CHW＝通道、高、寬。
+N 是一張圖的物件數，B 是一批的圖片數；CHW 是通道、高、寬，批次的 BCHW 就是第 1 章的 NCHW。表中的框數 N 與 NCHW 的 N 含義不同。
 
-逐步核對：紅色畫素的 (R,G,B) 是 (1,0,0)，藍色是 (0,0,1)，背景是 (0,0,0)。你可以這樣手算：
-
-1. 紅色左上角的畫素是 `(x=8,y=12)`，位於 `image[0,12,8]`，值是 1。
-2. 最後一個紅畫素是 `(x=23,y=27)`，即 `image[0,27,23]=1`。它右邊的 `image[0,27,24]` 和下方的 `image[0,28,23]` 都是 0，符合「右邊界 24、下邊界 28 不含在內」。
-3. 算通道總和：紅色是 16×16×1=256，藍色也是 256，綠色是 0。
-
-這比只看圖片 shape 多核對了通道、x 與 y 的順序、框邊界和畫素內容。
-
-## 為何標註不能像影像一樣疊起來
-
-接著把兩張圖組成一個 batch（B=2）：第一張是上面的固定場景，第二張刻意放一張全黑、沒有任何物件的空圖。
-
-空圖的框寫成 `torch.empty(0,4)`，它建立一個 shape 為 `[0,4]` 的 tensor：0 個框，每個框 4 個數，裡面一個元素也沒有。這和一個全 0 的框 `[[0,0,0,0]]`（shape `[1,4]`）不同。類別寫成 `torch.empty(0,dtype=torch.long)`，shape 是 `[0]`。dtype 仍要是 long，因為下一節的 `build_targets` 要求類別必須是 long。第 4 章〈[座標轉換與還原](04-coordinates.md)〉也提過：沒有框時仍保留 `[0,4]`。
-
-這張空圖不能刪。它提供背景監督，也就是教模型「這裡沒有物件」的訓練訊號。下一節把標註轉成每格的訓練目標時，空圖 4×4 共 16 格的 objectness 目標都是 0。再下一節的 loss 用 BCE（binary cross entropy，二元交叉熵：目標是 0 或 1 時用的 loss）把這 16 格預測的 objectness 往 0 推。框和類別的 loss 只算有物件的格子，這張空圖不貢獻。第一張圖雖然也有 14 格背景，但刪掉空圖，模型就少了整張都是背景的例子，程式也測不到 N=0 的情況。
-
-那為什麼不把兩張圖的框也疊成一個 tensor？`torch.stack` 會把 shape 完全相同的 tensor 沿新的第 0 軸疊起來：兩張 `[3,64,64]` 影像疊成 `[2,3,64,64]`。兩張圖的框卻是 `[2,4]` 與 `[0,4]`，shape 不同，`torch.stack` 會報 RuntimeError，訊息開頭是 `stack expects each tensor to be equal size`（stack 要求每個 tensor 大小相同）。
-
-也不能用 `[0,0,0,0]` 這種假框占位（例如在空圖補假框，讓每張的框數一樣多）。它的寬高都是 0，下一節的 `build_targets` 會直接報 ValueError（標註框必須有正面積）。就算沒有這道檢查，假框也得配一個類別，會被當成中心在 (0,0) 的真物件：左上角那格變成正格，等於教模型「全黑的圖左上角有物件」。
-
-所以本書在 `miniyolo/data.py` 寫了一個小函式 `collate`。它的輸入是一串（影像, 標註）配對：影像用 `torch.stack` 疊成 `[B,3,64,64]`；標註不疊，原樣放進長度 B 的 list；兩者一起回傳。PyTorch 內建的 `DataLoader`（負責把資料一批批取出的工具）也能用參數 `collate_fn` 接這種函式，第 8 章〈[用自己的資料](08-own-data.md)〉示範讀自己的資料時就這樣用。本章的程式則是直接呼叫 `collate`，完整程式裡是這幾行：
+shape、型別、座標範圍都需要檢查，但它們抓不到合法的錯位框。例如把紅框寫成 `[12,8,28,24]`，四個數仍在 0～64 內，寬高也為正，卻往右、往上各偏 4 pixel。要驗證對齊，必須把標註畫回圖上。這個人工場景還能更精確：由標註重畫一份預期影像，再逐值比較。
 
 ``` { .python data-excerpt="lesson_cases/07-data.py" }
-from miniyolo.data import ShapeDataset, collate  # 在完整程式開頭；ShapeDataset 在本頁下文介紹
-...  # 省略中間的程式，包括前文的畫圖、寫標註，以及後文的第 1 項檢查
-empty = {"boxes": torch.empty(0, 4), "labels": torch.empty(0, dtype=torch.long)}
-# torch.zeros_like(image)：和 image 同 shape、同 dtype 的全 0 tensor，也就是那張全黑的空圖
-images, targets = collate([(image, target), (torch.zeros_like(image), empty)])
-# images 是 [2,3,64,64] 的 tensor；targets 是 [target, empty]，長度 2 的 list
+expected_pixels = torch.zeros_like(image)
+for box, label in zip(target["boxes"], target["labels"]):
+    x1, y1, x2, y2 = box.to(torch.long).tolist()
+    channel = {0: 0, 1: 2}[label.item()]  # 類別 0→R；類別 1→B
+    expected_pixels[channel, y1:y2, x1:x2] = 1
+assert torch.equal(image, expected_pixels), "Annotation and colored pixels disagree"
 ```
 
-## 固定場景之外：生成資料 ShapeDataset
+`assert` 是斷言：條件不成立就報錯停下；`torch.equal` 要求每個值都相等。若只把紅框 x1 從 8 改成 9，預期影像會少掉 x=8 那一欄的 16 個紅畫素，總和變成 240，原圖仍是 256。這個斷言就會報 `Annotation and colored pixels disagree`。相反地，寫死切片 `8:24` 的通道總和檢查只讀原圖，仍得到 256，抓不到標註被改錯。
 
-固定場景只用 0 和 1 兩種畫素值，所以能逐值精確核對。後續訓練用的是生成資料，不是反覆學本節這兩個 256 畫素的固定色塊。
+## 兩張圖，為什麼標註保留成 list
 
-`ShapeDataset` 是本書 `miniyolo/data.py` 裡的 PyTorch Dataset 類別，可以用 `dataset[i]` 取出第 i 筆資料。給它編號 i，它就依固定的亂數種子（seed）畫出第 i 張圖和標註；同一個編號每次都畫出同一張。它的圖有這些性質：
+第二張圖刻意使用全黑的空圖。它沒有框，應寫成 `[0,4]` 的 boxes 與 `[0]` 的 long labels，表示「零個框，每個框有四欄」。`[[0,0,0,0]]` 是一個零面積的假框，不是零個框；`build_targets` 會拒絕它。若不檢查，假框還會被當成中心在 (0,0) 的物件，教出錯誤答案。
 
-- 預設設定下，每張有 0～2 個矩形，所以會出現空圖。本節完整程式沿用預設，用 seed=7 取 8 張，其中就有 3 張空圖。
-- 每個矩形整個落在 4×4 格的某一格（16×16 畫素）裡，寬、高是 8～15 畫素。因此中心嚴格位於格子內，不會落在格線上；下一節換算格內 xy 時，也不會得到端點 0。同一張圖的矩形一定在不同格子，避開第 5 章講的同格碰撞（兩個物件中心落在同一格）。
-- 背景每個畫素是 [0, 0.04) 的微小隨機雜訊。紅色塊的 RGB 是 (0.95, 0.10, 0.10)，藍色是 (0.10, 0.10, 0.95)。
+``` { .python data-excerpt="lesson_cases/07-data.py" }
+from miniyolo.data import ShapeDataset, collate
+...  # 省略：上面的固定場景與逐值比對
+empty = {"boxes": torch.empty(0, 4), "labels": torch.empty(0, dtype=torch.long)}
+images, targets = collate([(image, target), (torch.zeros_like(image), empty)])
+```
 
-## 執行完整程式：三項檢查
+`collate` 是本書的批次打包函式：影像用 `torch.stack` 疊成 `[2,3,64,64]`，標註原樣放進 `[target,empty]`。stack 要求 shape 相同，影像都為 `[3,64,64]`，可以疊；兩張圖的框分別是 `[2,4]`、`[0,4]`，直接 stack 會報 `stack expects each tensor to be equal size`。保留逐圖 list，就能讓每張圖有不同框數，又維持第 i 張影像對應第 i 份標註。PyTorch 的 DataLoader 也能用 `collate_fn` 接這個函式。
 
-可以用頁首的按鈕在 Colab 執行完整程式，或在專案根目錄執行 `PYTHONPATH=. python lesson_cases/07-data.py`。程式不下載任何檔案、不需要 GPU，也不建立模型。預期輸出三行：
+空圖是有用的訓練材料：它要求模型在整張背景上都不要報物件。本章的 4×4 格會全部學 objectness=0；空圖沒有框與類別答案，因此不算這兩項 loss。兩物件圖也有 14 個背景格，但它不能代替整張都是背景的例子，也不能測到 N=0 的資料路徑。程式變數 `target`、`targets` 此時仍指原始標註（GT，ground truth／真值）；下一節的 `build_targets` 才把它們轉成每格的訓練目標。
+
+## 從能手查的色塊，換到訓練資料
+
+固定場景使用 0、1 畫素，便於精確核對。訓練需要更多位置和大小，所以改由 `ShapeDataset` 生成圖片與標註。它是 `miniyolo/data.py` 的 PyTorch Dataset：用 `dataset[i]` 取得第 i 筆；固定 seed（亂數種子）時，同一編號會得到同一張圖。
+
+預設每張有 0～2 個矩形。本節取 seed=7 的 8 張，其中有 3 張空圖。背景是 `[0,0.04)` 的微小雜訊，紅色 RGB=(0.95,0.10,0.10)，藍色=(0.10,0.10,0.95)，不再只有 0、1。
+
+每個矩形寬、高為 8～15 pixel，完整放在一個 16×16 格內，而且同圖的物件使用不同格。這避免了第 5 章的同格碰撞，先讓每格一框的流程能運作；中心也嚴格在格內，不會落到格線上。人工資料因此容易查錯，代價是只有矩形、近乎純色、近乎黑底。資料檢查通過，還不能推論模型會辨識真實照片。
+
+這個 4×4、每格一框的模型沿用 [YOLOv1](https://arxiv.org/abs/1506.02640)「中心所在格負責」的想法。本章使用自己的網路、objectness 與 loss，是教學簡化。原版每格預測 2 框，confidence 的定義為 Pr(Object)×IoU；本章的 objectness 只回答這格是否分到物件。
+
+## 執行並讀出檢查結果
+
+在 Colab 執行頁首 notebook，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-data.py`。它不下載檔案、不建立模型，也不需要 GPU：
 
 ```text
 batch (2, 3, 64, 64) counts [2, 0]
@@ -117,41 +95,11 @@ red/blue channel sums 256.0 256.0
 dataset contract checked: 8 images
 ```
 
-第一行是 batch 影像的 shape，以及兩張圖各自的框數（固定場景 2 個、空圖 0 個）。第二行是第一張圖紅、藍兩個通道各自的總和。第三行表示 8 張生成資料都通過了檢查。
+第一行核對批次與逐圖框數，第二行核對色塊總和。印出前，程式已完成標註重畫與原圖的逐值比對，以及 batch／空框 shape 檢查。第三行表示 8 張生成圖也通過格式與範圍檢查：影像 float32、shape `(3,64,64)`，框列數等於類別個數，座標在 0～64 且寬高為正。這三行是資料檢查，尚未更新任何模型參數。
 
-印出這三行之前，完整程式已經用斷言（assert：條件不成立就報錯停下）做完三項檢查：
+接真實圖片時也要先畫標註疊圖，再查數值。Pillow 是常用的 Python 讀圖套件，延續 PIL（Python Imaging Library，Python 影像函式庫），匯入時仍寫 `PIL`。讀圖轉成陣列通常是 HWC，要 `permute(2,0,1)` 換軸；用 reshape 硬改 shape 會混淆位置與顏色。OpenCV 的 `cv2.imread` 讀出 BGR，要換回 RGB；0～255 的畫素要除以 255；resize 圖片時，框也要同步變換。這些錯都可能讓尺寸檢查通過，卻破壞影像與答案的關係。非正方形圖片和來源切分的實際操作放在第 8 章，這裡先保住同一個物件的畫素、框與類別對應。
 
-1. 依標註重畫「預期影像」（程式變數 `expected_pixels`）：從全 0 開始，類別 0 的框內在通道 0（R）填 1，類別 1 的框內在通道 2（B）填 1。它必須和原圖每個值都相等（`torch.equal`）。
-2. batch 格式：`images` 的 shape 是 (2,3,64,64)，空圖的 boxes 是 (0,4)；紅框、藍框所在的那塊切片，總和各是 256。
-3. 8 張生成資料：影像是 float32、shape (3,64,64)；boxes 的列數等於 labels 的個數；每個框的座標都在 0～64 內，而且 x2>x1、y2>y1。
-
-第 1 項在完整程式裡是這幾行：
-
-``` { .python data-excerpt="lesson_cases/07-data.py" }
-expected_pixels = torch.zeros_like(image)
-for box, label in zip(target["boxes"], target["labels"]):
-    x1, y1, x2, y2 = box.to(torch.long).tolist()  # 框座標轉成整數，才能當切片用
-    channel = {0: 0, 1: 2}[label.item()]  # 類別 0（紅）→ 通道 0；類別 1（藍）→ 通道 2
-    expected_pixels[channel, y1:y2, x1:x2] = 1
-assert torch.equal(image, expected_pixels), "Annotation and colored pixels disagree"
-```
-
-為什麼要從標註反推畫素？試試在完整程式把紅框的 x1 從 8 改成 9，畫素不改。依標註重畫的預期影像少了 x=8 那一欄的 16 個紅畫素：預期影像的紅色總和是 240，原圖是 256。第 1 項的斷言會失敗，程式停在那裡，錯誤訊息是 `AssertionError: Annotation and colored pixels disagree`。第 2 項的紅色總和檢查用寫死的切片 `8:24`，只看畫素、不看標註；就算執行到也仍是 256，抓不到這種錯。
-
-## 用人工矩形當資料：收益與代價
-
-可控圖形讓畫素、標註、空圖與多物件能先被逐項驗證，失敗時不用猜是真實資料太難，還是程式錯了。代價是資料過於乾淨：永遠只有矩形、只有兩種接近純色的顏色、背景幾乎全黑（生成資料只多了極小的雜訊）。所以通過這裡的檢查，不能證明模型能辨識真實照片。
-
-稍後接自己的圖片時，要沿用同一套資料契約，例如 RGB 順序、以畫素為單位的 xyxy 框，以及開頭契約的最後一條（沒有物件的圖照樣保留，框的 shape 寫成 `[0,4]`）。另外還要處理兩件事。一是原圖尺寸：要 resize 或 letterbox（等比縮放後補邊），見第 4 章〈[座標轉換與還原](04-coordinates.md)〉。二是按來源切分訓練／驗證／測試資料：同一個來源（例如同一段影片）的圖要整組放在同一邊，否則模型評估時遇到的，其實是訓練時看過的近似圖片。第 8 章〈[用自己的資料](08-own-data.md)〉會細講。
-
-接自己的圖片時，常見錯誤有四種：
-
-1. 把 Pillow 讀進來的圖直接當成 CHW。Pillow 是常用的 Python 讀圖套件，沿用 PIL（Python Imaging Library，Python 影像函式庫）作為匯入名稱。圖片轉成 NumPy 陣列後是 `[H,W,C]`，要先用 `torch.from_numpy` 轉成 tensor，再用 `permute(2,0,1)` 換成 `[C,H,W]`；用 `reshape` 硬改形狀會把顏色和位置混在一起（見第 1 章〈[VGG 風格小 CNN](01-small-cnn.md)〉）。
-2. 把 RGB 讀成 BGR。OpenCV（另一個常用的影像套件）的 `cv2.imread` 讀出的通道順序是 B、G、R；當成 RGB 用，R 和 B 會對調。在本章，這等於紅色（類別 0）變成藍色（類別 1），標註全部對不上。
-3. 0～255 的整數畫素沒有除以 255。數值比契約的 0～1 大了 255 倍；就算已轉成 float32，shape 和 dtype 都對，這兩項檢查抓不到。
-4. 圖片 resize 了，框卻還用原圖座標，框就落在錯的位置（第 4 章）。
-
-先畫標註疊圖（把框畫在圖片上，用眼睛看有沒有對齊），再檢查數值。框的座標範圍檢查（在 0～64 之內、x2>x1、y2>y1）抓不到「合法但位置錯」的框。例如把紅框誤寫成 x、y 對調的 `[12,8,28,24]`：四個數都在 0～64 內，x2>x1、y2>y1 也成立，範圍檢查全部通過，下一節的 `build_targets` 也照收；框卻和紅色方塊錯開了，往右、往上各偏 4 畫素。只有畫標註疊圖，或依標註重畫畫素再逐值比對，才抓得到。
+## 自主練習
 
 自主練習：在完整程式（Colab 或 `lesson_cases/07-data.py`）把 `target` 的紅框從 `[8., 12., 24., 28.]` 改成 `[8., 12., 28., 28.]`，畫紅色的那行 `image[0, 12:28, 8:24] = 1` 也要跟著改。
 
@@ -171,7 +119,9 @@ assert torch.equal(image, expected_pixels), "Annotation and colored pixels disag
 
     附加題：停在 `assert torch.equal(image, expected_pixels), ...` 那行，錯誤訊息是 `Annotation and colored pixels disagree`。依標註重畫時，紅色被畫在 `expected_pixels[0, 8:24, 12:28]`（框 `[x1,y1,x2,y2]` 對應切片 `[y1:y2, x1:x2]`），和原圖的 `image[0, 12:28, 8:24]` 不重合，所以逐值比對失敗。
 
-下一節會把這個 16×16 的紅框，轉成某一個格子要學的訓練目標。
+
+
+資料中的紅框仍用 pixel xyxy 描述；接下來要把它放進模型固定的 4×4 輸出位置。
 
 <!-- curriculum-evidence:start -->
 

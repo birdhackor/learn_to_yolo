@@ -2,30 +2,29 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/15-area-attention.ipynb){ .md-button }
 
-上一節的 full attention 讓每個位置讀全圖，代價是要算的權重數隨 token 數的平方成長：feature map 越大，越貴。YOLOv12 的省法是把 token 分成幾個區域（area），各區只在自己內部做 attention，再接回原圖。這樣會少哪些計算，又失去哪一些互動？
+上一節讓每個位置用 QK 選來源，再加權讀 V。一層就能直接讀遠處，但 full attention 要為 N 個位置算 N² 次配對。希望保留較廣的內容互動，又不在每層付出全圖配對成本時，可以先限制讀取範圍：位置分區，同區仍互相選讀，跨區的配對不算。
 
-本節除了數權重表有多大，也做一個干預實驗：故意只改一個遠處 token 的值、其他都不動，看第一個 token（token0）的輸出會不會跟著變。讀完你能算出分區省下多少計算，也能用實驗說明：分區之後，這一層有哪些位置彼此讀不到。
+YOLOv12 稱這個做法 Area Attention（區域注意力）。省掉配對也意味著少了一條資訊路徑。我們沿用上一節的 QKV 流程，只把 4 個位置擴成 16 個，讓區域邊界看得見，再只改遠處的一個 token，看它還能不能影響左上。
 
-前置：[上一節](15-attention-bridge.md)的 attention 分三步：Q 乘 K 的轉置（除以 √d）得到分數、沿來源軸做 softmax、再用這些權重加權 V。其中 d 是每個 query／key 向量的元素個數；本例 d 等於每個 token 的 channel 數 C=2，所以程式寫成 √C。一個接收位置配一個來源位置，叫一個 pair；每個 pair 要算一個權重，N 個 token 共有 N² 個 pair。標題把互動範圍比作一筆預算：本節說的「互動預算」，就是一層要算的 pair 數。
+## 先確定 token0 的來源名單
 
-YOLOv12 的 Area Attention 把攤平後的 token 依序切成 A 段，每段是一個 area（A 就是程式裡的 `areas`，也就是區域數），每段只在內部做上一節的 attention。論文作者的官方程式（類別名稱 `AAttn`）還有下面四樣東西，本節先全部拿掉：
+固定一張 4×4 特徵圖，照 row-major 逐列由左到右排成 token0～15，shape `[B,N,C]=[1,16,2]`。第 i 個 token 的兩個 channel 都是 i/16，例如 token0=`[0,0]`、token5=`[5/16,5/16]`。QKV 投影仍以三份單位矩陣起步，Q=K=V=token，方便手算。
 
-- **多 head（multi-head）**：這裡的 head 是 attention head，不是 [12.2](12-decoupled-head.md) 的偵測 head（把特徵轉成預測的輸出模組）。多 head 把 Q、K、V 的 C 個 channel 分成 M 組，每組各算一張權重表、各自加權，最後把各組的結果接回 C 個 channel。官方 `AAttn` 用 `num_heads` 表示組數，`head_dim` 表示每組的 channel 數。本例只有 1 組、2 個 channel（相當於 `num_heads=1`、`head_dim=C=2`），所以程式沒寫這兩個變數。area 分的是位置，head 分的是 channel，兩者切的是不同的軸。
-- **位置卷積**：官方對整張 V 特徵圖（還沒攤平、也還沒分區的 V）做的逐 channel 卷積，每個 channel 各用自己的卷積核（論文寫 7×7，頁尾連結的程式版本是 5×5）。它不分區，結果加到 attention 輸出上，用來補位置資訊。
-- **輸出投影**：attention 之後再接的一層線性轉換（官方用 1×1 卷積，後面同樣接 BN）。
-- **Q／K、V 投影後的 BN**：官方用兩個 1×1 卷積（`self.qk`、`self.v`）分別算出 Q／K 與 V，每個卷積後接 BN（BatchNorm，批次正規化），不接激勵函數；本節改用一個不帶 BN 的 `nn.Linear` 一次算出 Q、K、V。BN 在訓練模式下會用整批資料（所有位置）的平均與變異數，改動別區的 token 也會影響這一區的輸出，所以本節一併拿掉。
-
-本節從 full attention 出發，full 和 area 兩條路共用同一份 QKV 權重，只把 `areas` 從 1 改成 4，所以兩者的差別只來自「誰能讀誰」。拿掉位置卷積和其他路徑，是為了單獨檢驗「分區」這一個改動造成的互動限制。本節也不比較完整的 YOLOv12 和 CNN 誰比較準。
-
-## 區域的形狀由 token 順序決定
+full attention 讓 token0 讀全部 0～15。area 則把攤平後的序列切成 A 個等長連續段，每段只在內部 attention；A 是區域數，即程式的 `areas`。A=4 時每段四個，token0 只讀 0～3：
 
 ![4×4 逐列編號：四條帶與兩條帶的對照](../assets/diagrams/15-area-layout.svg)
 
-看圖時注意：A 是區域數 `areas`；底色相同的格子屬於同一個 area。紅框標出 query，也就是 token0；紫框標出本節會改動的 token：15 用在主實驗，3 用在練習。
+底色相同表示同區；紅框是接收者 token0，紫框 15 是主例改動的來源，紫框 3 留給練習。左圖 A=4 是四條橫帶；右圖 A=2 時每帶兩列、八個 token。這個圖讓你先辨認「讀得到誰」，再解讀後面的平均值與干預。
 
-本例的 feature map 是 4×4，N=16。照 row-major 順序（逐列由左到右）編號，每四個 token 是一列。tokens 的 shape 是 `[B,N,C]=[1,16,2]`：B 是圖片數，N 是 token 數，C 是每個 token 的 channel 數。`areas=4` 時，Q、K、V 各自 reshape 成 `[B×A,N/A,C]=[4,4,2]`。N/A 是 N 除以 A，也就是每區的 token 數（不是「不適用」的縮寫）。
+四區不是四個 2×2 方塊。依序切段沒有先改排列，所以每四個就是一整列；要切 window（方塊內 attention），得先讓 `[0,1,4,5]`、`[2,3,6,7]` 等同方塊 token 相鄰，算完還要排回原位。兩種區域切法限制的是不同來源。
 
-下面是依完整程式的 `attend` 函式改寫的簡化版：軸長照正文寫成大寫的 B、N、C，省略了開頭的 assert（檢查 A 大於 0、N 能被 A 整除），最後一行也只把結果存進 `output`（`attend` 是把輸出和權重表 `weights` 一起回傳）。
+## 一張 16×16 表，換成四張 4×4 表
+
+分區沒有換 QKV 參數。full 和 area 都呼叫同一份 `projection`，只把 `areas` 從 1 改成 4。這樣輸出差異才由讀取範圍造成，不混入兩次隨機初始化的差異。
+
+Q、K、V 各從 `[1,16,2]` reshape 成 `[B×A,N/A,C]=[4,4,2]`。第 0 軸現在是四份區域：0～3、4～7、8～11、12～15。矩陣乘法只在同一份內配對，得到 `[4,4,4]`：第幾區、區內接收位置、區內來源位置。token0 的表沒有 token15 的欄，softmax 也只在 0～3 分配。
+
+下面依完整 `attend` 函式簡化：B、N、C 對應原程式 b、n、c，省略開頭 assert，末行先存 output；原函式回傳 output 和 weights。
 
 ```python
 # B, N, C 是 tokens 三個軸的長度，本例 [1,16,2]（完整程式寫成 b, n, c = tokens.shape）
@@ -39,60 +38,26 @@ weights = (q @ k.transpose(-2, -1) / math.sqrt(C)).softmax(-1)
 output = (weights @ v).reshape(B, N, C)  # [4,4,4] @ [4,4,2] -> [4,4,2]，再依序接回 [1,16,2]
 ```
 
-為什麼這樣就只在區內算？reshape 照 row-major 順序，把每 4 個連續 token 放成第 0 軸的一份：第 0 份是 token0–3，第 1 份是 token4–7，依此類推，所以四個 area 就是四條水平帶。
+每區各完成 QKᵀ/√2→來源軸 softmax→加權 V，再依原順序接回 `[1,16,2]`。這裡 d=C=2，所以縮放寫成 √C；不是任意多 head 都應使用 √C。`N/A` 是每區位置數，A 必須大於 0，N 必須能被 A 整除；原函式會檢查這兩項。
 
-`@` 遇到三維張量時，第 0 軸的每一份各自配對，只對最後兩軸做矩陣乘法：`[4,4,2] @ [4,2,4]` 就是做 4 次「4×2 乘 2×4」，得到 4 張 4×4 的分數表。分數除以 √2、再做 softmax，就是 4 張 attention 權重表（上一節叫 affinity；它是每次 forward 算出的中間結果，不是可學參數）。token0 那張表只有 token0–3 這四個來源，沒有 token15；softmax 也只在這四個來源之間分配。權重表 `[4,4,4]` 的三個軸依序是：第幾區、區內第幾個接收位置、區內第幾個來源位置。`weights @ v` 同樣是 4 份各自相乘；最後的 reshape 只是把四段照原來的順序接回 `[1,16,2]`，位置不會亂。
+現在 full 的 affinity（讀取表）是 `[1,16,16]`、256 個數；area 的是 `[4,4,4]`、64 個數。少的是當次 forward 的配對結果，QKV 的 6×2=12 個可學參數一個也沒少。這四張小表的代價，接著用一次輸入改動顯示。
 
-full 和 area 都用同一個 `projection` 呼叫 `attend`：`areas=1` 就是 full，`areas=4` 就是 area。QKV 權重沒有重新初始化，兩條路的差別只有誰能讀誰。共用同一份 QKV 權重來比較，比各跑一份隨機初始化的模型，更能把差異歸因於互動範圍。
+## 只改 token15，左上還會跟著變嗎？
 
-這四條帶不是四個 2×2 方塊。把圖切成小方塊、只在方塊內做 attention 的做法叫 window（和第 5 章的滑動視窗 sliding window 不同）。程式沒有先重排 token，所以切出來的是橫帶。若要 2×2 方塊，得先把 token 重新排好，讓同一方塊的 4 個 token 相鄰：[0,1,4,5]、[2,3,6,7]、[8,9,12,13]、[10,11,14,15]，再每 4 個切一段；算完還要照相反的順序排回原位。
+token0 的 q0=`[0,0]`，和每個 key 的內積都是 0。softmax 因此均勻分配：full 每來源 1/16，area 每來源 1/4。token0 輸出就是可讀 V 的平均，兩個 channel 同值：
 
-??? note "YOLOv12 為什麼切成長條，不切方塊？"
+| 路徑 | 可讀來源 | token0 原輸出 |
+| --- | --- | --- |
+| full | 0～15 | `7.5/16=0.46875` |
+| area，A=4 | 0～3 | `1.5/16=0.09375` |
 
-    論文的理由是速度：不必另外切 window，只要一次 reshape，所以比較快。切成 4 段時，每個位置在這一層能讀的範圍縮成原來的 1/4，論文認為仍然夠大。
+接著只把 token15 的兩個 channel 各加 5，其他都不動。這是干預：故意改一項輸入，觀察哪個輸出受它影響。
 
-論文把 feature map 切成 l 段（l 就是本節的 A），每段是 (H/l)×W 的橫帶或 H×(W/l) 的直帶，預設 l=4；本例的 `areas=4` 正是這個預設。官方程式（`AAttn`）的做法則是攤平後依序切段：H 能被 area 數整除時，剛好切出橫帶；不能整除時，切出的段就不再是整列，甚至可能不是長方形。例如 H=6、W=4、A=4 時每區 6 個 token，第 0 區是第 0 列的 4 格，再加上第 1 列的前兩格。所以切出的形狀取決於 H、W 與 area 數，不能只看到 area=4 就畫成四象限。本例特意選 4×4，讓區域邊界很好檢查。
+full 中 token15 的 K、V 都改了，但 q0 是 0，QK 分數仍全為 0，所以比例仍各 1/16。token0 多讀到 `5/16=0.3125`，變成 0.78125。area 的來源名單沒有 token15，它的 K、V 都不參與 token0 的計算，輸出仍是 0.09375。
 
-## 計算和記憶體怎麼減少
+q0=0 讓數值能用平均手算，並不是跨區隔離的原因。換成其他 query，area 中仍沒有 token15 的配對與 V 路徑。這個關係可直接預測：改同區來源才有影響左上的路，改別區來源沒有。
 
-full 的 attention 權重表 shape 是 `[1,16,16]`，有 256 個數；area 的是 `[4,4,4]`，共 64 個數（程式輸出把兩者都印成 affinity）。少掉的是這些每次 forward 算出的中間結果，不是參數：可學的 QKV 權重兩條路共用同一份，也就是 `nn.Linear(2, 6, bias=False)` 的 6×2=12 個，分區前後一個也沒少。
-
-一般有 A 個同樣大小的區域時，每區 N/A 個接收位置各配 N/A 個來源位置，每區有 (N/A)² 個 pair；共 A 區，所以每個 head 的 pair 數是 `A×(N/A)²=A×N²/A²=N²/A`。有 M 個 head 時，權重表的元素數還要乘上 M 與 batch 數 B。本例單 head、B=1，權重表從 256 個變成 64 個，是原來的 1/4；一般 A 個等大區域就是原來的 1/A。這只是 attention 的 pair 項。QKV 投影仍要處理全部 16 個 token，所以不能說整個模型跑一次的時間（延遲）變成四分之一。
-
-??? note "多 head 延伸（可跳讀）"
-
-    若有 M 個 head，每個 head 的 channel 數 `D=C/M`，Q／K／V 可以寫成 `[B×A,M,N/A,D]`，attention 權重表是 `[B×A,M,N/A,N/A]`，縮放因子是 `√D`。本例 M=1，所以 D=C/1=C，縮放因子 √D 就是程式裡的 √C；大小為 1 的 M 軸省略不寫，所以權重表只有三維 `[B×A,N/A,N/A]`。
-
-若輸入 feature map 的邊長變兩倍，N 變四倍；即使 `areas` 不變，pair 數 N²/A 仍變 16 倍。分區控制的是互動預算（一層要算的 pair 數：full 是 N²，area 是 N²/A），並沒有讓任意解析度都變便宜。
-
-??? note "如果改成固定每區的 token 數呢？"
-
-    假設每區固定 S 個 token，讓區域數跟著 N 變：A=N/S。pair 數變成 `A×S²=(N/S)×S²=N×S`，只和 N 成正比。代價是每區只占全圖的 S/N：圖越大，每個位置在這一層能讀到的比例越小。本節和官方程式都是固定 A（area 數在建立模型時就決定，不隨輸入大小改變），所以邊長變兩倍時，pair 數仍變 16 倍。
-
-實際跑多快，還取決於本節沒有量的幾件事：
-
-- GPU 上 attention 的寫法（例如 FlashAttention 把計算切成小塊，不必存下整張權重表）。
-- 資料型別（dtype，例如 float32 或 float16：兩者都是浮點數，差在每個數用幾位元存）。
-- 記憶體佈局（資料在記憶體裡怎麼排）。
-- GPU 程式的實作（GPU 領域把這種程式叫 kernel，和卷積核是不同的意思）。
-- 投影本身的計算量。
-
-所以 CPU 小實驗的 pair 數，不能當成 GPU 上的速度測試（benchmark）。
-
-## 遠處資訊能不能傳過來
-
-本例第 i 個 token 的兩個 channel 都是 i/16（i=0…15），例如 token5=[5/16,5/16]。QKV 權重的初值設成 identity（輸入原樣輸出），所以 Q、K、V 都等於 tokens。token0 的 query 是 q0=[0,0]，和每個 key 的內積都是 0，除以 √2 仍是 0；exp(0)=1，所以 softmax 後，每個可讀來源的 attention 權重都是 1/(可讀來源數)：full 是 1/16；A=4 時每區 4 個，是 1/4；A=2 時每區 8 個，是 1/8。
-
-attention 權重全部相等，token0 輸出就是可讀 token 的平均。token0 輸出的兩個 channel 數值相同，程式印的是第一個。full 平均全部 16 個：0 到 15 的平均是 7.5，所以 token0 輸出是 7.5/16=0.46875。area 只平均第一帶的 token0–3：0 到 3 的平均是 1.5，得 1.5/16=0.09375。
-
-接著做干預：只把 token15 的兩個 channel 各加 5，其他 token 都不動，看 token0 輸出會不會變。
-
-- **full**：token15 的 K 也跟著變了，但 q0=[0,0]，和它的內積仍是 0，所以 attention 權重仍是均勻的 1/16。只有 token15 的 V 多了 5，token0 輸出多了 5/16=0.3125，從 0.46875 變成 0.78125。
-- **area**：token0 那張權重表裡根本沒有 token15，所以 token0 輸出仍是 0.09375，完全不變。
-
-選 token0（q0=[0,0]）只是為了方便手算。area 的結論不靠 q0 是零向量：換成別的 query 向量，token0 那張表裡仍然沒有 token15。
-
-這個結論是程式實際比對出來的。完整程式用斷言（assert）逐值比對干預前後的 token0 輸出：`full_affected`、`area_affected` 記錄 full 和 area 的 token0 輸出有沒有改變（用 `torch.allclose` 比較），`query_index=0` 是 token0，`changed_index=15` 是被改的 token。下面摘自完整程式的 `main()`，中文註解是本頁加的；`...` 處略去的兩行，就是算出 `full_affected`、`area_affected` 的那兩行：
+完整程式以 `torch.allclose` 比較干預前後的 token0，得到 `full_affected`、`area_affected`。`query_index=0`、`changed_index=15`，下面保留了同區判定與斷言；省略兩行就是計算這兩個 affected 的比較：
 
 ``` { .python data-excerpt="lesson_cases/15-area-attention.py" }
 area_size = tokens.shape[1] // areas  # 每區的 token 數：16 // 4 = 4
@@ -101,45 +66,64 @@ same_area = query_index // area_size == changed_index // area_size  # 0 // 4 = 0
 assert full_affected and area_affected == same_area  # full 要受影響；area 受不受影響，要和「是否同區」一致
 ```
 
-`same_area` 依 `areas` 自動算出兩個 token 是否同區，所以練習改 `areas` 或 `changed_index` 時，這個 assert 不用跟著改。
+`index//area_size` 是區號。本例 token0 在區 0，token15 在區 3，所以 `same_area=False`，結果為 full=True、area=False。練習改區數或改動位置時，斷言會依相同規則自動更新，不需刪掉檢查。
 
-這也展示了收益與限制：減少跨區的 pair，同時也限制了這一層的遠距資訊交換。不過在完整的網路裡，資訊可以繞路跨區：
+## 少算 1/A 配對，整層卻未必快 1/A
 
-- 原版同一層的位置卷積會混入上下相鄰列（別區）的 V。
-- 後面的卷積與下採樣（例如 stride 2 的卷積，把 feature map 的邊長縮成一半）也會讓相鄰位置的資訊流動。
-- 官方設定檔 `yolov12.yaml` 在 stride 32（解析度最小）的那層，直接用 area=1，也就是 full attention。
+一般每區 N/A 個接收者，各配 N/A 個來源，A 區共
 
-反過來說，如果每層都用同樣的分帶、又沒有這些路徑，只靠 area attention 本身永遠跨不了帶。本實驗只有一層，也沒有那些路徑，所以不能斷言完整的 YOLOv12 跨區永遠不互動。
+\[
+A(N/A)^2=N^2/A
+\]
 
-完整程式最後對 area 輸出與原 tokens 計算 MSE，做 backward 和一次 SGD，確認 QKV 權重有梯度。執行 `PYTHONPATH=. python lesson_cases/15-area-attention.py`，對照印出的這幾行：
+個 pair（接收、來源的配對）。A=4 使本例 256→64，留下四分之一；有多 head 和 batch 時，讀取表元素數還要乘 head 數 M 和圖片數 B。QKV 投影仍處理全部 N 個 token，輸出也要重排，所以這個比例不代表整層或整模型延遲變成四分之一。
 
-- `full affinity shape/count`、`area affinity shape/count`：權重表 256 個與 64 個。
-- `first-token output`：干預前的 token0 輸出，full 是 0.46875，area 是 0.09375，和前面手算的值相同。
-- `changing token 15 affects token 0`：依序印出 `full_affected`、`area_affected`、`same_area`。`full=True, area=False` 表示干預影響 full、不影響 area；`same area=False` 表示 token15 和 token0 不同區。
-- `after intervention`：干預後 full 變成 0.78125，area 仍是 0.09375，也和手算的值相同。
-- 最後一行 `area-attention backward/step verified`：backward 與 step 成功。
+同樣維持 A，圖的邊長兩倍使 N 四倍，N²/A 仍十六倍。分區調整互動範圍這筆預算，沒有把任意解析度的成本變線性。GPU 的實際時間還受 FlashAttention、dtype、資料排列和程式實作影響；本節只數 pair 和存下的表，不作 GPU benchmark。
 
-本節只用 CPU，不需要 FlashAttention 或 GPU。
+讀取範圍也不等於卷積的局部鄰域。以左上 token0 為例：
 
-## 和 CNN 比較：每層讀得到哪些位置
+| 一層操作 | 真正能直接讀的 token |
+| --- | --- |
+| 3×3 卷積，padding 1 | 0、1、4、5 |
+| area，A=4 | 0、1、2、3 |
+| full | 0～15 |
 
-以 token0 為例，一層能讀到的位置：
+area 可直接選讀同列遠處 token3，卻少掉正下方 token4；3×3 則相反。卷積在結構裡先指定局部鄰域、跨位置共用濾鏡；attention 用內容算比例。疊卷積能擴大感受野，不同分區也會改可讀範圍。這些是資訊路徑的比較，本例沒有訓練 CNN，也沒有支持誰的偵測較準。
 
-- 一層 3×3 卷積（padding=1）：0、1、4、5。會跨到下一條帶，卻讀不到同一列的 token3。
-- A=4 的 area attention：0–3。讀得到整列，卻讀不到正下方的 token4。
-- full attention：全部 16 個。
+## 單層分區的限制，怎麼連回完整 YOLOv12？
 
-CNN 疊多層後，讀得到的範圍（感受野）會逐層擴大。兩者的權重來源也不同：CNN 事先假設只有局部（鄰近）的位置有關，而且各位置共用同一組卷積核，這是訓練前就寫進設計的假設（先驗）；attention 的權重則由當下輸入的 Q、K 算出，輸入不同，權重就不同。兩者在投影、channel 數和深度上的成本也不一樣。
+我們故意拿掉其他跨位置路徑，讓干預只反映分區。官方 `AAttn` 還有對整圖 V 做的位置卷積，會把相鄰列混到輸出；投影後的 BN 在訓練模式用整批、所有位置的統計，別區改動也可能改這區。若把它們留下，token0 改不改就不能只歸因於同區與否。
 
-若要比較偵測上的收益，應該對齊資料、訓練預算和計算預算（計算預算要盡可能定義清楚），再看遠距關係或小物件等失敗類型。本節只單獨檢驗 full 和 area 的差別，沒有訓練 CNN，不比較誰較準。
+完整網路的後續卷積、下採樣也會跨相鄰帶；官方 stride 32 那層還使用 area=1，也就是 full attention。所以本例的「token15 讀不到 token0」只指這一層被隔離的 area 計算，不能說整個 YOLOv12 永遠跨不了區。反過來，若每層都保持同樣分帶、又沒有任何跨帶路徑，單靠 area attention 就傳不過去。
 
-常見錯誤：
+官方論文描述 H/A×W 的橫帶或 H×W/A 的直帶，預設 A=4；固定程式版本把攤平序列依序切段。本例 H=4、W=4 恰好是橫帶。若 H=6、W=4、A=4，每區六個 token，第一區會是首列四格加次列前兩格，不再是一整條長方形。要畫區域時先查順序和 H、W，不能只看到 A=4 就畫四象限。
 
-- **N 不能被 A 整除（例如 N=16、A=3）卻仍然 reshape**：元素數對不上，reshape 會直接報錯。完整程式 `attend` 函式開頭的 `assert areas > 0 and n % areas == 0` 就是在擋這件事。
-- **把 area 當成多 head**：只分 head、不分區時，每個 head 仍讓每個位置讀全圖（每個 head 都有 N² 個 pair）；限制讀得到哪些位置的是分區。
-- **接回時搞混 B 和 B×A**：reshape 後第 0 軸的長度是 B×A，依序是第 0 張圖的 A 區、第 1 張圖的 A 區……。接回時要用原本的 B，寫成 `reshape(B, N, C)`；誤寫成 `reshape(B * areas, N, C)`，元素數對不上，會報錯。
-- **讓 full 和 area 各用一份不同的隨機 QKV 權重**：差異可能來自權重不同，而不是分區。這叫混雜：比較時另有一個因素也不同，差異就無法只歸因於想比較的那一項。所以本節讓兩條路共用同一份 QKV 權重。
-- **以為這一層各區互不相通，就代表整個模型都互不相通**：這樣會只憑單層實驗，就下結論說完整的 YOLOv12 跨區永遠不互動。原版的位置卷積不受分區限制，會把上下相鄰列（別區）的 V 混進來；本節拿掉它，也拿掉 BN，token0 變不變才只取決於分區。後面的卷積、下採樣，以及 stride 32 那層的 full attention，也會讓資訊跨區（見前面〈遠處資訊能不能傳過來〉）。
+執行 `PYTHONPATH=. python lesson_cases/15-area-attention.py`，對照表大小 256／64、原 token0 輸出 0.46875／0.09375、干預後 0.78125／0.09375。程式最後另用 area 輸出對原 tokens 算 MSE，backward 和 SGD 一次，確認 QKV 權重連到 loss；它沒有訓練偵測器，沒有遠距或小物件 AP 結論。
+
+操作時把區域與 head 分清：area 切位置，attention head 切 channel；只加 head、不分區，每組仍有 N² 配對。接回時用原 B，不是 B×A，否則元素數對不上。若要評估偵測收益，還需對齊資料、訓練和計算預算，再看失敗類型與品質，不能以這次表變小代替。
+
+## 選讀：官方部件與其他分區成本
+
+??? note "YOLOv12 為什麼切成長條，不切方塊？"
+
+    論文的理由是速度：不必另外切 window，只要一次 reshape，所以比較快。切成 4 段時，每個位置在這一層能讀的範圍縮成原來的 1/4，論文認為仍然夠大。
+
+??? note "選讀：官方 AAttn 的投影、head 與位置卷積"
+
+    - **多 head（multi-head）**：這裡的 head 是 attention head，不是 [12.2](12-decoupled-head.md) 的偵測 head（把特徵轉成預測的輸出模組）。多 head 把 Q、K、V 的 C 個 channel 分成 M 組，每組各算一張權重表、各自加權，最後把各組的結果接回 C 個 channel。官方 `AAttn` 用 `num_heads` 表示組數，`head_dim` 表示每組的 channel 數。本例只有 1 組、2 個 channel（相當於 `num_heads=1`、`head_dim=C=2`），所以程式沒寫這兩個變數。area 分的是位置，head 分的是 channel，兩者切的是不同的軸。
+    - **位置卷積**：官方對整張 V 特徵圖（還沒攤平、也還沒分區的 V）做的逐 channel 卷積，每個 channel 各用自己的卷積核（論文寫 7×7，頁尾連結的程式版本是 5×5）。它不分區，結果加到 attention 輸出上，用來補位置資訊。
+    - **輸出投影**：attention 之後再接的一層線性轉換（官方用 1×1 卷積，後面同樣接 BN）。
+    - **Q／K、V 投影後的 BN**：官方用兩個 1×1 卷積（`self.qk`、`self.v`）分別算出 Q／K 與 V，每個卷積後接 BN（BatchNorm，批次正規化），不接激勵函數；本節改用一個不帶 BN 的 `nn.Linear` 一次算出 Q、K、V。BN 在訓練模式下會用整批資料（所有位置）的平均與變異數，改動別區的 token 也會影響這一區的輸出，所以本節一併拿掉。
+
+??? note "多 head 延伸（可跳讀）"
+
+    若有 M 個 head，每個 head 的 channel 數 `D=C/M`，Q／K／V 可以寫成 `[B×A,M,N/A,D]`，attention 權重表是 `[B×A,M,N/A,N/A]`，縮放因子是 `√D`。本例 M=1，所以 D=C/1=C，縮放因子 √D 就是程式裡的 √C；大小為 1 的 M 軸省略不寫，所以權重表只有三維 `[B×A,N/A,N/A]`。
+
+??? note "如果改成固定每區的 token 數呢？"
+
+    假設每區固定 S 個 token，讓區域數跟著 N 變：A=N/S。pair 數變成 `A×S²=(N/S)×S²=N×S`，只和 N 成正比。代價是每區只占全圖的 S/N：圖越大，每個位置在這一層能讀到的比例越小。本節和官方程式都是固定 A（area 數在建立模型時就決定，不隨輸入大小改變），所以邊長變兩倍時，pair 數仍變 16 倍。
+
+## 自主練習
 
 自主練習：在完整程式（Colab 裡「本節可修改的完整實驗」下方那格，或本機的 `lesson_cases/15-area-attention.py`）的 `main()` 裡，每題都從原始程式（`areas = 4`、`changed_index = 15`）出發，只改一行。先預測兩個 token 是否同區、token0 輸出是多少，再執行核對。程式裡干預前後的兩次 area 計算、pair 數的 assert 和印出的文字，都讀同一個 `areas` 變數；`changed_index` 也只在 `main()` 開頭設定一次。所以不用改任何 assert，也不要刪掉原本的檢查來讓程式通過。
 
@@ -161,7 +145,7 @@ CNN 疊多層後，讀得到的範圍（感受野）會逐層擴大。兩者的�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/15-area-attention.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/15-area-attention.json)
 
 ??? example "展開本次實際輸出"
 

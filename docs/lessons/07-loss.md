@@ -2,104 +2,97 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-loss.ipynb){ .md-button }
 
-上一節把標註框換成每一格的訓練目標（target）；本節把 target 和模型每格的輸出接起來，算出 loss。讀完你能用紙筆算出三項 loss，以及 objectness（這格有沒有物件）與正格類別 logits 的梯度，也知道沒有物件的圖要怎麼處理。
+上一節已經決定每格的答案。現在要確認：當預測不符合答案，loss 會罰哪些數、又把它們往哪個方向推？只看到一個有限的 total，還不知道背景是否被錯教成紅色，也不知道框的 mask 是否漏用。
 
-前置：[上一節的 targets](07-targets.md)（每格的 box、objectness、class_ids 與 positive 怎麼來）。本節在訓練前用人工設定的 logits 驗證三件事：數值是否吻合、哪些位置收到梯度、空圖的 loss 是否保持有限（box 與 class 為 0）。只看到 total loss 是有限數字（不是無限大，也不是 NaN；NaN 是 0÷0 這類算不出的值），不足以證明 mask 正確。
+先讓每格七個 logits 都為 0，算一個紅框的 loss，再核對反傳梯度。這次直接建立輸出 tensor，不建立模型、不更新參數；讀完能手算三項 loss、objectness 與類別梯度，並解釋整批都是空圖時如何保持 loss 有限。
 
-歷史來源：[YOLOv1 原論文](https://arxiv.org/abs/1506.02640) 用一個 loss 同時學定位與分類。本章的 loss 和原版一樣分成幾項，但改用三種不同的算法，而且都取平均：正格座標的 MSE（均方誤差）、全格 objectness 的 BCE（二元交叉熵）、正格分類的交叉熵（cross entropy，CE）。原版則是每一項都用平方誤差再加總，並乘上兩個權重：座標項乘 λcoord=5；預測框不含物件時，它的 confidence（類似本章的 objectness）項乘 λnoobj=0.5。下面的公式就是本 repo 的 `grid_loss`，不能當成完整的 YOLOv1 loss。
+## 全零輸出，怎樣算出紅框的誤差
 
-??? note "原版 YOLOv1 loss 的其他設計"
+本例只用一張圖（B=1），每邊四格（S=4）、紅藍兩類（C=2）。紅框 `[8,12,24,28]` 仍由 `(b,gy,gx)=(0,1,1)` 負責，box target 是 `[0,.25,.25,.25]`，class id=0。16 格有 1 正、15 負。
 
-    下面三件事，本章都沒有做：
+`prediction` 為 `[1,4,4,7]`，每格依序是 `tx,ty,tw,th,obj,class0,class1`。它們都是原始實數 logits。框四項先經 sigmoid，變成格內 xy、全圖 wh 的比例；obj 經 sigmoid 表達物件分數，兩個類別經 softmax 成為互斥的類別機率。
 
-    - 平方根寬高：原版預測寬、高的平方根，再算誤差，讓小框的同樣誤差在 loss 裡更顯眼。
-    - IoU 當 confidence 目標：原版負責物件的那個框，confidence 的目標是預測框與真值框的 IoU（交集面積除以聯集面積），不是固定的 1。
-    - 多框責任規則：原版每格預測多個框（PASCAL VOC 資料集的設定是 2 個），訓練時只讓和真值框當下 IoU 最高的那個框負責。
-
-    λnoobj 的用意：大多數格子沒有物件，它們的 confidence 都被往 0 推，常常蓋過有物件格子的梯度；原版用 λnoobj=0.5 減弱這一項。本章沒有這個權重，後面〈收益、代價與常見錯誤〉會用本例的數字看這個現象。
-
-    本章框項乘的 5，數值與原版 λcoord 相同。不過本章各項先取平均，原版是加總，同一個 5 在兩邊占的份量不能直接對照。
-
-## 一個紅框，每格七個零 logits
-
-先說明本節的符號：
-
-- B 是 batch 的圖片數、S 是每邊格數、C 是類別數；本例 B=1、S=4、C=2。
-- prediction 是模型的輸出，shape `[B,S,S,5+C]`。每格 5+C=7 個數，依序是 `tx,ty,tw,th,obj,class0,class1`。前四個 tx～th 是模型對框的輸出，不是 target；下面公式裡的 t 才代表 target。本節還沒有模型，用一個全部填 0 的 tensor 代替。
-- logit：還沒經過 sigmoid 或 softmax 的原始實數；prediction 的 7 個數都是 logits。objectness 與類別的 logits 轉換後是機率；框的四個 logits 經 sigmoid 後，是 0 到 1 之間的座標比例。
-- sigmoid 把單一個數轉成 0 到 1 之間；softmax 把幾個類別的數轉成總和為 1 的機率。公式在下面。
-- mask（遮罩）是由 True／False 組成的 tensor，True 的位置才學框與類別。
-- pos 就是 `target['positive']`：shape `[B,S,S]` 的 True／False 表，正格是 True。加總時 True 算 1、False 算 0，所以 `pos.sum()` 就是整批的正格數 Npositive，本例是 1。程式裡的 `pos.any()` 則是問「有沒有任何一格是 True」。
-
-| 欄位 | 原 shape | 正格 mask 後 |
-| --- | --- | --- |
-| prediction | `[B,S,S,5+C]` | 框 `[Npositive,4]`、類別 `[Npositive,C]` |
-| positive | `[B,S,S]` bool | 它就是 mask；本例只有位置 (b,gy,gx)=(0,1,1) 為 True，所以 Npositive=1 |
-| box | `[B,S,S,4]` float | `[Npositive,4]` |
-| objectness | `[B,S,S]` float | 不取 mask，全格計算 |
-| class_ids | `[B,S,S]` long | `[Npositive]` |
-
-本例實際的 shape：prediction `[1,4,4,7]` 用 mask 取出後，框是 `[1,4]`、類別是 `[1,2]`；class_ids 取出後是 `[1]`。
-
-### 三項 loss 的公式
-
-loss 分三項，各教一件事：box 教正格的框在哪裡，objectness 教每一格有沒有物件，classification 教正格是哪一類。先寫出會用到的函式，z 代表一個 logit：
-
-- sigmoid：\(\sigma(z)=\dfrac{1}{1+e^{-z}}\)。例如 \(\sigma(0)=\dfrac{1}{1+1}=0.5\)。
-- softmax：C 個類別 logits 記作 \(z_0,\dots,z_{C-1}\)，下標就是類別編號，和第 1 章一樣從 0 起算；本例 \(z_0\)、\(z_1\) 依序是 `class0`、`class1`。類別 k 的機率是 \(\dfrac{e^{z_k}}{\sum_j e^{z_j}}\)，C 個機率加起來是 1。兩類都是 0 時，各是 \(\dfrac{e^0}{e^0+e^0}=0.5\)。
-- 交叉熵（CE）：單格的 CE 是 \(-\ln p\)，p 是 softmax 後「正確類別」的機率。\(-\ln p\) 在 p=1 時是 0，p 越小就越大：給正確答案的機率越低，罰得越重。
-- 二元交叉熵（BCE）：單格的 BCE 記作 \(\mathrm{BCE}(z,t)=-\bigl[t\ln p+(1-t)\ln(1-p)\bigr]\)。z 是這一格的 objectness logit，\(p=\sigma(z)\)，t 是目標 0 或 1。t=1 時只剩 \(-\ln p\)，t=0 時只剩 \(-\ln(1-p)\)。
-
-ln 是以 e≈2.71828 為底的自然對數；PyTorch 的 log 與 Python 的 `math.log` 也都是它。計算機的 log 鍵通常以 10 為底，用它算 −log 0.5 會得到 0.30103，不是 0.693147。
-
-三項 loss 與總和寫成一般式：
+sigmoid 定義為 \(\sigma(z)=1/(1+e^{-z})\)，所以零輸出變成 0.5。兩類 softmax 則為 \(p_k=e^{z_k}/\sum_j e^{z_j}\)，兩個零 logits 各得到 0.5。這已足夠算第一項：
 
 \[
-L_{\text{box}}=\frac{1}{4N_{\text{pos}}}\sum_{i\in P}\sum_{k=1}^{4}\bigl(\sigma(z_{i,k})-t_{i,k}\bigr)^2
+L_{\text{box}}=\frac{(.5-0)^2+(.5-.25)^2+(.5-.25)^2+(.5-.25)^2}{4}=.109375
 \]
+
+這是均方誤差（MSE）：只取正格，把四個座標誤差平方後平均。數字是無單位的比例，並非 pixel 的平方；負格沒有正確框，所以不拿它的占位值來算。
+
+## 「有沒有物件」與「是哪一類」分開教
+
+objectness 是每格各自的二選一答案，因此使用二元交叉熵（binary cross entropy，BCE）。一格的目標 t 是 0 或 1，預測 \(p=\sigma(z)\)：
 
 \[
-L_{\text{obj}}=\frac{1}{B\cdot S\cdot S}\sum_{i=1}^{B\cdot S\cdot S}\mathrm{BCE}\bigl(z^{\text{obj}}_i,\,o_i\bigr)
+\mathrm{BCE}(z,t)=-[t\ln p+(1-t)\ln(1-p)]
 \]
+
+正格 t=1，罰的是 \(-\ln p\)；負格 t=0，罰的是 \(-\ln(1-p)\)。給正確答案的機率越小，罰得越多。零 logit 的 p=0.5，兩種答案都得到 \(\ln2\approx.693147\)。所以 1 正、15 負全部平均，objectness loss 仍為 .693147。
+
+類別則只在正格回答「紅或藍」。交叉熵（cross entropy，CE）取正確類別的 softmax 機率 p，算 \(-\ln p\)。紅類 p=0.5，這一個正格的 classification loss 也是 .693147。背景不算第三類，也不讀負格 class_ids 的預設 0。
+
+這裡 ln 是以 e≈2.71828 為底的自然對數，PyTorch 的 log、Python 的 `math.log` 都用它。計算機若用以 10 為底的 log，−log(0.5) 得 .30103，無法核對本節的 .693147。
+
+本 repo 固定用 `total=5×box+objectness+classification`，代入為：
 
 \[
-L_{\text{cls}}=\frac{1}{N_{\text{pos}}}\sum_{i\in P}\bigl(-\ln p_{i,c_i}\bigr)
+L=5\times.109375+.693147+.693147=1.933169
 \]
 
-\[
-L=5L_{\text{box}}+L_{\text{obj}}+L_{\text{cls}}
-\]
+三項雖然都無單位，量尺與平均方式不同。框乘 5，是調整它在總目標中的份量；本例框約 .109，另兩項約 .693。這個 5 是固定示範設定，沒有搜尋最佳值，而且 loss 數值占比不等於梯度占比。
 
-其中：
+## 平均的分母到底是什麼
 
-- P 是正格的集合，\(N_{\text{pos}}\) 是正格數，就是上面的 Npositive。
-- 整批共 \(B\cdot S\cdot S\) 格，編號 \(i=1,\dots,B\cdot S\cdot S\)。
-- 正格 i 的四個框 logits 是 \(z_{i,1},\dots,z_{i,4}\)，框 target 是 \(t_{i,1},\dots,t_{i,4}\)。
-- 第 i 格的 objectness logit 是 \(z^{\text{obj}}_i\)，目標是 \(o_i\)（0 或 1）。
-- 正格 i 的正確類別編號是 \(c_i\)（0 到 C−1）；\(p_{i,c_i}\) 是這一類在 softmax 後的機率。
+`pos=target['positive']` 是 `[B,S,S]` 的 True／False mask，`pos.sum()` 是正格數 \(N_{\text{pos}}\)（程式解說也寫作 Npositive），`pos.any()` 問有沒有任何正格。本例框被 mask 選成 `[1,4]`、類別為 `[1,2]`，類別答案是 `[1]`；objectness 仍為 `[1,4,4]`，全格保留。
 
-沒有正格（\(N_{\text{pos}}=0\)）時，程式直接令 \(L_{\text{box}}\) 與 \(L_{\text{cls}}\) 為 0，原因見後面〈空圖〉。本例代入 B=1、S=4、\(N_{\text{pos}}=1\)。
+手機上可左右滑動表格，查看完整欄位。
 
-### 代入本例：每一項都能手算
+| loss | 哪些項目進平均 | 分母 | 本例 |
+| --- | --- | --- | --- |
+| box | 每個正格的四個框座標 | \(4N_{\text{pos}}\) | 4 |
+| objectness | 每張圖的全部格子 | \(B S S\) | 16 |
+| classification | 每個正格的一個 CE | \(N_{\text{pos}}\) | 1 |
 
-沿用上一節的紅框 `[8,12,24,28]`，類別 0（紅色）。原框順序是 pixel xyxy，中心 `(16,20)`、寬高 `(16,16)`。每格 `64/4=16` pixel，中心落在 (gy=1,gx=1) 這一格，它就是唯一的正格。格內偏移 x=16/16−1=0（減掉格索引 gx=1），y=20/16−1=0.25（減掉格索引 gy=1）；wh 都是 16/64=0.25。所以這格的框 target 是 `[0,.25,.25,.25]`，class=0。四個 target 都沒有單位：前兩項相對格子，後兩項相對全圖。
+這三個分母不能互換。複製圖片，或加入空圖，可能改變不同項目的分母；頁尾練習會用這個差別預測梯度。
 
-再把整個 `[1,4,4,7]` prediction 填 0。代入上面的定義：sigmoid(0)=0.5；兩個類別 logit 都是 0，softmax 後各是 0.5。
+`reduction='mean'` 是加總再除以個數，`'sum'` 則只加總。sum 會讓圖片／物件數的改變直接改變共享 CNN 權重收到的總梯度；mean 對完全相同的批次複製可抵消這個變化。每個輸出 logit 的梯度與共享權重的總梯度仍不同，下面會分開說明。
 
-1. 框 loss 只取正格，平均它四個座標的平方誤差。四個預測經 sigmoid 都是 0.5，target 是 [0, 0.25, 0.25, 0.25]，誤差（預測減 target）依序是 0.5、0.25、0.25、0.25。平方和是 0.25+3×0.0625=0.4375，除以 4 得 0.109375，也就是 `(.5²+.25²+.25²+.25²)/4=.109375`。座標已正規化（normalized：換算成沒有單位的比例），算的不是 pixel 的平方。
-2. objectness loss 用全部 16 格：1 正、15 負。p=σ(0)=0.5，正格取 \(-\ln 0.5\)，負格取 \(-\ln(1-0.5)\)，兩者相等，都是 \(\ln 2\approx0.693147\)；16 格平均因而仍是 0.693147。
-3. 類別 loss 只取正格：正確類別（類別 0）的機率是 0.5，所以 CE 是 \(-\ln 0.5=\ln 2\approx0.693147\)。負格不計類別 loss。
-4. 本章固定 `total=5×box+objectness+classification`，所以 total=5×0.109375+0.693147+0.693147=1.933169。為什麼框要乘權重？三項的量尺不同，直接相加可能讓某一項作用太弱：本例 box 只有 0.109，另兩項約 0.693（第 4 章也遇過同樣的問題；那裡也提醒過，數值的占比不等於梯度的占比）。5 是本章固定的示範設定，不是搜尋出來的最佳值；loss 本身也不會替你找出最好的權重。
+座標的尺度也不能任意換掉。同樣差 16 pixel，以 pixel 算平方是 256；wh 除全圖 64 後是 `(16/64)²=.0625`，小 4096 倍；xy 除格寬 16 後是 1，小 256 倍。若換回 pixel 的 MSE，框項的權重需要重新決定。
 
-三項都沒有單位，但取平均的分母不同：box 對 `Npositive×4` 個數取平均（每個正格 4 個座標），class 對 `Npositive` 個、objectness 對 `B×S×S` 個；本例依序是 4、1、16。
+??? note "一般式：把同一規則寫給任意 batch"
 
-程式裡的 `reduction` 參數決定怎麼把逐項的 loss 合成一個數：`reduction='mean'` 是相加後除以個數，`reduction='sum'` 只相加。若改成 sum，batch 的圖片數或物件數一改變，共享 CNN 權重收到的總梯度就會跟著改變。「共享」是說所有格子的 logits 都由同一組 CNN 權重算出。注意這裡說的是權重收到的總梯度，不是每個 logit 的梯度；兩者的差別見〈自主練習〉的練習 1。
+    三項 loss 與總和寫成一般式：
 
-若把框改用 pixel 座標，loss 的大小會差很多。同樣是 16 pixel 的誤差：用 pixel 算，平方是 256；wh 以全圖 64 pixel 正規化，是 (16/64)²=0.0625，差 4096 倍；xy 以格寬 16 pixel 正規化，是 (16/16)²=1，差 256 倍。改用 pixel 後，box 項通常會壓過另兩項，權重 5 必須重新決定。
+    \[
+    L_{\text{box}}=\frac{1}{4N_{\text{pos}}}\sum_{i\in P}\sum_{k=1}^{4}\bigl(\sigma(z_{i,k})-t_{i,k}\bigr)^2
+    \]
 
-### 對應的程式
+    \[
+    L_{\text{obj}}=\frac{1}{B\cdot S\cdot S}\sum_{i=1}^{B\cdot S\cdot S}\mathrm{BCE}\bigl(z^{\text{obj}}_i,\,o_i\bigr)
+    \]
 
-下面是本 repo `grid_loss`（在 `miniyolo/losses.py`）的簡化版，省略了檢查輸入的部分。完整程式直接呼叫 `grid_loss(prediction, target)`。
+    \[
+    L_{\text{cls}}=\frac{1}{N_{\text{pos}}}\sum_{i\in P}\bigl(-\ln p_{i,c_i}\bigr)
+    \]
+
+    \[
+    L=5L_{\text{box}}+L_{\text{obj}}+L_{\text{cls}}
+    \]
+
+    其中：
+
+    - P 是正格的集合，\(N_{\text{pos}}\) 是正格數，就是上面的 Npositive。
+    - 整批共 \(B\cdot S\cdot S\) 格，編號 \(i=1,\dots,B\cdot S\cdot S\)。
+    - 正格 i 的四個框 logits 是 \(z_{i,1},\dots,z_{i,4}\)，框 target 是 \(t_{i,1},\dots,t_{i,4}\)。
+    - 第 i 格的 objectness logit 是 \(z^{\text{obj}}_i\)，目標是 \(o_i\)（0 或 1）。
+    - 正格 i 的正確類別編號是 \(c_i\)（0 到 C−1）；\(p_{i,c_i}\) 是這一類在 softmax 後的機率。
+
+    沒有正格（\(N_{\text{pos}}=0\)）時，程式直接令 \(L_{\text{box}}\) 與 \(L_{\text{cls}}\) 為 0，原因見正文的全空圖分支。本例代入 B=1、S=4、\(N_{\text{pos}}=1\)。
+
+## 把這個分工寫成程式
+
+以下為 `miniyolo/losses.py` 的 `grid_loss` 簡化版，省略輸入檢查。完整 lesson case 直接呼叫 `grid_loss(prediction,target)`：
 
 ```python
 import torch.nn.functional as F
@@ -111,7 +104,7 @@ if pos.any():  # 至少有一個正格嗎？
                      target['box'][pos], reduction='mean')
     cls = F.cross_entropy(pred[..., 5:][pos],
                           target['class_ids'][pos], reduction='mean')
-else:  # 沒有正格（空圖），見下面〈空圖〉
+else:  # 沒有正格（空圖），見下方全空圖分支
     box = (pred[..., :4] * 0).sum()
     cls = (pred[..., 5:] * 0).sum()
 obj = F.binary_cross_entropy_with_logits(pred[..., 4],
@@ -119,25 +112,25 @@ obj = F.binary_cross_entropy_with_logits(pred[..., 4],
 total = 5 * box + obj + cls
 ```
 
-`build_targets([scene], 4, 64, 2)` 是上一節的函式，後三個參數依序是每邊格數 S、圖片邊長（pixel）、類別數 C。程式裡的索引這樣讀：
 
-- `pred[..., :4]`：`...` 表示前面的軸（b、gy、gx）全部照拿，`:4` 只在最後一軸取通道 0–3（框），本例 shape 是 `[1,4,4,4]`。同理，`pred[..., 4]` 取通道 4（objectness），`pred[..., 5:]` 取通道 5 以後（類別）。
-- `[pos]`：pos 是 `[1,4,4]` 的 True／False 表，只有 (0,1,1) 為 True。拿它當索引叫布林索引（Boolean indexing）：前三軸會併成一軸，只留下 True 的那幾格。所以 `pred[..., :4].sigmoid()[pos]` 是 `[1,4]`，一般是 `[Npositive,4]`。結果仍是 tensor，不是 Python 的 list。
-- `target['box'][pos]` 用同一個 pos，也是 `[1,4]`，兩邊的第 i 列對應同一格。
 
-為什麼框要自己先 sigmoid，另兩項卻直接給 logits？`mse_loss` 只做相減、平方、平均，不會替你轉換，所以框要先 sigmoid 成 0 到 1 之間，才能和 target 比。`binary_cross_entropy_with_logits` 名字裡的 with logits，表示它接收 logits、內部自己做 sigmoid；`cross_entropy` 內部會自己做 softmax（第 1 章提過）。所以這兩項都直接給 logits；先轉一次再傳進去，就等於轉了兩次。
+`pred[..., :4]` 保留 `(b,gy,gx)` 三軸，只取框四項；同一個 `[pos]` 把預測與答案都選成 `[Npositive,4]`，第 i 列對應同一格。類別同樣只選正格，objectness 則不選。
 
-## 梯度讓數字成為方向
+MSE 只相減、平方、平均，因此框要自己先 sigmoid。BCE 的函式名含 `with_logits`，表示直接接 logits，內部完成對應的 sigmoid 計算；`cross_entropy` 也直接接類別 logits，內部用數值穩定的 log-softmax 計算 CE。這兩項不用先手動轉成機率，否則會多轉一次。
 
-完整程式建立 prediction 時寫的是 `torch.zeros(1, 4, 4, 7, requires_grad=True)`。prediction 不是模型參數，設了 `requires_grad=True`，PyTorch 才會替它記錄梯度（第 3 章對輸入 x 做過同樣的事）。對 total 呼叫 `backward()` 之後，`prediction.grad` 的每個數，就是 total 對那個 logit 的偏導數：那個 logit 稍微變大時，total 怎麼變。
+## 一個 loss，如何檢查推動方向
 
-BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本例分母才是 16（1×4×4）。因此正格為 `-.03125`，背景為 `+.03125`。total 裡的 5 只乘在 box 上，objectness 的係數是 1，所以這裡不必乘 5。
+完整程式建立 `torch.zeros(1,4,4,7,requires_grad=True)`，讓 PyTorch 記錄這個人工輸出的梯度。對 total 呼叫 `backward()` 後，`prediction.grad` 表示：某個 logit 稍微增大，total 會如何改變。
 
-不會微分也能驗算。把正格的 objectness logit z 從 0 改成 0.001，這一格的 BCE 由 0.693147 變成 0.692647，少了 0.0005；除以 0.001，斜率約 −0.5，正好是 sigmoid(0)−1=0.5−1。objectness 是 16 格的平均，所以 total 的斜率還要除以 16：−0.5/16=−0.03125。背景格同理：BCE 由 0.693147 變成 0.693647，斜率約 +0.5=sigmoid(0)−0，除以 16 得 +0.03125。
+BCE 的 objectness 梯度為 `(sigmoid(z)−target)/(B×S×S)`。本例分母 16，所以正格 `(0.5−1)/16=−.03125`，負格 `(0.5−0)/16=+.03125`。total 的 5 只乘框，這裡不乘 5。
+
+可以不微分，改用小變化核對。正格 z 從 0 增至 .001，單格 BCE 約由 .693147 降到 .692647，變化除以 .001 得斜率約 −.5；再除 16 得 −.03125。負格 BCE 約升至 .693647，斜率則為 +.5/16=+.03125。
 
 ??? note "推導：為什麼分子是 sigmoid 減 target"
 
     只看一格。令 \(p=\sigma(z)\)，單格 BCE 是 \(\ell(z)=-\bigl[t\ln p+(1-t)\ln(1-p)\bigr]\)。
+
+    本段另外用兩條微分規則。若 u 是 z 的函數，記 \(u'=du/dz\)：\(e^u\) 對 z 的導數是 \(e^u u'\)；\(1/u\) 的導數是 \(-u'/u^2\)（u 不為 0）。
 
     第一步，求 sigmoid 的導數。把 \(\sigma(z)=(1+e^{-z})^{-1}\) 用連鎖律（chain rule）微分：
 
@@ -161,9 +154,10 @@ BCE 對 objectness logit 的梯度是 `(sigmoid(logit)-target)/(B×S×S)`，本�
 
     也就是 sigmoid(z) 減 target。objectness loss 是 B×S×S 格的平均；每個 objectness logit 只出現在自己那一格的 BCE 裡，box 與 class 也不含它，所以 total 對它的梯度是 \((p-t)/(B\cdot S\cdot S)\)。本例 p=0.5：正格 (0.5−1)/16=−0.03125，背景 (0.5−0)/16=+0.03125。
 
-類別 logits 的梯度也能手算。CE 對正格類別 logits 的梯度是 `(softmax - one-hot) / Npositive`。one-hot 是「正確類別記 1、其他類別都記 0」的向量；本例正確類別是 0，one-hot 就是 [1, 0]。代入本例：softmax 是 [0.5, 0.5]、Npositive=1，梯度是 [0.5−1, 0.5−0]/1=[−0.5, 0.5]。classification 在 total 裡的係數也是 1，不必乘 5；分母是正格數 1，不是 objectness 的 16。完整程式用斷言（assert）核對這個值，並印在輸出的 `positive-cell class gradients [-0.5, 0.5]` 那一行。
 
-class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母把兩個類別 logits 綁在一起，class1 的 logit 變大，class0 的機率就變小，CE 跟著變大。數值驗算和上面一樣：把 class0 的 logit 從 0 改成 0.001，CE 由 0.693147 變成 0.692647，斜率約 −0.5；只把 class1 改成 0.001，CE 變成 0.693647，斜率約 +0.5。類別 loss 只平均 1 個正格，所以這也就是 total 的斜率。
+類別梯度為 `(softmax−one-hot)/Npositive`。one-hot 把正確類別記為 1、其他類別記為 0；紅類答案是 `[1,0]`，所以梯度為 `[.5−1,.5−0]/1=[−.5,+.5]`。classification 的係數也是 1，分母是正格數 1，而非 16。
+
+class1 不是答案，仍收到正梯度：softmax 分母連結兩類，class1 增大會降低紅類機率，使 CE 增大。單獨將 class0 改成 .001，CE 約降到 .692647；單獨將 class1 改成 .001，則約升到 .693647，斜率正好為 −.5、+.5。
 
 ??? note "推導：為什麼類別梯度是 softmax 減 one-hot"
 
@@ -186,38 +180,30 @@ class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母
 
     class loss 是 \(N_{\text{pos}}\) 個正格 CE 的平均；每個正格的類別 logits 只出現在自己那一格的 CE 裡，box 與 objectness 也不含它們，所以 total 對它們的梯度是 \((p_k-y_k)/N_{\text{pos}}\)。本例 \(p=[0.5,0.5]\)、\(y=[1,0]\)、\(N_{\text{pos}}=1\)：class0 是 −0.5，class1 是 +0.5。
 
-梯度的正負號指出方向。假如把某個 logit 本身當成變數，走一步梯度下降 \(z_{\text{new}}=z-\eta g\)（η 是學習率，g 是梯度）：梯度是負的，z 會變大；梯度是正的，z 會變小。所以正格的 objectness logit 會變大、背景的會變小；正格的兩個類別 logits 裡，正確類別 class0 會變大，class1 會變小。本節只從梯度的正負看方向，沒有真的做這一步更新。
 
-真正訓練時，optimizer 改的是 CNN 權重，logit 跟著權重間接改變。權重收到的梯度，是把每個 logit 的梯度各乘上「這個 logit 對權重的變化率」，再全部加起來。所以「每個 logit 的梯度」和「權重收到的總梯度」是兩回事，〈自主練習〉的練習 1 會用數字比較。
+若直接更新 logit，梯度下降 `z_new=z−ηg` 會把負梯度的 z 調大、正梯度的 z 調小。因此正格 objectness 與紅類 logit 應上升，負格 objectness 與正格藍類 logit 應下降。本節只檢查方向，不做這個更新。
 
-負格的四個框梯度與兩個類別梯度都必須是 0，完整程式也用斷言檢查。若負格的框梯度不為 0，表示背景正在學某個無意義的框；若類別梯度不為 0，表示背景正被教成某一類。
+真正訓練會更新 CNN 權重。每個 logit 的梯度還要乘上它對權重的變化率，再把所有帶方向的貢獻加總。不能把所有 logit 梯度直接當作某個權重梯度。本例負格 objectness 的梯度量合計 `15×.03125=.46875`，比單一正格 .03125 多，說明背景監督很多，模型可能先學到處說沒有物件；權重如何變，還要看特徵與共享關係。
 
-## 空圖：沒有正格時
+框與類別的負格梯度則必須全為 0，因為 mask 沒把它們送進 loss。若不為 0，背景正被教某個無意義框或類別。這也是有限 total 之外必須檢查的事情。
 
-問題：空圖沒有任何框，pos 的 16 格全是 False。這時 `pred[..., :4].sigmoid()[pos]` 的 shape 是 `[0,4]`，一個數也沒有。對 0 個數取平均，等於 0 除以 0，PyTorch 會得到 NaN（Not a Number）。
+## 整批都是空圖，還有什麼可學
 
-後果：box 和 class 都變成 NaN。NaN 和任何數運算，結果仍是 NaN，所以 total 也是 NaN。本 repo 的訓練程式（`miniyolo/train.py`）遇到不是有限數字的 loss，會直接報錯停下。也不能靠刪掉空圖解決：空圖提供「這裡沒有物件」的背景監督，16 格都要學 objectness=0（見〈[Grid MiniYOLO 資料](07-data.md)〉）。
+有空圖但批次中仍有正格時，框／類別平均照常進行。若整批沒有正格，mask 後是 `[0,4]` 與 `[0,C]`，對零個數取平均會得到 NaN（Not a Number，無法表示有效數值），total 也跟著壞掉。`miniyolo/train.py` 會拒絕非有限 loss。
 
-解法：程式先用 `pos.any()` 問有沒有正格；沒有就走 else，令 box 與 class 為「先乘 0、再加總」的結果。scalar 是 shape `[]` 的單值 tensor；這樣得到的就是一個值為 0 的 scalar，它對 prediction 的梯度也是 0。objectness 照常對 16 格取平均，仍是 0.693147，所以空圖的 total 是 0.693147。這個分支讓全背景 batch 的 loss 保持有限。
+不能刪空圖來迴避，因為它仍有全部格子的 objectness=0 答案。程式用 `pos.any()` 分支：無正格時，框／類別改為 `(pred*0).sum()`，得到值為 0 的單值 tensor（scalar，shape `[]`），梯度也為 0。objectness 仍對 16 格平均，零 logits 時 total=.693147。
 
-為什麼要乘 0 再加總，不直接寫常數 0？這個 0 是由 prediction 算出來的，仍連在計算圖上（計算圖：PyTorch 記下「誰由誰算出」的紀錄，backward 沿著它往回算梯度），所以就算單獨對它 backward 也不會報錯。常數 0 和 prediction 沒有關係，單獨對它 backward 會報錯。如果只對 total backward，兩種寫法得到的梯度相同。
+乘 0 再加總，讓零值仍連在計算圖上；計算圖是 PyTorch 保存誰由誰算出的關係，backward 沿它回傳梯度。這樣即使單獨對框零值 backward 也能執行，常數 0 則沒有這個關係。若只對 total backward，兩者給相同梯度。
 
-## 執行與核對
+## 執行，分別核對值、方向與空圖
 
-用頁首的按鈕在 Colab 執行，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-loss.py`。輸出有四行，依序核對：
+在 Colab 執行頁首 notebook，或在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/07-loss.py`。四行結果依序核對：box .109375、objectness .693147、classification .693147、total 1.933169；正／負格 objectness 梯度 −.03125／+.03125；正格類別梯度 `[−.5,.5]`；最後 `empty image: finite backward, box/class=0`。
 
-- 四項 loss：`box .109375 / objectness .693147 / classification .693147 / total 1.933169`。
-- 正格與背景的 objectness 梯度：`-.03125/.03125`。
-- 正格的類別梯度（class0、class1）：`[-0.5, 0.5]`。
-- 空圖：通過 backward 的檢查，loss 有限，box 與 class 剛好是 0。輸出最後一行 `empty image: finite backward, box/class=0`，表示這部分的斷言都通過了。
+空圖不能只查 backward 成功、梯度有限：少了分支時，空平均的梯度仍可能有限，壞的是 loss 值。程式還要求 box／class 恰為 0、total 約 .693147。這次沒有訓練，也沒有 AP 效果結果。
 
-只看「backward 成功、梯度有限」，分辨不出有沒有空圖分支：沒有分支時，梯度其實仍是有限的，壞掉的是 loss 值。真正分得出來的是 box 與 class 等於 0、total 約 0.693147。
+MSE 方便逐座標核對，代價是沒有直接衡量框的重疊程度；背景格很多也讓「降低 loss」可能先由背景完成。先核對資料、mask 與梯度，再考慮 loss 權重。第 11 章會另研究 IoU 類定位 loss。
 
-這個實驗只用人工設定的數字檢查 loss 與梯度的計算，沒有訓練模型，所以沒有 AP（第 6 章的偵測評估分數）結果。
-
-## 收益、代價與常見錯誤
-
-收益是每一項監督和梯度方向都能被驗證。代價有兩個。第一，MSE 只比四個數各差多少，沒有直接衡量預測框和真值框重疊得好不好。第二，物件很少的圖裡，背景格遠多於正格。本例 16 格只有 1 格有物件：背景的 objectness 梯度加起來是 15×0.03125=0.46875，正格只有 0.03125。這是 **15 個輸出 logits 的梯度量合計**，不是直接把它當成某個 CNN 權重的梯度；權重的更新還要乘上各格輸出對它的變化率，再把帶方向的貢獻相加。它提醒我們背景監督很多，模型可能先學會到處說沒有物件。不要在尚未確認資料與 mask 時先調權重。第 11 章才單獨研究定位 loss，看 IoU 類 loss（用兩框重疊程度算的 loss）改了什麼。
+## 有限 loss 也可能算錯
 
 常見錯誤分兩類。第一類不會報錯，得到的是看似正常的有限 loss，要拿手算的 loss 與梯度來核對才會發現。本節完整程式的斷言做的就是這種核對，下面三種錯，每一種都會讓其中一個斷言失敗：
 
@@ -228,7 +214,24 @@ class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母
 第二類會報錯，或得到 NaN：
 
 - 若像第 5 章那樣把負格的 class_ids 填 −1，再送進 CE，會報錯。
-- 沒有正格時照樣取平均，會得到 NaN（見上面〈空圖〉），完整程式檢查空圖 box 與 class 都是 0 的斷言會失敗。
+- 沒有正格時照樣取平均，會得到 NaN（見上面的全空圖分支），完整程式檢查空圖 box 與 class 都是 0 的斷言會失敗。
+
+
+## 這套 loss 與 YOLOv1 的關係
+
+[YOLOv1 原論文](https://arxiv.org/abs/1506.02640) 也讓定位與分類一起學，但原版各項使用平方誤差再加總，座標乘 λcoord=5，無物件 confidence 項乘 λnoobj=.5。本章則是平均後的 MSE、BCE、CE；同一個 5 不能直接比較份量，也不能把本頁當成完整原版 loss。
+
+??? note "原版 YOLOv1 loss 的其他設計"
+
+    下面三件事，本章都沒有做：
+
+    - 平方根寬高：原版預測寬、高的平方根，再算誤差，讓小框的同樣誤差在 loss 裡更顯眼。
+    - IoU 當 confidence 目標：原版負責物件的那個框，confidence 的目標是預測框與真值框的 IoU（交集面積除以聯集面積），不是固定的 1。
+    - 多框責任規則：原版每格預測多個框（PASCAL VOC 資料集的設定是 2 個），訓練時只讓和真值框當下 IoU 最高的那個框負責。
+
+    λnoobj 的用意：大多數格子沒有物件，它們的 confidence 都被往 0 推，常常蓋過有物件格子的梯度；原版用 λnoobj=0.5 減弱這一項。本章沒有這個權重，本頁的背景梯度合計會用數字呈現這個現象。
+
+    本章框項乘的 5，數值與原版 λcoord 相同。不過本章各項先取平均，原版是加總，同一個 5 在兩邊占的份量不能直接對照。
 
 ## 自主練習
 
@@ -304,7 +307,7 @@ class1 不是正確類別，梯度卻不是 0，而是正的：softmax 的分母
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-loss.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-loss.json)
 
 ??? example "展開本次實際輸出"
 

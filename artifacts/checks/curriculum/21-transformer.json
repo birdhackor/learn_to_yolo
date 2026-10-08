@@ -1,7 +1,7 @@
 {
   "id": "21-transformer",
   "passed": true,
-  "executed_at_utc": "2026-10-06T05:18:19.422199+00:00",
+  "executed_at_utc": "2026-10-08T05:14:08.048998+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -29,7 +29,7 @@
     "miniyolo/vision_data.py": "92b1cc3885a0b897eba2a24ac1cd604c55b5ea903a1886904e64b9364c67dde1",
     "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
   },
-  "process_wall_seconds": 1.2204,
+  "process_wall_seconds": 1.2436,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "{\"event\": \"transformer\", \"block_count\": 2, \"input_tokens_shape\": [1, 17, 32], \"pre_ln\": true, \"first_attention_update_norm\": 0.18654008209705353, \"first_mlp_update_norm\": 0.2148894965648651, \"manual_residual_matches_block\": true, \"cls_feature_shape\": [1, 32], \"patch_feature_shape\": [1, 16, 32], \"logit_shape\": [1, 2], \"permutation\": [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], \"without_position_equivariance_max_error\": 3.5762786865234375e-07, \"with_fixed_position_cls_max_change\": 0.03043721616268158, \"parameters\": 23970, \"limitation\": \"Untrained mechanism check; changed CLS values do not show successful color classification.\"}\n",
   "stderr": "",

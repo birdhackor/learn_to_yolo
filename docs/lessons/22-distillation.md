@@ -1,82 +1,78 @@
-# 22.3 Teacher 怎麼提供答案，又不跟著 student 一起塌縮？
+# 22.3 DINO 的一步：誰提供目標，誰接受更新？
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-distillation.ipynb){ .md-button }
 
-[上一節](22-collapse.md)看到，一致的常數回答也能把簡單 loss 降到 0。現在仍用同一張矩形的兩個 view，讓一個模型讀 view 1，提供另一個模型讀 view 2 時要接近的分佈。本節要回答：**DINO 的答案怎麼產生、誰會被梯度更新，以及這些更新怎麼分開？**
+[上一節](22-collapse.md)看到，常數回答也能滿足同圖一致。我們仍想利用同圖兩個 view，但要安排好「目標怎麼形成」與「哪一邊向目標移動」。**DINO 怎麼把這兩種工作分開，又處理輸出太平均或長期只偏向一槽的傾向？**
 
-## 兩份 ViT，先從相同權重開始
+## 先把圖片表示變成訓練用分佈
 
-材料仍是 [22.1 節](22-views.md)的 32×32 RGB 矩形及兩個 view。準備結構相同、初始權重相同的兩份 ViT：student（學生）由 optimizer 更新；teacher（教師）提供學習目標，之後只追蹤 student 權重的移動平均。teacher 不是另外訓練好、已經知道紅藍答案的模型。
+準備兩份結構、初始權重相同的 ViT，重新從隨機權重開始：**student（學生）**由 optimizer 更新；**teacher（教師）**給本步目標，步末才緩慢追蹤 student。teacher 不是預先學會紅藍分類的模型。
 
-每份 ViT 都先得到 32 維 CLS 特徵；這是前文用來彙整圖片資訊的向量。現在用 **projection head（投影頭）**取代原紅藍分類頭的用途，把特徵變成 K 個原始分數，記作 logits `z`。本例是 `Linear(32,64)` → GELU → `Linear(64,16)`，把得到的 16 維向量除以自己的長度，再用無 bias 的 `Linear(16,16)` 產生 K=16 個分數；原分類頭仍保存在 backbone，但凍結且不使用。
+兩份模型各先得到 32 維 CLS，再接 **projection head（投影頭）**產生 K 個 logits。投影頭是用來將特徵轉成自監督訓練輸出的可學層。本例先 `Linear(32,64)` → GELU → `Linear(64,16)`，再將 16 維向量除以自己的長度，最後用無 bias 的 `Linear(16,16)` 得到 K=16 個分數。backbone 原有的紅藍分類頭仍保存在模型中，但凍結且不使用。
 
-softmax 把 K 個分數轉成加總為 1 的分佈。K 是投影頭輸出長度，**這 K 個槽沒有事先命名的紅、藍類別**；不能對第 0 槽直接說「這是紅色」。紅藍答案在此不進 loss。
+softmax 會把分數轉成比例總和為 1 的分佈。**這 16 槽沒有預先命名為紅或藍**；第 0 槽不是類別 0，不能拿其 `argmax` 當顏色答案。它們先服務跨 view 的學習，完成訓練後再取 backbone 特徵給下游任務。
 
 ![一個 DINO 更新步驟：舊中心產生固定 teacher 目標，student 走梯度，center 和 teacher 各走自己的 EMA](../assets/diagrams/22-distillation.svg)
 
-先看圖中實線的前向路徑，再按 1、2、3、4追蹤更新次序。「停止梯度」表示目標只供比較，loss 不會沿這條路改 teacher。橘色箭頭更新 teacher 的參數，綠色箭頭更新輸出中心；兩條箭頭不改同一個量。
+沿圖中前向實線看兩份 view 的目標與回答，再看更新箭頭：student 走梯度；teacher 參數與 center 是兩個不同狀態，各有自己的更新。下面逐一拆開。
 
-## 先用舊 center 和兩個溫度，算出這一步的答案
+## 這一步的 teacher 目標，先減中心再調溫度
 
-teacher 對一個 view 輸出 logits `z_t`。我們為 K 個槽各保留一個 center 值 `c`，先減掉**這一步開始前的 center**，再除以 teacher 溫度 `τ_t`，最後 softmax：
+teacher 的 logits 記作 `z_t`。為每個輸出槽保留一個 **center（中心）**值 `c`，代表過去 teacher 原始分數的移動平均；不是 RGB 平均，也不是 32 維 CLS 平均。產生本步目標時，使用**步開始前的舊 center**：
 
 \[
 p_t=\operatorname{softmax}\left((z_t-c)/\tau_t\right).
 \]
 
-center 是過去 teacher 原始輸出在各槽的移動平均，不是紅藍資料的平均顏色，也不是特徵向量的平均。某個槽若經常有很高的原始分數，減去它累積的 center 後，這個槽就比較難只靠固定偏高的分數一直占優勢。
+`p_t` 是 teacher 目標分佈，`τ_t` 是正數的 teacher 溫度。某個槽若對許多圖片長期都有偏高 raw 分數，它累積的 center 也會偏高，減掉後，就比較難只靠這份共同偏高一直佔優勢。這個 **centering（中心化）**針對的是跨圖片的輸出偏好。
 
-以下只是一個 K=3 的手工例子，不是本節訓練輸出：若 `z_t=[0.20,0,0]`、舊 `c=[0.10,0.05,-0.05]`，先相減得到 `[0.10,-0.05,0.05]`。取 `τ_t=0.10`，softmax 的輸入是 `[1,-0.5,0.5]`，分佈約 `[0.5465,0.1220,0.3315]`。先減 center 再 softmax，不能拿 softmax 後的機率直接減 center。
+先用 K=3 手算：`z_t=[0.20,0,0]`、舊 `c=[0.10,0.05,-0.05]`，相減為 `[0.10,-0.05,0.05]`。取 `τ_t=0.10`，softmax 輸入為 `[1,-0.5,0.5]`，目標約 `[0.5465,0.1220,0.3315]`。這是機制示意，不是本節訓練結果。center 減在原始 logits 上，不能先 softmax 再拿機率減它。
 
-student 的 logits `z_s` 不減這份 teacher center，使用自己的溫度：
+溫度則改變槽與槽分數差距的尺度。同樣的 `[0.2,0]`，除以 0.2 得 `[1,0]`，softmax 約 `[0.7311,0.2689]`；除以 0.1 得 `[2,0]`，約 `[0.8808,0.1192]`。較小溫度使分佈偏向高分槽，叫 **sharpening（銳化）**。
+
+student 的 logits `z_s` 不減 teacher center，使用自己的溫度：
 
 \[
 p_s=\operatorname{softmax}(z_s/\tau_s).
 \]
 
-溫度是正數，作用是縮放 logits 之間的差距。相同的兩個 logits `[0.2,0]`，溫度 0.2 得到 softmax(`[1,0]`)≈`[0.7311,0.2689]`；溫度 0.1 則得 softmax(`[2,0]`)≈`[0.8808,0.1192]`。溫度較小，分佈就更偏向高分槽，叫 sharpening（銳化）。DINO 通常讓 teacher 比 student 更尖銳，避免 teacher 的所有答案都接近平均分佈。
+本例 teacher 溫度比 student 小，用來銳化目標。center 壓制長期共同偏高的槽，但若只把各槽推得接近，也可能走向平均回答；銳化再保留每張圖較偏好的槽。兩者回應不同傾向，需要配合。這是在解釋設計的作用方向，還沒有證明任意設定都能避免塌縮或學出可用特徵。
 
-中心化壓制某個槽長期獨占；銳化避免全部槽都平均。它們的作用方向不同，需要配合。這個機制分析不保證任意資料、任意溫度和步數都能學出有用特徵；我們的小實驗仍要在[下一節](22-features.md)檢查凍結特徵。
+## 用另一個 view 的答案教 student，並固定本步目標
 
-## 只讓 student 朝跨 view 的目標移動
+同一張圖的 view 1、view 2 都交給 teacher 和 student。用 teacher 的 view 1 教 student 的 view 2，再用 teacher 的 view 2 教 student 的 view 1；跳過同 view 配對，才是在要求不同看法保留共同內容。
 
-這一張圖有 view 1、view 2，各送入 student 和 teacher，得到四個分佈。用 teacher 的 view 1 來教 student 的 view 2，再用 teacher 的 view 2 來教 student 的 view 1；不拿同一個 view 的 teacher／student 配對。兩個方向的 loss 取平均，batch 中各張圖也取平均。
-
-對其中一個方向，用交叉熵：
+一個方向的交叉熵為：
 
 \[
 H(p_t,p_s)=-\sum_{k=1}^{K}p_{t,k}\log p_{s,k}.
 \]
 
-`k` 是第幾個輸出槽，`p_t` 是固定的 teacher 目標，`p_s` 是 student 回答。teacher 覺得某個槽比例高時，student 把那個槽的比例提高，這項 loss 通常會變小。這裡是軟答案，不用 `argmax` 先選一個槽，再當成紅藍標籤。
+k 是輸出槽索引。teacher 給某槽較高比例，student 若把該槽比例降得很低，這項懲罰就大；讓回答接近 teacher 會減少這種不吻合。兩個跨 view 方向與 batch 中的圖片都取平均。這是**軟目標**，保留各槽比例，不先選單一 `argmax` 當標籤。
 
-計算 teacher 輸出時停止梯度，程式使用不記錄 teacher 計算圖的區塊；teacher 參數也不交給 optimizer。`loss.backward()` 只為 student 的 backbone 與投影頭計算梯度，`optimizer.step()` 只更新這些參數。student 的梯度有限且非零、更新前後權重有差，才能證明這一步真的有學習更新。
+這一步要讓 student 向目標移動，所以目標須固定，不能也讓 loss 把 teacher 改成更容易配合 student 的答案。**Stop-gradient（停止梯度）**切斷目標回傳梯度的路：計算 teacher 用 `torch.no_grad()`，teacher 分佈也由 `logits.detach()` 取得；teacher 參數不交給 optimizer。
 
-## 再更新 center 和 teacher，供下一步使用
+因此 `loss.backward()` 只為 student 的 backbone 與投影頭算梯度，`optimizer.step()` 只更新它們。停止梯度沒有讓 teacher 永遠停在初值；那是下一個更新動作的工作。
 
-本步的目標已經用舊 center 算完，現在才把本 batch 的 **raw teacher logits** 在圖片與兩個 view 間取平均，記作 `mean(z_t)`，更新 center：
+## Student 更新後，teacher 怎麼跟上
 
-\[
-c_{\mathrm{new}}=m_c c_{\mathrm{old}}+(1-m_c)\operatorname{mean}(z_t).
-\]
-
-`m_c` 是中心的動量。這種「舊值留大部分，新值加少部分」叫 EMA（exponential moving average，指數移動平均）。手工例子：某個槽舊 center 為 0.1、本 batch 的 raw logits 平均為 0.3，取 `m_c=0.9`，新 center 為 `0.9×0.1+0.1×0.3=0.12`。這個 0.12 到下一步才拿來產生目標，不能回頭替換本步的 0.1。
-
-student 做完 optimizer 更新後，再把 teacher 的每個參數 `θ_t` 朝新 student 參數 `θ_s` 移動一點：
+teacher 不由本次交叉熵直接更新，而是在 student 更新完後，對每個參數做 **EMA（Exponential Moving Average，指數移動平均）**：保留大部分舊值，再加入少量新值。
 
 \[
 \theta_{t,\mathrm{new}}=m_t\theta_{t,\mathrm{old}}+(1-m_t)\theta_{s,\mathrm{new}}.
 \]
 
-`m_t` 是 teacher 權重的動量，和 `m_c` 是不同的設定。例如一個 teacher 權重為 2，新 student 權重為 4，取 `m_t=0.9`，teacher 變為 2.2。這一步沒有 backward。teacher 因而追蹤 student 的歷史，而不是每一步立即複製 student；但這種追蹤本身仍不是防塌縮保證。
+`θ_t`、`θ_s` 分別是 teacher、student 的參數，`m_t` 是 teacher 動量。手工例子：teacher 權重為 2，新 student 為 4，取 `m_t=0.9`，teacher 變為 2.2。它吸收 student 的改變，卻不立即變成 4；目標來源因此追蹤一段權重歷史，而非每步直接複製新 student。這不是另外一次 backward，也不是單靠 EMA 就保證不塌縮。
 
-現在可以把一整步按順序說完：取兩個 view → teacher 用舊 center 產生並固定目標 → 算跨 view loss → 更新 student → 更新 center 與 EMA teacher，供下一步使用。center 更新資料是 teacher 的原始輸出，teacher 更新資料是 student 的參數；這是圖中兩條更新箭頭分開畫的原因。
+center 更新的是另一種量：把**本步前向已算好的 raw teacher logits**，在 batch 與兩個 views 間平均，再做 EMA：
 
-## 跑一次真更新，並檢查能否接續
+\[
+c_{\mathrm{new}}=m_c c_{\mathrm{old}}+(1-m_c)\operatorname{mean}(z_t).
+\]
 
-本節完整程式在 CPU 上跑小型自監督訓練，使用 seed 101 生成的 128 張 train 圖，不下載權重，也不要求上一節的 checkpoint。每步抽 24 張圖，只以 AdamW 更新 student 的 backbone 與投影頭；學習率固定 0.0005，weight decay=0.01，梯度範數最大截為 3：把所有參數梯度的平方相加再開根號，若長度超過 3，就把全部梯度乘上約「3／原長度」的共同比例，縮小長度而保留方向；長度不超過 3 就不縮放。紀錄的 `student_grad_norm` 是裁剪前的長度，所以第一步的 24.1192 可以大於 3；optimizer 使用的是縮放後的梯度。兩個溫度固定為 `τ_s=0.15`、`τ_t=0.08`，兩個動量固定為 `m_t=0.95`、`m_c=0.9`。這些是小模型的設定，前面的 K=3、溫度 0.1 與 EMA 0.9 是另外標明的手工例子。
+`m_c` 是中心動量，與 `m_t` 分開設定。某槽舊 center=0.1，本步 raw logits 平均=0.3，`m_c=0.9` 時，新值為 0.12。它供下一步使用；本步目標仍使用舊值 0.1。
 
-下面是實作一個更新步驟的核心：
+完整實作的步末順序如下：
 
 ``` { .python data-excerpt="miniyolo/self_distillation.py" }
         self.optimizer.step()
@@ -85,37 +81,49 @@ student 做完 optimizer 更新後，再把 teacher 的每個參數 `θ_t` 朝�
         self.step += 1
 ```
 
-實作在本步 loss 和 student 更新完成後，先做 teacher EMA，再更新 center。center 使用的仍是本步前向時已算好的 raw teacher outputs，不會重新用 EMA 後的 teacher 產生本步 logits。center 和 teacher 都只影響下一步目標。
+先更新 student，再更新 teacher 參數與 center。雖然程式先做 teacher EMA，`teacher_outputs` 仍是本步較早算好的輸出，沒有用 EMA 後的 teacher 重算。這也就是圖中兩條更新箭頭分開的理由：teacher 讀新 student 參數，center 讀本步 raw logits，兩者都只改下一步的目標來源。
 
-執行 `PYTHONPATH=. python lesson_cases/22-distillation.py` 或頁首 notebook。本次 160 步的第一步／最後一步 loss 為 1.943／1.874；student 的 backbone 權重有變，teacher 沒有梯度，並保存了逐步梯度範數。這些檢查證明更新路徑成立，並不等於特徵可用。下一節會畫出完整曲線並檢查下游用途。
+## 跑這個更新，觀察哪些事情真的成立
 
-checkpoint 要保存的不只有 teacher backbone：student、teacher、optimizer 狀態、center、已完成 step、整份 schedule 設定，以及產生 batch／view 的 RNG（亂數產生器）狀態都會影響下一步。schedule 是「第幾步用哪個溫度、動量與學習率」的安排；若接續時把步數重設為 0，便改變了訓練。
+本節 CPU 程式自行建立隨機小模型，使用 seed 101 的 128 張 train 圖，不下載權重、不依賴 21.4 checkpoint。每步抽 24 張，只傳 images，自監督 loss 不讀 labels 或 boxes。
 
-程式另比較同種子下的「連續訓練到 160 步」與「第 80 步儲存、重建、讀回再接續 80 步」。本次實測兩路的第 81～160 步 loss 完全相同，最後 student、teacher、center 與 optimizer 狀態完全相同，下一組隨機 view 也完全相同。這是本 CPU 小模型的接續測試，不表示跨硬體或改變 PyTorch 版本也能逐位相等。若只想取特徵，載入 teacher backbone 足夠；若想精確接續，則需要完整狀態。
+AdamW 的學習率固定 0.0005、weight decay=0.01；`τ_s=0.15`、`τ_t=0.08`、`m_t=0.95`、`m_c=0.9`。投影頭 K=16。前面的 K=3、溫度 0.1、EMA 0.9 都是另外標明的手工例子，沒有替換這組設定。
 
-## 改一件事，先預測
+本例加入**梯度裁剪**，是為了降低偶發的大梯度讓訓練更新不穩的風險。更新前將梯度範數最大截為 3：全部梯度平方和開根號後，若長度超過 3，就用約「3／原長度」的共同比例縮放，保留方向。紀錄 `student_grad_norm` 是裁剪前長度，第一步 24.1192 可以大於 3；optimizer 用的是裁剪後梯度。
 
-在前面的 teacher 權重手算中，把 `m_t` 從 0.9 改成 1，teacher 權重會到多少？若整段訓練始終取 1，teacher 還會追蹤 student 嗎？
+執行 `PYTHONPATH=. python lesson_cases/22-distillation.py` 或頁首 notebook。保存的 160 步第一／最後 loss 為 1.943／1.874，student backbone 權重確實變化，teacher 沒有梯度，逐步梯度範數也有記錄。這些是更新機制的證據；loss 變化不能替特徵用途評分，[下一節](22-features.md)再凍結 backbone 檢查。
+
+## 接續時，連目標來源也要還原
+
+前章已保存模型、optimizer、步數與 RNG。DINO 還有 teacher 與 center，會直接影響下一步答案，所以 checkpoint 要一起保存 student、teacher、optimizer、center、step、設定，以及 batch／view 的 RNG 狀態。
+
+一般的 **schedule** 是第幾步使用哪個溫度、動量或學習率的安排。本例這些值固定，但完整設定與步數仍保留；改成有排程時，更不能把 step 重設為 0。
+
+程式比較連續 160 步，與第 80 步存檔、重建讀回、再做 80 步。這次第 81～160 步 loss、最後 student／teacher／center／optimizer 狀態及下一組隨機 views 都完全相同。這只驗證本 CPU 設定的接續；沒有跨硬體或 PyTorch 版本的逐位相等測試。只取特徵時可以載入 teacher backbone，精確接續時才需要上述完整狀態。
+
+## Teacher 完全不吸收更新，會怎樣
+
+把手算中的 `m_t=0.9` 改為 1，teacher 權重會到多少？若始終取 1，還會追蹤 student 嗎？
 
 ??? note "參考答案"
 
-    權重仍為 2：`1×2+0×4=2`。一直取 1，就一直保留初始 teacher，不吸收 student 的更新。動量越大，更新越慢；它不是「越大一定越好」。
+    仍是 2，因為 `1×2+0×4=2`。始終取 1 就一直保留初始 teacher。動量越大，跟得越慢，沒有「越大一定越好」的保證；這是公式的邊界推論，本書可執行設定要求動量小於 1。
 
-??? note "本節和原始 DINO 的範圍"
+??? note "原始來源與本例省略的部分"
 
-    這裡教的是 2021 年自監督 **DINO（self-distillation with no labels）**，來源為 [Emerging Properties in Self-Supervised Vision Transformers](https://arxiv.org/abs/2104.14294)，不是 2022 年同名的 [DINO 物件偵測器](https://arxiv.org/abs/2203.03605)。原始 DINO 的 §3.1、公式 1–4 與 Algorithm 1 支持 student／teacher、交叉熵、停止梯度、center 和 EMA；§5.3 分析中心化與銳化。
+    2021 年 [DINO](https://arxiv.org/abs/2104.14294) §3.1、公式 1–4 與 Algorithm 1 支持 teacher／student、停止梯度、跨 view 交叉熵、center 與 EMA；§5.3 分析中心化與銳化。它與 2022 年 [DINO detector](https://arxiv.org/abs/2203.03605) 不同。
 
-    原始 DINO 使用兩個 global view 加上較小的 local views（multi-crop），teacher 只讀 global views，student 讀全部 views；本節只有兩個 global view。也縮小了 ViT、簡化投影頭（包括沒有原版最後層的 weight normalization）、資料量，並以固定溫度／動量／學習率取代原版 warmup 與 cosine schedule。因此本節是完整小模型的教學訓練，並非重現原論文的 ImageNet 實驗。
+    原版使用兩個 global views 與較小 local views，teacher 只讀 global、student 讀全部。本例只有兩個 global views，也縮小 ViT、資料量並簡化投影頭，沒有原版最後層的 weight normalization；溫度／動量／學習率固定，取代原版 warmup 與 cosine schedules，沒有重現 ImageNet 實驗。
 
-    固定官方版本：[main_dino.py](https://github.com/facebookresearch/dino/blob/7c446df5b9f45747937fb0d72314eb9f7b66930a/main_dino.py)。`DINOLoss.forward` 先用舊 center 算 teacher 分佈並 `detach`，跳過同 view 的配對，最後呼叫 `update_center`；`update_center` 平均的是 raw logits。`train_one_epoch` 在 student optimizer step 後以 EMA 更新 teacher。這些順序支持本文的機制說明；本節參數值以我們的程式與執行紀錄為準，不混用論文設定和官方不同版本的預設值。
+    固定官方 [main_dino.py](https://github.com/facebookresearch/dino/blob/7c446df5b9f45747937fb0d72314eb9f7b66930a/main_dino.py) 的 `DINOLoss.forward` 使用舊 center、`detach`、跳過同 view 配對，最後更新 raw logits 的 center；`train_one_epoch` 在 student optimizer step 後做 teacher EMA。本書的設定與步末呼叫順序以自己的程式為準，不混用不同版本預設值。
 
-[上一節：22.2 常數回答的漏洞](22-collapse.md) · [下一節：22.4 凍結特徵後評分](22-features.md)
+[上一節：22.2 一致性的漏洞](22-collapse.md) · [下一節：22.4 特徵能不能使用](22-features.md)
 
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-distillation.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/22-distillation.json)
 
 ??? example "展開本次實際輸出"
 
@@ -179,7 +187,7 @@ checkpoint 要保存的不只有 teacher backbone：student、teacher、optimize
         "mean_output_entropy": 1.7878104448318481,
         "marginal_output_entropy": 2.2156848907470703
       },
-      "elapsed_training_and_resume_seconds": 4.2405333849983435,
+      "elapsed_training_and_resume_seconds": 4.185710720994393,
       "checkpoint_path": "artifacts/runs/dino/22-distillation-midpoint.pt",
       "simplifications": "2 global views; ordinary MLP and no weight normalization; fixed temperatures/LR/EMA; no multi-crop or official schedules",
       "limitation": "DINO2021 mechanism demonstration from scratch; loss/diagnostics are not downstream or natural-image capability proof"

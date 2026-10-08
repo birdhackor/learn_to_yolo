@@ -2,66 +2,33 @@
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-decoupled-head.ipynb){ .md-button }
 
-偵測模型要從同一份特徵回答兩個問題：「這裡是哪一類？」和「框的邊在哪裡？」本節把 head 分成框、類別兩條分支，再用三次 backward 追蹤梯度走哪條路。讀完你能說出 decoupled head 哪裡分開、哪裡仍然共用，能驗算兩個 loss 的梯度在共用的部分怎麼相加，也能算出分支多花了多少參數。
+上一頁已能由候選點的四邊距離還原框。放回圖片偵測，這個點還要回答「是哪一類」。兩個答案來自同一份 CNN 特徵，但希望後段能各自整理需要的訊息：物件往右移 1pixel，類別仍是紅矩形，定位的左距離卻少 1/stride、右距離多 1/stride。分類希望對小位移保持答案，定位則要追蹤邊的變化。
 
-前置：Conv2d、反向傳播、幾個 loss 相加成的總 loss（第 7 章的 `total`），以及 [12.1 Anchor-free](12-anchor-free.md)（候選點到框四邊的距離 ltrb、softplus、Smooth L1）。backbone 是把影像轉成特徵的主幹，head 是把特徵轉成預測的輸出模組。
+**Decoupled head（解耦 head）**讓共用 backbone 之後分成定位與分類兩串卷積，各有自己的後段權重。它不要求原本 coupled（耦合）head 不能完成兩任務；分支改的是兩種工作在哪裡共用、在哪裡各自轉換。
 
-本節說的「分開」，是和 coupled head 對照：
+第 7 章的一層 1×1 同時輸出框、obj 和類別，是 coupled 的例子。這次沿用 [四正距離、softplus、Smooth L1](12-anchor-free.md)，只做一尺度、兩類、沒有 objectness；YOLOX 在 2021 年已採用 [decoupled head](https://arxiv.org/abs/2107.08430)，YOLOv8 也採用，但本例不重現完整結構或品質比較。
 
-- **coupled head（耦合 head）**：框和類別經過同一串卷積，最後由同一層 1×1 卷積同時輸出。第 7 章的 head 就是這種：一層 1×1 在每一格一次輸出 7 個數（4 個框值＋objectness＋2 個類別）。
-- **decoupled head（解耦 head）**：backbone 之後分成框、類別兩串卷積，各自輸出自己的預測。本節的框分支在每個位置輸出 4 個數，類別分支輸出 2 個數。
+## 同一份特徵，兩份不同的答案
 
-為什麼要分開？分類常要認出形狀，辨識這是什麼東西（語意）；定位要保留精細的位置。下面是直覺說明，本節的實驗不驗證準確度。例如第 7 章的紅色矩形往右移 1 畫素，它仍是紅色矩形，所以分類希望特徵對這種小位移不敏感。但若用 12.1 的四邊距離表示框，同一個候選點到框左邊的距離 l 要少 1/stride 格，到右邊的距離 r 要多 1/stride 格（12.1 設定 stride 為 8 畫素／格，這時是 1/8 格），所以定位需要特徵跟著變。若框和類別由同一串卷積一起輸出，權重得同時滿足這兩種要求，兩者可能互相拉扯，限制各自能學的轉換。
-
-2021 年的 [YOLOX](https://arxiv.org/abs/2107.08430) 已在 YOLO 系列採用 decoupled head；YOLOv8 這類偵測器也把 head 分成分類分支與框回歸分支。本節對照的是 Ultralytics YOLOv8 的寫法。我們從共用的 CNN 特徵出發，並做三項簡化：
-
-- 只用一個尺度。
-- 框直接輸出四個連續的距離（不是之後 DFL 節的分布）。
-- 只有兩個類別，各用一個 sigmoid 分數（YOLOv8 也是每個類別各一個 sigmoid 分數、沒有 objectness；類別數則依資料而定，例如常用的 COCO 資料集有 80 類）。
-
-後面幾節講到的官方 YOLO 版本，head 都保留這種分支結構（例如 [12.4 節](12-dfl.md)的 DFL 就接在框分支上）。但這次的觀察只能支持兩件事：一是各 loss 的梯度只流進自己的分支與共用的 backbone，不進另一條分支（梯度隔離）；二是分支多了多少參數。不能據此宣稱真實資料上的準確度提高。
-
-## 先把各軸說清楚
-
-輸入是兩張 4×4 的「影像」，shape `[B,3,H,W]=[2,3,4,4]`。它們其實是 `torch.rand` 產生的 0 到 1 之間的隨機數，裡面沒有真的物件；target 也是人工固定的值。這些資料只用來追蹤梯度走哪條路。資料流如下，括號裡是輸入→輸出的 channel 數：
+輸入 `x [2,3,4,4]` 是 `torch.rand` 的隨機數，沒有物件；target 也手工固定，只用來追梯度。B=2 張、H=W=4，在每個位置輸出四距離與兩類分數。兩路讀取同一個 f：
 
 ```text
-x [2,3,4,4] → backbone：3×3 卷積(3→8) → ReLU → f [2,8,4,4]
-f → 框分支：3×3 卷積(8→8) → ReLU → 1×1 卷積(8→4) → boxes [2,4,4,4]
-f → 類別分支：3×3 卷積(8→8) → ReLU → 1×1 卷積(8→2) → logits [2,2,4,4]
+x [2,3,4,4] → backbone：3×3(3→8) → ReLU → f [2,8,4,4]
+f → box_branch：3×3(8→8) → ReLU → 1×1(8→4) → boxes [2,4,4,4]
+f → class_branch：3×3(8→8) → ReLU → 1×1(8→2) → logits [2,2,4,4]
 ```
 
-完整程式的 `forward` 先算 `f = F.relu(self.backbone(x))`，再把同一個 `f` 交給兩條分支。每條分支最後的 1×1 卷積是輸出層：在每個位置把 8 個 channel 組合成 4 個或 2 個數。
+`boxes` 的第 1 軸是四個 ltrb 原始數，尚未經 softplus，**不是已解碼 xyxy**。`F.softplus(boxes)`纔是正距離，與四邊都 1.5 格的 `distances` 比 Smooth L1。`logits`是每點兩類的原始分數，和 `classes` 用 BCE 比較。
 
-| 路徑 | 最後 shape | 每個位置表示什麼 |
-| --- | --- | --- |
-| 共用 backbone（`backbone`） | `[2,8,4,4]` | 兩個任務共同讀取的特徵 |
-| 框分支（`box_branch`） | `[2,4,4,4]` | 四個 channel 是 `ltrb` 距離的原始輸出 |
-| 類別分支（`class_branch`） | `[2,2,4,4]` | 兩個 channel 各是一個類別的 logit |
+4×4 有 P=16 點，把 H、W 攤平、再將 channel 移到末尾，框輸出就是上一頁的 `[B,P,4]`，分類是 `[B,P,C]`。數字同為 4 的軸仍分工不同，不可把 channel 當空間邊長。
 
-框分支輸出 `[2,4,4,4]` 的第 0 軸是 B=2（兩張圖），第 1 軸是四個 channel，第 2、3 軸才是高度、寬度。4×4＝16 個位置各是一個候選點，套用 12.1 節的記號就是 P＝16；把高、寬兩軸攤平成 P，再把 channel 移到最後，`[2,4,4,4]` 就是 12.1 節表格的 `[B,P,4]`，`[2,2,4,4]` 就是 `[B,P,C]`。ltrb 是候選點到框左、上、右、下四邊的距離（上一節 anchor-free 的表示）。程式的 `boxes` 變數就是這種原始輸出：還沒經過 softplus 的原始數，可正可負，不是機率（術語表的 logits 也包含這種框的原始輸出）。本頁單說 logits，都指程式裡同名的變數 `logits`，也就是類別分支的輸出。框的原始輸出經 `F.softplus(boxes)` 才變成正距離，再和 1.5 格的 target（程式的 `distances`）比較；`boxes` 不是已解碼的 xyxy 框。
+這個梯度示範把**所有位置**都當正樣本，class 0 target=1、class 1=0，刻意不做 assignment。實際 YOLOv8 只在選出的正樣本算框 loss；背景也算分類 loss，全部類別 target=0。它沒有第 7 章的 objectness，是否有物件改由類別分數表達。
 
-這個 head 沒有 objectness（第 7 章表示「這格有沒有物件」的那個輸出），兩個類別各有一個 sigmoid 分數，用 BCE 學。在這個示範中，所有位置都當成正樣本：類別 target（程式的 `classes`）的 class0 是 1、class1 是 0。這裡刻意省去 assignment（候選與真值的責任分配），讓我們只追蹤 head 的梯度。完整的 YOLOv8 這類偵測器只在選定的正樣本上計算框 loss；背景位置仍要算分類 loss，而且所有類別的 target 都是 0：這就是「分類負訊號」。
-
-??? note "沒有 objectness，背景怎麼學？為什麼不用 softmax？"
-
-    第 7 章的設計是：objectness 在每一格學「有沒有物件」，類別只在正格用 softmax 與交叉熵學「紅還是藍」，背景不算分類 loss。YOLOv8 這類設計沒有 objectness，每個類別各有一個 sigmoid 分數；背景位置所有類別的 target 都是 0，「這裡有沒有物件」改由類別分數一起表達。
-
-    不用 softmax，是因為 softmax 讓各類機率的總和固定為 1，表達不了「哪一類都不是」。sigmoid 讓每類各自落在 0 到 1 之間、彼此獨立，所以每類各用一個 BCE。第 10 章提過，YOLOv3 原版也對每個類別各做 sigmoid。
-
-    YOLOv8 正樣本的類別 target 也不是固定的 1，而是依這個預測的品質給的 0 到 1 之間的分數；本節示範簡化成固定的 1 和 0。
+所以兩類各用 sigmoid，不用總和必為 1 的 softmax：sigmoid 允許兩類一起接近 0，代表背景。正式正樣本 target 還依預測品質縮成 0～1 小數，本頁先用硬答案 1／0，下一頁再把選點接到 target。不能把本例的全位置正樣本當成完整偵測監督。
 
 ## 三次 backward 解開「分開」的意思
 
-程式先做一次 forward，算出兩個 loss：框 loss（程式的 `box_loss`）用 Smooth L1，只用到框分支的輸出 `boxes`；分類 loss（`cls_loss`）用 BCE，只用到類別分支的輸出 `logits`。接著對同一次 forward 反傳三次：
-
-1. 第一次只反傳框 loss。框 loss 只經過 backbone 與框分支，反傳走不到類別分支：框分支的參數有梯度，類別分支的 `.grad` 應是 `None`。
-2. 第二次先清空梯度，再只反傳分類 loss：結果反過來，框分支的 `.grad` 是 `None`。
-3. 第三次反傳兩者的和（見下方）。
-
-前兩次都會到達共用的 backbone，因為兩條路都使用同一份特徵 `f`。因此 decoupled head 不是兩個完全獨立的網路，也不保證共用特徵沒有任務衝突。任務衝突是指兩個 loss 想把共用 backbone 的權重往相反方向推，相加時互相抵銷一部分。後面會用兩份 backbone 梯度夾角的 cosine 檢查有沒有這種情況。
-
-完整程式裡的對應片段如下，前三行是 forward 和兩個 loss：
+先做**一次 forward**算 box_loss 與 cls_loss，再對同一次結果分別反傳。框 loss 只用 boxes，沿 box_branch 回到 f、backbone；它沒有用 class_branch，所以那支參數的 `.grad` 應為 None。清梯度後單獨反傳分類 loss，情況反過來。
 
 ``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 boxes, logits = model(x)  # forward：同一份特徵 f 交給兩條分支
@@ -79,18 +46,9 @@ assert model.box_branch[0].weight.grad is None
 class_backbone_grad = model.backbone.weight.grad.clone()
 ```
 
-`box_branch`、`class_branch` 都是 `nn.Sequential`（第 3 章：把幾層依序串起來），所以 `[0]` 取出的是第一層 3×3 卷積，`.weight.grad` 是它權重的梯度。
+兩分支是 nn.Sequential，`[0]`取第一個 3×3；程式對照它們的 weight.grad。每次 `model.zero_grad()` 預設設回 None，纔可區分這次有沒有走進該參數。前兩次加 `retain_graph=True`，保留共用 backbone 那段的反傳暫存；否則第一次反傳釋放後，第二次會報 `Trying to backward through the graph a second time`。
 
-`model.zero_grad()` 和前面章節的 `optimizer.zero_grad(set_to_none=True)` 一樣，預設把 `.grad` 設回 None，而不是填 0。第二次只反傳分類 loss，沒走進框分支，框分支的 `.grad` 就維持 None，所以 `is None` 的斷言（assert）成立。
-
-`retain_graph=True` 是什麼？PyTorch 預設在 backward 做完後，就釋放計算圖上為反傳暫存的中間值，以節省記憶體。本節要對同一次 forward 反傳三次，所以前兩次加 `retain_graph=True` 把這些中間值留著；第三次是最後一次，不必再留。拿掉第一次的 `retain_graph`，第二次 backward 會報錯 `Trying to backward through the graph a second time`：兩個 loss 共用 backbone 那段計算圖，那段的中間值在第一次 backward 時就釋放了。
-
-第三次反傳兩者的和。先替兩份 backbone 梯度取名字：記框 loss 為 \(L_{\text{box}}\)、分類 loss 為 \(L_{\text{cls}}\)，\(\theta\) 為共用 backbone 的權重。
-
-- \(g_{\text{box}}=\partial L_{\text{box}}/\partial\theta\)，就是程式的 `box_backbone_grad`。
-- \(g_{\text{cls}}=\partial L_{\text{cls}}/\partial\theta\)，就是程式的 `class_backbone_grad`。
-
-總 loss 是 \(L=L_{\text{box}}+L_{\text{cls}}\)。和的導數等於導數的和，所以 \(\theta\) 的梯度是 \(g_{\text{box}}+g_{\text{cls}}\)。其中每一項都是從自己的 loss 出發，沿自己的分支用連鎖律（chain rule）一路乘回 \(\theta\) 得到的；兩條路在共用特徵 f 會合，梯度在那裡相加。完整程式裡這樣核對：
+兩種 loss 都到了 backbone，因此解耦沒有讓兩網完全獨立。記共用權重為θ，單獨反傳的梯度為 `g_box=∂L_box/∂θ`、`g_cls=∂L_cls/∂θ`；clone 保留各自數字，不受後面的.grad 改變。總 loss 是兩者相加，第三次清梯度再反傳：
 
 ``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 model.zero_grad()
@@ -98,28 +56,24 @@ model.zero_grad()
 assert torch.allclose(model.backbone.weight.grad, box_backbone_grad + class_backbone_grad, atol=1e-7)
 ```
 
-`torch.allclose` 逐元素比對兩邊，容許極小的浮點誤差（同樣的數用不同順序相加，最後幾位小數可能不同）。這個檢查也能抓到程式錯誤：例如第三次 backward 前忘了清梯度，總梯度就會多出第二次留下的舊梯度，斷言便失敗。接著完整程式做一次 `optimizer.step()`，確認 backbone 權重真的改變。沒有 step，只證明計算圖能反傳出梯度，還沒驗證參數真的被更新。
+和的導數是導數的和，兩路在共用 f 會合，因此 backbone 梯度爲 `g_box+g_cls`。torch.allclose 逐值核對，容許 1e-7 浮點差。若第三次前忘清梯度，就混入第二次舊梯度，這項檢查失敗。最後 optimizer.step 更新，並核對 backbone 權重改變；三次 backward 本身不等於學習更新。
 
 ## 用 cosine 看兩份梯度的方向
 
-兩份 backbone 梯度 \(g_{\text{box}}\)、\(g_{\text{cls}}\) 的方向一致嗎？用餘弦相似度（cosine similarity，以下簡稱 cosine）來看。backbone 權重的 shape 是 `[8,3,3,3]`，所以每份梯度有 8×3×3×3=216 個數（只取權重，不含 bias）。把它們攤平成兩個 216 維向量，算
+共用 backbone 仍可能同時面對兩任務相反的更新要求。把兩份 weight 梯度 `[8,3,3,3]` 各攤平成 216 維向量（不含 bias），用**cosine similarity（餘弦相似度）**看方向：
 
 \[
-\cos\varphi=\frac{g_{\text{box}}\cdot g_{\text{cls}}}{\lVert g_{\text{box}}\rVert\,\lVert g_{\text{cls}}\rVert}
+\cos\varphi=\frac{g_{\mathrm{box}}\cdot g_{\mathrm{cls}}}{\lVert g_{\mathrm{box}}\rVert\lVert g_{\mathrm{cls}}\rVert}.
 \]
 
-\(\varphi\) 是兩個向量的夾角；分子是內積，分母是兩個向量長度的乘積。這就是高中的向量夾角公式，只是分量從 2、3 個變成 216 個。完整程式寫成：
+這是向量夾角公式，維數雖多，仍用內積除長度乘積。接近 1 是同方向，−1 是相反，0 是大致正交。手算 `(3,4)` 與 `(4,−3)` 內積 0、cosine0；與 `(−3,−4)` 是−1；與 `(6,8)` 是 1。
 
 ``` { .python data-excerpt="lesson_cases/12-decoupled-head.py" }
 # flatten() 把 [8,3,3,3] 攤平成 216 個數；dim=0 表示沿攤平後的這一軸計算
 cosine = F.cosine_similarity(box_backbone_grad.flatten(), class_backbone_grad.flatten(), dim=0)
 ```
 
-cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −1 表示較相反，接近 0 表示大致正交（夾角約 90°，兩個方向互不相干）。用二維向量手算：\((3,4)\) 的長度是 5。它和 \((4,-3)\) 的內積是 \(12-12=0\)，cosine 為 0（垂直）；和 \((-3,-4)\) 的內積是 \(-25\)，cosine 為 \(-25/(5\times5)=-1\)（正好相反）；和 \((6,8)\) 的內積是 50，cosine 為 \(50/(5\times10)=1\)（同方向）。
-
-本次印出 −0.0073。它雖然帶負號，但非常接近 0（夾角約 90.4°），應讀成「大致正交」：兩個 loss 想要的 backbone 修改方向幾乎互不相干，不是明顯相反。若 cosine 明顯為負，表示兩個任務把共用的 backbone 往相反方向推，相加時抵銷一部分，這就是任務衝突。decoupled head 只分開 backbone 之後的卷積，本來就不保證消除這種衝突。所以就算看到負 cosine，也不能直接宣稱 decoupled head 無效，因為分支仍讓兩個任務在後段各有自己的特徵轉換。
-
-這個值是固定 seed、人工 target 的一次診斷，不能代表整個任務的平均情況。
+本次 **−0.0073** 接近 0，夾角約 90.4°，應讀成大致正交，不是明顯相反。明顯負值才表示某任務的小更新會使另一 loss 上升，兩梯度相加抵銷部分，是任務衝突。這仍是共用 backbone 的診斷，不能用一個負號宣佈解耦無效；各分支後段依然有自己的轉換。固定 seed、人工 target 的一次值也不能當整任務平均。
 
 ??? note "為什麼內積的正負代表「一致」或「衝突」？"
 
@@ -133,43 +87,30 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 
 ## 可核對的成本
 
-本例含 bias 的參數共 1,446。一層卷積的參數數是「輸出 channel×輸入 channel×卷積核的高×寬」，再加上每個輸出 channel 一個 bias：
+分開輸出層本身沒有新增分工：8→6 的 1×1，六個輸出各有自己一列權重，等價於並排 8→4 與 8→2。真正的分工是前面**各有自己的 3×3**，因此兩 loss 不再共同更新同一串後段卷積。
 
-- backbone（3×3，3→8）：`8×3×3×3+8=224`
-- 兩條分支的 3×3（8→8）：各 `8×8×3×3+8=584`
-- 框分支的輸出層（1×1，8→4）：`4×8+4=36`
-- 類別分支的輸出層（1×1，8→2）：`2×8+2=18`
+| 部分 | 帶 bias 參數 |
+| --- | --- |
+| backbone，3×3 的 3→8 | `8×3×3×3+8=224` |
+| 每支 3×3 的 8→8 | `8×8×3×3+8=584` |
+| 框輸出 1×1 的 8→4 | `4×8+4=36` |
+| 類別輸出 1×1 的 8→2 | `2×8+2=18` |
 
-合計 `224+584×2+36+18=1,446`，其中兩條分支本身共 1,222。最簡單的 coupled head 是一層 8→6 的 1×1 卷積，6 個輸出 channel 是 4 個框值＋2 個類別，只要 `6×8+6=54` 個參數。這層 1×1 其實等於並排的 8→4、8→2 兩層 1×1（`54=36+18`，每個輸出 channel 本來就有自己的一列權重），所以只把輸出層拆成兩個不算分工；分工指的是輸出層之前各有自己的卷積。這個基線不只沒有分工，容量也不同，所以兩者的效果差異不能都歸因於分工。公平比較應選相近的 channel 數、層數或成本，並說明對齊哪一項。
+合計 `224+584×2+36+18=1446`，分支共 1222；一層 coupled 8→6 的 1×1 只需 54。這個基線同時少層、少參數，若有效果差異不能全歸因解耦。
 
 ??? note "保留一層 3×3 的 coupled head 有多少參數？"
 
     讓 coupled head 也先經過一層 3×3：f → 3×3 卷積（8→8）→ ReLU → 1×1 卷積（8→6），前 4 個輸出 channel 給框、後 2 個給類別。參數是 `584+54=638`。它和每條分支一樣是一層 3×3 加一層 1×1、中間 8 個 channel，對齊的是層數與 channel 數；參數量仍只有兩條分支（1,222）的一半左右。
 
-執行 `PYTHONPATH=. python lesson_cases/12-decoupled-head.py`，本例只需 CPU。應看到：
+設計需選兩支的層數、通道數；分支增加捲積與反傳暫存 activation（中間張量），小 backbone 上也可能成為主要成本，資料少時更多參數可能過擬合。公平比較先決定對齊通道、層數、參數或延遲，再固定資料與訓練預算；速度要量整條推論路徑。
 
-1. 框分支、類別分支的 shape：`(2, 4, 4, 4)` 與 `(2, 2, 4, 4)`（`box / class shapes` 那行）。
-2. 分類 loss 單獨反傳後，框分支的 `.grad` 仍為 None（`classification-only backward leaves box branch grad=None`）。框 loss 單獨反傳的那個方向由完整程式的斷言檢查，不另外印出。
-3. backbone 的總梯度等於兩份梯度之和：`verified`。
-4. 參數數量：`1446`。
+執行 `PYTHONPATH=. python lesson_cases/12-decoupled-head.py` 或頁首 Colab，核對兩輸出 shape、分類單獨反傳時框支 grad=None、backbone 總梯度之和、cosine 與 1446 參數。`classification-only…` 和 `…verified`是通過對應斷言後的固定文字。這只證明梯度分工與成本，沒有 AP。
 
-第 2、3 項印的英文是固定的文字，不是程式算出來的值。程式先跑完所有斷言才開始印，所以印得出這兩行，就表示對應的 `is None` 與 `torch.allclose` 斷言已經通過。另外會印出一次梯度 cosine（`shared-backbone gradient cosine` 那行）。它可作檢查訊號，但沒有通用的理想數字。
+## 反傳診斷的三個陷阱
 
-## 收益、代價與常見錯誤
+忘清梯度會累加；`.grad=None` 與全零 tensor 也不同。第二次 zero_grad 若用 `set_to_none=False`，第一次已有的框支梯度會變全零，分類沒走入它仍保持零，但 `is None` 檢查不通過。改第一次則沒有差，因那時本來都是 None。
 
-分支讓定位與分類在最後幾層各用自己的卷積權重，也能分開決定每條分支的 channel 數與 loss。代價有三：
-
-- 多出的卷積計算。
-- 記憶體：訓練時各層的輸出要暫存給 backward 用，這些中間張量叫 activation（不是 ReLU 這種激勵函數本身）。分支越多，要暫存的越多。
-- 多了要自己決定的設定：分支要幾層、幾個 channel。
-
-當 backbone 已經很小，增加兩條 channel 數多的分支，可能比 coupled head 更耗時；當資料很少，更多參數也可能過擬合。速度必須實測整條推論路徑，不能只看分支數。
-
-常見錯誤：
-
-- **兩次 backward 之間忘了清梯度**：backward 預設把新梯度加在舊梯度上，第二次看到的就是兩次的累加。
-- **把 `.grad` 是 None 和全 0 tensor 混為一談**：若把第二次反傳前的 `model.zero_grad()`（程式裡的第二個）改成 `model.zero_grad(set_to_none=False)`，框分支在第一次反傳得到的梯度會被填成全 0 tensor，而不是設回 None；第二次反傳沒走進框分支，它就一直是全 0，`model.box_branch[0].weight.grad is None` 的斷言便失敗。改第一個沒有作用，因為那時所有參數的 `.grad` 本來就是 None（兩者的差別見第 2 章〈[訓練診斷](02-diagnostics.md)〉）。
-- **在分支前誤用 `detach()`**：例如把 `forward` 裡的 `self.class_branch(f)` 寫成 `self.class_branch(f.detach())`，分類 loss 的梯度就到不了 backbone，backbone 只剩框 loss 在訓練。一般的訓練迴圈很難發現這個錯：分類分支本身仍會更新，loss 也可能照樣下降。本節程式則會在第二次反傳後停下：分類 loss 沒有流進 backbone，`model.backbone.weight.grad` 仍是 None；None 沒有 `.clone()` 可呼叫，所以接著取 `class_backbone_grad` 的那行報 `AttributeError`。本節兩個任務都需要訓練共用特徵，所以不在分支前做 detach。
+也不能在分支前誤用 detach。例如 `class_branch(f.detach())` 仍讓分類支更新、loss 下降，卻切斷到 backbone 的路；第二次反傳 backbone.grad 為 None，取 `.clone()` 就報 AttributeError。本例兩任務都要訓練共用特徵，所以 f 不 detach。
 
 自主練習：
 
@@ -197,7 +138,7 @@ cosine 接近 1 表示兩份梯度在這批資料上方向較一致，接近 −
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-decoupled-head.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-decoupled-head.json)
 
 ??? example "展開本次實際輸出"
 

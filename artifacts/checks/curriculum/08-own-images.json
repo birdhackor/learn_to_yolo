@@ -1,7 +1,7 @@
 {
   "id": "08-own-images",
   "passed": true,
-  "executed_at_utc": "2026-10-08T03:55:05.437625+00:00",
+  "executed_at_utc": "2026-10-08T05:13:14.260199+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -28,7 +28,7 @@
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16",
     "scripts/detect_image.py": "69738c487cfad24bea2009384712ca0ba958ac1fd394e2226ae33d7de9682c6a"
   },
-  "process_wall_seconds": 1.9298,
+  "process_wall_seconds": 2.2631,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "original CHW (3, 80, 120) input box [[10.6667, 15.375, 32.0, 26.125]]\nmetadata {'original_size': (80, 120), 'scale': 0.5333333333333333, 'scale_xy': (0.5333333333333333, 0.5375), 'padding': (0, 10), 'resized_size': (43, 64)} roundtrip [[20.0, 10.0, 60.0, 30.0]]\n3-step checkpoint safely reloaded: exact logits; original-space box count 0 at score threshold 0.25\nprediction PNG and JSON saved: artifacts/lesson-08-own-images/prediction.png artifacts/lesson-08-own-images/prediction.json\npipeline evidence only, not photo detection quality\nclass/config mismatch rejected\nartificial known box restored [[20.0, 10.0, 60.0, 30.0]]\n",
   "stderr": "",

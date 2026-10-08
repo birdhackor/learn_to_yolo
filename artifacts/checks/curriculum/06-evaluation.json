@@ -1,7 +1,7 @@
 {
   "id": "06-evaluation",
   "passed": true,
-  "executed_at_utc": "2026-10-06T05:18:12.357428+00:00",
+  "executed_at_utc": "2026-10-08T05:13:02.212631+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/06-evaluation.py": "a6e079570ea20361b802aef294d045641e8052ce4b6cbfe1a0cad4f2d893f0f1"
   },
-  "process_wall_seconds": 1.06,
+  "process_wall_seconds": 1.3829,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "rank=1, score=0.95, FP, precision=0.0000, recall=0.0000\nrank=2, score=0.90, TP, precision=0.5000, recall=0.3333\nrank=3, score=0.80, FP, precision=0.3333, recall=0.3333\nrank=4, score=0.70, TP, precision=0.5000, recall=0.6667\nTP=2, FP=2, FN=1, mAP50=0.333333, ap_per_class=[0.333333, None]\ncandidate threshold .85: mAP50=0.166667, recall=0.3333\nremove known high-score FP: mAP50=0.555556\nno predictions => AP=0 when GT exists; no-GT class AP=None; background FP counted\nArtificial scoring exercise; not measured detector performance.\n",
   "stderr": "",

@@ -1,7 +1,7 @@
 {
   "id": "21-attention",
   "passed": true,
-  "executed_at_utc": "2026-10-06T05:03:47.723607+00:00",
+  "executed_at_utc": "2026-10-08T05:14:06.805316+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -29,7 +29,7 @@
     "miniyolo/vision_data.py": "92b1cc3885a0b897eba2a24ac1cd604c55b5ea903a1886904e64b9364c67dde1",
     "miniyolo/vision_transformer.py": "212c8fcd59df0abd2ff9d0e545dbee051bbbe306089f5e0973d47783090fa394"
   },
-  "process_wall_seconds": 1.8549,
+  "process_wall_seconds": 1.9548,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "{\"event\": \"attention\", \"manual_tokens\": [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]], \"first_query_scores_before_scale\": [1.0, 0.0, 1.0, 0.0], \"scale\": 1.4142135623730951, \"first_attention_row\": [0.3348807692527771, 0.1651192307472229, 0.3348807692527771, 0.1651192307472229], \"first_weighted_value\": [0.6697615385055542, 0.5], \"manual_weight_shape\": [1, 1, 4, 4], \"manual_loss\": 0.1594690978527069, \"q_k_v_gradient_abs_sums\": [0.07701923698186874, 0.07701923698186874, 0.4417698085308075], \"qkv_weights_changed\": true, \"vit_tokens_shape\": [1, 17, 32], \"vit_heads\": 4, \"vit_head_dim\": 8, \"vit_attention_shape\": [1, 4, 17, 17], \"vit_attention_scores\": 1156, \"vit_output_shape\": [1, 17, 32], \"vit_row_sum_max_error\": 1.7881393432617188e-07, \"swap_patch_sequence_indices\": [1, 16], \"without_position_cls_max_change\": 3.5762786865234375e-07, \"without_position_patch_equivariance_max_error\": 4.76837158203125e-07, \"with_fixed_position_cls_max_change\": 0.0016034245491027832, \"limitation\": \"One SGD update validates the mechanism; random ViT attention weights are not explanations of a trained decision.\"}\n",
   "stderr": "",

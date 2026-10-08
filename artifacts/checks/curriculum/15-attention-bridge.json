@@ -1,7 +1,7 @@
 {
   "id": "15-attention-bridge",
   "passed": true,
-  "executed_at_utc": "2026-10-08T03:36:38.873531+00:00",
+  "executed_at_utc": "2026-10-08T05:13:46.265221+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/15-attention-bridge.py": "9823e1f3b30b6feb92d96fe5a9dd74a315500eaa31987f89c2cdea4b686aed06"
   },
-  "process_wall_seconds": 1.8719,
+  "process_wall_seconds": 1.9519,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "tokens: [[[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]]]\nfirst attention row: [0.3349, 0.1651, 0.3349, 0.1651]\nfirst weighted value: [0.6698, 0.5]\nshape feature -> tokens -> affinity -> feature: (1, 2, 2, 2) (1, 4, 2) (1, 4, 4) (1, 2, 2, 2)\nexercise fourth-token [2,0], first weight row: [0.2212, 0.1091, 0.2212, 0.4486]\nexercise first output: [1.3395, 0.3302]\nbackward/step through Q,K,V verified; reconstruction loss=0.1595\n",
   "stderr": "",

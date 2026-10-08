@@ -1,101 +1,101 @@
-# 21.2 ViT attention：讓小塊交換內容
+# 21.2 ViT attention：讓每塊取得其他區域的內容
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-attention.ipynb){ .md-button }
 
-[上一節](21-patches.md)把一張 32×32 RGB 圖切成 16 個 patch，投影成 32 維向量，加上 CLS 和位置向量。紅矩形的答案仍是 0、藍矩形仍是 1。**現在，每個小塊怎麼取得其他小塊的內容？** 本節把第 15.1 節的 Q/K/V 讀取法用到這 17 個 tokens。
+[上一節](21-patches.md)準備了 16 個 patch token，以及一個等待彙整圖片的 CLS。patch 投影時，各塊只讀自己的像素。**現在怎麼讓一塊的表示也包含其他區域的資訊？** 我們沿用 15.1 的 Q／K／V 讀取法。
 
-## 一塊怎麼讀其他塊的內容
+## 交換的是特徵，原圖仍留在原位
 
-材料仍是 seed 101 的訓練圖 3，正確答案為紅色 0。紅矩形跨過幾個 patch：patch 1 只有背景，本身沒有矩形的紅藍訊號；patch 6 已經含紅色。互讀可以讓各塊取得其他塊的內容，CLS 也能藉此彙整整圖資訊。這個顏色任務可以用第 1 章的 CNN 完成；本節研究的是 attention 怎麼交換內容。
+材料仍是 train 圖 3，答案為紅色 0。patch 1 只有背景，patch 6 已含紅色；紅矩形還跨過其他格子。只看自己時，各塊知道的是自己視窗內的內容。attention 讓它們按當下特徵讀取其他位置，CLS 也能讀到各區域，把分散內容彙整起來。
 
-下面仍選 patch 6 當接收者，展示它如何混合各來源的特徵。圖中只畫 patch 1、6、7、10 四個來源，讓箭頭能看清楚；真正的模型同時讀全部 16 塊和 CLS。
+下面選 patch 6 當接收者，只畫 patch 1、6、7、10 四個來源。實際模型讀的是全部 16 塊和 CLS。
 
 ![手工讀取示意：四個實際patch的內容流向接收patch6；箭頭表示來源value按讀取比例送到接收者，非物件移動](../assets/diagrams/21-attention-exchange.svg)
 
-箭頭從**提供內容的來源**指向**接收者**。它不表示把原圖搬動或把紅色塗到別塊；改變的是 patch 6 的特徵向量。每個來源提供一份 V，接收者按權重相加，得到包含其他位置資訊的新向量。CLS 也以同樣方式參與讀取，所以它能取得整圖各塊的內容。
+箭頭由提供內容的來源指向接收者。每個來源提供一份 **V（value，值）**；patch 6 用自己的 **Q（query，查詢）**與來源的 **K（key，鍵）**比對，算出各來源的比例，再將 V 加權相加。得到的是 patch 6 的新特徵，不是把紅色像素塗到別塊。圖中沒有實測權重，箭頭只表示內容怎麼流。
 
-## 四個 heads，各分配自己的讀取比例
+這叫 **self-attention（自注意力）**，因為 Q、K、V 都來自同一串 tokens；「self」沒有把讀取限制在自己。CLS 也參與這套運算，因此原本相同的 CLS 初值，讀完不同圖片後可以形成不同表示。
 
-第 15.1 節已經算過：Q 是接收者的 query、K 是來源的 key，兩者比對後經 softmax 得到權重，真正混合的內容來自 V。這裡仍是 **self-attention**：Q、K、V 都由同一串輸入 tokens 產生。「self」指來源和接收者來自同一串，不是只讀自己。
+此處要完成的是「讓位置依內容取得其他區域資訊」。前面的 CNN 也能做紅藍分類；這張圖沒有證明 attention 是這道顏色題唯一必要的做法。
 
-本模型用 **4 個 attention heads**。Q、K、V 先各有 32 個特徵，再各分成 4 組，每組 8 個特徵。每組各算一張權重表：同一個接收者在不同 head 可以給來源不同的比例。這裡的 head 是注意力頭；最後給紅藍分數的 classification head 是另一個部件。
+## 同一個接收者，可以用四套比例讀內容
 
-設 B 是圖片數，T=17 是含 CLS 的 token 數，d=8 是每個 head 的特徵數。Q、K、V 的 shape 都是 `[B,4,17,8]`，權重表是 `[B,4,17,17]`。後兩軸依序是接收者 query、來源 key；每個接收者那一列沿來源軸加起來等於 1。這次仍用第 15.1 節的計算：
+15.1 用一套比例混合來源。這裡使用 **4 個 attention heads（注意力頭）**：把 Q、K、V 各自的 32 個特徵分成四組，每組 8 個，各算自己的讀取比例。
+
+這樣同一個接收者不必讓全部特徵共用一張來源比例表：不同組可以形成不同的內容混合，再接回同一個 token。這是多 head 改變的分工；它沒有事先指定哪個 head 看紅色、哪個看背景，也不保證四組會自動學成這種分工。注意力頭和最後輸出紅藍分數的「分類頭」是不同部件。
+
+令 B 為圖片數，T=17 為含 CLS 的 token 數，每個 head 的 Q／K／V 寬度為 d=8。仍用已學的計算：
 
 \[
 A=\operatorname{softmax}_{\text{來源}}\!\left(\frac{QK^{\mathsf T}}{\sqrt{8}}\right),\qquad O=AV.
 \]
 
-A 是每個 head 的讀取比例，不是可學參數；產生 Q/K/V 的投影才是可學參數。O 是各 head 混合後的特徵，shape `[B,4,17,8]`。把四組結果接回 32 維，再做一次可學的 32→32 投影，attention 的輸出便回到 `[B,17,32]`。
+Q 與 K 的內積除以 √8，softmax 沿來源軸分配比例。A 的每列是一個接收者讀各來源的比例，列和為 1；O 是它讀到的加權內容。Q、K、V 都是 `[B,4,17,8]`，A 是 `[B,4,17,17]`，最後兩軸依序為接收者、來源。
 
-``` { .python data-excerpt="miniyolo/vision_transformer.py" }
-    def forward(self, tokens, return_attention=False):
-        if tokens.ndim != 3 or tokens.shape[-1] != self.embed_dim or tokens.shape[1] < 1:
-            raise ValueError("tokens 必須是非空的 [B,N,embed_dim]")
-        batch, count, _ = tokens.shape
-        qkv = self.qkv(tokens).reshape(batch, count, 3, self.num_heads, self.head_dim)
-        q, k, v = qkv.permute(2, 0, 3, 1, 4).unbind(0)
-        weights = (q @ k.transpose(-2, -1) / math.sqrt(self.head_dim)).softmax(dim=-1)
-        mixed = (self.attention_dropout(weights) @ v).transpose(1, 2).reshape(batch, count, self.embed_dim)
-        output = self.output_dropout(self.projection(mixed))
-        return (output, weights) if return_attention else output
-```
+A 隨輸入重新計算，並非保存下來的模型參數。會學習的是產生 Q／K／V 的投影。各 head 的 O 仍有 8 維，四組接回 32 維，再用一個可學的 32→32 投影組合，得到 `[B,17,32]`。每個位置都有新內容，token 數與寬度都保留。
 
-程式的 N（`count`）就是正文的 T。`reshape` 先把一次 QKV 投影的 96 個特徵拆成三份、各四組；`permute` 把 QKV 軸移到前面，`unbind(0)` 才依序取得 Q、K、V。最後 `transpose(1,2)` 把 head 軸放回每個 token 裡，再接成 32 維。
+## 為什麼還要給位置：重排內容與改變配對
 
-`return_attention=True` 另外回傳 softmax 後、dropout 前的權重，好核對每列和為 1。訓練時若啟用 dropout，實際使用的權重會隨機刪除部分值並縮放，該次使用的列和不必恰好是 1。本節的機制檢查使用 `eval()` 關閉 dropout。
+先暫時不加位置向量。若把來源換順序，Q 和 K 算出的來源分數也跟著換，對應的 V 同樣跟著換。對固定的 CLS 而言，它仍是用相同比例加總同一批內容，結果不會因排列順序而變；各 patch 的輸出則跟隨自己的輸入重排。
 
-## 交換兩塊，位置線索改變什麼
-
-現在做一個機制檢查，不訓練模型。保持 CLS 在序列第 0 槽，把兩個 patch 的**內容向量**交換；原圖分類答案不變，仍要辨認紅或藍。這次比較完整、未訓練 TinyViT 的整圖特徵：tokens 經過兩個 Transformer blocks 和最後 LayerNorm 後，取出的 CLS 向量。下一節才拆開這條完整路徑；此刻只觀察這個 32 維整圖特徵有沒有改變，不計算分類 head 的紅藍分數或正確率。
-
-先知道這條完整路徑裡各部件的分工就夠了：Transformer block 用 attention 讓位置互相讀取，再用 **MLP（Multi-Layer Perceptron，多層感知器）**這個小型全連線網路修改每個 token 內的特徵。**LayerNorm（Layer Normalization，層正規化）**整理每個 token 自己的特徵尺度。MLP 與 LayerNorm 都對各 token 使用同一套規則，不在這一步混合不同位置；residual 則把同一位置的修正加回原值，和第 3.1 節相同。因此，交換 patch 順序後，這些步驟的輸出也跟著同樣交換；它們不會讓固定在第 0 槽的 CLS 多出位置線索。具體順序與公式留到下一節。
-
-不加位置向量時，交換只是把同一批內容換順序。每個 token 用相同的 QKV 投影，attention 又讀全部來源，因此來源順序換了，對 CLS 的加權總和不變；patch 輸出的順序則跟著交換。後續逐 token 的運算和 residual 也保留這個性質。
-
-加入位置向量後，若**槽位的位置向量留在原位**，交換兩塊內容會形成新的「內容＋位置」配對，CLS 輸出就可能改變。若把已加完位置的整個向量一起搬走，內容和位置配對沒有改，仍只是同一串向量重排；不能用那種操作測出位置的作用。
+這能讀到「有這些內容」，但沒有提供「哪些內容在左上或右下」的額外線索。上一節的位置向量，正是在改這件事。
 
 ![手工交換示意：不加位置時交換內容只是重排；加入位置時位置留在原槽，內容與位置的配對改變](../assets/diagrams/21-position-swap.svg)
 
-完整程式以同一張 train 圖 3，交換 patch 1 與 patch 16，保持 CLS 在第 0 槽；關閉 dropout 後，實際結果如下。最大絕對差是對比較的全部特徵逐一相減、取絕對值，再取最大值：
+看下半部：位置向量留在槽位，只交換兩塊**尚未加位置的內容**。現在同一內容加上不同位置，形成新的輸入，讀取比例與 CLS 結果就可能改變。若把已加完位置的整個向量一起搬走，仍是同一批向量重排，沒有改變「內容＋位置」配對；那不是要測的位置作用。
 
-|比較|最大絕對差|
-|---|---:|
-|不加位置，交換前後的整圖特徵（CLS）|0.0000003576|
-|不加位置，patch 輸出與應有的交換順序|0.0000004768|
-|位置留在原槽，只交換內容，交換前後的整圖特徵（CLS）|0.001603425|
+這個區別先說明 attention 能使用哪種線索。完整程式還把交換接到整個未訓練 TinyViT；[下一節的完整模型核對](21-transformer.md#position-check)會在教完 blocks 與最終 CLS 後，解讀那組實測差值。顏色答案不依賴位置，改變特徵也不等於提高分類正確率。
 
-前兩項小於程式採用的容許誤差 0.000002，視為 float32 捨入造成的差異；第三項則明顯超過它。這能展示位置向量如何改變運算的輸入，**不能據此說位置向量提升了紅藍分類正確率**：顏色答案本來就不依賴位置，也沒有在這裡做有／無位置的訓練對照。
+## 小塊變多，成對讀取如何增加
 
-完整程式前半也會重做第 15.1 節的四個二維手工 tokens `[1,0]、[0,1]、[1,1]、[0,0]`，並對這個小 attention 模組做一次 SGD 更新，確認 QKV 收到梯度。這與上表的未訓練 TinyViT 交換檢查是兩個部分；手工目標不是紅藍答案，不能把一次更新當成分類學習。
-
-attention 圖同樣有範圍：高權重表示這層這個 head 從某來源讀得多；後面還有投影、residual、MLP 和其他層，所以它不是分類答案的完整解釋。這個實驗也沒有輸出框，不能把箭頭或權重當成物件偵測成功。
-
-## 小變化：patch 變小，成對讀取多多少
-
-沿用上一節的 P=4 小變化。32×32 原圖會有 64 個 patches，加 CLS 後 T=65。若每個接收者都和每個來源比較，單圖、單 head 的表有多少個值？和 P=8 相比幾倍？
+每個 head 都要讓每個接收者和每個來源比較，因此一張圖的權重表有 T×T 個值。沿用上一節的練習：原圖不變，把 patch 邊長從 8 改成 4，加 CLS 後會有 65 個 tokens。先算單 head 比原來多幾倍。
 
 ??? note "參考答案"
 
-    P=8 有 T=17，表內 `17×17=289` 個值；P=4 有 T=65，表內 `65×65=4225` 個值，約 14.62 倍。四個 heads 分別有 1156 和 16900 個權重值。不能只數 16² 與 64²，因為 CLS 也參與讀取。
+    原來 T=17，有 `17×17=289` 個值；改後 T=65，有 `65×65=4225` 個值，約 14.62 倍。四個 heads 分別有 1156 與 16900 個權重值。CLS 也參與讀取，不能只比 16² 和 64²。
 
-    這只比較 attention 的成對項目數，假設 B、head 數與每個 head 的特徵數相同。投影、MLP、資料搬移等成本沒有包含，也不能直接說執行秒數變成 14.62 倍。
+    這比較的是成對項目數，固定 B、head 數及每個 head 的寬度。投影、MLP、資料搬移等沒有算入，因此不能直接把執行秒數乘 14.62。
 
-再想一個小變化：若一個 head 的某接收者 Q 全為 0，與 17 份 K 的分數都是 0，softmax 會如何讀取？
+再想一個變化：某個 head 的接收者 Q 全為 0，與 17 份 K 的分數也全為 0，它會讀到什麼？
 
 ??? note "參考答案"
 
-    17 個來源各占 1/17，輸出是 17 份 V 的平均，包括 CLS 的 V。這只描述該 head 的加權內容；四個 heads 接回之後還有輸出投影，不會直接等於原圖 RGB 的平均。
+    softmax 給每個來源 1/17，讀到 17 份 V 的平均，包括 CLS 的 V。四個 heads 接回後還有輸出投影，這個平均不直接等於原圖 RGB 平均。
 
-機制來源：[ViT 原論文 Appendix A](https://arxiv.org/html/2010.11929#A1) 定義多 head self-attention；[§3.1](https://arxiv.org/html/2010.11929#S3.SS1) 說明位置 embedding；Appendix D.4 提供原論文的位置設定對照。本文的交換檢查是課堂機制實驗，沒有重做論文的 ImageNet 對照。
+我們已經讓位置之間交換內容，還保留每個位置的向量。下一節要把這份新內容加回原表示，再接上逐 token 的特徵組合，形成可堆疊的 Transformer block。
 
-[上一節：21.1 圖片切塊](21-patches.md) · [下一節：21.3 完整 Transformer block](21-transformer.md) · [在 Colab 重做交換](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-attention.ipynb)
+??? note "多 head 實作與本節程式的兩個檢查"
+
+    ``` { .python data-excerpt="miniyolo/vision_transformer.py" }
+        def forward(self, tokens, return_attention=False):
+            if tokens.ndim != 3 or tokens.shape[-1] != self.embed_dim or tokens.shape[1] < 1:
+                raise ValueError("tokens 必須是非空的 [B,N,embed_dim]")
+            batch, count, _ = tokens.shape
+            qkv = self.qkv(tokens).reshape(batch, count, 3, self.num_heads, self.head_dim)
+            q, k, v = qkv.permute(2, 0, 3, 1, 4).unbind(0)
+            weights = (q @ k.transpose(-2, -1) / math.sqrt(self.head_dim)).softmax(dim=-1)
+            mixed = (self.attention_dropout(weights) @ v).transpose(1, 2).reshape(batch, count, self.embed_dim)
+            output = self.output_dropout(self.projection(mixed))
+            return (output, weights) if return_attention else output
+    ```
+
+    程式的 N（`count`）就是正文的 T。一次 QKV 投影產生 96 個特徵，先拆成三份、各四組；`permute` 和 `unbind` 取出 Q、K、V。最後把各 token 的四組輸出接成 32 維。
+
+    `return_attention=True` 回傳 softmax 後、dropout 前的權重。dropout 訓練時會隨機刪值並縮放保留值，實際使用的列和不必是 1。本節換位檢查以 `eval()` 關閉 dropout。
+
+    程式前半重做 15.1 的二維手工 tokens `[1,0]、[0,1]、[1,1]、[0,0]`，並做一次 SGD 更新，確認 QKV 收到梯度；這個手工目標不是紅藍答案。後半的 TinyViT 換位檢查則沒有訓練。兩部分不能合成「分類學習成功」的結論。
+
+    attention 權重只說明這層、這個 head 從誰讀得多；後面還有投影、residual、MLP 與其他層。它不是分類答案的完整解釋，也沒有輸出物件框。
+
+機制來源：[ViT Appendix A](https://arxiv.org/html/2010.11929#A1) 的多 head self-attention 與 [§3.1](https://arxiv.org/html/2010.11929#S3.SS1) 的位置向量。Appendix D.4 是原論文的位置對照；本書的換位檢查沒有重做該 ImageNet 實驗。
+
+[上一節：21.1 圖片切塊](21-patches.md) · [下一節：21.3 組成分類模型](21-transformer.md) · [在 Colab 核對讀取](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-attention.ipynb)
 
 <!-- curriculum-evidence:start -->
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-attention.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/21-attention.json)
 
 ??? example "展開本次實際輸出"
 
