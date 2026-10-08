@@ -38,6 +38,8 @@ Letterbox 則讓兩軸用同一個比例，而且選能讓整張圖放進畫布�
 
 ![程式實際產生的原圖、直接拉伸與等比例縮放補邊對照](../assets/diagrams/04-coordinates-panel.png)
 
+要逐一核對圖中的座標與刻度，可[查看原尺寸對照圖](../assets/diagrams/04-coordinates-panel.png)。
+
 從左到右比較同一塊紅色物件：原圖是寬 80、高 40；stretch 把它直接拉成 64×64，紅色矩形也被拉高；letterbox 先等比例縮到寬 64、高 32，再上下各補 16 列。三格的綠框都跟著圖片轉換。最右格的白色虛線只標出原圖縮放後的範圍，範圍外的黑色就是補邊。這是完整程式的實際輸出，用來核對前一張幾何示意；沒有模型預測或訓練結果。
 
 保持長寬比是 letterbox 的收益：物件形狀不變，例如圓不會被拉成橢圓。代價是畫布有一部分是補邊，物件分到的畫素較少。本例 stretch 後物件占 32×32=1024 個畫素，letterbox 後只占 32×16=512 個，整張畫布有一半（4096 個中的 2048 個）是補邊。還原時，兩種做法都要知道每張原圖的寬高；letterbox 另外還要記補邊量。補邊填的值也要和訓練時的前處理一致，否則推論時模型看到的補邊區，會和訓練時看到的不同。
@@ -223,7 +225,7 @@ print(f"red_pixel_box={red_pixel_box}")
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-coordinates.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-coordinates.json)
 
 ??? example "展開本次實際輸出"
 

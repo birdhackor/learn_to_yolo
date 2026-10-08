@@ -1,45 +1,45 @@
 {
  "docs/glossary.md": {
   "review": "reviews/glossary.md",
-  "review_sha256": "a55b2d9042a715a6eaed02348ec3a2a5d4c6ebdb7397c6d8971d8cdf348cf481",
+  "review_sha256": "b1719374fb61f87e05be7bb6bea7614136323ca9d57050b0169fc9fd686c3085",
   "covered": {
-   "docs/glossary.md": "3020572f31deb99571ff8cb7748edd50cf05c83f7e5357686aa81d7182ab5539"
+   "docs/glossary.md": "d3b533d8809f14d19dfdc241f2333438c57b20b61e073b96f04e7ec80d7b6613"
   }
  },
  "docs/index.md": {
   "review": "reviews/index.md",
-  "review_sha256": "a3ddde700b4099562e718e94d88b5a76573e71688ebc8deb3b9967941bf97b0f",
+  "review_sha256": "aeb7911d17097f2097d579737d8af93da1c3e7077b7f05c7d8cbcf507694e5ed",
   "covered": {
-   "docs/index.md": "c24e6f35d3dd565b7514da807b7e0c5f5545edf15ba0164b097fda6be78805ed",
+   "docs/index.md": "da7255b22e814930865d0edbe2c2bb925f250108543a76cfe0e2e37169656d1c",
    "docs/assets/diagrams/classification-vs-detection.svg": "a050400b9fe7e35a06073ca97ab15ee893ce1fef62bc57236707539a00d1c90e"
   }
  },
  "docs/learning-path.md": {
   "review": "reviews/learning-path.md",
-  "review_sha256": "d98facfdaea691f70295cf5deb68ec70406ee690484cc9293cb69c9c13292eee",
+  "review_sha256": "e1216b2c88a7ecdeb0e73683bcb2215d411df9e103e28fff537ff0105b21b389",
   "covered": {
    "docs/learning-path.md": "bb6215f31c74a52228e73c83431904eeeb75b8351167a8886ed74fe0714912b9"
   }
  },
  "docs/lessons/00-warmup.md": {
   "review": "reviews/00-warmup.md",
-  "review_sha256": "b7c7ca6d268889630b04d91b069566eb4ea25c8b7ac56b6bf18f2181ba703326",
+  "review_sha256": "4379a70dba6d5635fddd9805aff573dc4f72b8de4fab637bade17e60e2f75a06",
   "covered": {
-   "docs/lessons/00-warmup.md": "668df1e8bf2081c651a7ff3f6cfbb85002bacb59d42afb2c0b138e89cae578ff",
+   "docs/lessons/00-warmup.md": "3af375f9e92dad0513f98694414c08a1e504fb26880b98920613f1e4b727ff94",
    "docs/assets/diagrams/00-gradient-descent.svg": "922374139a1cfadd6350dc462196f7b1353ba5a01466b75287794ce56fb0bb3f",
-   "docs/assets/diagrams/00-neuron-network.svg": "d972eb8dd270d49cba8b4c44324bf0f0a2bd0e2c49d876b75dedc99cb341892a",
+   "docs/assets/diagrams/00-neuron-network.svg": "86ecfbc14422de5571ee2d72f78a29f7e1ef77deb25324b7efcb0c59784d8d97",
    "docs/assets/diagrams/00-nonlinear-classification.svg": "53853007e62a09c011fadbf009eef1e079de62c79b7e917519fd181469d8ab32",
    "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
   }
  },
  "docs/lessons/01-small-cnn.md": {
   "review": "reviews/01-small-cnn.md",
-  "review_sha256": "e9021bf6a63494294ca4c4155765920cc70fb9ded4c75c64f1b94e29c2b85f1f",
+  "review_sha256": "da71bd212794c20bf3ba3a3838ad32b78484e953a746b502168608120b61b1a7",
   "covered": {
-   "docs/lessons/01-small-cnn.md": "d07cac55ae6b283524935bda1a33b17643f7736ed75f77b12363cc039c9a5d20",
+   "docs/lessons/01-small-cnn.md": "a14c511dfa32bbc451a0e0de714e8cfb5ed9d3516a49c96b05f3e73f4f41b600",
    "docs/assets/diagrams/01-cnn-materials.svg": "13e9618efcc9b18b43766dbf0c0872b14f05aca561e576d17c3107b95666a3f9",
    "docs/assets/diagrams/01-convolution-window.svg": "c8b8706ca476ea6725bea4fd32a6c293bf6a4e3aec5f1e10e8f9ae171b1bbc70",
-   "docs/assets/diagrams/01-local-patterns.svg": "018451f61f349c32cf6468b40cfbd7693a2e1d4086163b2f284d0ceb1ebb81c1",
+   "docs/assets/diagrams/01-local-patterns.svg": "4141acc50f6964dcc7ccd89de217de22e7259c18bb3182e0972fe6807dd23ada",
    "docs/assets/diagrams/01-pooling-example.svg": "d43c2eeb782cdcf35f218eaf24a56d12b436cce4b7a57fb41483f77fbc78c1bf",
    "docs/assets/diagrams/01-receptive-growth.svg": "8453faf730df11dd83356cc948cdfca0ed2063fdcc594735532ff1261a7e8c37",
    "docs/assets/diagrams/01-rgb-convolution.svg": "21b378911b69640542b0bbfa0ae252955ba3d1f1e46a8bc3d93ee83dfdd18790",
@@ -59,9 +59,9 @@
  },
  "docs/lessons/03-comparison.md": {
   "review": "reviews/03-comparison.md",
-  "review_sha256": "3e823b59bf944d3a5675707a5e8777946eaeb9b2c68c7bb393c02ab5a55c4c24",
+  "review_sha256": "c1b2d3dda54f579b3f39dc82aeca74ea459f1546fa0c00cb8ce06b2f9b527448",
   "covered": {
-   "docs/lessons/03-comparison.md": "2ad9464dcc5f2a84fa0f2deab8df1ec4489803610df457b6df6f6de888c81445",
+   "docs/lessons/03-comparison.md": "994b916bed8ac666a4a6d60e33c45b03c95b00202d0e750f8ba382977ce65ecf",
    "docs/assets/diagrams/03-comparison-learning-readable.svg": "e0f57dffdbc9e97fc83020f0f76ce7d52241dbb0278a077a3f206dd715af6393",
    "lesson_cases/03-comparison.py": "8acae191b43c671164496648ccfbef3950343b06fcfbbca5df6bb21141a7fc0b"
   }
@@ -86,9 +86,9 @@
  },
  "docs/lessons/04-coordinates.md": {
   "review": "reviews/04-coordinates.md",
-  "review_sha256": "9accb83deefd960ab726f743f6c1a8e09f351d9c7c1604816ee9b07aab1d1c95",
+  "review_sha256": "50605bb2870ec2851fecfb048e4810ad788f2a309b56f5a69b51d279c60d185f",
   "covered": {
-   "docs/lessons/04-coordinates.md": "e757ac5a9c6866d8fb64d9f02d386f0447912a5bc0a7a3c54ddb2d84b44d663e",
+   "docs/lessons/04-coordinates.md": "6cc262c50c3307904efd0bacfd97cc3858af6f7734221ce24b94fa192cb79eb9",
    "docs/assets/diagrams/04-coordinates-panel.png": "2593eb23216d5d1ffd97575f030ae0e515eaf9260f51e95ee74336848cf17256",
    "docs/assets/diagrams/04-coordinates-rounding.svg": "883f55b09ba5bf1f9ef38a193ccdba89f2a8f4a339c9f8f9ad7516ffb20e4fef",
    "docs/assets/diagrams/04-coordinates.svg": "473e754e4a98108c0b34280886f25a3ad94b279830e2421a4a79480e53047acf",
@@ -97,9 +97,9 @@
  },
  "docs/lessons/04-localization.md": {
   "review": "reviews/04-localization.md",
-  "review_sha256": "922be63ba7a28616a40aa8926fb2f5819019f5538169e95aa7b02c0243a6c8c1",
+  "review_sha256": "9e264bfed3aeee8e67044d985b30d0369257f4278afd41f39e2531a6a57ae43f",
   "covered": {
-   "docs/lessons/04-localization.md": "13c3f061e2c79377a703c3d5c227eee911d0249b52e5f25a86062a5ddac49b29",
+   "docs/lessons/04-localization.md": "25b97bba7442ea4561f348fd18344061d84d39900d6c5053ce2712269c586971",
    "docs/assets/diagrams/04-localization-learning.svg": "dc8c7a1d69ef0a22a6e8a399bed8349ddd5eacd7cef1f57a45c00cd2de388baf",
    "docs/assets/diagrams/04-localization-model.png": "e8c40ea5811e8507bce9efb3726ffc353d09d4d40be0cc547eec5b1b8aa137cc",
    "docs/assets/diagrams/04-localization.svg": "a4d35a3b11a2cae489f45a232a0343c73bfbb09aabbd1be4acacca9f567b700e",
@@ -108,25 +108,25 @@
  },
  "docs/lessons/05-assignment.md": {
   "review": "reviews/05-assignment.md",
-  "review_sha256": "ad606953c51b650cc777af219e358ecfb79f226b478c5bf3e5b63631714da8cc",
+  "review_sha256": "07035dab99923a7074618ee3b580e24d02f8a001caccf955b74eac596688847f",
   "covered": {
-   "docs/lessons/05-assignment.md": "ee6037380e506c0b941a8e146cb6293e0679f4872ed85280fd5e17c87fbd4218",
+   "docs/lessons/05-assignment.md": "8757b9ea2c5ae7e0ea2ff1edca8b5db63d412fa4e8bcf9d8fb52cdf9be80ce40",
    "docs/assets/diagrams/05-assignment.svg": "0bf373e60d870cd97fd1749ca0a93de204aeb0ba552f06fcfc3675f611925598",
    "lesson_cases/05-assignment.py": "2045c2e8c7e0bf6dc5ad2522790892bbf92d84ff364615fa7e6efc8bffcb33a1"
   }
  },
  "docs/lessons/06-decode-nms.md": {
   "review": "reviews/06-decode-nms.md",
-  "review_sha256": "862fe9b4119b5931c3ed8c8a9bca0c428f92c4e0f6ed9d0bb37e8d4fdfd01584",
+  "review_sha256": "c917589edde6b1bbf2e1dac95bff90a74d467af0c4fd1238a6856860bdeadcdb",
   "covered": {
-   "docs/lessons/06-decode-nms.md": "bdb927ce9dc2c0817f8ea4269de100f908bffc8f93354fb3b12c98c61322fb39",
-   "docs/assets/diagrams/06-decode-nms.svg": "2e6d6cf9f26d95e6a3002b894596e11b8b1767211be038127acc73e39a82ff69",
+   "docs/lessons/06-decode-nms.md": "82ac8dccf2137c0cdcec17131b0a76fac60b3778bb74eb6f7643c33cdd2df0fc",
+   "docs/assets/diagrams/06-decode-nms.svg": "828f0d92284a8e0858ae40aaae2ece7805d26c75eff308bdfa5e5d2654a9e24f",
    "lesson_cases/06-decode-nms.py": "a3bc11cbfa0ab9435b9184c6c309fcc10eb39509bbdd81f47a7fea3d104fb307"
   }
  },
  "docs/lessons/06-evaluation.md": {
   "review": "reviews/06-evaluation.md",
-  "review_sha256": "46c3164949bdb43c9481369a655de367f5b8ecf1e8345c945d2293813bb184dc",
+  "review_sha256": "3940b26578a28a83d7ded498f987ce109e260f1341c36f09a123e7b26cdcf4aa",
   "covered": {
    "docs/lessons/06-evaluation.md": "7f09936b253f716881b4a1167c7e35aa037a3979f30271717a112c9ee802e5ae",
    "docs/assets/diagrams/06-evaluation.svg": "8289113b070ec540923910c95227d2592d09545c0cb2e6ce215091b8ce8674fc",
@@ -135,9 +135,9 @@
  },
  "docs/lessons/07-data.md": {
   "review": "reviews/07-data.md",
-  "review_sha256": "3c091977c7f3a649b4a795ea5372eccd0a557f2a384c5b7853d352036af6f065",
+  "review_sha256": "8814948859ba2f21ab7a77324e13ed0ca702ca51a5926ed11f2d1e521fa9ed09",
   "covered": {
-   "docs/lessons/07-data.md": "4b38092620e7998f9a2a8b75121d03fcb96d7279c451271b4a9ee03f0949aa77",
+   "docs/lessons/07-data.md": "654e26b14b91c0b4e165394f94e56d1739aaf699d6342b3ab64b3ff40bb3962c",
    "docs/assets/diagrams/07-data.svg": "7c45416667c1e130c9ef4433a600435edd4f2f8de0c20869487e3f7e0429c1ab",
    "lesson_cases/07-data.py": "3e82d40e0dafb7c07813e8521472bc6dc220eefae4ebd576353fa3daa3a24215",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
@@ -152,7 +152,7 @@
  },
  "docs/lessons/07-heldout.md": {
   "review": "reviews/07-heldout.md",
-  "review_sha256": "e5daccb72e83865ee4da549a6a17aa29a699b59f375d0221a5c39b9e5e58ca85",
+  "review_sha256": "c04ed8c2c10a2c38322da8f8d3cfa20f6abf34bcd156aa7f198b5ba51d26e4a9",
   "covered": {
    "docs/lessons/07-heldout.md": "ef7184de372db2e7b2005a7fd50ada8934d5567b717c19933af1636b8d787604",
    "docs/assets/diagrams/07-grid-loss-readable.svg": "8975637e5d4912b68f9bbd9a02dd092c31e9d0f029cc5f6268f730d3fe14adec",
@@ -170,7 +170,7 @@
  },
  "docs/lessons/07-inference.md": {
   "review": "reviews/07-inference.md",
-  "review_sha256": "dafac9d792f5086f9d5b330e07a0e5bcc0de795e41b497d99dd86417d99e2271",
+  "review_sha256": "1144c95f2e8ca46f2f61aff87b46519c209a2ce5fb9cc02efb89e0c93330f587",
   "covered": {
    "docs/lessons/07-inference.md": "cc518466fdf1063d77718d3826c5f4c9a71024683023fe477e42f4136d6c8732",
    "docs/assets/diagrams/07-data.svg": "7c45416667c1e130c9ef4433a600435edd4f2f8de0c20869487e3f7e0429c1ab",
@@ -188,7 +188,7 @@
  },
  "docs/lessons/07-loss.md": {
   "review": "reviews/07-loss.md",
-  "review_sha256": "4e5f7489779d5c9cc4d103c72593ecfa789af3045b58dfe3e2755e8a0f3dfc4d",
+  "review_sha256": "fc6bb97affbf28c3f1f092189131ff83a49456f53153a8360bd0c61edb3d20dc",
   "covered": {
    "docs/lessons/07-loss.md": "a43ac2f1d27fcaaa3872ddf1ed1d3375d5b66e14f77b5a59dd1f45ba82805170",
    "lesson_cases/07-loss.py": "1fa1c9ace4eb1399130d340267059a00d204cf682bb56f33ca2f0a11a3ad84d0",
@@ -204,9 +204,9 @@
  },
  "docs/lessons/07-targets.md": {
   "review": "reviews/07-targets.md",
-  "review_sha256": "c32de43bf46fd31c5cb1b4578f0a9bd1ecf3323bf516043bd9fa7a201b1d2d41",
+  "review_sha256": "e31475436cf47283b9bce8a9873901f7d1e9b96ccca1d2cf02d88868fbcd273b",
   "covered": {
-   "docs/lessons/07-targets.md": "449231e625d4e0ea09e48831be75b783d7532564e1042000fa1399867636668b",
+   "docs/lessons/07-targets.md": "6092518170a743bf1e5cb5573141c5dd256057bcb293462a9b34755dadac9203",
    "docs/assets/diagrams/object-journey.svg": "a80d4e43b9e2dc76d13f76137b0689d6700a2a2ee54faa502607e3401e629d78",
    "lesson_cases/07-targets.py": "95804f80642c0f83830c7f88de9e3a4aa540582e67698af1cc8edab3bf2cd9c0",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
@@ -221,9 +221,9 @@
  },
  "docs/lessons/07-training.md": {
   "review": "reviews/07-training.md",
-  "review_sha256": "67141c955f419c48f1a7ce7970766037259c45d06227b1e79c6462b3aad0b489",
+  "review_sha256": "9c6ae84559cd9be9f8223177b40b5734523c2f79017e113b28325d497239085e",
   "covered": {
-   "docs/lessons/07-training.md": "7aeef680473a55e74528da5db6757d92ee9cdcddda74efa5011c87e22a2d31ea",
+   "docs/lessons/07-training.md": "9dc0e857e1d7314f91899d5c60788351b7d06c60a7f8eba7641c2f6798860623",
    "docs/assets/diagrams/07-grid-loss-readable.svg": "8975637e5d4912b68f9bbd9a02dd092c31e9d0f029cc5f6268f730d3fe14adec",
    "docs/assets/diagrams/07-grid-predictions-readable.svg": "ac0aef6ee5429918f840f78711b29e6abeebc48235456d0e6fb8b151f0c0ecc3",
    "lesson_cases/07-training.py": "fe1037df4ece00bef8810d5d3a31184c1a862b926306688759bcb5cb748afc99",
@@ -239,9 +239,9 @@
  },
  "docs/lessons/08-own-data.md": {
   "review": "reviews/08-own-data.md",
-  "review_sha256": "4d62cc64c02f858b25f808b0abbb42f44e420eda10e07ff5e367b8ce31076c0a",
+  "review_sha256": "9cb6b74deb57dcd1d7ef5603d7da513efe860abdeb79e9d31798514b1b3b2744",
   "covered": {
-   "docs/lessons/08-own-data.md": "a3f2a691bd0a008493d48ca7300b41da898f4ba182280d6efc496df87c1ad4e1",
+   "docs/lessons/08-own-data.md": "b8e081e70c6eb7f2a2a34fd8b8b47b24f1e33c1d19765e1199ea566ada5dee91",
    "docs/assets/diagrams/08-custom-learning.svg": "83036ad187af44e64bf54200e47b47b414dfab96ef03b4e5db79321d187f09a7",
    "docs/assets/diagrams/08-custom-loss-readable.svg": "a4d3ce1757586212317e71d15b8212a0780ee30e502e5e28c39959be628b11ed",
    "docs/assets/diagrams/08-custom-predictions-labelled.svg": "5e9ea0a6edb6b46cbbc8cc0b8952600ebd0f90a42a09d94e30454f626187380a",
@@ -259,9 +259,9 @@
  },
  "docs/lessons/08-own-images.md": {
   "review": "reviews/08-own-images.md",
-  "review_sha256": "73f89f431230fb107a5f186edf33b7c041b73f7cef21650a2a3b3e7b3355a0c1",
+  "review_sha256": "64e577a41cae51e679b7f8953c927bc3b169027fd2774c9ba0ab049f53d7d646",
   "covered": {
-   "docs/lessons/08-own-images.md": "3258b7d29ddb888b108b55e26840a7a2aa6025ae16d169965ed05bc521465594",
+   "docs/lessons/08-own-images.md": "43697c94116f17faf3d11dd0a1d8dcec0581000c303eccae38f6e4068139f461",
    "docs/assets/diagrams/08-own-images.svg": "237df7f604a77f6818a697ae2cff0ad2b39cf28d6e3722acad6d22dbcf32e1e5",
    "lesson_cases/08-own-images.py": "d812cdb29d585e4c6ea6be4a3e1e502259be7bd48547cda749378a89a8aff65a",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
@@ -277,25 +277,25 @@
  },
  "docs/lessons/09-anchor-clustering.md": {
   "review": "reviews/09-anchor-clustering.md",
-  "review_sha256": "401c44ab3cd7cc0215a095bb9673c4ee38803e4e368bc37bfe1b4d3fa920482c",
+  "review_sha256": "a9a6a4b96c04e52691c9957fd67efecde7c0c275f1ddfc8a18324c08d7d562ab",
   "covered": {
-   "docs/lessons/09-anchor-clustering.md": "30cadbb64edaab05b6e0a3f8bd08449a065a0f7de24ec3310ec8e4bc7012c22e",
-   "docs/assets/diagrams/09-anchor-clustering.svg": "58a4bd6ea6a5a636e83f03bdbe276ec94d786195c4344d9e88ee1520dc348b13",
+   "docs/lessons/09-anchor-clustering.md": "1bee294f3465cfda454d1340ee88c7651a5da4e16021e1150f18b9de73634b4d",
+   "docs/assets/diagrams/09-anchor-clustering.svg": "6e0abdcea180c7f303616a47d158db8a615c7a69e8f900415f47972f41e37798",
    "lesson_cases/09-anchor-clustering.py": "1262a5b3c925d9eb2e9c03cbe70279355a0575d3e0c8d7f28522883e692221a4"
   }
  },
  "docs/lessons/09-anchors.md": {
   "review": "reviews/09-anchors.md",
-  "review_sha256": "a9227cc492cf6036526756fe78b22559f1a2de5129f7bb4358e1b5406b8ecbdd",
+  "review_sha256": "124bc979129f15ce08f6a026f16ede38ce5f4c5aa3fce4634b037cd4886a9e03",
   "covered": {
-   "docs/lessons/09-anchors.md": "fd6336b83ca172b811203a6510cc3cf987df85e67a9b65bbd9a4fc5416b4f290",
+   "docs/lessons/09-anchors.md": "42918b90194dc8f4c44e9dd7b7bc7664b7ae7b7c03fa083452f1802f214d4bb8",
    "docs/assets/diagrams/09-anchors.svg": "93c73f27386a64d9282413f080db87a2891c249115cb165622cb78c13ba3f4e5",
    "lesson_cases/09-anchors.py": "7a7e8c431340e33f55fc8afc90136b225d18387940d6677eab9e8aecacd31469"
   }
  },
  "docs/lessons/10-multiscale.md": {
   "review": "reviews/10-multiscale.md",
-  "review_sha256": "b10d131d40fb9d62c4411669a5bdc4fba4192c002903d0997969454dd78e6a84",
+  "review_sha256": "226621c3f98fdf6a461c7b3810f8a75f881926323f5a57cc30260ce7fcc0dafa",
   "covered": {
    "docs/lessons/10-multiscale.md": "7b772aedc80ed52456aa842a72e41a24577c254068583d6908c1c0975766d653",
    "docs/assets/diagrams/10-multiscale-branches.svg": "ed6adbab0e7222d493f9a84ceb3d935edb2456e1cae4e47c2c864907a00a13ce",
@@ -316,7 +316,7 @@
  },
  "docs/lessons/11-augmentation.md": {
   "review": "reviews/11-augmentation.md",
-  "review_sha256": "134ce09c68318e28a2ee43e1c61ad41086aa2fd78683d73564f65a09ea876e11",
+  "review_sha256": "497cc584f56b3651aa1b960831c741fecd9efd3375e30a15afa21cfde015ceb5",
   "covered": {
    "docs/lessons/11-augmentation.md": "aed405f2c399926b361b4023d345b907e903072eb01348c3c404d4709182dad3",
    "docs/assets/diagrams/11-augmentation.svg": "46a835957fbdf9f3b3baa9a5299e7205a294e15e9a38d071780d9a5b2c8c4086",
@@ -326,16 +326,16 @@
  },
  "docs/lessons/11-csp.md": {
   "review": "reviews/11-csp.md",
-  "review_sha256": "2bcf7f8a4f7b5613ca1c5329caf9eb5c9ef73a4511754dab01c63978e35331c0",
+  "review_sha256": "5a3e9669b889f4947f4b4d0ca00f1d5b5bbfd1a1382635aac5de69eaced96a3b",
   "covered": {
-   "docs/lessons/11-csp.md": "a48818b567edfe210ec93caf3a3757279fcc5e4fa6e19fdb5c4f2e5ac14e26ce",
+   "docs/lessons/11-csp.md": "37d7945fa50c88c9457d7f4985ccc41ec5db6d798acce92c533cd040f63e84c7",
    "docs/assets/diagrams/11-csp.svg": "64377bcc3357725640c000e0ac13ef9582578af3643ab9ade1622be84851c5df",
    "lesson_cases/11-csp.py": "9710906769f4d757331a7c99d2ba89d8d45c40d52c76f1d2a32a510e13a4f556"
   }
  },
  "docs/lessons/11-fusion.md": {
   "review": "reviews/11-fusion.md",
-  "review_sha256": "d683df19169fc37a1772ebbe7d16041cef3616bafe1da0b4189106605b68d6f5",
+  "review_sha256": "62121b6cea95ef205f571636213774deeb0ee6682bb562e0f5daa54eee96e102",
   "covered": {
    "docs/lessons/11-fusion.md": "cdebc1adcdc2b29f24678311d962a693192944ae4650401d57733453b6969df4",
    "docs/assets/diagrams/11-bilinear-coordinates.svg": "4f87851588f338428e6e72f80eb4db0c345aefb83ebb2eefb5c299f14d0a3a8b",
@@ -345,16 +345,16 @@
  },
  "docs/lessons/11-iou-loss.md": {
   "review": "reviews/11-iou-loss.md",
-  "review_sha256": "dd079ae6be306414ffe2eb2ea5f2293e5c867c8b93a5525136d8646a3a5e78ec",
+  "review_sha256": "e64fddf7a8ad9b83f7bc6bbe526affcf6394245ae80682403ce3ab7d660b4bd3",
   "covered": {
-   "docs/lessons/11-iou-loss.md": "a4c7699455c51dce8c9bcffd567bb5aa02884b0fda4aa60e2b475673631d8359",
+   "docs/lessons/11-iou-loss.md": "3fc0339b28520cab2de972fe7f08d4f3d7442bc06579765edbfcba9614d19a2d",
    "docs/assets/diagrams/11-iou-loss.svg": "b9ea80169cfe1940bb9627d5841367f4989d17cfef8d07b5155ce24493e8c3d5",
    "lesson_cases/11-iou-loss.py": "ddce126434321bddf95543a02f21b082602024b3ba0ef6992cf8b2be70647325"
   }
  },
  "docs/lessons/12-anchor-free.md": {
   "review": "reviews/12-anchor-free.md",
-  "review_sha256": "0b37a1647012ee022c8674b4d40b86fc09c4931e28e86b8ce63d2a5b9dd0cc56",
+  "review_sha256": "ac9882321bae663220442976989f5b57d3ea939c4053b82f296bed3e5d5c89a4",
   "covered": {
    "docs/lessons/12-anchor-free.md": "c3f5f1df66bab891dbcfc0548f673794ee30db38ae29c3c59e4029afd4d2f365",
    "docs/assets/diagrams/12-anchor-free.svg": "0f43b6c74f090473582866c4dc56949c8fd55267e4a5b99f2e499f5382774548",
@@ -363,16 +363,16 @@
  },
  "docs/lessons/12-assignment.md": {
   "review": "reviews/12-assignment.md",
-  "review_sha256": "c3f0ebcbb6fbf0f7ea40f305aa81653ede4d105392a8f822f79f1692e608e910",
+  "review_sha256": "ce6d608d19c31246a8bf94b92adba4bd4eea0d2074edea4618f666600168ba2a",
   "covered": {
-   "docs/lessons/12-assignment.md": "eb6d814a8c5689ba3f35c575a6f4b6f8cff6b5f69a9c58d0b8c4b2e5d258288b",
+   "docs/lessons/12-assignment.md": "67c93ee92666cf7df9e36a8241f844404ef17248007500b1d141b385a2af6752",
    "docs/assets/diagrams/12-assignment.svg": "4a3817c274012a7838e95b9b0a9d8188259eea8f5a23869b819df21722e700b2",
    "lesson_cases/12-assignment.py": "c5a878e08249a513b5a5f5432615f714522f5fbaec92c4484e05bfb75b9249bb"
   }
  },
  "docs/lessons/12-decoupled-head.md": {
   "review": "reviews/12-decoupled-head.md",
-  "review_sha256": "40d9b68c413f20726fbed2ec358eba2ffdfb606071c165fba7f55885f7fa0c75",
+  "review_sha256": "9cfc8535ca60574276240a3e819c70037645d019c83260110ecb8b630c49d137",
   "covered": {
    "docs/lessons/12-decoupled-head.md": "be200e3f2384187ae9071c0b9cab990e248534325446023ac7952dbf064bd42c",
    "lesson_cases/12-decoupled-head.py": "38f6e64626db6a0324a23bc3d05e3c0d892df9e7a54423f98ff343abd6b5dbfc"
@@ -380,7 +380,7 @@
  },
  "docs/lessons/12-dfl.md": {
   "review": "reviews/12-dfl.md",
-  "review_sha256": "fd8461cbdc34014e102dd5e1699bbc30bb649c965d85513110ca09aa380cbfef",
+  "review_sha256": "48576539ce0b21737b6247e205a89e3b1001eb0e27821f01bc2f76709856d216",
   "covered": {
    "docs/lessons/12-dfl.md": "c3786a0245d531b4f4dd0251239e565eb2d806057ced82baf893c8d7c7e11cba",
    "lesson_cases/12-dfl.py": "2f3ec8899cb25eb7df5d1118f57a715de935de9cc7569152e542d4563fa1e1c1"
@@ -388,16 +388,16 @@
  },
  "docs/lessons/13-dual-assignment.md": {
   "review": "reviews/13-dual-assignment.md",
-  "review_sha256": "5f8f1fff7082d29349b9aaf34cff14ad23c142b8c9e415ab41e1d15039b939cf",
+  "review_sha256": "47b595726708bde516399cc722e63c6a93113f65fea33d67d34e01614eafe584",
   "covered": {
-   "docs/lessons/13-dual-assignment.md": "897c7bcda44b5a6fb4637fdea4c0eda4f4486d6fa2bc807ebf1e0062107c562d",
+   "docs/lessons/13-dual-assignment.md": "99cae07bd2f53d3c7d5536d5fe4b0dcc2f9e29da7465bcc6da644f6f847488b4",
    "docs/assets/diagrams/13-dual-head-flow.svg": "43f3c73fc6ddeb833ffcf7413a379d2dcc26f5abb0b29d2def4f4bbde633e3dc",
    "lesson_cases/13-dual-assignment.py": "5ba8cda913f25bde1c82d93d91330b7db4a57f497e8305663aa3c0b3f62fa4d5"
   }
  },
  "docs/lessons/13-nms-free.md": {
   "review": "reviews/13-nms-free.md",
-  "review_sha256": "4440a4451c4e6a9d8a129b678ba03a591b4399086a5c076016f9d2a330ad6b52",
+  "review_sha256": "041ab9ff652577c385380a033546c5f3ef14b9367487f4328ba175e72c8a20e9",
   "covered": {
    "docs/lessons/13-nms-free.md": "b337a66fb934b3159a7b099ad8dc043aa36e253315b4b44760f4aa9150d5c2ee",
    "docs/assets/diagrams/13-nms-free.svg": "1913ed758c16038685859224ee59b8ea78984fa1ffaa9fd5c2d84d2c3d33b831",
@@ -406,7 +406,7 @@
  },
  "docs/lessons/14-feature-module.md": {
   "review": "reviews/14-feature-module.md",
-  "review_sha256": "e6cd32afde1b0fd9c7c92713e2ee9485a0737fe35bf79202d5aa8ee724923373",
+  "review_sha256": "4e4af0720615183ef54d284b76b4e4b269e6857e8f185b017799768abeb4e14c",
   "covered": {
    "docs/lessons/14-feature-module.md": "3b74dd81e65e3570b93c364343a489823b564c1cb7e95f404ade6ca2b6a1920a",
    "docs/assets/diagrams/14-split-paths.svg": "3dcd7a8b95cd422632559f86b3b91d573a3cf6fd19a944e291c12130c44ca299",
@@ -415,7 +415,7 @@
  },
  "docs/lessons/15-area-attention.md": {
   "review": "reviews/15-area-attention.md",
-  "review_sha256": "5884b90eb6bccf602dc3114c178ceb75b33029240df725d9ce793de8805fe999",
+  "review_sha256": "e120452387fb32e8e4f778998c7e66a5ce0a163385f0e582bc918d279b0426b8",
   "covered": {
    "docs/lessons/15-area-attention.md": "f6406a2a7bc285e2bbcffb63c28f4156ed4ed9d4b95218049b808b50aec76174",
    "docs/assets/diagrams/15-area-layout.svg": "cc93577143d427cd8c089d8dd8e4c12b8039e38be11a17d7135cbd5f45f0e89d",
@@ -424,25 +424,25 @@
  },
  "docs/lessons/15-attention-bridge.md": {
   "review": "reviews/15-attention-bridge.md",
-  "review_sha256": "12404aaec242a3321b74c8b8515b943ffebd1009499adef663ec53324e3e946c",
+  "review_sha256": "41b7451dec4766d46882435eb8b08c8ca79e5545a6c81e57aab0e2f242f502d4",
   "covered": {
    "docs/lessons/15-attention-bridge.md": "d0f290eafc304973310839a642a2d85455529bd4da99344e6096a71ff2821d3b",
-   "docs/assets/diagrams/15-attention-bridge.svg": "1f946ed74133526da208c15fc1ac52b33b8576bae8ea68ebf1f9efd6324f205b",
+   "docs/assets/diagrams/15-attention-bridge.svg": "b589ba2c718e46b3b2924d9e56f6310a10ddca7b1d1f1922c405d730ef960fcd",
    "lesson_cases/15-attention-bridge.py": "9823e1f3b30b6feb92d96fe5a9dd74a315500eaa31987f89c2cdea4b686aed06"
   }
  },
  "docs/lessons/16-dfl-free.md": {
   "review": "reviews/16-dfl-free.md",
-  "review_sha256": "fb72c302ceac82fec90e2f0ca01a26ce441bb083e15050b9dcdf0ff8d4723ff1",
+  "review_sha256": "0515a27d20e8317ad86cf7bad981ef080c2fb084d805958d0797394b168b7251",
   "covered": {
-   "docs/lessons/16-dfl-free.md": "7b00dd0469914a41c7e9a4dec4d1e3f2512ef78e6e41da726665db43e2af3960",
+   "docs/lessons/16-dfl-free.md": "50a50ceb6ab8662f37b66afa937a9e2b45e73526695d6964cab8fefbdb56dd1e",
    "docs/assets/diagrams/16-distance-decode.svg": "fb41cf83ae19ea8c490e0ae2af3f61563251c6021e51ed7178a9d47b0a2d01f9",
    "lesson_cases/16-dfl-free.py": "fc9aeedfab08771310905ea48dd78ea64f0b5cd76569b956e8a09c01de4c3a04"
   }
  },
  "docs/lessons/16-inference-head.md": {
   "review": "reviews/16-inference-head.md",
-  "review_sha256": "f890af38868f55a7fe327053624464c4dadc7df88eb242d4ab794fcde6325ab7",
+  "review_sha256": "220bb7172a986a48b9046330afbf42dc47f507f12c2b4dcff4544ec527dc6ea6",
   "covered": {
    "docs/lessons/16-inference-head.md": "7d507ad2d7658842322983d0c17d0b5d128ccc5568ef6b87b23f9a5cbec07372",
    "docs/assets/diagrams/16-head-paths.svg": "1acac44ac36b5b847e55a22e24d2a97fc2095a25800e3ed0df71e75dbcebf2c4",
@@ -451,7 +451,7 @@
  },
  "docs/lessons/16-training.md": {
   "review": "reviews/16-training.md",
-  "review_sha256": "e839a1070a0109f647748b3e67f22816e0d075237c02efe1cd720b6b9f3d4abe",
+  "review_sha256": "2314e73ed594c3aa5463aca58e2a16bce04cd3926f3d1cc678b9d5742615801c",
   "covered": {
    "docs/lessons/16-training.md": "9cd6c7c7fe9c1296f1af7d6a077c2fbab23b08891854efe1e66909d3acd12fe5",
    "docs/assets/diagrams/16-stal-candidates.svg": "04d26cccdc1c78a9f72ce64550a6c156d0f9bccef78b895ff3080fa67c7fc49f",
@@ -460,10 +460,10 @@
  },
  "docs/lessons/17-capstone.md": {
   "review": "reviews/17-capstone.md",
-  "review_sha256": "5b4f5da174b94f240332f158bb5e2c3560c1e6567918291abaab519b6ddae901",
+  "review_sha256": "4cbe9f241eb915e0a174eb94627a3fe4de224da07ff97b3587fdb1603cde8c81",
   "covered": {
-   "docs/lessons/17-capstone.md": "cc8449dd4f5b115715feaab906a9c4f60728a7ba4cf45a25bf277d5585ff78c3",
-   "docs/assets/diagrams/17-capstone-readable.svg": "6eac9a98335264447ca56e079c5594058eee8000fa808406b116646ccfbd4a64",
+   "docs/lessons/17-capstone.md": "736e3b058c131a41736b59ee61c3741d3efcbe712b60a9214b24f87ef4e96abb",
+   "docs/assets/diagrams/17-capstone-readable.svg": "a127fb19fbaa8d76f94cfceff346f5b0f12f652d8375620ca5e1237a6c878830",
    "lesson_cases/17-capstone.py": "a5969a35c9409bae299c070229defef69a40e340d53c3aecd563f087fea12cf8",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
@@ -477,7 +477,7 @@
  },
  "docs/lessons/18-video.md": {
   "review": "reviews/18-video.md",
-  "review_sha256": "cda6c3889d263b9b46880b61ca0f7dd18ab5cc7f0df761d0b708630d0d358eb5",
+  "review_sha256": "dfa8541b0eab9b5c7e38df5dfcee979111b330c2a68d90fc32cb353f4bc124bb",
   "covered": {
    "docs/lessons/18-video.md": "7d1b0565a70cae9f9c8fb3301dce28fe5cbd03a1efe5a91276eff6003bcc2fb5",
    "docs/assets/diagrams/18-video-readable.svg": "ed0307e3fb439654597071046dac00bedeef19ed2f8496b591a3643bfe194732",
@@ -494,7 +494,7 @@
  },
  "docs/lessons/19-tracking.md": {
   "review": "reviews/19-tracking.md",
-  "review_sha256": "5c41266456450da6e1cbeead1f5c952a203cf74f7e86e8e1206bdd2d048e2b16",
+  "review_sha256": "8a0669c9cd74c3e4a8881f09a65223429ac831dba911ff1314300330853daa65",
   "covered": {
    "docs/lessons/19-tracking.md": "ede119d299b48b8ed811eb43ebaf1218cd51d109c5b5b4c882d133645b2b3c1d",
    "docs/assets/diagrams/19-tracking-readable.svg": "b963a3c9bbd8c9728685749ccf0c80247204dd928ce9e0a5c5275e991625e605",
@@ -503,9 +503,9 @@
  },
  "docs/lessons/20-deployment.md": {
   "review": "reviews/20-deployment.md",
-  "review_sha256": "c32069cbb73d1ed8396480ec79c6640cdf59fb232dae1c9900094a27223297d4",
+  "review_sha256": "c1410497468088be0c50aa2b19f7aa1ec459e6c8d25318f0815c0028245b076d",
   "covered": {
-   "docs/lessons/20-deployment.md": "3fafaea8dd2b80cee99d20a840517598b507e4dac1713bbb4f6e0d8eb720498f",
+   "docs/lessons/20-deployment.md": "c93dc31e161f4cee3f2bf0d1063e300c1d1ceeded08195ad13d2cea244d85962",
    "docs/assets/diagrams/20-deployment.svg": "45f53f5c670301be885cbc89767ee1195e8fbe908741eeec467b7f49ea6efda4",
    "lesson_cases/20-deployment.py": "bf01b4ab68543d80e4f4c0ac27740d87852b9095b7b6b005b9d2dcbaf7157cd3",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
@@ -520,7 +520,7 @@
  },
  "docs/lessons/21-attention.md": {
   "review": "reviews/21-attention.md",
-  "review_sha256": "530d6405d1949a0fb590597b8af56e6b1ae4a4b55014dd40bf66ae9adb847554",
+  "review_sha256": "4966b24017d276cb339958588a67a30294daad0a3804fccbeed0ef79e14cd594",
   "covered": {
    "docs/lessons/21-attention.md": "891f31b5220d3a19505d8a8c5af8169647a1c29c85ec003035f048b8c4ac9cd7",
    "docs/assets/diagrams/21-attention-exchange.svg": "b0e967a5ff76670cee2caddb5acbc00666298ecd434cc6a0cae79e1f520639fb",
@@ -540,7 +540,7 @@
  },
  "docs/lessons/21-patches.md": {
   "review": "reviews/21-patches.md",
-  "review_sha256": "5220947beed4ebdb6aaee60b714c1b1c30585eaef80f2fa21a441363c7550c60",
+  "review_sha256": "4a936f4522fde7b18c96926ec3a625d02b7c54a7bbdca50bc8564e36d15b1190",
   "covered": {
    "docs/lessons/21-patches.md": "6c006b2de61a1ef2a3e230233982b90c18dca82371d2c8158a36e3db159caa6b",
    "docs/assets/diagrams/21-materials.svg": "f6326e65d13df7a41a46377cd7b8bb468e5a8c37b318e33cc33a797c81cf1391",
@@ -560,7 +560,7 @@
  },
  "docs/lessons/21-training.md": {
   "review": "reviews/21-training.md",
-  "review_sha256": "3c782cab97d5794c01cb0ad86551ac687d493a43ef70411e8564706b78e879ad",
+  "review_sha256": "e1d54cbeeb5a7f23c9207af628215d9a1e1913bfe5cda22b663151cae5da3629",
   "covered": {
    "docs/lessons/21-training.md": "8d17a12078a7d803e4fee0fb98c4f9706c50f7dfcc49b42df6a9c7840ccefcac",
    "docs/assets/diagrams/21-checkpoint-resume.svg": "4e303f6f1f86907193c9196740f4940379d6eab1f3bf1dad56a70d5dbbca0593",
@@ -583,7 +583,7 @@
  },
  "docs/lessons/21-transformer.md": {
   "review": "reviews/21-transformer.md",
-  "review_sha256": "70a74296265b87f56aabbe0c72e360b68098c77c58fa492413ce8579c7bf7fad",
+  "review_sha256": "2daa6a84338d553c67636e0d9e43036b93341fbe42dec6550a91fa2daa487b5a",
   "covered": {
    "docs/lessons/21-transformer.md": "d1725644de127b55e8fe16c282c8408ecd3fd969aaeef636509bd270e30d7d54",
    "docs/assets/diagrams/21-classification-flow.svg": "3e10ea30f2e11c98dd47f6dd2a67b901b3131e185fa7fa8e81fe749f51c9b900",
@@ -603,7 +603,7 @@
  },
  "docs/lessons/22-collapse.md": {
   "review": "reviews/22-collapse.md",
-  "review_sha256": "bebafebf0ece0824e7fc8334f4e40170c1aa7f0235f1835e1ad4fdd731d2eb41",
+  "review_sha256": "8439cab7468368791abca1318676e721d2db003ac250efb242b0f7f58a7beecf",
   "covered": {
    "docs/lessons/22-collapse.md": "5782e8d12d6235df0dce82cbfecedff7bdd06cf16b3bff3738107448193be551",
    "docs/assets/diagrams/22-collapse.svg": "75355d38843db229681ee0358fb2b552a5b20773844462e426ffd8e611b331d8",
@@ -622,7 +622,7 @@
  },
  "docs/lessons/22-distillation.md": {
   "review": "reviews/22-distillation.md",
-  "review_sha256": "90aeaf49e9d893518d71c45ef9f71b758e53fb2875050669e4b8bd2de3318960",
+  "review_sha256": "83f515b19f12d4576bc6ac0559064203038d166c9a9362b221102d9b35799360",
   "covered": {
    "docs/lessons/22-distillation.md": "d9806fc7e034ccb335c86055d56f93c76dcc54fa55e635ce1ea6cb7cc73ca374",
    "docs/assets/diagrams/22-distillation.svg": "e216231e715cd2a9684c3bbdc49410e3a671ac18d315d4135c031177161bc1f2",
@@ -643,7 +643,7 @@
  },
  "docs/lessons/22-features.md": {
   "review": "reviews/22-features.md",
-  "review_sha256": "9eaa0ce72954fccaa33dfd924fb5d311ccabdaf316367ae8350b770589a6c5c4",
+  "review_sha256": "01fd9fc45aa63d685d48b012df05c8b21282a9849c4a83c0613df376da698800",
   "covered": {
    "docs/lessons/22-features.md": "54e16b875b97ab7292ce5a28e8ea1aaa8f8fbefbd6c84567483bffe48d9ca9d4",
    "docs/assets/diagrams/22-features.svg": "eb884f6838614146bc0dad36d8410058a0202a34babaa4a0665bc2b062cf7143",
@@ -665,7 +665,7 @@
  },
  "docs/lessons/22-views.md": {
   "review": "reviews/22-views.md",
-  "review_sha256": "ba69dbf41506a0d5a7ae01905537893e71342521565c1231012df1e4ad39be39",
+  "review_sha256": "1d9389ff736668b3fd459b5335563c36752374fd8491fb88f84e90a3b313a429",
   "covered": {
    "docs/lessons/22-views.md": "460018a430e64e0099e4354683be678df0842be1d2ecedc83513d09221b6621c",
    "docs/assets/diagrams/22-views.svg": "c6ac553db3b63d61ac75d38b7cb98640b671434e71e1781c108815b3a24a8d31",
@@ -686,11 +686,11 @@
  },
  "docs/lessons/23-detection-bridge.md": {
   "review": "reviews/23-detection-bridge.md",
-  "review_sha256": "3bec9ed7ff1adda2b27557910ef2dc0ba6116a7c6c2e2b96cd1775cf3ad8923b",
+  "review_sha256": "ab1995acf7bac321648e2217555af5dfac64b2047e0c8e70b19658c994f7528d",
   "covered": {
-   "docs/lessons/23-detection-bridge.md": "06a7a06a5280386fec6f39bcd1334dbb9303d64736487fc9b37265147cddd7dd",
+   "docs/lessons/23-detection-bridge.md": "d5f81de812cd47b627d16cd276275a35665e03ef3d26c7a607db76eee4ebdd3d",
    "docs/assets/diagrams/23-detection-bridge.svg": "acf675cb2992480924913bb7ac24d240182ce282946ab5ea9c3918c2a8731dca",
-   "docs/assets/diagrams/23-detection-predictions.svg": "1ca9404fdfd663d044ecd59d1912515f3aa5c4d922918a5ea548755483d01eb4",
+   "docs/assets/diagrams/23-detection-predictions.svg": "88cdccff3340336b91d07d168a54cbdc032db8f7d8082b7a86feeab54f625b5e",
    "lesson_cases/23-detection-bridge.py": "5245e58eeacb93fa265b33e9518ea0effc32e82e3f12cc8cbe585a446e4c9317",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
    "miniyolo/data.py": "cccad00e2c4f96eb6567eafc9e12248379c6b715fc1790d75518a253baa6181d",
@@ -708,7 +708,7 @@
  },
  "docs/lessons/23-dino-versions.md": {
   "review": "reviews/23-dino-versions.md",
-  "review_sha256": "ac8de40a3bf12ef1d957bfe9fe42d4777871574cde8366073f437a2415552a12",
+  "review_sha256": "9553ef1b4edc4e7f1f64ebf9fd330bced2bd9e2dfe5a4e1fdca1701c403d9968",
   "covered": {
    "docs/lessons/23-dino-versions.md": "51ae3e6b55950de51f35f9b31cb1cc7c16e34a8f36ef3d6a6c2176857df9ef79",
    "docs/assets/diagrams/23-dinov2-patch-neighbor.svg": "26aeadd087c5970f2d5c25cdbc1a276e6be4dca757f272802f37f3529d0ff048",
@@ -718,42 +718,42 @@
  },
  "docs/planning/course-research.md": {
   "review": "reviews/planning-course-research.md",
-  "review_sha256": "b5f6f27539c719ac987c360fbcb1ff37fd8b6507b441b11298afa1753449f03d",
+  "review_sha256": "05fec790dee706400a2573d2f7cefbca8404504b6b9ddf82ce3b41d71f0bae54",
   "covered": {
    "docs/planning/course-research.md": "6922ad22cf822cf611bfea9092bc20616732010f92ff8471693ba778ba5973d0"
   }
  },
  "docs/planning/feedback.md": {
   "review": "reviews/planning-feedback.md",
-  "review_sha256": "f379ca84cb613a4b26da9a7d8f531254119f196fc849c293b76ec37eb9cefabe",
+  "review_sha256": "c03426099c016f8d230968f90754dc2358057e10036b577bb43ada9749a5dd81",
   "covered": {
    "docs/planning/feedback.md": "4b805cc1729450bff04d27ae6ef2f6026adde52b80f50dc87d57ae7541524819"
   }
  },
  "docs/planning/outline.md": {
   "review": "reviews/planning-outline.md",
-  "review_sha256": "e410f322af2887e5edc2fae1a1195f54bcfc16ff2ba03a2a1f9a1f124883a737",
+  "review_sha256": "48cf85d052eb95a95ef4da7b88468172534531d98b407cd2328df39934bcd4eb",
   "covered": {
-   "docs/planning/outline.md": "4c3813d3571e14dac5be25474e26cd1e0e51e232f30eaff261bdde1749bda75c"
+   "docs/planning/outline.md": "c036785f0dac5d4ee043f65049fa10f68ce5b067caee4f22bd0db74e22af78e0"
   }
  },
  "docs/preparation/architecture.md": {
   "review": "reviews/preparation-architecture.md",
-  "review_sha256": "87276d5f3a2d9c9fb36063a2160695a0f85d89de6d4db407a67a1fd2181145a0",
+  "review_sha256": "4b902f38481a819f34f3049f2a8f2a9afb0504844f8f8d57159abd71526ce787",
   "covered": {
    "docs/preparation/architecture.md": "10a83479416a6277390238401221686aa0dcbab62ea20487e777fc1a70d6595f"
   }
  },
  "docs/preparation/data.md": {
   "review": "reviews/preparation-data.md",
-  "review_sha256": "efc34dd1c91f245bdcd8f168eaf42afde4246992d491accb013d9470fa5090c8",
+  "review_sha256": "1c99a62695406fd3b18465ab59b9020d00eae5552a30ff29a0875cdf906b7f9f",
   "covered": {
    "docs/preparation/data.md": "7c0de58f7ee7884fc07b7a937ef2a83afc4b9ea298cd79387aaee3b85ea684f6"
   }
  },
  "docs/preparation/publish.md": {
   "review": "reviews/preparation-publish.md",
-  "review_sha256": "d71789a59913407300f06efe2566cba43c1300d88e0e4fbd98d5db2a8269abed",
+  "review_sha256": "9fc73ebc08273a0360a80c880b8e123ee106c2d9e9b398b80fe8514ea3ff7a48",
   "covered": {
    "docs/preparation/publish.md": "8991c30510be2a73d3c76a0b33e806c7de1cf7949b94a2426d091b98912981f9",
    "docs/assets/diagrams/release-evidence-flow.svg": "daf67652ce9f56282fb58571cd670bac0e0d572c8509dd116acf0944ea5fbe90"
@@ -761,56 +761,56 @@
  },
  "docs/research/detection-data.md": {
   "review": "reviews/research-detection-data.md",
-  "review_sha256": "d23fc6c90a1c23f6b1ec34e7bac607db9e807f11b8112391596b1f8982cdf449",
+  "review_sha256": "3e20e4bb3e3155304295b98417cd2e9f884cdefc23b23a3d10d581b85f45c618",
   "covered": {
    "docs/research/detection-data.md": "5f60e12e4819855713470f3998105d28b492eb4a8f547d95f624cc6e4ebd44cc"
   }
  },
  "docs/research/foundation-data.md": {
   "review": "reviews/research-foundation-data.md",
-  "review_sha256": "623e87861ef189aebf790722987b52bf74df0b4fe3b99aec629085475a72fc8c",
+  "review_sha256": "90b39c5f259cd3463195a251c4d00d65cca6dd3a881cc93e91e7ac15de92a097",
   "covered": {
    "docs/research/foundation-data.md": "36523fd83a1fea258748c2ba4ba0e6a81f7c7721be893f8a7eb1c78e521daaeb"
   }
  },
  "docs/research/lfs.md": {
   "review": "reviews/research-lfs.md",
-  "review_sha256": "d9f254b6efbfc7f7baa41d1d455b47c0d2d3c35b09c078880961521a37367272",
+  "review_sha256": "e829df6a2d9df50e0a9ae2ce9bf825a28e645e53f1534006ad0a853c40aa92d4",
   "covered": {
    "docs/research/lfs.md": "b1b0547e3cb20653c08bb31b9edce93fb2960363d01c9e95438445cca16cca04"
   }
  },
  "docs/research/pages-colab.md": {
   "review": "reviews/research-pages-colab.md",
-  "review_sha256": "e9915ebf41b05df4653fc4858f3cd18445c59669465fcce6eb1278f678376f5e",
+  "review_sha256": "6c967b1e3e6b57c4752a79cb596ac8faa0906224772baa97358b2d20b8d48aa7",
   "covered": {
    "docs/research/pages-colab.md": "d1dfcfcb4aa797291cc585b02379fd56849de2f8b69316d1f1d8e6c0302e93f8"
   }
  },
  "docs/research/version-sources.md": {
   "review": "reviews/research-version-sources.md",
-  "review_sha256": "e2ea19d966d9a81a64eea9a6ea97a155fb370f9f3c6a353a2a8e759b855df0ae",
+  "review_sha256": "b6355ef60701fc89bea7d4801ae4ee4468a1e5bcac2dc4e050e322e45de9c54b",
   "covered": {
-   "docs/research/version-sources.md": "7248ab8f8c0e00af80e76314201edd7cf5921b3384ad3fec9bbbe9511935ac44"
+   "docs/research/version-sources.md": "8e0629ad1fdbe28fd65c59073e26e89c75ca78a48b3e3023dcdad452f7c85a25"
   }
  },
  "docs/status.md": {
   "review": "reviews/status.md",
-  "review_sha256": "2785c6d0622e914a0436009edfd8b096e0cf9cc408b6463a806c0c13103b6237",
+  "review_sha256": "c722a449b87cdcab9a43a3b59516b43aadd055274d5b66c3efcef06e34b4b580",
   "covered": {
-   "docs/status.md": "28404fe8cd9eadcea9c1d3df287caf35ceddff72b6ba4f04438f9a9b59b34e23"
+   "docs/status.md": "dc79ebbae742ea03597d1d62a85064aaed60358320a5e9bcb3198ce8f8866a1c"
   }
  },
  "docs/validation/curriculum.md": {
   "review": "reviews/validation-curriculum.md",
-  "review_sha256": "f6791b5d23cb22e446ce09c4e4bab8200739720ffdf1225ce9a634808a9716d0",
+  "review_sha256": "9aeb0e8ffe5119be29fd0775c4c32a362cdf0911a4c11dc95bd361b44d0e8c6c",
   "covered": {
-   "docs/validation/curriculum.md": "3a686cdf19a0891d113c5d9104967bc53dc0a8f5075337be11e9ffb095e19dce"
+   "docs/validation/curriculum.md": "5f0ed153b4d23cf98554fce61f4a60c869cd51b8c3f0cbc0ab8b56c3de27f9af"
   }
  },
  "docs/validation/gpu-smoke.md": {
   "review": "reviews/validation-gpu-smoke.md",
-  "review_sha256": "a2bcaedd36ea5e55cedae29bc69569112e3a7d1ff81a7b1a0e2b1586846f1343",
+  "review_sha256": "83f1d84d522b58a1e38517449e16599a49d7ad671cc1b1308e816113015d526c",
   "covered": {
    "docs/validation/gpu-smoke.md": "18150faefd3b660bcddd8423fddd76a20b7857378ca5671bb1362bf740b5cc92"
   }

@@ -371,3 +371,9 @@
 [實際 Chromium 頁面與操作](clear-tutorial/final-selection-2026-10-08/post-repair/browser.json)涵蓋 8 頁的 1280×844 與 390×844 尺寸、公式、圖片、手機內嵌目錄與橫向表格；其他尺寸／瀏覽器及完整選讀未驗。[手工機制核對](clear-tutorial/final-selection-2026-10-08/post-repair/hand-checks.json)支持新增算例一致，不當成訓練效果證據。六節 A 主實驗在 CPU 重跑通過；兩份 40 步結果沿用仍符合原程式指紋的保存紀錄。
 
 [修正處置](clear-tutorial/final-selection-2026-10-08/repair-decisions.json)與[範圍比對](clear-tutorial/final-selection-2026-10-08/post-repair/scope-check.json)保存依據。B 以後的 92 個課文／notebook、路線 B 起段落及所有原實驗程式不變；公開程式 tag 仍是 lessons-v0.6.1。覆蓋指紋更新只綁定本次實際查核版本與上述範圍。
+
+## 2026-10-08：最新版 skill 的 B–E 審閱與既有待修
+
+本頁沒有重新全面審閱A；只處理先前已確認的待修，依修改處核對圖文及桌面／手機實頁。
+
+本頁未有需要新增修正的來源缺口；保留原文的通過依據在本輪原答與覆核。必要與可選建議均由主 Agent 逐項裁定，詳見[決策表](clear-tutorial/remainder-2026-10-08-93dc8d8/coordinator/decisions.json)及[本輪範圍](clear-tutorial/remainder-2026-10-08-93dc8d8/README.md)。修後的技術、圖文、銜接與實頁範圍見[技術複查](clear-tutorial/remainder-2026-10-08-93dc8d8/technical/post-repair.json)、[銜接複查](clear-tutorial/remainder-2026-10-08-93dc8d8/audit/post-repair.json)和 [post-repair](clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair/)；不把局部複查稱作全書新首讀，也不等同真人學生測試。

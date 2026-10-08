@@ -1,14 +1,14 @@
 {
   "id": "07-targets",
   "passed": true,
-  "executed_at_utc": "2026-10-05T10:23:55.632640+00:00",
+  "executed_at_utc": "2026-10-08T04:01:49.427524+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -27,7 +27,7 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 1.6393,
+  "process_wall_seconds": 1.252,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "same-cell collision rejected\npositive indices (b,y,x) [[0, 1, 1], [0, 2, 3]]\nred target [0.0, 0.25, 0.25, 0.25]\nblue target [0.0, 0.75, 0.25, 0.25]\npositive/negative counts 2 30\n",
   "stderr": "",

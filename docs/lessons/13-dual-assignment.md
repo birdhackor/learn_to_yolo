@@ -37,7 +37,7 @@ m=s\cdot p^{\alpha}\cdot\text{IoU}^{\beta}
 
 s 是候選點是否在 GT 框內（在框內為 1，否則為 0）；p 是模型對該 GT 類別的分數；IoU 是預測框與 GT 的重疊程度。12.3 的 `score×IoU²` 對應 α=1、β=2；官方用 α=0.5、β=6，程式中的重疊值實際是負值截成 0 的 CIoU。
 
-在兩個 head 算出相同 p 與 IoU 的假設下，兩邊採相同公式，一對一選中的首選，就是該 GT 在一對多的第一名。這是對每個 GT 的排名保證，沒有保證衝突後每個 GT 都有主人。實際訓練時，兩個 head 各用自己的預測，品質表與第一名也可能不同。
+這套安排希望一對一選中的候選，也能在一對多分支得到監督；共享特徵因此能從一對多分支學到這些候選的資訊。在兩個 head 算出相同 p 與 IoU 的假設下，兩邊採相同公式，一對一選中的首選，就是該 GT 在一對多的第一名。這是對每個 GT 的排名保證，沒有保證衝突後每個 GT 都有主人。實際訓練時，兩個 head 各用自己的預測，品質表與第一名也可能不同。
 
 ??? note "選讀：論文的排名假設與官方 target"
 
@@ -82,7 +82,7 @@ loss = many_loss + one_loss
 
 完整程式先只反傳 one loss，確認 backbone 的 `.grad is None`、one head 有非零梯度；再清掉梯度，反傳總 loss，確認 backbone 與兩個 head 有梯度。最後 `optimizer.step()`，檢查兩個 head 的權重都改變。detach 若移到 head 輸出後，連 head 自己都學不到；拿掉 detach，one loss 也會改 backbone。
 
-在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/13-dual-assignment.py`。它仍印出 toy 一對多 `[0,0,1]`、**全域**一對一 `[1,0,-1]`、品質 1.73 對貪心 1.10，以及梯度路徑確認。最後兩個 BCE loss 是更新權重前的值。這個 CPU 小實驗沒有量測無 NMS 的 AP 或推論速度。
+在 repo 根目錄執行 `PYTHONPATH=. python lesson_cases/13-dual-assignment.py`。它仍印出 toy 一對多 `[0,0,1]`、**全域**一對一 `[1,0,-1]`、品質 1.73 對貪心 1.10，以及梯度路徑確認。貪心的取法見下方選讀〈toy 如何求全域最優〉，手算頁末的選讀練習前，先讀那段。最後兩個 BCE loss 是更新權重前的值。這個 CPU 小實驗沒有量測無 NMS 的 AP 或推論速度。
 
 ??? note "選讀：toy 如何求全域最優，為什麼貪心不一定對？"
 
@@ -171,7 +171,7 @@ loss = many_loss + one_loss
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/13-dual-assignment.json)
 
 ??? example "展開本次實際輸出"
 

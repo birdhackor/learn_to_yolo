@@ -38,6 +38,8 @@ shape 分別為 points `[P,2]=[4,2]`、GT `[G,4]=[2,4]`、品質表 `[G,P]=[2,4]
 
 真實模型的預測框由 head 的輸出解碼而來；本例直接指定四個預測框：`[0,0,10,16]`、`[4,0,24,16]`、`[14,0,32,16]`、`[40,0,50,10]`。程式再用它們和每個 GT 真正算出 IoU，是框與框的 IoU，不是點與框。這四個框是人工指定、只用來算 IoU 的數字（同一欄的兩個 IoU 用同一個預測框算出），不一定是某個 head 真能解碼出的值。分類 score 與算得的 IoU 如下：
 
+手機上可左右滑動表格，查看完整欄位。
+
 | 真值 | p0 的 score／IoU | p1 的 score／IoU | p2 的 score／IoU | p3 的 score／IoU |
 | --- | --- | --- | --- | --- |
 | A | 0.9／0.5 | 0.7／0.6667 | 0.1／0.1875 | 0.8／0 |
@@ -172,7 +174,7 @@ YOLOv8 沒有 objectness；完整模型在所屬 GT 類別的欄位寫 target，
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-assignment.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/12-assignment.json)
 
 ??? example "展開本次實際輸出"
 

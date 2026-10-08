@@ -23,7 +23,7 @@
 
 adaptive pool 是 `AdaptiveAvgPool2d`：它自動分區取平均，輸出指定的大小。〈[VGG 風格小 CNN](01-small-cnn.md)〉用它縮成 1×1，這裡縮成 4×4。輸出第 y 列、第 x 欄位置的 7 個數，就是圖上第 y 列、第 x 欄那一格的預測。target 也用同樣的 `[b,y,x]` 位置存放每格的答案，所以兩者能逐格對齊。GridDetector 的完整定義在 [miniyolo/models.py](https://github.com/birdhackor/learn_to_yolo/blob/main/miniyolo/models.py)。
 
-head 有兩組 bias 是手動設定的。框寬高（tw、th）的 bias 設 −1.8，讓起始的框寬、高都約 9 畫素，接近資料裡的矩形。objectness 的 bias 設 −2：sigmoid(−2)≈0.1192，所以起始 objectness 約 0.12，而不是〈[Grid MiniYOLO loss](07-loss.md)〉零 logits 的 0.5；這比較符合「有物件的格子很少」（物件稀疏）的實況。這只是手動設定的起點，模型沒有載入預訓練權重。
+head 有兩組 bias 是手動設定的。先以權重乘特徵的貢獻接近 0 來估算：框寬高（tw、th）的 bias 設 −1.8，起始框寬、高就約 9 畫素，接近資料裡的矩形；objectness 的 bias 設 −2，sigmoid(−2)≈0.1192，所以起始 objectness 約 0.12，而不是〈[Grid MiniYOLO loss](07-loss.md)〉零 logits 的 0.5。這比較符合「有物件的格子很少」（物件稀疏）的實況。每格的實際輸出仍受權重與特徵影響；這只是手動設定的起點，模型沒有載入預訓練權重。
 
 ??? note "為什麼是 −1.8 和 −2？"
 
@@ -73,7 +73,7 @@ for step in range(3):
 
 每圈開頭的 `zero_grad` 清除上一圈的梯度，不會重設參數。若重新建立 model，必須重新建立使用它參數的 optimizer；舊 optimizer 仍指向舊 tensor。
 
-本節的 optimizer 是 Adam。它和〈[一次學習的超短暖身](00-warmup.md)〉的 SGD 一樣，要到 `optimizer.step()` 才修改參數。不同的是，Adam 替每個參數記住過去梯度的平均與梯度平方的平均，自動調整各自的步長，所以改變量不等於「學習率×梯度」：例如第一步，每個有梯度的參數大約都移動 0.01（剛好是 lr 的值），方向與梯度相反。本節只需記得：`step()` 才會更新參數（細節見 [PyTorch 的 Adam 說明](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html)，英文）。
+本節的 optimizer 是 Adam。它和〈[一次學習的超短暖身](00-warmup.md)〉的 SGD 一樣，要到 `optimizer.step()` 才修改參數。不同的是，Adam 替每個參數記住過去梯度的平均與梯度平方的平均，自動調整各自的步長，所以改變量不等於「學習率×梯度」：例如第一步，非零且不是極小值的梯度分量，會讓對應參數大約移動 0.01（剛好是 lr 的值），方向與梯度相反；梯度為 0 的分量不會這樣移動。本節只需記得：`step()` 才會更新參數（細節見 [PyTorch 的 Adam 說明](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html)，英文）。
 
 完整程式的斷言（assert）檢查這幾件事：
 
@@ -221,7 +221,7 @@ CPU 上用 width 8、batch 8、Adam、learning rate 0.01，做 160 次參數更�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-training.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-training.json)
 
 ??? example "展開本次實際輸出"
 

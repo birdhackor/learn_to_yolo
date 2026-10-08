@@ -57,6 +57,8 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
 
 本次 CPU 實測的 train head loss 從 0.8861 到 0.000967，但更值得看的是獨立圖片和框的位置：
 
+手機上可左右滑動表格，查看完整欄位。
+
 | 切分 | 顏色答對 | 平均配對 IoU | 顏色對且 IoU≥0.5 |
 | --- | --- | --- | --- |
 | train | 128／128 | 0.8594 | 128／128 |
@@ -89,7 +91,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-detection-bridge.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/23-detection-bridge.json)
 
 ??? example "展開本次實際輸出"
 
@@ -251,7 +253,7 @@ L=L_{\mathrm{color}}+10L_{\mathrm{box}}.
           "iou": 0.632573664188385
         }
       ],
-      "elapsed_seconds": 3.7607786120006494,
+      "elapsed_seconds": 3.798616824002238,
       "evaluation": "one prediction paired with one truth per image; class argmax, paired IoU, joint class-correct and IoU>=.5; no AP/mAP",
       "limitation": "tiny frozen self-supervised ViT plus supervised single-object head; not DINO detector, not official DINOv2 backbone, no architecture ranking or natural-image transfer claim"
     }

@@ -115,7 +115,7 @@ class_loss = nn.functional.cross_entropy(prediction[..., 5:][positive], class_id
 loss = box_loss + object_loss + class_loss
 ```
 
-最後一行把三項直接相加成總 loss，沒有像第 4 章那樣替框 loss 加權。
+最後一行把三項直接相加成總 loss，沒有像第 4 章那樣替框 loss 加權。本節固定等權，目的是先核對三項監督與梯度是否接對；權重如何影響學習，需要另做比較。
 
 為什麼只有框先呼叫 `.sigmoid()`？`binary_cross_entropy_with_logits` 是二元交叉熵（binary cross entropy，BCE），用在「這格有沒有物件」這種是非題；名稱裡的 with_logits 表示它內部會先做 sigmoid，所以要傳原始 logit。`cross_entropy` 內部也會先做 softmax（第 1 章）。`mse_loss` 不做這種轉換，所以框要自己先 sigmoid，才能和 0 到 1 的 target 比較。有沒有物件是每格各自的是非題，所以用 sigmoid；類別是 C 個選 1 個、機率加起來要等於 1，所以用 softmax。
 
@@ -248,7 +248,7 @@ Assignment 在**訓練時、算 loss 之前**（生成 target 時）決定誰負
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/05-assignment.json)
 
 ??? example "展開本次實際輸出"
 

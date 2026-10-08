@@ -242,7 +242,7 @@ validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當�
 
     先前若跑過簡短命令，第一行會覆蓋同目錄的 checkpoint、report 與 learning.svg；第二行另存目錄。網站兩份紀錄也以這兩次獨立訓練產生（`scripts/record_evidence.py`），用 `--report`、`--diagram` 將紀錄和圖另存到 `artifacts/checks/curriculum/`、`docs/assets/diagrams/`。
 
-    腳本核對比較條件：1600 步那次帶 `--prior-diagnostic` 指向 160 步紀錄，腳本就先用 160 步那次的 seed（train 7、validation 700、test 7000）重新產生那批資料，確認重建出的標註檔與解碼後的畫素，算出的 SHA-256 都和紀錄裡的相同（SHA-256 是由內容算出的「指紋」，內容改一點就會不同）。接著確認這次的 train／validation 圖與標註和那批逐筆相同、新的 test 沒有任何一張和舊 test 的畫素相同，模型、optimizer 與門檻的設定也和紀錄一樣。有一項不符，腳本就不開始訓練。
+    腳本核對比較條件：1600 步那次帶 `--prior-diagnostic` 指向 160 步紀錄，腳本就先用 160 步那次的 seed（train 7、validation 700、test 7000）重新產生那批資料，確認重建出的標註檔與解碼後的畫素，算出的 SHA-256 都和紀錄裡的相同（SHA 是 Secure Hash Algorithm（安全雜湊演算法）的縮寫；SHA-256 算出 256 位元的內容「指紋」，用來比對內容是否一致）。接著確認這次的 train／validation 圖與標註和那批逐筆相同、新的 test 沒有任何一張和舊 test 的畫素相同，模型、optimizer 與門檻的設定也和紀錄一樣。有一項不符，腳本就不開始訓練。
 
     [160 步失敗紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-160-step.json)與[完整 1600 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-learning.json)保留過程。`train_map50` 等輸出與表、圖的 mAP50，對應 report 各 split 的 `map`；各類 AP 在 `ap50_per_class_name`。
 
@@ -265,7 +265,7 @@ validation 和 test 各只有 9 個物件，0.296 與 0.778 的差距不能當�
     - scheduler：依步數調整 learning rate 的規則。本例固定 learning rate，所以 scheduler 欄存成 None。
     - 重新載入後一致，核對的是這個 CPU 模型與狀態，不代表換到別的裝置也逐位相同。
     - [完整 1600 步結果](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/custom-data-learning.json)保留全部 loss、資料與檔案的 SHA-256 指紋、四張 validation 圖的預測與配對，以及推論檢查。
-    - 權重和資料沒有放進 Git：它們在 `.gitignore` 忽略的 `artifacts/runs/` 裡，也不在 Git LFS（Git 存放大檔案的擴充功能）。
+    - 權重和資料沒有放進 Git：它們在 `.gitignore` 忽略的 `artifacts/runs/` 裡，也不在 Git LFS（Large File Storage，Git 存放大檔案的擴充功能）。
 
 
 ??? note "原圖推論 CLI 的相容性核對"
@@ -307,7 +307,7 @@ python scripts/detect_image.py --image my-data/images/example.png --checkpoint a
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-data.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-data.json)
 
 ??? example "展開本次實際輸出"
 

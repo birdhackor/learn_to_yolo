@@ -146,7 +146,7 @@ assert torch.equal(image, expected_pixels), "Annotation and colored pixels disag
 
 接自己的圖片時，常見錯誤有四種：
 
-1. 把 PIL（Python 常用的讀圖套件 Pillow）讀進來的圖直接當成 CHW。它轉成 NumPy 陣列後是 `[H,W,C]`，要先用 `torch.from_numpy` 轉成 tensor，再用 `permute(2,0,1)` 換成 `[C,H,W]`；用 `reshape` 硬改形狀會把顏色和位置混在一起（見第 1 章〈[VGG 風格小 CNN](01-small-cnn.md)〉）。
+1. 把 Pillow 讀進來的圖直接當成 CHW。Pillow 是常用的 Python 讀圖套件，沿用 PIL（Python Imaging Library，Python 影像函式庫）作為匯入名稱。圖片轉成 NumPy 陣列後是 `[H,W,C]`，要先用 `torch.from_numpy` 轉成 tensor，再用 `permute(2,0,1)` 換成 `[C,H,W]`；用 `reshape` 硬改形狀會把顏色和位置混在一起（見第 1 章〈[VGG 風格小 CNN](01-small-cnn.md)〉）。
 2. 把 RGB 讀成 BGR。OpenCV（另一個常用的影像套件）的 `cv2.imread` 讀出的通道順序是 B、G、R；當成 RGB 用，R 和 B 會對調。在本章，這等於紅色（類別 0）變成藍色（類別 1），標註全部對不上。
 3. 0～255 的整數畫素沒有除以 255。數值比契約的 0～1 大了 255 倍；就算已轉成 float32，shape 和 dtype 都對，這兩項檢查抓不到。
 4. 圖片 resize 了，框卻還用原圖座標，框就落在錯的位置（第 4 章）。
@@ -177,7 +177,7 @@ assert torch.equal(image, expected_pixels), "Annotation and colored pixels disag
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-data.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-data.json)
 
 ??? example "展開本次實際輸出"
 

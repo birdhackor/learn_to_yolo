@@ -30,7 +30,7 @@
 ### 0. 超短暖身：一次學習到底發生了什麼
 
 - tensor、forward、loss、backward、`optimizer.step()`、train／eval；用一個參數的手算例子，連到同一段 PyTorch 計算。
-- 只補這一步需要的 shape、內積、偏導與連鎖律。train／eval 只說明模式切換：Dropout、BatchNorm 這類層在兩種模式下行為不同，本課程的模型沒有用到它們。
+- 只補這一步需要的 shape、內積、偏導與連鎖律。本節的 train／eval 先說明模式切換：Dropout、BatchNorm 這類層在兩種模式下行為不同，暖身的單參數模型沒有用到它們；後面的 [ViT 訓練](../lessons/21-training.md)會實際啟用 Dropout。
 - **完成條件：**指出 loss 如何連到參數，確認一次更新前後參數真的改變；知道在 notebook 重建 model 後，也要重建對應的 optimizer。
 
 ### 1. VGG 風格小 CNN：為什麼影像適合卷積

@@ -99,7 +99,7 @@ PyTorch 的 Smooth L1 預設 beta=1；beta 是平方段與線性段的分界，�
 
 官方程式用 `BboxLoss` 這個模組計算框 loss。在本書查核的版本裡，reg_max（即 K）>1 時，它算 CIoU 加 DFL；DFL-free（reg_max=1）時仍計算 CIoU，只是把 DFL 換成正規化 L1。正規化 L1 的做法是：先把預測和 target 的格單位距離都乘 stride 換成畫素；左、右距離除以圖寬，上、下距離除以圖高；再對四邊取 |預測−目標| 的平均（這就是 L1 loss）。例如 640×640 的輸入，右邊 18 格×8＝144 畫素，正規化後是 144/640＝0.225。
 
-以上是一個正樣本的值。合計全部正樣本時，每個正樣本的值先乘上它的類別 target（[12.2 節](12-decoupled-head.md)提過：依預測品質給的 0～1 分數），加總後再除以這些類別 target 的總和；CIoU 那一項也用同樣的加權。最後整項再乘超參數 `dfl`（預設 1.5）：DFL-free 時要調這個 L1 的比重，調的就是 `dfl`。
+以上是一個正樣本的值。合計全部正樣本時，每個正樣本的值先乘上它的類別 target（[12.3 節](12-assignment.md)提過：依預測品質給的 0～1 分數），加總後再除以這些類別 target 的總和；CIoU 那一項也用同樣的加權。最後整項再乘超參數 `dfl`（預設 1.5）：DFL-free 時要調這個 L1 的比重，調的就是 `dfl`。
 
 原始程式中這一項的變數仍叫 `loss_dfl`，超參數也仍叫 `dfl`，但這個分支實際算的是 L1，訓練時印出的 loss 名稱是 `l1_loss`；閱讀程式要看運算，不只看名稱。權重、正樣本品質與 assignment（哪些候選點負責哪個物件）也會影響訓練。不能把框 loss 全部刪掉，還指望框自己變準。
 
@@ -147,7 +147,7 @@ PyTorch 的 Smooth L1 預設 beta=1；beta 是平方段與線性段的分界，�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-dfl-free.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/16-dfl-free.json)
 
 ??? example "展開本次實際輸出"
 

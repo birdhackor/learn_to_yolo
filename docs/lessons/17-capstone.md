@@ -20,6 +20,8 @@
 
 協議（protocol）是事先寫好、看到結果後不再更改的實驗規則：用哪些資料、怎麼訓練、怎麼評估、怎樣才保留改動。先寫下來，才不會看了結果再回頭調規則。
 
+手機上可左右滑動表格，查看完整欄位。
+
 | 資料 | 張數 | 資料 seed（亂數種子） | 用途 |
 | --- | --- | --- | --- |
 | train | 32 | 1100 | 更新模型參數 |
@@ -152,15 +154,16 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 這張表只能比較同一組資料上的兩次訓練。對照[第 7 章 held-out 那一節](07-heldout.md)末段的 160 步實驗：它的訓練設定和本節 baseline 相同，只是資料 seed 不同（7／700／7000），validation mAP50 是 0.80；換成本節的 1100／2200／3300，baseline 只有 0.44。這示範了小資料切分的波動有多大，所以本節只比較同一組資料上的 baseline 與改動版，不拿別頁的數字比高低。
 
-![相同 validation 圖片的真實兩次訓練結果：上組 baseline，下組改動版（box 權重 10），下方另外檢查 baseline 的一個背景 FP](../assets/diagrams/17-capstone-readable.svg)
+![相同 validation 圖片的真實兩次訓練結果：每張先放 baseline，緊接改動版（box 權重 10），最後另查 baseline 的一個背景 FP](../assets/diagrams/17-capstone-readable.svg)
 
-圖的讀法：上面兩組是同樣四張 validation 圖片：上組是 baseline（圖上寫「基準」），下組是改動版；各組依序列出 #14、#5、#4、#7。網頁把原本橫排的圖上下排列，所有圖片、框與分數沿用同次實跑。綠框是 GT（真值），橘框是預測；每個橘框左上角的深色小標籤寫「class:score」。兩組都只畫 score≥0.25 的框；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
+圖的讀法：依序比較同樣四張 validation 圖片 #14、#5、#4、#7；每張先放 baseline（圖上寫「基準」），緊接著放改動版。網頁把原本橫排的結果按同一圖片配成相鄰兩格，所有圖片、框與分數沿用同次實跑。綠框是 GT（真值），橘框是預測；每個橘框左上角的深色小標籤寫「class:score」。這四對都只畫 score≥0.25 的框；score 在 0.05 到 0.25 之間的候選沒畫出來，但評估時仍算在內。
 
 這四張不是挑最好看的，而是依 baseline「沒被 IoU≥0.5 覆蓋的 GT 數」由多到少挑出（validation 圖片編號從 0 起算；同數時取編號較大者）。判斷框是否配對成功，要看 IoU，不能只看框很接近或 score 很高。圖中的兩例都是 class 0、score 約 0.99–1.00 的高分框，可直接對照：
 
 | validation 圖片／模型 | 最佳 IoU | 判定 |
 | --- | --- | --- |
-| #4／baseline（兩框） | 0.4918、0.3034 | 兩個定位 FP |
+| #4／baseline：上方橘框 | 0.4918 | 定位 FP |
+| #4／baseline：下方橘框 | 0.3034 | 定位 FP |
 | #14／baseline | 0.2275 | 定位 FP |
 | #14／改動版 | 0.4928 | 仍是定位 FP |
 
@@ -174,9 +177,9 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
 
 選定模型接著在獨立的 test 上評估一次：mAP50 0.4452、precision 0.6364、recall 0.5385，都比它在 validation 上低。0.4452 是另外 16 張圖的分數，不能拿來和 baseline 在 validation 的 0.4444 比。test 只用來回報選定模型的成績一次，所以刻意不測 baseline，免得看了 test 又想回頭改選擇。test 也只有 13 個物件：recall 0.5385=7/13，多找到或漏掉一個物件，recall 就差 1/13≈0.077。這麼小的切分波動很大，不能把 0.7014 宣稱為穩定的效果，也不能由這一次斷定改動版在新圖片上一定比較好。
 
-兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.50 秒（baseline）與 0.44 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
+兩個模型都是 15,511 個參數。兩次 160 步訓練各花了約 0.46 秒（baseline）與 0.41 秒（改動版）。這個時間只計 `fit()` 裡的訓練迴圈，不含建立模型、準備 target 的時間（report 的 `train_timing_scope`）。同一個程式裡，第一次訓練常會多花一些只需要做一次的準備時間；沒有前面那次 10 步的暖機，這筆時間會算進先跑的 baseline。兩次訓練每一步的運算完全相同（box 權重只是乘在 loss 前面的一個數），而且各只量一次，本來就會有波動；所以兩個時間若有差距，不能說是改 loss 權重讓訓練變快或變慢。
 
-選定模型的端到端時間（從輸入到畫好框的整段）中位數約 2.00 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
+選定模型的端到端時間（從輸入到畫好框的整段）中位數約 1.90 毫秒。計時用的是選定模型在 validation 上留下最多候選的那張圖（編號記在 report 的 `timed_validation_image`），所以 NMS 有實際的候選要處理。計時範圍是：uint8 RGB 圖（每個顏色值是 0～255 的整數）→ 轉成 tensor → 模型 → 用候選截斷門檻 0.05 解碼，再做 NMS → 畫框；batch 大小 1，先暖機 3 次，再計時 12 次取中位數（12 是偶數，取排序後第 6、7 小兩次的平均），不含讀檔或影片解碼。其中的畫框還包含把圖放大到 192×192、畫上 GT 框與 score≥0.25 的預測框；這是為了診斷才畫的圖，所以這個時間只代表這套診斷視覺化流程，不等於只做推論的時間。這是小型合成資料模型在當次 CPU 上的數值，不是一般 YOLO 的速度承諾。
 
 計時路徑留下的候選數記在 `timed_image_candidates`，程式用斷言要求它大於 0。它不一定等於挑圖時數到的候選數：挑圖用的是前面 16 張 validation 圖一起評估的結果，像素值是 0～1 之間的小數；計時的路徑則一次只算一張，而且圖先轉成 0～255 的整數再轉回來，像素值會有極小的差異。score 剛好在 0.05 附近的候選，可能因此在一條路徑上留下、在另一條路徑上被刪掉。
 
@@ -236,7 +239,7 @@ loss 有限或下降，還不能直接證明每一步都把梯度傳到模型。
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/17-capstone.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/17-capstone.json)
 
 ??? example "展開本次實際輸出"
 
@@ -402,11 +405,11 @@ loss 有限或下降，還不能直接證明每一步都把梯度傳到模型。
       },
       "parameters": 15511,
       "train_seconds": [
-        0.5010287510012859,
-        0.4415318439987459
+        0.4601677460013889,
+        0.4068155470013153
       ],
       "train_timing_scope": "only the training loop of each run, after one untimed 10-step warm-up fit; CPU, 2 threads",
-      "chosen_end_to_end_median_ms": 1.999052499741083,
+      "chosen_end_to_end_median_ms": 1.8985720016644336,
       "timed_validation_image": 2,
       "timed_image_candidates": 2,
       "timing_scope": "uint8 RGB -> tensor -> model -> decode/NMS at score .05 -> drawing, on the validation image with the most candidates; CPU, batch 1, 2 threads; median of 12 runs after 3 warm-up runs; no file I/O",

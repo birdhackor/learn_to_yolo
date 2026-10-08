@@ -134,6 +134,8 @@ IoU 評估整個框的幾何重疊，和四個座標的 MSE 是不同的數字�
 
 三步只確認梯度傳得到框 head；這個實驗看模型在這兩張圖上能把類別與框學到什麼程度。它由 `scripts/run_learning_extensions.py` 執行，直接取用完整程式裡的 `Localizer` 與 `to_xyxy`（把 cxcywh 換成 xyxy 的函式；腳本在 40 次更新後用它算出預測框），照完整程式的做法畫出同樣兩張圖、算出同樣的正規化 target，loss 也同樣是分類交叉熵＋5×框 MSE。完整程式和這支腳本都把亂數種子（seed）固定為 7；seed 決定模型的隨機初始權重，所以起點和三步實驗相同（重新開始，不是接著三步的結果繼續練），在 CPU 上更新 40 次。上面三步用 SGD（學習率 0.1），這裡改用 Adam（學習率 0.01）。Adam 也是一種 optimizer，會依每個參數過去梯度的大小，自動調整每一步走多遠。步數和 optimizer 同時改了，所以兩個實驗結果的差異，不能全歸功於步數。下表的第一個 loss 0.809883，就是三步實驗 step=0 的 0.8099。
 
+手機上可左右滑動表格，查看完整欄位。
+
 |模型|第 1 步（未更新）→ 第 40 次更新前的總 loss|訓練分類正確率（accuracy）|獨立驗證資料（validation）分類正確率|
 |---|---|---|---|
 |localizer|0.809883 → 0.430213|1.00|未評估|
@@ -181,7 +183,7 @@ display(SVG(filename='artifacts/runs/learning/04-localization/learning.svg'))
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-06 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/04-localization.json)
 
 ??? example "展開本次實際輸出"
 

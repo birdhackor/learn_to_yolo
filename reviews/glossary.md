@@ -245,3 +245,9 @@ concat／add 列的詳見欄加上 [11.1]：11.1 有〈串接不是相加〉、4
 本頁對應處置為 R005，見[決策表](clear-tutorial/full-review-2026-10-06/decisions.json)。[基礎技術報告](clear-tutorial/full-review-2026-10-06/rechecks/technical-foundations.json)與[最後維護delta核回](clear-tutorial/full-review-2026-10-06/rechecks/technical-detector-evolution.json)保存各自時點；[第三輪](clear-tutorial/full-review-2026-10-06/rechecks/transitions-visual.json)與[最後綁定](clear-tutorial/full-review-2026-10-06/final-bindings.json)區分實際查核範圍。
 
 沒有真人學生驗收，四題亦不能保證不漏報；本次 DINO 漏報、引用缺陷及手機細字限制已明列。[驗證結果](clear-tutorial/full-review-2026-10-06/verification.json)保存實際命令結果；此頁最新來源綁定於[coverage.json](coverage.json)，歷史審閱保留。
+
+## 2026-10-08：最新版 skill 的 B–E 審閱與既有待修
+
+本附頁由獨立銜接與技術審閱者核對當前來源；頁內既有審閱歷史的接觸另記，未冒稱完全無歷史提示。範圍起點為93dc8d8；首讀、技術與銜接角色分開，原答未回寫。
+
+本頁相關處置：DEC-008；包含採用、保留或後文撤回的來源與理解收益。必要與可選建議均由主 Agent 逐項裁定，詳見[決策表](clear-tutorial/remainder-2026-10-08-93dc8d8/coordinator/decisions.json)及[本輪範圍](clear-tutorial/remainder-2026-10-08-93dc8d8/README.md)。修後的技術、圖文、銜接與實頁範圍見[技術複查](clear-tutorial/remainder-2026-10-08-93dc8d8/technical/post-repair.json)、[銜接複查](clear-tutorial/remainder-2026-10-08-93dc8d8/audit/post-repair.json)和 [post-repair](clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair/)；不把局部複查稱作全書新首讀，也不等同真人學生測試。

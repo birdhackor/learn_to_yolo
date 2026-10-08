@@ -1,7 +1,7 @@
 {
   "id": "11-csp",
   "passed": true,
-  "executed_at_utc": "2026-10-06T05:23:51.813687+00:00",
+  "executed_at_utc": "2026-10-08T03:57:51.960913+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/11-csp.py": "9710906769f4d757331a7c99d2ba89d8d45c40d52c76f1d2a32a510e13a4f556"
   },
-  "process_wall_seconds": 1.8789,
+  "process_wall_seconds": 1.9753,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "concat (1, 4, 1, 1) [1.0, 2.0, 10.0, 20.0] add (1, 2, 1, 1) [11.0, 22.0]\nfull input gradient abs sums first4/last4 0.033093 0.029087\nfull output (2, 8, 8, 8) finite backward and step\nCSP input gradient abs sums first4/last4 0.255476 0.019409\nCSP output (2, 8, 8, 8) finite backward and step\nparameters full/CSP [1240, 368] capacity differs; no accuracy comparison\n",
   "stderr": "",

@@ -99,7 +99,7 @@ python -m miniyolo.train --steps 160 --samples 32 --device cpu
 python scripts/detect_image.py --image my.png --checkpoint artifacts/runs/grid-learning/checkpoint.pt
 ```
 
-把 `my.png` 換成你的圖片路徑，jpg 也可以；也可以把 `--image` 指定為訓練 CLI 輸出的 `artifacts/runs/grid-learning/validation-00.png`，先核對紅／藍合成圖。手機照片常把拍攝方向記在 EXIF 標籤裡；Pillow 讀檔時不會照這個標籤轉正，所以輸出的圖和座標，都以檔案實際存的像素方向為準。方向和相簿看到的不同時，先用 `PIL.ImageOps.exif_transpose()` 轉正、另存一張，再交給 CLI。兩行都不必加 `PYTHONPATH=.`：`python -m` 會從目前資料夾（repo 根目錄）找到 `miniyolo`，`scripts/detect_image.py` 則會自己把 repo 根目錄加進 Python 找模組的路徑。
+把 `my.png` 換成你的圖片路徑，jpg 也可以；也可以把 `--image` 指定為訓練 CLI 輸出的 `artifacts/runs/grid-learning/validation-00.png`，先核對紅／藍合成圖。手機照片常把拍攝方向記在 EXIF（Exchangeable Image File Format，可交換影像檔案格式）標籤裡；Pillow 讀檔時不會照這個標籤轉正，所以輸出的圖和座標，都以檔案實際存的像素方向為準。方向和相簿看到的不同時，先用 `PIL.ImageOps.exif_transpose()` 轉正、另存一張，再交給 CLI。兩行都不必加 `PYTHONPATH=.`：`python -m` 會從目前資料夾（repo 根目錄）找到 `miniyolo`，`scripts/detect_image.py` 則會自己把 repo 根目錄加進 Python 找模組的路徑。
 
 兩行的輸出預設都在 git 不追蹤的 `artifacts/runs/` 底下。第一行把 checkpoint、報告 `report.json` 等存在 `artifacts/runs/grid-learning/`，第二行讀的就是這裡的 checkpoint。第二行把疊框 PNG 存成 `artifacts/runs/predictions/my-image.png`，同檔名的 `my-image.json` 放在旁邊，記錄原圖座標的框、score、類別與所用的門檻；要換位置或檔名，就加 `--output`。CLI 最後印出一行摘要，含框數 `boxes`、`score_threshold`、`nms_iou`、輸出路徑 `output` 與 `class_names`。
 
@@ -204,7 +204,7 @@ print(json.loads(Path('artifacts/lesson-08-own-images/prediction.json').read_tex
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-images.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/08-own-images.json)
 
 ??? example "展開本次實際輸出"
 

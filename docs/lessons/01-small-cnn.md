@@ -61,7 +61,9 @@ X_{\text{橫}}=\begin{bmatrix}1&1&1\\0&0&0\\0&0&0\end{bmatrix}.
 K=\begin{bmatrix}-1&2&-1\\-1&2&-1\\-1&2&-1\end{bmatrix}.
 \]
 
-![豎短線與橫短線有相同亮點總數，手工濾鏡按相對位置給不同權重](../assets/diagrams/01-local-patterns.svg){ width="480" }
+![兩個輸入X豎、X橫都有三個亮點；第三個矩陣K是上面指定的權重](../assets/diagrams/01-local-patterns.svg){ width="480" }
+
+圖的前兩個矩陣分別是輸入 $X_{\text{豎}}$、$X_{\text{橫}}$，第三個就是上面的權重 $K$。每個輸入各自與同一個 K 的對應位置相乘，再把九個乘積加總。
 
 豎短線的三個 1 都乘到中欄的 2，結果是 6；橫短線則得到 $-1+2-1=0$。這組權重由人指定，只示意讀取排列的機制，並非模型學出的結果。像這樣的局部反應可以提供邊緣或筆畫的線索，後面的層再把線索組合起來；局部讀取就是把這項工作先安排在附近一小塊內。
 
@@ -211,7 +213,7 @@ optimizer.step()
 
 ![三步後的前四張圖片；紅色標題是分錯，GT是正確類別，pred是模型預測](../assets/diagrams/01-small-cnn.svg)
 
-圖中 GT 表示正確類別，pred 是預測。loss 稍降只說明這次更新降低了訓練代價，還不能說「會分類了」。三步是讓流程與形狀可以核對的小檢查。
+圖中 GT（Ground Truth，正確答案）表示正確類別，pred 是預測。loss 稍降只說明這次更新降低了訓練代價，還不能說「會分類了」。三步是讓流程與形狀可以核對的小檢查。
 
 接著選一組可讓模型學會這 8 張圖的設定，做 **40 次更新**的學習示範：從同樣 seed 的初始權重重來，資料不變，改用 **Adam（Adaptive Moment Estimation，自適應矩估計）**，學習率 0.01。Adam 也是優化器，利用過去梯度的平均與梯度平方的平均，調整各參數的步幅。這次步數、優化器與學習率都改了，效果差異不能歸因於其中某一項。
 
@@ -259,7 +261,7 @@ optimizer.step()
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-07 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/01-small-cnn.json)
 
 ??? example "展開本次實際輸出"
 

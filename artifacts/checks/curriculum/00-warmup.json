@@ -1,7 +1,7 @@
 {
   "id": "00-warmup",
   "passed": true,
-  "executed_at_utc": "2026-10-07T23:19:47.963111+00:00",
+  "executed_at_utc": "2026-10-08T03:23:43.233004+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
@@ -19,7 +19,7 @@
   "dependencies_sha256": {
     "lesson_cases/00-warmup.py": "7929dea8fc669b1cf5eb3fa252f479b54857e824508d52b64f0a12fb5c1ed93b"
   },
-  "process_wall_seconds": 2.6287,
+  "process_wall_seconds": 2.5871,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "x_shape=(1, 1), weight_shape=(1, 1)\nprediction=2.00, loss=4.00, gradient=-8.00\nweight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16\neval still tracks gradients; replacement optimizer points to replacement model\n",
   "stderr": "",

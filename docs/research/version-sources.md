@@ -4,6 +4,8 @@
 
 查核日期：2026-10-02。本頁的程式碼、設定檔與官方說明文件連結都固定到特定 commit；若連到 main，讀者日後打開時可能看到另一份程式結構。第 12–16 章的實驗都是小型教學實驗；表中的版本名稱說明機制出自哪裡，不代表本書重現了那個版本。
 
+手機上可左右滑動表格，查看完整欄位。
+
 | 來源與固定版本 | 核對內容 | 教材採用範圍 |
 | --- | --- | --- |
 | [Ultralytics repository 441632cdfd19e22e60a4b1b1999d46326ca51ec4](https://github.com/ultralytics/ultralytics/tree/441632cdfd19e22e60a4b1b1999d46326ca51ec4) | `nn/modules/head.py` 的分類／回歸分支、DFL／identity、雙 head、detach、推論時的輸出選擇、`postprocess`、`fuse`；`utils/tal.py` 的候選點、距離解碼與 task-aligned 選擇（TAL）；`utils/loss.py` 的 `DFLoss` | 第 12 章只示範各機制。固定版本的 TAL 程式含有 YOLO26 的改動（例如小物件候選擴張），本書不把這些改動當成原始 YOLOv8 的設定 |

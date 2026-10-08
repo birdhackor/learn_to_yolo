@@ -5,7 +5,7 @@
 <rect width="480" height="2152" fill="#f8fafc"/>
 <g font-family="Noto Sans CJK TC, sans-serif" fill="#0f172a">
 <text x="28" y="38" font-size="26" fill="#0f172a" font-weight="700">尺寸 IoU → 尺寸分群</text>
-<text x="28" y="74" font-size="22" fill="#0f172a">綠：訓練框　紫：弱基線 anchor</text>
+<text x="28" y="74" font-size="22" fill="#0f172a">① 綠：訓練框　紫：弱基線 anchor</text>
 <rect x="12" y="96" width="456" height="292" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" rx="12" />
 <text x="28" y="132" font-size="24" fill="#0f172a" font-weight="700">① 中心對齊：8×8 與 16×16</text>
 <text x="28" y="166" font-size="22" fill="#0f172a">黃：交集；十字：共同中心</text>

@@ -1,14 +1,14 @@
 {
   "id": "07-training",
   "passed": true,
-  "executed_at_utc": "2026-10-05T10:23:58.257626+00:00",
+  "executed_at_utc": "2026-10-08T03:55:03.510439+00:00",
   "python": "3.12.14",
   "torch": "2.9.1+cpu",
   "device": "cpu",
   "machine": {
     "os": "Linux-6.18.44-x86_64-with-glibc2.41",
     "architecture": "x86_64",
-    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
     "logical_cpus": 5,
     "threads": 2,
     "python": "3.12.14",
@@ -27,7 +27,7 @@
     "miniyolo/models.py": "49d029ea4ba2650ce8933cf97e3d25dc7aff2ca4e972eec19cdda17b0f4900e6",
     "miniyolo/targets.py": "2c8e32f2845b3bf970c77304c5cca0f999083d36a4d5af2f75f14aa89b823f16"
   },
-  "process_wall_seconds": 2.6272,
+  "process_wall_seconds": 1.9882,
   "timing_scope": "Entire subprocess including imports, calculations, logging, figures and files; not a model benchmark",
   "stdout": "step 0 {'total': 0.9817, 'box': 0.009, 'objectness': 0.2525, 'classification': 0.6842} positive 0.1202 negative 0.1202\nstep 1 {'total': 0.9248, 'box': 0.0091, 'objectness': 0.2508, 'classification': 0.6283} positive 0.119 negative 0.1181\nstep 2 {'total': 0.8323, 'box': 0.0094, 'objectness': 0.2491, 'classification': 0.5362} positive 0.12 negative 0.1169\n3 real CPU optimizer steps; parameters changed; no generalization claim\n",
   "stderr": "",

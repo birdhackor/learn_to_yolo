@@ -1,73 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 702" role="img" aria-labelledby="title desc">
-  <title id="title">四個空間位置的 attention 計算</title>
-  <desc id="desc">示意圖，方框大小不代表數值大小。上半是 shape 路徑：feature map 的 shape 是 [1,2,2,2]，N＝H×W＝4；攤平並交換軸後成為 spatial tokens [1,4,2]，一列一個位置；可學線性投影產生 Q、K、V，各為 [1,4,2]。Q、K 這條線進入 softmax(QKᵀ/√2)，決定讀取比例，得到 [1,4,4] 的權重表，每列權重合計 1。V 是被讀走的內容，另一條線不經過 softmax，直接連到最後一個方框 weights @ V（矩陣乘法）；權重表也以 weights 這條線連到同一個方框，輸出 [1,4,2]，再還原成 [1,2,2,2]。下方小圖是權重表第 1 列：2×2 格依 row-major 順序標出第 1 到第 4 個 token 與它的值，左上 [1,0]、右上 [0,1]、左下 [1,1]、右下 [0,0]；本例投影的初值是單位矩陣，所以一開始 Q＝K＝V＝token。四條箭頭從接收位置左上指向四個來源位置，標出的權重是讀自己 0.3349、讀右上 0.1651、讀左下 0.3349、讀右下 0.1651，合計 1。線寬與權重成正比，線寬＝20×權重，所以 0.3349 的線約是 0.1651 的兩倍粗。</desc>
-  <defs>
-    <marker id="flow-head" viewBox="0 0 14 12" refX="0" refY="6" markerWidth="14" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L14 6L0 12Z" fill="#2563eb"/></marker>
-    <marker id="weight-head" viewBox="0 0 16 14" refX="0" refY="7" markerWidth="16" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L16 7L0 14Z" fill="#b45309"/></marker>
-  </defs>
-  <rect width="720" height="702" fill="#f8fafc"/>
-  <!-- 上半：shape 路徑。Q、K 進 softmax；V 另走一條線，直接到最後一個方框。箭頭的線停在箭頭底，箭頭尖剛好碰到方框。 -->
-  <g fill="#dbeafe" stroke="#2563eb" stroke-width="2">
-    <rect x="16" y="16" width="196" height="96" rx="12"/>
-    <rect x="244" y="16" width="196" height="96" rx="12"/>
-    <rect x="472" y="16" width="232" height="96" rx="12"/>
-    <rect x="96" y="196" width="240" height="96" rx="12"/>
-    <rect x="440" y="196" width="264" height="96" rx="12"/>
-  </g>
-  <g fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#flow-head)">
-    <path d="M212 64H230"/>
-    <path d="M440 64H458"/>
-    <path d="M500 112V150H216V182"/>
-    <path d="M548 112V182"/>
-    <path d="M336 244H426"/>
-  </g>
-  <g font-family="sans-serif" font-size="20" fill="#0f172a" text-anchor="middle">
-    <text x="114" y="45">Feature map</text><text x="114" y="73">[1,2,2,2]</text><text x="114" y="101">N = H × W = 4</text>
-    <text x="342" y="45">Spatial tokens</text><text x="342" y="73">[1,4,2]</text><text x="342" y="101">一列一個位置</text>
-    <text x="588" y="45">Q、K、V</text><text x="588" y="73">各為 [1,4,2]</text><text x="588" y="101">可學線性投影</text>
-    <text x="216" y="225">softmax(QKᵀ/√2)</text><text x="216" y="253">[1,4,4]</text><text x="216" y="281">每列權重合計 1</text>
-    <text x="572" y="225">weights @ V（矩陣乘法）</text><text x="572" y="253">[1,4,2]</text><text x="572" y="281">還原 [1,2,2,2]</text>
-  </g>
-  <g font-family="sans-serif" font-size="18" fill="#1e3a8a">
-    <text x="358" y="140" text-anchor="middle">Q、K：決定讀取比例</text>
-    <text x="560" y="141">V：被讀走的內容</text>
-    <text x="560" y="166">不經過 softmax</text>
-    <text x="388" y="232" text-anchor="middle">weights</text>
-  </g>
-  <!-- 下方小圖：權重表第 1 列。2×2 格照 row-major 順序排；線寬＝20×權重：0.3349→6.698，0.1651→3.302。 -->
-  <path d="M216 292V316" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
-  <rect x="16" y="316" width="688" height="370" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-  <text x="36" y="348" font-family="sans-serif" font-size="20" font-weight="700" fill="#0f172a">權重表第 1 列：左上從四個位置各讀多少</text>
-  <rect x="232" y="372" width="128" height="80" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
-  <g fill="#f1f5f9" stroke="#64748b" stroke-width="2">
-    <rect x="476" y="372" width="128" height="80" rx="8"/>
-    <rect x="232" y="520" width="128" height="80" rx="8"/>
-    <rect x="476" y="520" width="128" height="80" rx="8"/>
-  </g>
-  <g font-family="sans-serif" text-anchor="middle">
-    <g font-size="18" fill="#475569">
-      <text x="296" y="402">第 1 個</text><text x="540" y="402">第 2 個</text>
-      <text x="296" y="550">第 3 個</text><text x="540" y="550">第 4 個</text>
-    </g>
-    <g font-size="22" fill="#0f172a">
-      <text x="296" y="434">[1,0]</text><text x="540" y="434">[0,1]</text>
-      <text x="296" y="582">[1,1]</text><text x="540" y="582">[0,0]</text>
-    </g>
-  </g>
-  <g fill="none" stroke="#b45309" marker-end="url(#weight-head)">
-    <path d="M232 388C180 374 172 440 216 436" stroke-width="6.698"/>
-    <path d="M360 412H460" stroke-width="3.302"/>
-    <path d="M264 452V504" stroke-width="6.698"/>
-    <path d="M348 452L473.6 513" stroke-width="3.302"/>
-  </g>
-  <g font-family="sans-serif" font-size="20" fill="#92400e">
-    <text x="174" y="415" text-anchor="end">0.3349</text>
-    <text x="418" y="401" text-anchor="middle">0.1651</text>
-    <text x="280" y="493">0.3349</text>
-    <text x="420" y="476">0.1651</text>
-  </g>
-  <g font-family="sans-serif" font-size="19" fill="#334155">
-    <text x="36" y="638">格內：第幾個 token 與它的值；本例一開始 Q＝K＝V＝token。</text>
-    <text x="36" y="667">箭頭從接收位置（左上）指向來源位置；線越粗，權重越大。</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 1210" role="img" aria-labelledby="title desc">
+<title id="title">四個空間位置的 attention 計算</title>
+<desc id="desc">上半直向顯示feature map [1,2,2,2]轉tokens [1,4,2]，各自線性投影得Q K V，初值為單位矩陣。Q K產生每列加總1的weights [1,4,4]，V繞過softmax直接供weights@V矩陣乘法，輸出[1,4,2]再還原圖[1,2,2,2]。下半四位置按row-major編號：左上第1 [1,0]、右上第2 [0,1]、左下第3 [1,1]、右下第4 [0,0]；箭頭從左上接收者指來源，讀第1和3各0.3349，第2和4各0.1651。權重線寬仍為20乘權重。</desc>
+<defs><marker id="flow" viewBox="0 0 14 12" refX="0" refY="6" markerWidth="14" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L14 6L0 12Z" fill="#2563eb"/></marker><marker id="weight" viewBox="0 0 16 14" refX="0" refY="7" markerWidth="16" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L16 7L0 14Z" fill="#b45309"/></marker></defs>
+<rect x="0" y="0" width="480" height="1210" rx="0" fill="#f8fafc" />
+<rect x="104" y="16" width="272" height="96" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+<text x="240.0" y="44" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">Feature map [1,2,2,2]</text>
+<text x="240.0" y="71" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">N = H × W = 4</text>
+<text x="240.0" y="98" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">空間位置尚在 H、W 軸</text>
+<path d="M240 112V132" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#flow)"/>
+<rect x="104" y="146" width="272" height="96" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+<text x="240.0" y="174" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">Spatial tokens [1,4,2]</text>
+<text x="240.0" y="201" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">一列一個空間位置</text>
+<text x="240.0" y="228" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">每列有 2 個 channel 值</text>
+<path d="M240 242V262" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#flow)"/>
+<rect x="80" y="276" width="320" height="96" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+<text x="240.0" y="304" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">Q、K、V：各 [1,4,2]</text>
+<text x="240.0" y="331" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">三份可學線性投影</text>
+<text x="240.0" y="358" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">本例初值都是單位矩陣</text>
+<path d="M166 372V422" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#flow)"/>
+<path d="M352 372V606" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#flow)"/>
+<text x="35" y="396" font-family="sans-serif" font-size="18" text-anchor="start" fill="#1e3a8a" font-weight="normal">Q、K：</text>
+<text x="35" y="423" font-family="sans-serif" font-size="18" text-anchor="start" fill="#1e3a8a" font-weight="normal">讀取比例</text>
+<text x="366" y="448" font-family="sans-serif" font-size="18" text-anchor="start" fill="#1e3a8a" font-weight="normal">V：內容</text>
+<text x="366" y="478" font-family="sans-serif" font-size="18" text-anchor="start" fill="#1e3a8a" font-weight="normal">不經過</text>
+<text x="366" y="505" font-family="sans-serif" font-size="18" text-anchor="start" fill="#1e3a8a" font-weight="normal">softmax</text>
+<rect x="24" y="436" width="284" height="98" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+<text x="166.0" y="464" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">softmax(QKᵀ/√2)</text>
+<text x="166.0" y="491" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">weights [1,4,4]</text>
+<text x="166.0" y="518" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">每列權重合計 1</text>
+<path d="M166 534V606" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#flow)"/>
+<text x="96" y="574" font-family="sans-serif" font-size="18" text-anchor="start" fill="#1e3a8a" font-weight="normal">weights</text>
+<rect x="76" y="620" width="328" height="98" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+<text x="240.0" y="648" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">weights @ V：矩陣乘法</text>
+<text x="240.0" y="675" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">output tokens [1,4,2]</text>
+<text x="240.0" y="702" font-family="sans-serif" font-size="20" text-anchor="middle" fill="#0f172a" font-weight="normal">還原成圖 [1,2,2,2]</text>
+<path d="M166 718V750" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="12" y="750" width="456" height="446" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="2" />
+<text x="28" y="780" font-family="sans-serif" font-size="20" text-anchor="start" fill="#0f172a" font-weight="700">權重表第 1 列：</text>
+<text x="28" y="811" font-family="sans-serif" font-size="20" text-anchor="start" fill="#0f172a" font-weight="700">左上從四個位置各讀多少</text>
+<rect x="108" y="842" width="116" height="70" rx="7" fill="#fef3c7" stroke="#b45309" stroke-width="2" />
+<text x="166" y="867" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#475569" font-weight="normal">第 1 個</text>
+<text x="166" y="897" font-family="sans-serif" font-size="22" text-anchor="middle" fill="#0f172a" font-weight="normal">[1,0]</text>
+<rect x="338" y="842" width="116" height="70" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+<text x="396" y="867" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#475569" font-weight="normal">第 2 個</text>
+<text x="396" y="897" font-family="sans-serif" font-size="22" text-anchor="middle" fill="#0f172a" font-weight="normal">[0,1]</text>
+<rect x="108" y="1008" width="116" height="70" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+<text x="166" y="1033" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#475569" font-weight="normal">第 3 個</text>
+<text x="166" y="1063" font-family="sans-serif" font-size="22" text-anchor="middle" fill="#0f172a" font-weight="normal">[1,1]</text>
+<rect x="338" y="1008" width="116" height="70" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+<text x="396" y="1033" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#475569" font-weight="normal">第 4 個</text>
+<text x="396" y="1063" font-family="sans-serif" font-size="22" text-anchor="middle" fill="#0f172a" font-weight="normal">[0,0]</text>
+<path d="M108 858C50 842 49 908 94 900" fill="none" stroke="#b45309" stroke-width="6.698" marker-end="url(#weight)"/>
+<path d="M224 877H322" fill="none" stroke="#b45309" stroke-width="3.302" marker-end="url(#weight)"/>
+<path d="M152 912V992" fill="none" stroke="#b45309" stroke-width="6.698" marker-end="url(#weight)"/>
+<path d="M220 912L325.6 997.9" fill="none" stroke="#b45309" stroke-width="3.302" marker-end="url(#weight)"/>
+<text x="90" y="841" font-family="sans-serif" font-size="18" text-anchor="end" fill="#92400e" font-weight="normal">0.3349</text>
+<text x="281" y="863" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#92400e" font-weight="normal">0.1651</text>
+<text x="172" y="972" font-family="sans-serif" font-size="18" text-anchor="start" fill="#92400e" font-weight="normal">0.3349</text>
+<text x="325" y="948" font-family="sans-serif" font-size="18" text-anchor="middle" fill="#92400e" font-weight="normal">0.1651</text>
+<text x="28" y="1112" font-family="sans-serif" font-size="18" text-anchor="start" fill="#334155" font-weight="normal">格內：token 編號與向量值</text>
+<text x="28" y="1138" font-family="sans-serif" font-size="18" text-anchor="start" fill="#334155" font-weight="normal">本例初值：Q＝K＝V＝token</text>
+<text x="28" y="1164" font-family="sans-serif" font-size="18" text-anchor="start" fill="#334155" font-weight="normal">箭頭從接收位置指向來源位置；</text>
+<text x="28" y="1190" font-family="sans-serif" font-size="18" text-anchor="start" fill="#334155" font-weight="normal">線越粗，權重越大。</text>
 </svg>

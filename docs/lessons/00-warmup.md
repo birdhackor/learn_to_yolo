@@ -41,7 +41,7 @@ z&=w_1x_1+w_2x_2+b\\
 
 ![兩個輸入各乘權重，加上bias，再經ReLU；多個神經元的輸出接到下一層](../assets/diagrams/00-neuron-network.svg){ width="560" }
 
-圖的上半是單個神經元，下半是把它們排成層，再接到下一層。圖中的箭頭表示數字往哪裡送；每條可學的連接有自己的權重。
+圖的上半是單個神經元，下半是把它們排成層，再接到下一層：輸入是 $x_1,x_2$，第一層的兩個輸出是 $a_1,a_2$，下一層的兩個輸出是 $a_3,a_4$。下標區分不同位置的量，不表示它們的數值一定不同。箭頭表示數字往哪裡送；同一個輸出分送給兩個神經元時仍是同一個量，每條可學的連接則有自己的權重。
 
 ## 用矩陣一起計算一層
 
@@ -222,7 +222,7 @@ weight: 1.00 -> 1.80; new_prediction=3.60; new_loss=0.16
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-07 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/00-warmup.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/00-warmup.json)
 
 ??? example "展開本次實際輸出"
 

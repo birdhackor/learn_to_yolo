@@ -64,8 +64,13 @@ def capstone_panel(source_path: Path, target: Path):
         elif current is not None:
             current.append(child)
     assert len(cells) == 9 and len(headings) == 3
-    root = canvas(source, 440, 4130, "#0f172a")
-    root.find(f"{{{SVG}}}desc").text += " 網頁將兩個模型各四張圖分成上下兩組，最後保留背景誤報；圖片和所有框沿用原結果。"
+    root = canvas(source, 440, 4170, "#0f172a")
+    root.find(f"{{{SVG}}}desc").text = (
+        "同樣四張驗證圖，依 #14、#5、#4、#7 排列；每張先放基準 box weight 5，"
+        "緊接著放只把權重改成 10 的結果。綠框是 GT，橘框是 score 至少 0.25 的預測，"
+        "標籤寫『類別:score』。最後保留基準模型在候選截斷門檻 0.05 下的背景誤報，"
+        "用紫色虛線框標出。圖片、所有框與分數沿用原結果。"
+    )
 
     def label(value, y, size=24):
         node = element("text", x=20, y=y, fill="white")
@@ -74,26 +79,26 @@ def capstone_panel(source_path: Path, target: Path):
         node.text = value
         root.append(node)
 
-    label(headings[0].split("（")[0], 32)
+    label("相同驗證圖：逐張比較", 32)
     label("綠框＝GT；橘框＝預測", 64, 20)
-    label("此組只畫 score ≥ 0.25", 88, 20)
-    label(headings[1], 1832)
-    label("綠框＝GT；橘框＝預測", 1864, 20)
-    label("此組只畫 score ≥ 0.25", 1888, 20)
-    for index, children in enumerate(cells[:8]):
+    label("以下四對只畫 score ≥ 0.25", 88, 20)
+    for index in (0, 4, 1, 5, 2, 6, 3, 7):
+        children = cells[index]
         method, row = divmod(index, 4)
+        top = 140 + 440 * (2 * row + method)
+        label(headings[method].split("（")[0], top - 20, 22)
         old_x, old_y = children[0].get("x"), children[0].get("y")
-        group = element("g", transform=f"translate(20,{100+1800*method+420*row}) scale(1.7) translate(-{old_x},-{old_y})")
+        group = element("g", transform=f"translate(20,{top}) scale(1.7) translate(-{old_x},-{old_y})")
         group.set("fill", "white")
         group.set("font-family", "sans-serif")
         group.set("font-size", "20")
         for child in children:
             group.append(deepcopy(child))
         root.append(group)
-    label("baseline 的背景誤報：validation #10", 3632, 22)
+    label("baseline 的背景誤報：validation #10", 3672, 22)
     children = cells[-1]
     old_x, old_y = children[0].get("x"), children[0].get("y")
-    group = element("g", transform=f"translate(20,3660) scale(1.7) translate(-{old_x},-{old_y})")
+    group = element("g", transform=f"translate(20,3700) scale(1.7) translate(-{old_x},-{old_y})")
     group.set("fill", "white")
     group.set("font-family", "sans-serif")
     group.set("font-size", "20")
@@ -103,7 +108,7 @@ def capstone_panel(source_path: Path, target: Path):
         group.append(deepcopy(child))
     root.append(group)
     for row, value in enumerate(["紫色虛線框：class 1，score 0.068", "和所有 GT 的最大 IoU：0.000", "此格畫 score ≥ 0.05 的全部候選。", "CPU 小型合成圖；AP 候選門檻 0.05。"]):
-        label(value, 4000+row*32, 19)
+        label(value, 4040+row*32, 19)
     write(root, target)
 
 

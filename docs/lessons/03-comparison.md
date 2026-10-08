@@ -71,6 +71,8 @@ for p, r in zip(plain.parameters(), residual.parameters()):
 
 **梯度的 L2 長度（norm）**把一層很多權重的梯度平方、相加、開根號，收成一個大小，讓我們觀察回到前層的訊號。本例實測：
 
+手機上可左右滑動表格，查看完整欄位。
+
 | 模型 | 第 1 次更新前 loss | 第 3 次更新前 loss | 第 1 次 stem 梯度長度 | 更新後驗證正確率 |
 | --- | --- | --- | --- | --- |
 | plain | 0.6938 | 0.6936 | 0.000984 | 2/4 |
@@ -83,6 +85,8 @@ for p, r in zip(plain.parameters(), residual.parameters()):
 從相同初始權重重新開始，沿用資料、SGD 與學習率，只增加到 40 次更新。每步的圖點都量在**該次更新前**；最後正確率則量在 40 次全部更新後。
 
 ![plain與residual在同一批訓練圖上更新40次；藍色plain接近水平，橘色residual下降](../assets/diagrams/03-comparison-learning-readable.svg)
+
+手機上可左右滑動表格，查看完整欄位。
 
 | 模型 | 初始 → 最後一點訓練 loss | 更新後訓練正確率 | 更新後驗證正確率 |
 | --- | --- | --- | --- |
@@ -143,7 +147,7 @@ plain 的 loss 停在約 0.693，接近 A.1 中兩類各給 0.5 的交叉熵基�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-07 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/03-comparison.json)
 
 ??? example "展開本次實際輸出"
 
@@ -151,11 +155,11 @@ plain 的 loss 停在約 0.693，接近 A.1 中兩類各給 0.5 的交叉熵基�
     plain step=0, loss=0.6938, stem_grad_norm=0.000984
     plain step=1, loss=0.6937, stem_grad_norm=0.001001
     plain step=2, loss=0.6936, stem_grad_norm=0.001011
-    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0092
+    plain: params=986, MACs/image=248840, shortcut_adds/image=0, validation_accuracy=0.50, 3_step_seconds=0.0093
     residual step=0, loss=0.6921, stem_grad_norm=0.146701
     residual step=1, loss=0.6888, stem_grad_norm=0.147590
     residual step=2, loss=0.6855, stem_grad_norm=0.146128
-    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0091
+    residual: params=986, MACs/image=248840, shortcut_adds/image=3072, validation_accuracy=0.50, 3_step_seconds=0.0069
     Same initial weights/data/optimizer/steps; 3 steps and 4 validation images do not rank architectures.
     ```
 

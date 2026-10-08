@@ -4,7 +4,7 @@
 
 第 7 章用座標 MSE 當框 loss：把預測框和真值框的四個數字逐一相減、平方再平均。評估時看的卻是兩框重疊多少：用 IoU（交集面積÷聯集面積）判斷框找得對不對，例如第 6 章的 AP50 要 IoU 至少 0.5 才算找對。這兩件事並不一致。第 4 章算過，同樣往右、往下各偏 2 pixel，12×12 的框 IoU 約 0.53，4×4 的框只剩約 0.14，兩者的正規化座標 MSE 卻一樣。
 
-所以很自然會想直接拿 \(1-\text{IoU}\) 當 loss：IoU 越大越好、loss 越小越好，兩框完全重合時 loss 是 0。問題是兩框分開、完全沒有重疊時，IoU 一直是 0，這個 loss 的梯度也是 0，模型不知道框該往哪裡移。本節比較三種改良版的 IoU 類 loss，看它們怎麼補上這個方向。讀完你能手算 \(1-\text{IoU}\) 與這三種改良版共四種 loss，並說出兩框不重疊時，哪些 loss 還有梯度、會把框往哪裡推。
+所以很自然會想直接拿 \(1-\text{IoU}\) 當 loss：IoU 越大越好、loss 越小越好，兩框完全重合時 loss 是 0。問題是兩框分開、完全沒有重疊時，IoU 一直是 0，這個 loss 的梯度也是 0，模型不知道框該往哪裡移。本節比較三種改良版的 IoU 類 loss，看它們怎麼補上這個方向。讀完你能手算本例的 \(1-\text{IoU}\) 與這三種改良版共四種 loss，並說出兩框不重疊時，哪些 loss 還有梯度、會把框往哪裡推。
 
 前置：[IoU 與框](04-localization.md)（xyxy 寫法與 IoU 怎麼算）、[grid loss](07-loss.md)（第 7 章怎麼算框 MSE）。
 
@@ -213,7 +213,7 @@ CIoU 在 DIoU 上再加一項 \(\alpha v\)。v 衡量兩框的寬高比（寬÷�
 
 1. 若 P＝G＝`[8,12,24,28]`：C 的面積、聯集、ρ、v 各是多少？四個 loss 各是多少？
 2. 若 P 只往左移 4 pixel，變成 `[28,12,44,28]`（中心 `(36,20)`，兩框仍隔 4 pixel）：\(L_{\text{IoU}}\) 與它的中心梯度是多少？再求 \(L_{\text{GIoU}}\)、\(L_{\text{DIoU}}\) 的值（這兩項只求 loss，不求中心梯度）。
-3. G 不變，P＝`[28,12,60,28]`（寬 32、高 16）：求 v、α 與 \(L_{\text{CIoU}}\)（v、α 的式子在上方〈CIoU 的細節〉；arctan 2 請用計算機，約 1.107149）。
+3. **選讀題：先展開上方〈CIoU 的細節〉。** G 不變，P＝`[28,12,60,28]`（寬 32、高 16）：求 v、α 與 \(L_{\text{CIoU}}\)（arctan 2 請用計算機，約 1.107149）。
 
 ??? note "參考答案"
 
@@ -238,7 +238,7 @@ CIoU 在 DIoU 上再加一項 \(\alpha v\)。v 衡量兩框的寬高比（寬÷�
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-iou-loss.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/11-iou-loss.json)
 
 ??? example "展開本次實際輸出"
 

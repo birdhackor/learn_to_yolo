@@ -34,7 +34,7 @@
 
 ## 本書沿著這些問題往前走
 
-我們用 PyTorch（Python 的深度學習函式庫）做很小的模型。先把一個神經元如何計算、梯度下降如何訓練弄懂，再讓 CNN 讀圖；之後才加上位置、同圖多物件與 YOLO 的不同設計。本書的教學用偵測器稱為 **MiniYOLO**。
+我們用 PyTorch（Python 的深度學習函式庫）做很小的模型。先把一個神經元如何計算、梯度下降如何訓練弄懂，再讓卷積神經網路（CNN，Convolutional Neural Network）讀圖；之後才加上位置、同圖多物件與 YOLO 的不同設計。本書的教學用偵測器稱為 **MiniYOLO**。
 
 [從 A.0：神經網路與第一次學習開始](lessons/00-warmup.md){ .md-button .md-button--primary }
 [檢視完整閱讀路線](learning-path.md){ .md-button }
@@ -52,11 +52,11 @@
 
 **只讀網頁也能學。**必要解釋、手算和圖解都在本文；頁末選讀留給重做實驗或想多了解細節的人。想動手時，點頁首 Colab 按鈕，使用 Google 的線上 Python 環境。
 
-本書的小實驗使用 CPU，資料由程式畫出。彩色幾何圖形能讓我們看清模型讀了什麼、參數是否更新、答案是否正確；真實照片的效果需要另外訓練與評估，實測範圍見[驗證範圍](status.md)。現有 notebook 固定使用 `lessons-v0.6.1` 的實驗程式。
+本書的小實驗使用 CPU（Central Processing Unit，中央處理器），資料由程式畫出。彩色幾何圖形能讓我們看清模型讀了什麼、參數是否更新、答案是否正確；真實照片的效果需要另外訓練與評估，實測範圍見[驗證範圍](status.md)。現有 notebook 固定使用 `lessons-v0.6.1` 的實驗程式。
 
 ??? note "第一次執行程式"
 
-    Colab 需要 Google 帳號。notebook 第一格準備環境，最後一格是可修改的完整實驗；[A.0](lessons/00-warmup.md)會說明怎麼操作。網頁與 notebook 保存了實際輸出，重跑時部分訓練數字或計時可能略有不同。
+    Colab 需要 Google 帳號。notebook 的第一個程式碼儲存格準備環境，最後一格是可修改的完整實驗；[A.0](lessons/00-warmup.md)會說明怎麼操作。網頁與 notebook 保存了實際輸出，重跑時部分訓練數字或計時可能略有不同。
 
 ??? note "故事的原始來源與教材查詢"
 

@@ -123,7 +123,7 @@
 | ltrb | 候選點到框左（left）、上（top）、右（right）、下（bottom）四邊的距離；本書多半以特徵格為單位，也就是畫素距離除以 stride（16.3 節的例子直接用畫素） | 和 xyxy 一樣是四個數，意思卻不同。例：點 (28,28)、stride 8 時，xyxy `[12,16,40,36]` 寫成 ltrb 是 `[2,1.5,1.5,1]`。點在框外時，至少有一邊是負的：12.1 節的 softplus 只輸出正數，表示不了；16.1 節的 YOLO26 輸出可正可負 | [12.1](lessons/12-anchor-free.md) |
 | top-k | 依分數（或品質）由大到小排，只留前 k 名 | 只依每個候選自己的分數或品質取前 k 名，不比較候選框彼此的重疊，本身不保證每個物件只留一個框，不能叫 NMS | [12.3](lessons/12-assignment.md)、[13.2](lessons/13-nms-free.md) |
 | DFL（Distribution Focal Loss）、bin | 把一條邊的距離拆給相鄰兩個整數刻度（bin）當目標：1.25 格→bin1 權重 0.75、bin2 權重 0.25，loss＝\(-0.75\ln p_1-0.25\ln p_2\)；解碼時取期望值 \(\sum_k k\,p_k\) | bin 是距離刻度，不是物件類別。K 個 bin 只能表示 0 到 K−1 格；Ultralytics 程式的 reg_max 就是 K，YOLO26 設 reg_max＝1，等於不用 DFL | [12.4](lessons/12-dfl.md)、[16.1](lessons/16-dfl-free.md) |
-| one-to-many（一對多）、one-to-one（一對一） | 一對多：一個 GT 教好幾個候選，訓練訊號多，但推論時同一物件容易有多個高分框。一對一：每個 GT 只教一個候選，一個候選也最多負責一個 GT | YOLOv10 的 dual assignment（雙重分配）訓練時兩種 head 都接，推論只留一對一 head、不跑 NMS，這叫 NMS-free | [13.1](lessons/13-dual-assignment.md) |
+| one-to-many（一對多）、one-to-one（一對一） | 一對多：一個 GT 教好幾個候選，訓練訊號多，但推論時同一物件容易有多個高分框。一對一的設計目標：每個 GT 由一個候選負責，一個候選也最多負責一個 GT | YOLOv10 的 dual assignment（雙重分配）訓練時兩種 head 都接，推論只留一對一 head、不跑 NMS，這叫 NMS-free。實際分配數量依版本規則，未必每個 GT 恰好配一個 | [13.1](lessons/13-dual-assignment.md)、[16.2](lessons/16-inference-head.md) |
 | attention（注意力）、token、Q／K／V | 每個位置是一個 token（該位置各 channel 的值排成的向量）。拿 query（要找什麼）和每個 key（被比對的標籤）做內積、除以 \(\sqrt{d}\)，沿 key 軸 softmax 成權重，再把所有位置（含自己）的 value（被讀走的內容）加權相加 | 例：15.1 節左上位置的權重是 [0.3349,0.1651,0.3349,0.1651]，第一項就是讀自己。full attention 每張圖、每個 attention head 有 N² 個權重；Area Attention 分成 A 區後降為 N²/A | [15.1](lessons/15-attention-bridge.md)、[15.2](lessons/15-area-attention.md) |
 
 ## 影片、追蹤與部署

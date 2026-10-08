@@ -81,9 +81,9 @@ w=a_w\times e^{t_w},\qquad h=a_h\times e^{t_h}.
 
 - **positive**：第 4 步選出的 best anchor 對應的槽，負責學這個物件。本例是格 (1,1) 的槽 0。
 - **ignore**：同一格的其他槽，若和物件的尺寸 IoU 大於 0.2，就什麼 loss 都不算。本例格 (1,1) 的槽 1（8×8，尺寸 IoU 0.25）就是 ignore。
-- **negative**：其餘的槽，只學「這裡沒有物件」。
+- **negative**：其餘的槽，objectness 目標是 0，表示這個槽沒有分到負責的物件；不學框與類別。
 
-為什麼要 ignore？8×8 槽和物件在同一格，尺寸也有幾分像（尺寸 IoU 0.25）。把它當 negative，就要它在有物件的位置學「沒有物件」。本節用 0.2 這個教學門檻讓它不計任何 loss；這是自訂規則，和原版不同。
+為什麼加上 ignore？8×8 槽雖然不是 best anchor，卻在同一責任格，尺寸也有幾分像（尺寸 IoU 0.25），仍可作為這個物件的備選槽。本例選擇暫不把這類備選槽的 objectness 壓向 0，只讓 best 槽學這個物件的框與類別。ignore 由「同格、非 best、尺寸 IoU 大於 0.2」判定；其他格即使看得到部分物件畫素，仍照 negative 處理。0.2 是為了示範 ignore 而選的教學門檻，這是自訂規則，和原版不同。
 
 ??? note "原版 YOLOv2 的 ignore 規則"
 
@@ -160,7 +160,7 @@ loss = regression+objectness+classification
 
 ## 收益與代價
 
-好的先驗讓尺寸修正量更接近 0。tw=0 時 exp(0)=1，框就等於 anchor；anchor 越接近真實尺寸，要學的修正量越小（本例選 16×16 時 target tw=0，選 8×8 就要學到 ln2≈0.693），通常比較好學。資料形狀越集中，越容易挑到這樣的 anchor，所以這種做法適合形狀集中的資料。本節程式的 raw 初值全為 0，起點正好就是 anchor 尺寸。
+好的先驗讓尺寸修正量更接近 0。tw=0 時 exp(0)=1，框就等於 anchor；anchor 越接近真實尺寸，要學的修正量越小（本例選 16×16 時 target tw=0，選 8×8 就要學到 ln2≈0.693）。本節程式的 raw 初值全為 0，起點正好就是 anchor 尺寸，所以尺寸接近的 anchor 先提供了較貼近真值的起始框，模型再學相對於它的差異。資料形狀越集中，越容易挑到這樣的 anchor。
 
 多槽也增加每格容量。例如同一格有 16×16 與 8×8 兩個物件（本節程式只處理一個物件，這是概念上的例子）：照尺寸 IoU，前者選槽 0、後者選槽 1，兩個物件各由一個槽負責；第 7 章每格只有一個槽，同一格遇到第二個物件就會拋 ValueError。但若兩個物件都是 16×16，都會選槽 0，仍然衝突。anchor 不保證任何兩個物件都能分開。
 
@@ -190,7 +190,7 @@ loss = regression+objectness+classification
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/09-anchors.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/09-anchors.json)
 
 ??? example "展開本次實際輸出"
 

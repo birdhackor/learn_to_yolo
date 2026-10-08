@@ -59,6 +59,8 @@ target 張量的前三軸依序是圖片 b、格子列 gy、格子欄 gx。所�
 
 objectness 目標表示這格是否被分配到物件。把第 0 張圖的 objectness 排成 4×4，列是 gy、欄是 gx：
 
+手機上可左右滑動表格，查看完整欄位。
+
 |  | gx=0 | gx=1 | gx=2 | gx=3 |
 | --- | --- | --- | --- | --- |
 | gy=0 | 0 | 0 | 0 | 0 |
@@ -69,6 +71,8 @@ objectness 目標表示這格是否被分配到物件。把第 0 張圖的 objec
 第 1 張空圖的 16 格全是 0。positive 是布林 mask（遮罩：由 True／False 組成的張量），用來選出正格。
 
 下表的 S=4 是每邊的格數（第 5 章和下一節也寫成 S）；小寫 gy、gx 則是某一格的索引，範圍 0～3。
+
+手機上可左右滑動表格，查看完整欄位。
 
 | target 欄位 | 本例 shape | 內容 | 哪些格子進 loss |
 | --- | --- | --- | --- |
@@ -172,7 +176,7 @@ objectness 不用 pos：`pred[..., 4]` 的 32 格全部和 `target['objectness']
 
 ## 實際執行紀錄
 
-本節的完整程式於 2026-10-05 在 INTEL(R) XEON(R) PLATINUM 8573C（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-targets.json)
+本節的完整程式於 2026-10-08 在 AMD EPYC 9V74 80-Core Processor（2 個執行緒）上用 PyTorch 2.9.1+cpu 執行，程式裡的 assert 全部通過。下面是那次印出的原始輸出；輸出裡若有計時或訓練得到的數字，換一台電腦會略有不同。每個數字的意思，以本頁正文的說明為準。[完整紀錄（JSON）](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/07-targets.json)
 
 ??? example "展開本次實際輸出"
 
