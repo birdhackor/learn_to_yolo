@@ -1,0 +1,1164 @@
+{
+  "verified_at_utc": "2026-10-08T09:11:53.792819+00:00",
+  "website": "https://birdhackor.github.io/learn_to_yolo/",
+  "build_commit": "66ef55485337cc8f42f223001ce132c9646337d7",
+  "deployment": {
+    "conclusion": "success",
+    "createdAt": "2026-10-08T09:10:10Z",
+    "databaseId": 37754774776,
+    "headSha": "66ef55485337cc8f42f223001ce132c9646337d7",
+    "status": "completed",
+    "updatedAt": "2026-10-08T09:10:56Z",
+    "url": "https://github.com/birdhackor/learn_to_yolo/actions/runs/37754774776"
+  },
+  "mode": "Anonymous public HTTP comparison with local strict build; no Colab login/runtime execution",
+  "pages": [
+    {
+      "route": "",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "learning-path/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "glossary/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "status/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "validation/gpu-smoke/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "validation/curriculum/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/00-warmup/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/01-small-cnn/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/02-diagnostics/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/03-identity/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/03-projection/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/03-comparison/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/04-localization/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/04-coordinates/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/05-assignment/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/06-decode-nms/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/06-evaluation/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/07-data/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/07-targets/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/07-loss/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/07-training/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/07-inference/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/07-heldout/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/08-own-images/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/08-own-data/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/09-anchors/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/09-anchor-clustering/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/10-multiscale/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/11-csp/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/11-fusion/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/11-augmentation/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/11-iou-loss/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/12-anchor-free/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/12-decoupled-head/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/12-assignment/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/12-dfl/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/13-dual-assignment/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/13-nms-free/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/14-feature-module/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/15-attention-bridge/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/15-area-attention/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/16-dfl-free/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/16-inference-head/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/16-training/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/17-capstone/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/18-video/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/19-tracking/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/20-deployment/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/21-patches/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/21-attention/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/21-transformer/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/21-training/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/22-views/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/22-collapse/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/22-distillation/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/22-features/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/23-dino-versions/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "lessons/23-detection-bridge/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "preparation/data/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "preparation/publish/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "preparation/architecture/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "planning/outline/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "planning/course-research/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "planning/feedback/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "research/foundation-data/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "research/detection-data/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "research/lfs/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "research/pages-colab/",
+      "http_status": 200,
+      "article_matches_build": true
+    },
+    {
+      "route": "research/version-sources/",
+      "http_status": 200,
+      "article_matches_build": true
+    }
+  ],
+  "files": [
+    {
+      "path": "assets/stylesheets/extra.css",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/00-gradient-descent.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/00-neuron-network.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/00-nonlinear-classification.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-cnn-flow.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-cnn-materials.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-convolution-window.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-local-patterns.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-pooling-example.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-receptive-field.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-receptive-growth.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-rgb-convolution.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-small-cnn-learning-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-small-cnn-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/01-small-cnn.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/02-cue-shift-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/02-diagnostics.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/03-comparison-learning-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/03-comparison-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/03-identity-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/03-identity.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/03-projection-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/03-projection.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/04-coordinates-panel.png",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/04-coordinates-rounding.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/04-coordinates.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/04-localization-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/04-localization-model.png",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/04-localization.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/05-assignment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/06-decode-nms.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/06-evaluation-matching.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/06-evaluation.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/07-data.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/07-grid-loss-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/07-grid-predictions-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/08-custom-160-step.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/08-custom-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/08-custom-loss-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/08-custom-predictions-labelled.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/08-custom-predictions-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/08-own-images.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/09-anchor-clustering.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/09-anchors.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/10-multiscale-branches.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/10-multiscale-coarse.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/10-multiscale-fine.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/10-multiscale-learning.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/10-multiscale-observed-predictions.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/10-multiscale.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/11-augmentation.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/11-bilinear-coordinates.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/11-crop-resize-target.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/11-csp.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/11-fusion.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/11-iou-loss.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/12-anchor-free.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/12-assignment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/13-dual-head-flow.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/13-nms-free.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/14-split-paths.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/15-area-layout.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/15-attention-bridge.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/16-distance-decode.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/16-head-paths.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/16-stal-candidates.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/17-capstone-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/17-capstone.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/18-video-queue.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/18-video-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/18-video.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/19-tracking-readable.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/19-tracking.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/20-deployment.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-attention-exchange.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-checkpoint-resume.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-classification-flow.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-materials.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-patch-grid.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-position-swap.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-preln-block.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-token-position.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/21-training-loss.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/22-collapse.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/22-distillation.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/22-features.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/22-neighbors.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/22-views.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/23-detection-bridge.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/23-detection-predictions.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/23-dinov2-patch-neighbor.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/23-gram-relations.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/classification-vs-detection.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/grid-learning-curve.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/grid-learning-predictions.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/object-journey.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    },
+    {
+      "path": "assets/diagrams/release-evidence-flow.svg",
+      "http_status": 200,
+      "bytes_match_build": true
+    }
+  ],
+  "notebooks": [
+    {
+      "id": "00-warmup",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "01-small-cnn",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "02-diagnostics",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "03-identity",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "03-projection",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "03-comparison",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "04-localization",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "04-coordinates",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "05-assignment",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "06-decode-nms",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "06-evaluation",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "07-data",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "07-targets",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "07-loss",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "07-training",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "07-inference",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "07-heldout",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "08-own-images",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "08-own-data",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "09-anchors",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "09-anchor-clustering",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "10-multiscale",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "11-csp",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "11-fusion",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "11-augmentation",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "11-iou-loss",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "12-anchor-free",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "12-decoupled-head",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "12-assignment",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "12-dfl",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "13-dual-assignment",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "13-nms-free",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "14-feature-module",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "15-attention-bridge",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "15-area-attention",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "16-dfl-free",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "16-inference-head",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "16-training",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "17-capstone",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "18-video",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "19-tracking",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "20-deployment",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "21-patches",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "21-attention",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "21-transformer",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "21-training",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "22-views",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "22-collapse",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "22-distillation",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "22-features",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "23-dino-versions",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    },
+    {
+      "id": "23-detection-bridge",
+      "ref": "lessons-v0.6.1",
+      "http_status": 200,
+      "all_code_cells_match": true
+    }
+  ],
+  "passed": true
+}
