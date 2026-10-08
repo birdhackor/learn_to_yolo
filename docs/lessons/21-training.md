@@ -1,4 +1,4 @@
-# 21.4 ViT training：從會計算的模型，到能答題的模型
+# E.21.4 ViT training：從會計算的模型，到能答題的模型
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-training.ipynb){ .md-button }
 

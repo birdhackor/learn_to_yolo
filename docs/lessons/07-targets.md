@@ -1,4 +1,4 @@
-# 7.2 Grid MiniYOLO：把框變成訓練目標
+# B.7.2 Grid MiniYOLO：把框變成訓練目標
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-targets.ipynb){ .md-button }
 

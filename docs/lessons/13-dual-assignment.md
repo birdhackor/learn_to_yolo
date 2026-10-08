@@ -1,4 +1,4 @@
-# 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
+# C.13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/13-dual-assignment.ipynb){ .md-button }
 

@@ -1,4 +1,4 @@
-# 7.3 Grid MiniYOLO：loss 必須能手算
+# B.7.3 Grid MiniYOLO：loss 必須能手算
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-loss.ipynb){ .md-button }
 

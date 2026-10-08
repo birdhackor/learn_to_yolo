@@ -1,4 +1,4 @@
-# 15.1 Feature map 到 attention：四個位置怎麼互相讀取
+# C.15.1 Feature map 到 attention：四個位置怎麼互相讀取
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/15-attention-bridge.ipynb){ .md-button }
 

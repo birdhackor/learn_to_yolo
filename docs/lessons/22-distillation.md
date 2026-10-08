@@ -1,4 +1,4 @@
-# 22.3 DINO 的一步：誰提供目標，誰接受更新？
+# E.22.3 DINO 的一步：誰提供目標，誰接受更新？
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-distillation.ipynb){ .md-button }
 

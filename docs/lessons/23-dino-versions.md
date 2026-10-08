@@ -1,4 +1,4 @@
-# 23.1 DINO 版本：整圖相近之外，局部關係怎麼保留？
+# E.23.1 DINO 版本：整圖相近之外，局部關係怎麼保留？
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/23-dino-versions.ipynb){ .md-button }
 

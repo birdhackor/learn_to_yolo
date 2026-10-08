@@ -1,4 +1,4 @@
-# 7.1 Grid MiniYOLO：先讓資料可以被檢查
+# B.7.1 Grid MiniYOLO：先讓資料可以被檢查
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-data.ipynb){ .md-button }
 

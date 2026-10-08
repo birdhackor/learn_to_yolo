@@ -1,4 +1,4 @@
-# 12.2 Decoupled head：分類和定位在哪裡分工
+# C.12.2 Decoupled head：分類和定位在哪裡分工
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-decoupled-head.ipynb){ .md-button }
 

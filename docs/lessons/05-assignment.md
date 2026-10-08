@@ -1,4 +1,4 @@
-# 5 多物件輸出與責任分配：哪個預測負責哪個物件
+# B.5 多物件輸出與責任分配：哪個預測負責哪個物件
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/05-assignment.ipynb){ .md-button }
 

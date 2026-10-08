@@ -1,4 +1,4 @@
-# 16.1 YOLO26 DFL-free：移除 bins，仍要把框學好
+# C.16.1 YOLO26 DFL-free：移除 bins，仍要把框學好
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/16-dfl-free.ipynb){ .md-button }
 

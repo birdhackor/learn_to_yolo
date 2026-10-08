@@ -1,4 +1,4 @@
-# 11.2 特徵融合：把深層資訊送回細網格
+# C.11.2 特徵融合：把深層資訊送回細網格
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/11-fusion.ipynb){ .md-button }
 

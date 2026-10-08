@@ -1,0 +1,68 @@
+{
+  "validators": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "751071",
+        "wall_time_seconds": 0.000023784,
+        "exit_code": 0,
+        "original_token_count": 22,
+        "output": "Dataset manifest, section pairing, notebook code and website publication boundaries: OK\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "e8be3b",
+        "wall_time_seconds": 0.539862857,
+        "exit_code": 0,
+        "original_token_count": 27,
+        "output": "52 lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "525d75",
+        "wall_time_seconds": 0.578887668,
+        "exit_code": 0,
+        "original_token_count": 18,
+        "output": "52 lesson records and 12 supplementary records match the current code\n"
+      }
+    }
+  ],
+  "site": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "65a325",
+      "wall_time_seconds": 0.000007263,
+      "exit_code": 0,
+      "original_token_count": 141,
+      "output": "{\"builder\": \"zensical\", \"version\": \"0.0.67\", \"html_pages\": 70, \"lesson_pages\": 52, \"all_local_links_and_anchors\": \"passed\", \"colab_pairs\": \"passed\", \"markdown_rendering\": \"passed: tables, numbered lists, admonitions, math, links and no text parsed as tags\", \"search_language\": [\"zh-TW\"], \"all_lessons_indexed\": true, \"artifact_files\": 203, \"artifact_bytes\": 9629139, \"artifact_boundaries\": \"passed\"}\n reviews/learning-path.md             |   5 +\n zensical.toml                        |  92 ++++++++---------\n 96 files changed, 467 insertions(+), 232 deletions(-)\n"
+    }
+  },
+  "evidence_sync": {
+    "command": ".venv-model/bin/python scripts/verify_curriculum.py --render-only",
+    "exit_code": 0,
+    "output": "Rendered 52 evidence blocks from saved records; changed: none"
+  },
+  "build": {
+    "exit_code": 0,
+    "output": "No issues found; Build finished in 1.78s"
+  },
+  "coverage": {
+    "exit_code": 0,
+    "output": "All 69 pages match their reviews."
+  },
+  "whitespace_and_protected_sources": {
+    "exit_code": 0,
+    "note": "No changes to A, index, lesson code, miniyolo, notebook files or SKILL."
+  },
+  "actually_viewed": [
+    "layout/04-localization-390.png",
+    "layout/09-anchors-1280.png",
+    "layout/17-capstone-390.png",
+    "layout/21-patches-390.png"
+  ],
+  "visual_observation": "四組標題前綴可辨、正常換行；C桌面側邊目錄與H1同為C.9.1。其他capture只作DOM/載入記錄，非全頁視判。"
+}

@@ -1,4 +1,4 @@
-# 21.1 ViT patches：先把圖片變成可讀取的小塊
+# E.21.1 ViT patches：先把圖片變成可讀取的小塊
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-patches.ipynb){ .md-button }
 

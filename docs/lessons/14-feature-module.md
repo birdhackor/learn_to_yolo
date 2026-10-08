@@ -1,4 +1,4 @@
-# 14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合
+# C.14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/14-feature-module.ipynb){ .md-button }
 

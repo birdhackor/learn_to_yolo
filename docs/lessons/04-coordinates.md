@@ -1,4 +1,4 @@
-# 4.2 座標轉換與還原：框跟圖片一起移動
+# B.4.2 座標轉換與還原：框跟圖片一起移動
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/04-coordinates.ipynb){ .md-button }
 

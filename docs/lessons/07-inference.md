@@ -1,4 +1,4 @@
-# 7.5 Grid MiniYOLO：把輸出接回圖片
+# B.7.5 Grid MiniYOLO：把輸出接回圖片
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-inference.ipynb){ .md-button }
 

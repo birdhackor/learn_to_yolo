@@ -1,4 +1,4 @@
-# 7.6 Grid MiniYOLO：獨立資料與評估證據
+# B.7.6 Grid MiniYOLO：獨立資料與評估證據
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-heldout.ipynb){ .md-button }
 

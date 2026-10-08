@@ -1,4 +1,4 @@
-# 8.2 用自己的資料：類別、標註與來源切分
+# B.8.2 用自己的資料：類別、標註與來源切分
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/08-own-data.ipynb){ .md-button }
 

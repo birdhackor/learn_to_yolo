@@ -1,4 +1,4 @@
-# 11.4 IoU 類 loss：沒有重疊時還能往哪裡移
+# C.11.4 IoU 類 loss：沒有重疊時還能往哪裡移
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/11-iou-loss.ipynb){ .md-button }
 

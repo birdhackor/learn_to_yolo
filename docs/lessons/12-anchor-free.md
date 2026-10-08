@@ -1,4 +1,4 @@
-# 12.1 Anchor-free：從候選點量出四條邊
+# C.12.1 Anchor-free：從候選點量出四條邊
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-anchor-free.ipynb){ .md-button }
 

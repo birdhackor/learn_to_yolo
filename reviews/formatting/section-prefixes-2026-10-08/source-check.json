@@ -1,0 +1,334 @@
+{
+  "baseline": "7810893cf9ddef58fdf0e3f87b1e4602105a3473",
+  "changed_at_utc": "2026-10-08T09:06:49.187726+00:00",
+  "scope": "46個B–E H1、46個側邊nav標籤、46個閱讀路線節號；不更動章號、網址、正文、模型或Notebook",
+  "updates": [
+    {
+      "page": "docs/lessons/04-localization.md",
+      "old_title": "# 4.1 單物件分類與定位：類別之外，還要回答在哪裡",
+      "new_title": "# B.4.1 單物件分類與定位：類別之外，還要回答在哪裡",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/04-coordinates.md",
+      "old_title": "# 4.2 座標轉換與還原：框跟圖片一起移動",
+      "new_title": "# B.4.2 座標轉換與還原：框跟圖片一起移動",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/05-assignment.md",
+      "old_title": "# 5 多物件輸出與責任分配：哪個預測負責哪個物件",
+      "new_title": "# B.5 多物件輸出與責任分配：哪個預測負責哪個物件",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/06-decode-nms.md",
+      "old_title": "# 6.1 人工框解碼與 NMS：少一個框不一定更好",
+      "new_title": "# B.6.1 人工框解碼與 NMS：少一個框不一定更好",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/06-evaluation.md",
+      "old_title": "# 6.2 人工框評估與 AP50：把預測逐筆算成證據",
+      "new_title": "# B.6.2 人工框評估與 AP50：把預測逐筆算成證據",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/07-data.md",
+      "old_title": "# 7.1 Grid MiniYOLO：先讓資料可以被檢查",
+      "new_title": "# B.7.1 Grid MiniYOLO：先讓資料可以被檢查",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/07-targets.md",
+      "old_title": "# 7.2 Grid MiniYOLO：把框變成訓練目標",
+      "new_title": "# B.7.2 Grid MiniYOLO：把框變成訓練目標",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/07-loss.md",
+      "old_title": "# 7.3 Grid MiniYOLO：loss 必須能手算",
+      "new_title": "# B.7.3 Grid MiniYOLO：loss 必須能手算",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/07-training.md",
+      "old_title": "# 7.4 Grid MiniYOLO：三步訓練與診斷",
+      "new_title": "# B.7.4 Grid MiniYOLO：三步訓練與診斷",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/07-inference.md",
+      "old_title": "# 7.5 Grid MiniYOLO：把輸出接回圖片",
+      "new_title": "# B.7.5 Grid MiniYOLO：把輸出接回圖片",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/07-heldout.md",
+      "old_title": "# 7.6 Grid MiniYOLO：獨立資料與評估證據",
+      "new_title": "# B.7.6 Grid MiniYOLO：獨立資料與評估證據",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/08-own-images.md",
+      "old_title": "# 8.1 用自己的圖片：先把座標換算和類別順序弄對",
+      "new_title": "# B.8.1 用自己的圖片：先把座標換算和類別順序弄對",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/08-own-data.md",
+      "old_title": "# 8.2 用自己的資料：類別、標註與來源切分",
+      "new_title": "# B.8.2 用自己的資料：類別、標註與來源切分",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/09-anchors.md",
+      "old_title": "# 9.1 YOLOv2 機制：anchor 是尺寸起點",
+      "new_title": "# C.9.1 YOLOv2 機制：anchor 是尺寸起點",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/09-anchor-clustering.md",
+      "old_title": "# 9.2 尺寸聚類：先驗由哪一份資料決定",
+      "new_title": "# C.9.2 尺寸聚類：先驗由哪一份資料決定",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/10-multiscale.md",
+      "old_title": "# 10 YOLOv3 機制：同一個 pixel 框看兩種尺度",
+      "new_title": "# C.10 YOLOv3 機制：同一個 pixel 框看兩種尺度",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/11-csp.md",
+      "old_title": "# 11.1 CSP：分一部分通道走較短的路",
+      "new_title": "# C.11.1 CSP：分一部分通道走較短的路",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/11-fusion.md",
+      "old_title": "# 11.2 特徵融合：把深層資訊送回細網格",
+      "new_title": "# C.11.2 特徵融合：把深層資訊送回細網格",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/11-augmentation.md",
+      "old_title": "# 11.3 增強：畫素怎麼變，框就怎麼變",
+      "new_title": "# C.11.3 增強：畫素怎麼變，框就怎麼變",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/11-iou-loss.md",
+      "old_title": "# 11.4 IoU 類 loss：沒有重疊時還能往哪裡移",
+      "new_title": "# C.11.4 IoU 類 loss：沒有重疊時還能往哪裡移",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/12-anchor-free.md",
+      "old_title": "# 12.1 Anchor-free：從候選點量出四條邊",
+      "new_title": "# C.12.1 Anchor-free：從候選點量出四條邊",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/12-decoupled-head.md",
+      "old_title": "# 12.2 Decoupled head：分類和定位在哪裡分工",
+      "new_title": "# C.12.2 Decoupled head：分類和定位在哪裡分工",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/12-assignment.md",
+      "old_title": "# 12.3 Sample assignment：哪個候選值得被教",
+      "new_title": "# C.12.3 Sample assignment：哪個候選值得被教",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/12-dfl.md",
+      "old_title": "# 12.4 DFL：把一條邊距離學成分佈",
+      "new_title": "# C.12.4 DFL：把一條邊距離學成分佈",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/13-dual-assignment.md",
+      "old_title": "# 13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複",
+      "new_title": "# C.13.1 YOLOv10 dual assignment：訓練時多教，推論時少重複",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/13-nms-free.md",
+      "old_title": "# 13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼",
+      "new_title": "# C.13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/14-feature-module.md",
+      "old_title": "# 14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合",
+      "new_title": "# C.14 YOLO11 特徵模組：拆路徑、保留中間成果、再融合",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/15-attention-bridge.md",
+      "old_title": "# 15.1 Feature map 到 attention：四個位置怎麼互相讀取",
+      "new_title": "# C.15.1 Feature map 到 attention：四個位置怎麼互相讀取",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/15-area-attention.md",
+      "old_title": "# 15.2 YOLOv12 Area Attention：互動範圍是一筆預算",
+      "new_title": "# C.15.2 YOLOv12 Area Attention：互動範圍是一筆預算",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/16-dfl-free.md",
+      "old_title": "# 16.1 YOLO26 DFL-free：移除 bins，仍要把框學好",
+      "new_title": "# C.16.1 YOLO26 DFL-free：移除 bins，仍要把框學好",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/16-inference-head.md",
+      "old_title": "# 16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉",
+      "new_title": "# C.16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/16-training.md",
+      "old_title": "# 16.3 YOLO26 訓練補強：Progressive Loss、STAL 與 MuSGD",
+      "new_title": "# C.16.3 YOLO26 訓練補強：Progressive Loss、STAL 與 MuSGD",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/17-capstone.md",
+      "old_title": "# 17 靜態偵測結業：用一次有理由的改動交付結果",
+      "new_title": "# D.17 靜態偵測結業：用一次有理由的改動交付結果",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/18-video.md",
+      "old_title": "# 18 影片串流：處理每一幀，並分清 FPS 與延遲",
+      "new_title": "# D.18 影片串流：處理每一幀，並分清 FPS 與延遲",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/19-tracking.md",
+      "old_title": "# 19 簡易 tracking：框很準，ID 仍可能換人",
+      "new_title": "# D.19 簡易 tracking：框很準，ID 仍可能換人",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/20-deployment.md",
+      "old_title": "# 20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果",
+      "new_title": "# D.20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/21-patches.md",
+      "old_title": "# 21.1 ViT patches：先把圖片變成可讀取的小塊",
+      "new_title": "# E.21.1 ViT patches：先把圖片變成可讀取的小塊",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/21-attention.md",
+      "old_title": "# 21.2 ViT attention：讓每塊取得其他區域的內容",
+      "new_title": "# E.21.2 ViT attention：讓每塊取得其他區域的內容",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/21-transformer.md",
+      "old_title": "# 21.3 ViT Transformer：交換內容之後，怎麼得到整圖答案",
+      "new_title": "# E.21.3 ViT Transformer：交換內容之後，怎麼得到整圖答案",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/21-training.md",
+      "old_title": "# 21.4 ViT training：從會計算的模型，到能答題的模型",
+      "new_title": "# E.21.4 ViT training：從會計算的模型，到能答題的模型",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/22-views.md",
+      "old_title": "# 22.1 收起紅藍答案，同一張圖還能提供什麼學習訊號？",
+      "new_title": "# E.22.1 收起紅藍答案，同一張圖還能提供什麼學習訊號？",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/22-collapse.md",
+      "old_title": "# 22.2 兩個 view 很一致，為什麼仍可能什麼也分不出來？",
+      "new_title": "# E.22.2 兩個 view 很一致，為什麼仍可能什麼也分不出來？",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/22-distillation.md",
+      "old_title": "# 22.3 DINO 的一步：誰提供目標，誰接受更新？",
+      "new_title": "# E.22.3 DINO 的一步：誰提供目標，誰接受更新？",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/22-features.md",
+      "old_title": "# 22.4 特徵能不能使用：凍結後，試著讀出新圖的顏色",
+      "new_title": "# E.22.4 特徵能不能使用：凍結後，試著讀出新圖的顏色",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/23-dino-versions.md",
+      "old_title": "# 23.1 DINO 版本：整圖相近之外，局部關係怎麼保留？",
+      "new_title": "# E.23.1 DINO 版本：整圖相近之外，局部關係怎麼保留？",
+      "body_bytes_unchanged": true
+    },
+    {
+      "page": "docs/lessons/23-detection-bridge.md",
+      "old_title": "# 23.2 保留 patch 的位置，讓新 head 學顏色與框",
+      "new_title": "# E.23.2 保留 patch 的位置，讓新 head 學顏色與框",
+      "body_bytes_unchanged": true
+    }
+  ],
+  "navigation_and_route_updated": 46,
+  "files_sha256": {
+    "zensical.toml": "8e000702334cc7780e4c0452191f2684eb08784fdb2ce571d3f5e3720bb790d3",
+    "docs/learning-path.md": "7ee7f69a21eed86832d20892d94df0fb87d54afb0b7fe92c02109b5cb0afc3b0",
+    "docs/lessons/04-localization.md": "ab5037a779c4b1df5bc6bbe9490c1a284c6b221e5f411d7b00be1472d09095ff",
+    "docs/lessons/04-coordinates.md": "32db0b80d4a4bb620ae286d3a398aee6a7df795b5b6fc6c331488f37bee9293f",
+    "docs/lessons/05-assignment.md": "530a2d51f465956035173892873ff72c4d1d77d649f5c9609149dee99196b598",
+    "docs/lessons/06-decode-nms.md": "251795e9b7ba78df00c32563e07ec175901cfde97d3328d1a6272ba26729514e",
+    "docs/lessons/06-evaluation.md": "afd61456bc5b0eee08b8ef05de00fdbb3e94241cdf9e65290052ec13a1dadf04",
+    "docs/lessons/07-data.md": "f2d2b77dc2a048d1351fc1696e4742ad6d42438533ffcc6610fca44e21d71eb8",
+    "docs/lessons/07-targets.md": "f3cbb14f809b9f53f88bd6adbf64096e3e6a7c1d54bc1cf8d0ca697ad74e9763",
+    "docs/lessons/07-loss.md": "c577397eb7d850a44158c2c39a551f2953bd66874664a3c4f2b7bc1fa76dc1e7",
+    "docs/lessons/07-training.md": "95ee4021e908b47c6b44e9ebb98f83825b23a9db8be8a829c72f7e92d8c66ee7",
+    "docs/lessons/07-inference.md": "76321e549c359af044b1102b6a49fe8994c6e0fc0b6a8f5354e2b4593fc648cc",
+    "docs/lessons/07-heldout.md": "efba67926670c911c91af07370e54266714ab4b731c31e8470c34f4f076160ba",
+    "docs/lessons/08-own-images.md": "feadabfc6a25f3ae5814abd3074e835ca81aba21ae92060f3ce0274ad43d09c6",
+    "docs/lessons/08-own-data.md": "28917fdc359e1b708697d6893f30019f75204a035c04a3d5cc115fa5b548cf11",
+    "docs/lessons/09-anchors.md": "83bed7e4e52ca164ec3c2ccee42f372a4a5c08ceddcb5b0be3464114ceef95a5",
+    "docs/lessons/09-anchor-clustering.md": "10e08cacd8be7af58fdd342bb12b981b81a51e65ddd40bb45c4586b363fb4c48",
+    "docs/lessons/10-multiscale.md": "537e89ec2aa345da5b0dfad6aec222206fc37f6ba3c27cc1d81f579bbff2c271",
+    "docs/lessons/11-csp.md": "54cda3d134cdb216175d2c76141adb631e4c2d8aeca3ab4a9a706bbcf87927e8",
+    "docs/lessons/11-fusion.md": "0d4553dc2c12d4d38d5fbee43289411f0961d26cf8d5e5598fdc783f9df86f9e",
+    "docs/lessons/11-augmentation.md": "849a17aa2b32674fde29ca2d6c96cb558e1584ba4c1701bbc894eb5283adb17e",
+    "docs/lessons/11-iou-loss.md": "0ac30a093bff3d9385eec86251adacf5b9591e7335171aa0954459f00d1fc3d0",
+    "docs/lessons/12-anchor-free.md": "342a4da13ea199e4cc3e2bef7766c4c76b05d8ad3be873afa89cfa0a15042c1b",
+    "docs/lessons/12-decoupled-head.md": "a38b0c5d4d172807050350520443d71e876735a6fcde1805b2de33b36475a043",
+    "docs/lessons/12-assignment.md": "f0cd3c02a704dcc4f38b751c08f713c0fdb952f295c3e34f195867ed8342017b",
+    "docs/lessons/12-dfl.md": "d5feada9b02bc51c0a3b5825db0332b1f5de0c2efb22ef9e295696443f59b241",
+    "docs/lessons/13-dual-assignment.md": "d83b6249ecca55e2946d117b5c4449211b02b50de9be2a033aeb0aaac1f02d93",
+    "docs/lessons/13-nms-free.md": "047535fddeb7f960502b3dd12ef58a7265db4e1f34f8972c2745bf4d7996f417",
+    "docs/lessons/14-feature-module.md": "fcbeed898b01f3dd85b27ee00c589f1f3b24b2154c2e97bc47e1adb5212be29e",
+    "docs/lessons/15-attention-bridge.md": "8ceda604457742bda2854dfe8577794de79c726aa49a7c6351cc24fa38494064",
+    "docs/lessons/15-area-attention.md": "dad572534e562bdc89450653142a00ac043cd1ec5e24f237da005b02a4caac4a",
+    "docs/lessons/16-dfl-free.md": "a02c9dd423fd94ced0100edb044d57ea28ebff8f4e8cc8ef2761a4b29d43dd78",
+    "docs/lessons/16-inference-head.md": "8edf36021803701eed22d978429f7998531deb52c56bf711f11da24daa6713b7",
+    "docs/lessons/16-training.md": "f888bd878726ac66b3b03548a54a811f9b80df326077fe7e605b53232948f947",
+    "docs/lessons/17-capstone.md": "4596e934ad5d3f4fd49b7957a8b52faf398909f83e7d786cbf64843f94925031",
+    "docs/lessons/18-video.md": "7f9b93cac46372ca490b4d446b5dcfc693a39e41eacfa4fd8c281727229d5f28",
+    "docs/lessons/19-tracking.md": "dbf5ba22f76f3f8e7163bb0ef5e96db0399885905cb990f6e4ecd7bf2fd3a828",
+    "docs/lessons/20-deployment.md": "410c42c0b63181dc1d0513373b45ec03f4b327c0c9770eda23f1d9cf4908529a",
+    "docs/lessons/21-patches.md": "e961209ec91b6a8857e9d14eca0c049c0cb8b094949e4029a1935e207f3bb520",
+    "docs/lessons/21-attention.md": "c43dfec29c5932bbbb68ce3e3928a7ac3fa2be14e3fdb3c45272b0c4f92a4f0c",
+    "docs/lessons/21-transformer.md": "9bc4c4ffe7f55bdcb727d82afad3ff650385bff3023fe4dd9b994094dbe685a1",
+    "docs/lessons/21-training.md": "5415376ab6313abd9ceb89bc513946cf5f263a7a66f8b316b8b01d5a8f2df9b0",
+    "docs/lessons/22-views.md": "44658c29f165949e410f4b2c3d0378af81b3a5974c907ee76e3d00a77a7b1b69",
+    "docs/lessons/22-collapse.md": "dd98536c3ec0c14407adb13cb62b44f8479a47768e9338355a1c41db40694976",
+    "docs/lessons/22-distillation.md": "6e17e3f0880974b8e8f70d513e983fc05b636272067694020ce94fe011b1697d",
+    "docs/lessons/22-features.md": "94623b0a55e2f2d4bf1e083fb2bb56bc2a04ff1183fcc768a84d8b021b7a7867",
+    "docs/lessons/23-dino-versions.md": "d33fcb62c2bb47d5fa6a8fd66b72dd8932ccd253830184c110ed66ab02058ed4",
+    "docs/lessons/23-detection-bridge.md": "2d03148eb4e74fbf824e3be52d54b1d57651f3ffb72511390f4897f0bf7b2e96"
+  }
+}

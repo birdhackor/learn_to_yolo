@@ -1,4 +1,4 @@
-# 12.3 Sample assignment：哪個候選值得被教
+# C.12.3 Sample assignment：哪個候選值得被教
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-assignment.ipynb){ .md-button }
 

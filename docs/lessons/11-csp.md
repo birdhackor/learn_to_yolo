@@ -1,4 +1,4 @@
-# 11.1 CSP：分一部分通道走較短的路
+# C.11.1 CSP：分一部分通道走較短的路
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/11-csp.ipynb){ .md-button }
 

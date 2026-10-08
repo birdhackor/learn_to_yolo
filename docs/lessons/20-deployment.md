@@ -1,4 +1,4 @@
-# 20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果
+# D.20 ONNX／TensorRT：匯出後先證明同一個輸入得到同一個結果
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/20-deployment.ipynb){ .md-button }
 

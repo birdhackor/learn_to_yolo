@@ -1,4 +1,4 @@
-# 16.3 YOLO26 訓練補強：Progressive Loss、STAL 與 MuSGD
+# C.16.3 YOLO26 訓練補強：Progressive Loss、STAL 與 MuSGD
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/16-training.ipynb){ .md-button }
 

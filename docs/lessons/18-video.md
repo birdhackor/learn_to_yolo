@@ -1,4 +1,4 @@
-# 18 影片串流：處理每一幀，並分清 FPS 與延遲
+# D.18 影片串流：處理每一幀，並分清 FPS 與延遲
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/18-video.ipynb){ .md-button }
 

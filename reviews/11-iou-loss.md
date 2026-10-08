@@ -219,3 +219,8 @@
 - 46頁桌面／手機皆有實際瀏覽器capture與DOM掃描；實看範圍以[technical/visual.json](clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/technical/visual.json)、[主Agent抽查](clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/visual/root-sampling.json)及後續有界delta為準。capture不代表所有圖都已人工視判，不把來源PNG當真實頁面。
 
 方法、校準、先備路線調整、圖視判時序及AI限制見[本輪總覽](clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/README.md)。最新頁面、圖片與實驗依賴另綁定 coverage；沒有真人學生效果驗收。
+
+
+## 2026-10-08：章節字母前綴統一
+
+本次僅將H1節號補上所屬B／C／D／E，並同步側邊目錄與閱讀路線。正文（第一行之後）、章號、路徑、圖、程式與實驗設定未變；沒有重新冒稱概念首讀。來源逐頁比對與標題／導航實頁檢查另存於[格式核對](formatting/section-prefixes-2026-10-08/source-check.json)。

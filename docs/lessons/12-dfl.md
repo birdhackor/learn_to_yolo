@@ -1,4 +1,4 @@
-# 12.4 DFL：把一條邊距離學成分佈
+# C.12.4 DFL：把一條邊距離學成分佈
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/12-dfl.ipynb){ .md-button }
 

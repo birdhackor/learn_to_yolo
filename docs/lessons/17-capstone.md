@@ -1,4 +1,4 @@
-# 17 靜態偵測結業：用一次有理由的改動交付結果
+# D.17 靜態偵測結業：用一次有理由的改動交付結果
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/17-capstone.ipynb){ .md-button }
 

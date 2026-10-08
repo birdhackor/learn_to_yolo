@@ -1,4 +1,4 @@
-# 22.2 兩個 view 很一致，為什麼仍可能什麼也分不出來？
+# E.22.2 兩個 view 很一致，為什麼仍可能什麼也分不出來？
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-collapse.ipynb){ .md-button }
 

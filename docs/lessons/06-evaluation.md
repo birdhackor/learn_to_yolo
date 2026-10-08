@@ -1,4 +1,4 @@
-# 6.2 人工框評估與 AP50：把預測逐筆算成證據
+# B.6.2 人工框評估與 AP50：把預測逐筆算成證據
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/06-evaluation.ipynb){ .md-button }
 

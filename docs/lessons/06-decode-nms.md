@@ -1,4 +1,4 @@
-# 6.1 人工框解碼與 NMS：少一個框不一定更好
+# B.6.1 人工框解碼與 NMS：少一個框不一定更好
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/06-decode-nms.ipynb){ .md-button }
 

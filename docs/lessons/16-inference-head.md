@@ -1,4 +1,4 @@
-# 16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉
+# C.16.2 YOLO26 推論 head：把訓練用的分支從部署模型真正拿掉
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/16-inference-head.ipynb){ .md-button }
 

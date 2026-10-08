@@ -1,4 +1,4 @@
-# 13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼
+# C.13.2 NMS-free：拿掉 NMS 前，重複候選學會了什麼
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/13-nms-free.ipynb){ .md-button }
 

@@ -1,4 +1,4 @@
-# 8.1 用自己的圖片：先把座標換算和類別順序弄對
+# B.8.1 用自己的圖片：先把座標換算和類別順序弄對
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/08-own-images.ipynb){ .md-button }
 

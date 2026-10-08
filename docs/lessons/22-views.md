@@ -1,4 +1,4 @@
-# 22.1 收起紅藍答案，同一張圖還能提供什麼學習訊號？
+# E.22.1 收起紅藍答案，同一張圖還能提供什麼學習訊號？
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-views.ipynb){ .md-button }
 

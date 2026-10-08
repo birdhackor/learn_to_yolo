@@ -1,4 +1,4 @@
-# 10 YOLOv3 機制：同一個 pixel 框看兩種尺度
+# C.10 YOLOv3 機制：同一個 pixel 框看兩種尺度
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/10-multiscale.ipynb){ .md-button }
 

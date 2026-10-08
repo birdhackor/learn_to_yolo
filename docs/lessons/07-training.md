@@ -1,4 +1,4 @@
-# 7.4 Grid MiniYOLO：三步訓練與診斷
+# B.7.4 Grid MiniYOLO：三步訓練與診斷
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/07-training.ipynb){ .md-button }
 

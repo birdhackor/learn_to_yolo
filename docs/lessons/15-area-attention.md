@@ -1,4 +1,4 @@
-# 15.2 YOLOv12 Area Attention：互動範圍是一筆預算
+# C.15.2 YOLOv12 Area Attention：互動範圍是一筆預算
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/15-area-attention.ipynb){ .md-button }
 

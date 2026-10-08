@@ -1,4 +1,4 @@
-# 22.4 特徵能不能使用：凍結後，試著讀出新圖的顏色
+# E.22.4 特徵能不能使用：凍結後，試著讀出新圖的顏色
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/22-features.ipynb){ .md-button }
 

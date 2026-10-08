@@ -1,4 +1,4 @@
-# 9.2 尺寸聚類：先驗由哪一份資料決定
+# C.9.2 尺寸聚類：先驗由哪一份資料決定
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/09-anchor-clustering.ipynb){ .md-button }
 

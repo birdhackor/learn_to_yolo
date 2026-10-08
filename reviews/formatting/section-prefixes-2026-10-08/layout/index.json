@@ -1,0 +1,79 @@
+{
+  "captured_at_utc": "2026-10-08T09:08:17.088069+00:00",
+  "base": "http://127.0.0.1:8914/",
+  "records": [
+    {
+      "id": "04-localization",
+      "width": 390,
+      "title": "B.4.1 單物件分類與定位：類別之外，還要回答在哪裡¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "04-localization-390.png",
+      "sha256": "be99500106a809ad801c0749e633e96bacdf87b2188c00f480ea648c296863ec"
+    },
+    {
+      "id": "09-anchors",
+      "width": 390,
+      "title": "C.9.1 YOLOv2 機制：anchor 是尺寸起點¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "09-anchors-390.png",
+      "sha256": "d33abd2237dea9f6abc91dc455d6659a46ba44ce43bcdab15988b41f02def742"
+    },
+    {
+      "id": "17-capstone",
+      "width": 390,
+      "title": "D.17 靜態偵測結業：用一次有理由的改動交付結果¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "17-capstone-390.png",
+      "sha256": "a66139ab3c9e3e5fdb31af7f73283dfb5904aa9e3bb46ecba8f6d64393e28a19"
+    },
+    {
+      "id": "21-patches",
+      "width": 390,
+      "title": "E.21.1 ViT patches：先把圖片變成可讀取的小塊¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "21-patches-390.png",
+      "sha256": "d47adb9033648c5fc60a2e8e7b86b2efdc3cd5ff9ee1e1fa25e6f9b7cc57b5a2"
+    },
+    {
+      "id": "04-localization",
+      "width": 1280,
+      "title": "B.4.1 單物件分類與定位：類別之外，還要回答在哪裡¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "04-localization-1280.png",
+      "sha256": "13e003e18da56c56a319aa92b90713297a3d52457eaa75cea13b490e8d65b2e7"
+    },
+    {
+      "id": "09-anchors",
+      "width": 1280,
+      "title": "C.9.1 YOLOv2 機制：anchor 是尺寸起點¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "09-anchors-1280.png",
+      "sha256": "bf3575736197e7afe52ddd32e65d271dc7091e34c01d5350ea13f618bfc286d1"
+    },
+    {
+      "id": "17-capstone",
+      "width": 1280,
+      "title": "D.17 靜態偵測結業：用一次有理由的改動交付結果¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "17-capstone-1280.png",
+      "sha256": "9dacfe56615738ecfcaafccddbd87b5d973ff094eebebf6e5b9bd10272551670"
+    },
+    {
+      "id": "21-patches",
+      "width": 1280,
+      "title": "E.21.1 ViT patches：先把圖片變成可讀取的小塊¶",
+      "nav_prefix_present": true,
+      "http_status": 200,
+      "file": "21-patches-1280.png",
+      "sha256": "da50cdf8e73e9cedbf8cc93fcbad7d61490293a84fdb0a261f6872bd3e774cea"
+    }
+  ],
+  "manual_review": "capture/DOM alone not manual visual inspection"
+}

@@ -257,3 +257,8 @@ grep 查證：
 ## 2026-10-08：B–E重寫的有界維護段落
 
 B段改為分類→定位→多物件→人工規則→可訓練/評估流程；E footer區分固定實驗tag與持續修訂網頁，原A入口不變。 源文已對照與核對，technical/final-delta及transition有界維護檢查另存於[本輪紀錄](clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/README.md)。390/1280px焦點capture在visual/local-closure-final；主Agent實看手機新增段落，未重新把全篇當首讀。前輪紀錄不回寫，新部署另保存實際結果。
+
+
+## 2026-10-08：章節字母前綴統一
+
+閱讀路線46個B–E項目的節號與對應正文／側邊導航同步補字母前綴；章號、目標說明及URL不變，A路線不改。見[格式來源核對](formatting/section-prefixes-2026-10-08/source-check.json)。

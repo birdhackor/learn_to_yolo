@@ -1,4 +1,4 @@
-# 21.3 ViT Transformer：交換內容之後，怎麼得到整圖答案
+# E.21.3 ViT Transformer：交換內容之後，怎麼得到整圖答案
 
 [在 Colab 執行本節](https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/notebooks/21-transformer.ipynb){ .md-button }
 
