@@ -12,7 +12,7 @@
 
 ## commit hash 對照
 
-移出時改寫了 `lessons-v0.6.1` 之後的公開歷史：下表的 commit 都換了 hash，內容只少了 `reviews/clear-tutorial/`；`lessons-v0.6.1` 及更早的 commit 與所有 lesson tag 不變。審查紀錄、目錄名稱和舊文字裡的 hash 是改寫前的值。
+移出時改寫了 `lessons-v0.6.1` 之後的公開歷史：下表的 commit 都換了 hash，內容只少了 `reviews/clear-tutorial/`；`lessons-v0.6.1` 及更早的 commit 與所有 lesson tag 不變。審查紀錄、目錄名稱和舊文字裡的 hash 是改寫前的值；改寫前的完整歷史（所有分支與 tag）封存在不公開的 `birdhackor/learn_to_yolo-archive`，舊 hash 可以在那裡直接查到。
 
 | 改寫前 | 改寫後 | 日期 | commit |
 |---|---|---|---|
