@@ -235,7 +235,7 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 
 7. **審查改過的頁面。** 使用 repo 的 `.agents/skills/clear-tutorial/SKILL.md`：先凍結正文與必要圖，逐段提供給首次閱讀者，記下當下理解與卡點後才開放下一段；修正後另由非作者讀程式、核對數字與原始來源；最後由另一位讀者看前後銜接與修改處。每輪保存自己的方法、實際範圍、問題、處理與未驗證項目，不用全文讀後復述替代首次閱讀，不讓作者自己宣稱獨立驗收。實驗按疑點執行；文字改寫不自動啟動 GPU 。必要的桌面／手機圖與公式，使用實際 Zensical 頁面檢查。
 
-    逐段原始紀錄放在 `reviews/clear-tutorial/`，既有每頁審查繼續保留；來源說法核對論文原文、官方程式固定 commit／tag 或函式庫官方文件，記下版本與支持的位置。操作頁的指令也對照實作，必要時實際試跑。若收到過早提示或缺少明訂前文，記為閱讀安排限制，不能把它算作乾淨盲讀。〈[驗證範圍](../status.md)〉、〈[全套實驗與審查](../validation/curriculum.md)〉及 README 只寫實際完成的審查範圍。所有審查者都是 AI，不能說成真人學生驗收。
+    逐段原始紀錄放在不公開的審查 repo（需要時 clone 到 `reviews/clear-tutorial/`，見 [`reviews/README.md`](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)），既有每頁審查繼續保留；來源說法核對論文原文、官方程式固定 commit／tag 或函式庫官方文件，記下版本與支持的位置。操作頁的指令也對照實作，必要時實際試跑。若收到過早提示或缺少明訂前文，記為閱讀安排限制，不能把它算作乾淨盲讀。〈[驗證範圍](../status.md)〉、〈[全套實驗與審查](../validation/curriculum.md)〉及 README 只寫實際完成的審查範圍。所有審查者都是 AI，不能說成真人學生驗收。
 
     審查涵蓋頁面文字、頁面上的 SVG、PNG 等圖，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`：課程頁是 `reviews/<節>.md`；其他頁取 `docs/` 底下的路徑，把 `/` 換成 `-`，例如 `docs/preparation/publish.md` 的審查是 `reviews/preparation-publish.md`。寫好後記下它涵蓋的內容；頁面路徑從 repo 根目錄算起，可以一次給好幾頁：
 

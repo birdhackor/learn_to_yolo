@@ -101,7 +101,7 @@ loss = many_loss + one_loss
 
     用三個 GT A、B、C 和兩個候選看衝突：A、B 都初選 p0，C 初選 p1；但 p0 與 C 的重疊比與 A、B 更大。官方解衝突時在所有 GT 中比較重疊，所以把 p0 交給 C。p1 原本就歸 C，最後 C 有兩個正樣本，A、B 沒有。名稱「一對一」描述的是設計目標與 top-1 初選，不是這份實作最終分配的嚴格數量保證。
 
-    既有核對紀錄用[固定版本的官方 `select_highest_overlaps`](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/tal.py) 在 CPU 實際核對了這個反例；[輸入、結果與重現程式](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/16f6910/technical/probes)保存 owner=`[2,2]`，A、B、C 的正樣本數為 `[0,0,2]`。這個結果只針對所連結的 YOLOv10 實作；第 16 章的 YOLO26 在衝突後還會再篩一次，規則不同。
+    既有核對紀錄用[固定版本的官方 `select_highest_overlaps`](https://github.com/THU-MIG/yolov10/blob/453c6e38a51e9d1d5a2aa5fb7f1014a711913397/ultralytics/utils/tal.py) 在 CPU 實際核對了這個反例；[輸入、結果與重現程式](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910/technical/probes)保存 owner=`[2,2]`，A、B、C 的正樣本數為 `[0,0,2]`。這個結果只針對所連結的 YOLOv10 實作；第 16 章的 YOLO26 在衝突後還會再篩一次，規則不同。
 
 ??? note "選讀：同一張品質表，候選主人仍可能不同"
 

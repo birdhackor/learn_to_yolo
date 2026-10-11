@@ -192,7 +192,7 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
     +\frac{\partial L_{\text{cls}}}{\partial\theta}.
     \]
 
-    loss 有限或下降，仍不能單獨證明每一步梯度都傳到模型。既有[補充檢查](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py)在每次 Adam 更新前檢查各參數梯度有限、合併梯度 L2 長度>0；更新後檢查權重有限，並比較訓練起訖副本。
+    loss 有限或下降，仍不能單獨證明每一步梯度都傳到模型。既有[補充檢查](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py)在每次 Adam 更新前檢查各參數梯度有限、合併梯度 L2 長度>0；更新後檢查權重有限，並比較訓練起訖副本。
 
     | 訓練 | 每步梯度 L2 長度範圍 | 起訖最大的單一權重差 |
     | --- | --- | --- |
@@ -200,7 +200,7 @@ test_metrics, _ = evaluate(chosen, test_x, test_y)  # test 只評估選定的模
     | baseline 160 步 | 0.0748～1.4340 | 0.6971 |
     | 改動版 160 步 | 0.0988～2.7302 | 0.8617 |
 
-    這三次既有觀察支持更新路徑接通、權重確實改變，不能證明新圖答對。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json)保存每步結果與來源。它是另一次帶額外檢查的執行，沒有寫進原 notebook，耗時不能替換前面的正常訓練時間。
+    這三次既有觀察支持更新路徑接通、權重確實改變，不能證明新圖答對。[完整紀錄](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json)保存每步結果與來源。它是另一次帶額外檢查的執行，沒有寫進原 notebook，耗時不能替換前面的正常訓練時間。
 
 這種交付的代價是每個候選方案都要重訓、重看失敗；收益是選擇有依據，test 不參與選擇。不要為了交出提升而更改門檻，也不要把 train 成績當成未見圖片的成績。若兩次 score 截斷不同，precision 也不能直接相比。
 

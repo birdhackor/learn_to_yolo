@@ -10,7 +10,7 @@
 - 修改教材遵守根目錄 [AGENTS.md](../../../../AGENTS.md)，對齊 section-map.json 的課文、實驗與 notebook，按改動更新相應證據。只改 skill 不要求重跑課程訓練或聲稱重新驗收。
 - 實測來源查指定版本的 [artifacts/checks/](../../../../artifacts/checks/) 與程式提交。依 AGENTS.md 跑受影響的檢查，不覆寫既有發布 tag。
 - 網站以 Zensical 呈現；實際桌面與手機的圖、數學排版與切換另做瀏覽器檢查，建置成功不能代替版面證據。
-- 原始審閱紀錄保存在 reviews/clear-tutorial/。既有問題、修正案例與技術答案不交給下一輪首次閱讀者；比對由協調者在新判斷保存後進行。
+- 原始審閱紀錄保存在不公開的 repo `birdhackor/learn_to_yolo-reviews`，需要時 clone 到 reviews/clear-tutorial/（已列入 .gitignore），新紀錄在那個 repo 內 commit 與 push；公開 repo 不再收錄。既有問題、修正案例與技術答案不交給下一輪首次閱讀者；比對由協調者在新判斷保存後進行。
 
 ## 需要時核對的技術事實
 

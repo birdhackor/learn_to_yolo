@@ -197,3 +197,7 @@
 ## 2026-10-08：B–E重寫的有界維護段落
 
 只新增本輪公開驗證來源入口，將本輪網頁變更與既有tag發布驗證分開；不重標旧scope。 源文已對照與核對，technical/final-delta及transition有界維護檢查另存於[本輪紀錄](clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/README.md)。390/1280px焦點capture在visual/local-closure-final；主Agent實看手機新增段落，未重新把全篇當首讀。前輪紀錄不回寫，新部署另保存實際結果。
+
+## 2026-10-11：審查原始紀錄移出公開 repo（有界維護）
+
+`reviews/clear-tutorial/` 移到不公開的審查 repo，公開歷史自 `lessons-v0.6.1` 之後改寫（說明與 hash 對照見 [reviews/README.md](README.md)）。本頁只改指向這批紀錄的文字：3 個連到 `lessons-v0.6.1` 已有紀錄的連結改為固定在該 tag（目標內容與移出前的 main 相同）；2 處指向之後紀錄的連結或存放說明改寫為「存在不公開的審查 repo」並連到說明。其餘正文、程式與圖不變，不視為重新審閱。逐條核對見[連結核對](formatting/review-records-move-2026-10-11/link-check.json)。

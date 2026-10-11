@@ -11,3 +11,4 @@ artifacts/*.png
 artifacts/*.svg
 artifacts/lesson-*/
 .DS_Store
+reviews/clear-tutorial/

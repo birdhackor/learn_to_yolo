@@ -330,3 +330,7 @@
 本附頁由獨立銜接與技術審閱者核對當前來源；頁內既有審閱歷史的接觸另記，未冒稱完全無歷史提示。範圍起點為93dc8d8；首讀、技術與銜接角色分開，原答未回寫。
 
 本頁未有需要新增修正的來源缺口；保留原文的通過依據在本輪原答與覆核。必要與可選建議均由主 Agent 逐項裁定，詳見[決策表](clear-tutorial/remainder-2026-10-08-93dc8d8/coordinator/decisions.json)及[本輪範圍](clear-tutorial/remainder-2026-10-08-93dc8d8/README.md)。修後的技術、圖文、銜接與實頁範圍見[技術複查](clear-tutorial/remainder-2026-10-08-93dc8d8/technical/post-repair.json)、[銜接複查](clear-tutorial/remainder-2026-10-08-93dc8d8/audit/post-repair.json)和 [post-repair](clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair/)；不把局部複查稱作全書新首讀，也不等同真人學生測試。
+
+## 2026-10-11：審查原始紀錄移出公開 repo（有界維護）
+
+`reviews/clear-tutorial/` 移到不公開的審查 repo，公開歷史自 `lessons-v0.6.1` 之後改寫（說明與 hash 對照見 [reviews/README.md](README.md)）。本頁只改指向這批紀錄的文字：1 處指向之後紀錄的連結或存放說明改寫為「存在不公開的審查 repo」並連到說明。其餘正文、程式與圖不變，不視為重新審閱。逐條核對見[連結核對](formatting/review-records-move-2026-10-11/link-check.json)。

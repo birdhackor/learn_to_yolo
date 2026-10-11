@@ -336,3 +336,7 @@
 ## 2026-10-08：章節字母前綴統一
 
 本次僅將H1節號補上所屬B／C／D／E，並同步側邊目錄與閱讀路線。正文（第一行之後）、章號、路徑、圖、程式與實驗設定未變；沒有重新冒稱概念首讀。來源逐頁比對與標題／導航實頁檢查另存於[格式核對](formatting/section-prefixes-2026-10-08/source-check.json)。
+
+## 2026-10-11：審查原始紀錄移出公開 repo（有界維護）
+
+`reviews/clear-tutorial/` 移到不公開的審查 repo，公開歷史自 `lessons-v0.6.1` 之後改寫（說明與 hash 對照見 [reviews/README.md](README.md)）。本頁只改指向這批紀錄的文字：2 個連到 `lessons-v0.6.1` 已有紀錄的連結改為固定在該 tag（目標內容與移出前的 main 相同）。其餘正文、程式與圖不變，不視為重新審閱。逐條核對見[連結核對](formatting/review-records-move-2026-10-11/link-check.json)。

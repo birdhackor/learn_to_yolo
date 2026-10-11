@@ -388,9 +388,9 @@
  },
  "docs/lessons/13-dual-assignment.md": {
   "review": "reviews/13-dual-assignment.md",
-  "review_sha256": "5abe5e5a2149ce081ef2795b9810c5677e3da125f57690c021f1f55477889650",
+  "review_sha256": "5a496ce8a61aa80f77314c8a561459d7d4ca1eeb97549566577c4a63a80a8061",
   "covered": {
-   "docs/lessons/13-dual-assignment.md": "27390191066c18e1701224c22355bc08a9d6149102343b6e734197c53de200dd",
+   "docs/lessons/13-dual-assignment.md": "9422bc7ab0e43c30a95d67aba68d924e936aaab3ba5f84c6ce095d9a0e91c045",
    "docs/assets/diagrams/13-dual-head-flow.svg": "43f3c73fc6ddeb833ffcf7413a379d2dcc26f5abb0b29d2def4f4bbde633e3dc",
    "lesson_cases/13-dual-assignment.py": "5ba8cda913f25bde1c82d93d91330b7db4a57f497e8305663aa3c0b3f62fa4d5"
   }
@@ -460,9 +460,9 @@
  },
  "docs/lessons/17-capstone.md": {
   "review": "reviews/17-capstone.md",
-  "review_sha256": "edc29a2d02f465b4594b4afa8318eddf0f861c51e1791836b5401ee8b168e59f",
+  "review_sha256": "d0ba354434aeabc5f6695911da455bb41265a519457442d48898be63cd1dedbe",
   "covered": {
-   "docs/lessons/17-capstone.md": "cf4c8fe107db487acf3a0c08aaddf23add401cf08648047fa9652909cd54b9be",
+   "docs/lessons/17-capstone.md": "a3b76256c93fc9d86d8af70522e670d7ad8f8d7489c2a19db328f8e84c43708f",
    "docs/assets/diagrams/17-capstone-readable.svg": "a127fb19fbaa8d76f94cfceff346f5b0f12f652d8375620ca5e1237a6c878830",
    "lesson_cases/17-capstone.py": "a5969a35c9409bae299c070229defef69a40e340d53c3aecd563f087fea12cf8",
    "miniyolo/__init__.py": "785b058b2b011124243b06ee59df8e59dfa75b77f050b897479e5be636763fc9",
@@ -754,9 +754,9 @@
  },
  "docs/preparation/publish.md": {
   "review": "reviews/preparation-publish.md",
-  "review_sha256": "9fc73ebc08273a0360a80c880b8e123ee106c2d9e9b398b80fe8514ea3ff7a48",
+  "review_sha256": "ec562fb5d47e031ef1a7e9fcf3d911d7ac0297db4e7a22752e93a8eb81efbe1f",
   "covered": {
-   "docs/preparation/publish.md": "8991c30510be2a73d3c76a0b33e806c7de1cf7949b94a2426d091b98912981f9",
+   "docs/preparation/publish.md": "e9a055d49c6a270c4ade757851f938eb8a78e9ca69b9769939d10d89311ea424",
    "docs/assets/diagrams/release-evidence-flow.svg": "daf67652ce9f56282fb58571cd670bac0e0d572c8509dd116acf0944ea5fbe90"
   }
  },
@@ -797,16 +797,16 @@
  },
  "docs/status.md": {
   "review": "reviews/status.md",
-  "review_sha256": "fc8a4a900ca542994ce296a26129a088ebe25e8345206594ae595587abd893bc",
+  "review_sha256": "89792d1d3fd023562aa4b52ac87b7ace441afdb80571dfee87db9cc08e189ec1",
   "covered": {
-   "docs/status.md": "a044aaeabbced265f0d57721fc52cd7e5b7a9b3c9753314c7b421cf25539ae7e"
+   "docs/status.md": "8af9146cbe0365dafa07714e083ec960bf074077fc483443ffff312163ce647b"
   }
  },
  "docs/validation/curriculum.md": {
   "review": "reviews/validation-curriculum.md",
-  "review_sha256": "feddc816534b59e52f7b095034c24e31f919db5b71b1632393265395c799cd5b",
+  "review_sha256": "d1f6ef80efa653f3eff9d3c76d9b8d7b7b00161ccb29ed1bc4a782177d11ba5d",
   "covered": {
-   "docs/validation/curriculum.md": "6848d53127ad4286b5464d6d75c16dac0d99eee0e3c6c3c1cb251f69b67de926"
+   "docs/validation/curriculum.md": "65a09021e2caac7c0f4ca549f5cd883737f29c403a0888ab50b562c818ed9edf"
   }
  },
  "docs/validation/gpu-smoke.md": {

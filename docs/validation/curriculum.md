@@ -102,7 +102,7 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提
 
 ### 2026-10-06：依新版四題重審全部 52 節
 
-本輪凍結 `64a25d4`，六位新讀者按各自實際補讀的前文逐段閱讀，保存 995 個閱讀單元、212 次四題檢查（包括 52 次頁末），再開放下一段。概念介紹、名稱、缺圖與訓練證據問題分別處理；改寫後另作非作者技術核對，以及全路線銜接和實際桌機／手機檢查。原始筆記、修正決策、技術來源與視覺範圍保存在[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/full-review-2026-10-06)。
+本輪凍結 `64a25d4`，六位新讀者按各自實際補讀的前文逐段閱讀，保存 995 個閱讀單元、212 次四題檢查（包括 52 次頁末），再開放下一段。概念介紹、名稱、缺圖與訓練證據問題分別處理；改寫後另作非作者技術核對，以及全路線銜接和實際桌機／手機檢查。原始筆記、修正決策、技術來源與視覺範圍保存在[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06)。
 
 四題仍有漏抓：22.1 的 DINO 命名方法介紹被首次讀者當成「後面會教」，未列問題；另有部分答案的逐項引文不足、把推論標成正文明說。獨立紀錄查核保留這些缺陷，教材已補當下必要的介紹，原始答案沒有回寫。故不能把本輪統稱為嚴格盲讀規則全部合格，也不能由回答了四題保證沒有漏項。
 
@@ -114,7 +114,7 @@ GPU 上的檢查只有兩項，都由手動啟動的 GitHub Actions（GitHub 提
 2. **修改後查技術與證據。** 由未撰寫該頁的人對照程式、執行紀錄與圖；疑點回查論文、固定版本的官方程式或文件。必要實驗用 CPU 重跑；這次文字與圖解修訂沒有新增 GPU 訓練。
 3. **再看銜接與修正。** 另一位讀者檢查受影響的前文、本節和下一節，並在實際 Zensical 頁面看桌面、手機的圖與公式。修改處有對應複查，不以一份全文摘要代替。
 
-共用檔案系統沒有技術隔離，首次閱讀依揭露規則執行。本輪也記下協調者的問題：部分前提頁漏列、08後段太早收到作者任務提示；這些紀錄不能全部算嚴格盲讀證據，原始問題保留，修正後另作複查。這些限制和每項處理見[本輪原始閱讀與修正紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/16f6910)。
+共用檔案系統沒有技術隔離，首次閱讀依揭露規則執行。本輪也記下協調者的問題：部分前提頁漏列、08後段太早收到作者任務提示；這些紀錄不能全部算嚴格盲讀證據，原始問題保留，修正後另作複查。這些限制和每項處理見[本輪原始閱讀與修正紀錄](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910)。
 
 AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有做真人學生的學習效果測試。
 
@@ -142,15 +142,15 @@ AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有�
 
 ## ViT／DINO 支線的審閱與選讀紀錄
 
-新支線依 clear-tutorial 分成逐段首次閱讀、技術與證據核對、前後銜接三輪；原始記錄與修正複查保存在 [本次審閱目錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/vision-v0.6.0)。先前 `16f6910` 的審閱是舊版紀錄，不充當新增十節的審閱。AI 審閱仍不等於真人學生的理解測試。
+新支線依 clear-tutorial 分成逐段首次閱讀、技術與證據核對、前後銜接三輪；原始記錄與修正複查保存在 [本次審閱目錄](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/vision-v0.6.0)。先前 `16f6910` 的審閱是舊版紀錄，不充當新增十節的審閱。AI 審閱仍不等於真人學生的理解測試。
 
 [官方 DINOv2 選讀紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum/dinov2-pretrained.json)保存固定官方程式、權重 SHA-256、前處理、輸出 shape、近鄰與計時範圍。這是兩張受控圖的凍結特徵提取，不是自然影像語意品質評測，也沒有 DINOv3 訓練。
 
 ## 發布後的公開驗證
 
-本次 B–E 敘事重寫的驗證，另存於[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7)。網頁文字與圖解修訂，實驗程式與 Colab notebook 的程式碼仍沿用 `lessons-v0.6.1`；下文各次 tag 發布驗證保留原日期與範圍。
+本次 B–E 敘事重寫的驗證紀錄存在不公開的審查 repo（[說明](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)）。網頁文字與圖解修訂，實驗程式與 Colab notebook 的程式碼仍沿用 `lessons-v0.6.1`；下文各次 tag 發布驗證保留原日期與範圍。
 
-2026-10-08 的網頁文字與圖解修訂，公開驗證另存於[本輪審閱紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair)。這次比對當次嚴格建置與公開網站的正文、圖檔，並核對 52 個 Colab notebook 的程式碼儲存格。實驗程式沒有改動，入口仍使用 `lessons-v0.6.1`；下文的 tag 發布驗證保留原本日期與範圍。
+2026-10-08 的網頁文字與圖解修訂，公開驗證紀錄存在不公開的審查 repo（[說明](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)）。這次比對當次嚴格建置與公開網站的正文、圖檔，並核對 52 個 Colab notebook 的程式碼儲存格。實驗程式沒有改動，入口仍使用 `lessons-v0.6.1`；下文的 tag 發布驗證保留原本日期與範圍。
 
 網站發布後，手動啟動的 GitHub Actions 工作流程 **Verify published lessons**（`.github/workflows/verify-release.yml`）在 GitHub 提供的 Linux runner 上，從公開的 tag 重新檢查一次（本版的 tag 是 `lessons-v0.6.1`）。下文說明本版的驗證流程；連結紀錄實際驗證的版本以各自的 `source_ref` 為準。`lessons-v0.5.0` 的紀錄只涵蓋原有 42 節，不驗證新增的十節。工作流程把結果上傳成 Actions 的 artifact，維護者再用 `scripts/verify_release.py save --run <run 編號>` 存成兩份紀錄：
 

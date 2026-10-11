@@ -1,0 +1,199 @@
+{
+ "date": "2026-10-11",
+ "tag": "lessons-v0.6.1",
+ "original_main": "147c0e986c54e440d75daf34254f48bcfa05c8f4",
+ "links": [
+  {
+   "file": "README.md",
+   "line": 9,
+   "kind": "tag",
+   "old": "[原始閱讀紀錄與處理](reviews/clear-tutorial/16f6910/)",
+   "new": "[原始閱讀紀錄與處理](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910)",
+   "target": "reviews/clear-tutorial/16f6910",
+   "main_oid": "7f793941015a0f4a295262a3b862d854ba761f66",
+   "tag_oid": "7f793941015a0f4a295262a3b862d854ba761f66",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910",
+   "http_status": 200
+  },
+  {
+   "file": "README.md",
+   "line": 11,
+   "kind": "tag",
+   "old": "[本輪總覽](reviews/clear-tutorial/full-review-2026-10-06/README.md)",
+   "new": "[本輪總覽](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/README.md)",
+   "target": "reviews/clear-tutorial/full-review-2026-10-06/README.md",
+   "main_oid": "411276ca1b99052932586a9236c8c393e4a5e129",
+   "tag_oid": "411276ca1b99052932586a9236c8c393e4a5e129",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/README.md",
+   "http_status": 200
+  },
+  {
+   "file": "README.md",
+   "line": 13,
+   "kind": "private",
+   "old": "[本輪紀錄](reviews/clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7/README.md)分開保存作者的舊新對照、獨立新稿閱讀、技術與銜接審閱、必要及可選建議的處置、實頁與公開驗證。",
+   "new": "本輪紀錄分開保存作者的舊新對照、獨立新稿閱讀、技術與銜接審閱、必要及可選建議的處置、實頁與公開驗證，存在不公開的審查 repo（見 [`reviews/README.md`](reviews/README.md)）。"
+  },
+  {
+   "file": "docs/status.md",
+   "line": 98,
+   "kind": "private",
+   "old": "[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7)列出逐頁保存性、修正、實頁檢查及公開驗證的實際範圍。",
+   "new": "本輪紀錄列出逐頁保存性、修正、實頁檢查及公開驗證的實際範圍，存在不公開的審查 repo（[說明](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)）。"
+  },
+  {
+   "file": "docs/status.md",
+   "line": 106,
+   "kind": "private",
+   "old": "[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/remainder-2026-10-08-93dc8d8)分開保存首讀、後文澄清、逐項處置與公開驗證。",
+   "new": "本輪紀錄分開保存首讀、後文澄清、逐項處置與公開驗證，存在不公開的審查 repo（[說明](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)）。"
+  },
+  {
+   "file": "docs/status.md",
+   "line": 110,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/full-review-2026-10-06)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06)",
+   "target": "reviews/clear-tutorial/full-review-2026-10-06",
+   "main_oid": "d6d05101fcdd04e079f1432c4e6ac91483d559e2",
+   "tag_oid": "d6d05101fcdd04e079f1432c4e6ac91483d559e2",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06",
+   "http_status": 200
+  },
+  {
+   "file": "docs/status.md",
+   "line": 116,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/vision-v0.6.0)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/vision-v0.6.0)",
+   "target": "reviews/clear-tutorial/vision-v0.6.0",
+   "main_oid": "64bf9c581733531c9c436d63d0588c192ac9ea6d",
+   "tag_oid": "64bf9c581733531c9c436d63d0588c192ac9ea6d",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/vision-v0.6.0",
+   "http_status": 200
+  },
+  {
+   "file": "docs/status.md",
+   "line": 122,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/16f6910)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910)",
+   "target": "reviews/clear-tutorial/16f6910",
+   "main_oid": "7f793941015a0f4a295262a3b862d854ba761f66",
+   "tag_oid": "7f793941015a0f4a295262a3b862d854ba761f66",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910",
+   "http_status": 200
+  },
+  {
+   "file": "docs/validation/curriculum.md",
+   "line": 105,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/full-review-2026-10-06)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06)",
+   "target": "reviews/clear-tutorial/full-review-2026-10-06",
+   "main_oid": "d6d05101fcdd04e079f1432c4e6ac91483d559e2",
+   "tag_oid": "d6d05101fcdd04e079f1432c4e6ac91483d559e2",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06",
+   "http_status": 200
+  },
+  {
+   "file": "docs/validation/curriculum.md",
+   "line": 117,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/16f6910)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910)",
+   "target": "reviews/clear-tutorial/16f6910",
+   "main_oid": "7f793941015a0f4a295262a3b862d854ba761f66",
+   "tag_oid": "7f793941015a0f4a295262a3b862d854ba761f66",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910",
+   "http_status": 200
+  },
+  {
+   "file": "docs/validation/curriculum.md",
+   "line": 145,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/vision-v0.6.0)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/vision-v0.6.0)",
+   "target": "reviews/clear-tutorial/vision-v0.6.0",
+   "main_oid": "64bf9c581733531c9c436d63d0588c192ac9ea6d",
+   "tag_oid": "64bf9c581733531c9c436d63d0588c192ac9ea6d",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/vision-v0.6.0",
+   "http_status": 200
+  },
+  {
+   "file": "docs/validation/curriculum.md",
+   "line": 151,
+   "kind": "private",
+   "old": "本次 B–E 敘事重寫的驗證，另存於[本輪紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/rewrite-b-e-2026-10-08-7a8b9d7)。",
+   "new": "本次 B–E 敘事重寫的驗證紀錄存在不公開的審查 repo（[說明](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)）。"
+  },
+  {
+   "file": "docs/validation/curriculum.md",
+   "line": 153,
+   "kind": "private",
+   "old": "公開驗證另存於[本輪審閱紀錄](https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair)。",
+   "new": "公開驗證紀錄存在不公開的審查 repo（[說明](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)）。"
+  },
+  {
+   "file": "docs/lessons/13-dual-assignment.md",
+   "line": 104,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/tree/main/reviews/clear-tutorial/16f6910/technical/probes)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910/technical/probes)",
+   "target": "reviews/clear-tutorial/16f6910/technical/probes",
+   "main_oid": "a8e968b14b5dd6b84fe362262ea9ff74f1e81cf9",
+   "tag_oid": "a8e968b14b5dd6b84fe362262ea9ff74f1e81cf9",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910/technical/probes",
+   "http_status": 200
+  },
+  {
+   "file": "docs/lessons/17-capstone.md",
+   "line": 195,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py)",
+   "target": "reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py",
+   "main_oid": "8a7e66f4998e1354d22facee39dca94153ddb51c",
+   "tag_oid": "8a7e66f4998e1354d22facee39dca94153ddb51c",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/reproduction/check_capstone_updates.py",
+   "http_status": 200
+  },
+  {
+   "file": "docs/lessons/17-capstone.md",
+   "line": 203,
+   "kind": "tag",
+   "old": "https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json)",
+   "new": "https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json)",
+   "target": "reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json",
+   "main_oid": "12447853cc02ea8011bf89acdff7fd82ebf35bde",
+   "tag_oid": "12447853cc02ea8011bf89acdff7fd82ebf35bde",
+   "same_as_main": true,
+   "url": "https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/rechecks/capstone-updates.json",
+   "http_status": 200
+  },
+  {
+   "file": "docs/preparation/publish.md",
+   "line": 238,
+   "kind": "private",
+   "old": "逐段原始紀錄放在 `reviews/clear-tutorial/`，既有每頁審查繼續保留；",
+   "new": "逐段原始紀錄放在不公開的審查 repo（需要時 clone 到 `reviews/clear-tutorial/`，見 [`reviews/README.md`](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)），既有每頁審查繼續保留；"
+  },
+  {
+   "file": ".agents/skills/clear-tutorial/references/project-context.md",
+   "line": 13,
+   "kind": "private",
+   "old": "- 原始審閱紀錄保存在 reviews/clear-tutorial/。",
+   "new": "- 原始審閱紀錄保存在不公開的 repo `birdhackor/learn_to_yolo-reviews`，需要時 clone 到 reviews/clear-tutorial/（已列入 .gitignore），新紀錄在那個 repo 內 commit 與 push；公開 repo 不再收錄。"
+  }
+ ]
+}
