@@ -91,7 +91,22 @@ DFL-free 和 NMS-free 也控制不同工作：`reg_max` 改框距離表示，`en
 
 ## 自主練習
 
-先自己算，再展開參考答案。第 2 題要改完整程式（Colab 裡那份，或本機的 `lesson_cases/16-dfl-free.py`）。
+先自己算，再展開參考答案。第 2 題要對照的原始檢查如下；`...` 省略前面已說明的 300 步更新與 DFL 期望值計算。`k=16`，`expected` 是未訓練 DFL 的四個期望距離，各為 7.5 格：
+
+``` { .python data-excerpt="lesson_cases/16-dfl-free.py" }
+target = torch.tensor([[1.25, 2.5, 18., 3.]])
+distance = nn.Parameter(torch.zeros(1, 4))
+initial_terms = F.smooth_l1_loss(distance, target, reduction='none')
+assert torch.allclose(initial_terms, torch.tensor([[.75, 2., 17.5, 2.5]]))
+...
+assert expected.max() <= k - 1 and target.max() > k - 1
+...
+points = torch.tensor([[84., 84.]])
+decoded = decode(points, distance.detach(), stride=8)
+assert torch.allclose(decoded, torch.tensor([[74., 64., 228., 108.]]), atol=1e-3)
+```
+
+想動手核對時，再修改 Colab 的完整實驗或本機 `lesson_cases/16-dfl-free.py`；閱讀與手算可直接用本頁的公式和片段。
 
 1. 紙筆題：右邊改成 8 格，K 仍是 16。DFL 放得下嗎？直接回歸呢？這時還能用「DFL 放不下」來支持直接回歸嗎？
 2. 把完整程式 `main()` 裡 `target` 的右邊從 18 改成 8。還有哪幾個斷言要跟著改、改成什麼？沒跟著改的斷言會在那一行報錯停下。初始的平均 loss 變成多少？

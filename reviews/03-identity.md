@@ -261,3 +261,11 @@
 [實際 Chromium 頁面與操作](clear-tutorial/final-selection-2026-10-08/post-repair/browser.json)涵蓋 8 頁的 1280×844 與 390×844 尺寸、公式、圖片、手機內嵌目錄與橫向表格；其他尺寸／瀏覽器及完整選讀未驗。[手工機制核對](clear-tutorial/final-selection-2026-10-08/post-repair/hand-checks.json)支持新增算例一致，不當成訓練效果證據。六節 A 主實驗在 CPU 重跑通過；兩份 40 步結果沿用仍符合原程式指紋的保存紀錄。
 
 [修正處置](clear-tutorial/final-selection-2026-10-08/repair-decisions.json)與[範圍比對](clear-tutorial/final-selection-2026-10-08/post-repair/scope-check.json)保存依據。B 以後的 92 個課文／notebook、路線 B 起段落及所有原實驗程式不變；公開程式 tag 仍是 lessons-v0.6.1。覆蓋指紋更新只綁定本次實際查核版本與上述範圍。
+
+## 2026-10-21：教材內嵌程式與 Colab 選跑
+
+補單通道 block 建立與主分支歸零，保留原探針與正常初始化訓練的區別。
+
+本頁按改動小節完成不同審閱者的易讀性、正確性及連貫性核對；原答與提示後修稿核回分開保存。全部 52 節另做 Colab 依賴篩查，沒有將局部核對改稱全書新盲讀。實驗程式、Notebook、圖與既有實測數據不變。
+
+本輪發現、逐項處置、實際 CPU／實頁範圍與原始紀錄見[本輪摘要](colab-self-contained-2026-10-21.md)。現行內容指紋另綁定 coverage.json。

@@ -156,7 +156,15 @@ def forward(self, image):  # image：[B,3,64,64]
 
 ## 自主練習
 
-自主練習：在完整程式（Colab 裡那份，或本機的 `lesson_cases/16-inference-head.py`）動手改，先預測結果，再執行核對。完整程式的斷言寫死了原題的答案；改了程式，答案不同的斷言要跟著改，否則程式會在那一行報錯停下。
+自主練習：先看本頁的 forward、解碼與下列 shape 檢查，預測改動結果。這段接在前面的 raw 逐值比對之後；`image` 是上面的兩張 64×64 隨機圖：
+
+``` { .python data-excerpt="lesson_cases/16-inference-head.py" }
+with torch.no_grad():
+    boxes, scores, labels = deploy(image)
+assert boxes.shape == (2, 3, 4) and scores.shape == (2, 3)
+```
+
+想實際核對時，再修改 Colab 的完整實驗或本機 `lesson_cases/16-inference-head.py`。斷言寫死了原題的答案；改了程式，答案不同的斷言要跟著改，否則程式會在那一行報錯停下。
 
 1. 把 `DeployToy.forward` 裡的 `top_scores, ids = scores.topk(3, dim=1)` 改成取前 5 個。三個回傳值的 shape 會變成什麼？`main()` 裡哪個斷言要跟著改、改成什麼？參數數會變嗎？
 2. 把 `main()` 裡的 `image = torch.rand(2, 3, 64, 64)` 改成 128×128，其他先不改；backbone 仍用 `AdaptiveAvgPool2d(4)`。程式會報錯嗎？這時每格對應幾畫素、stride 應是多少？16 個中心點的 x、y 變成哪些值？`DeployToy.forward` 要改哪幾處，才能解出正確的框？

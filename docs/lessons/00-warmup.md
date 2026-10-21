@@ -161,9 +161,14 @@ w_{\text{new}}=w-\eta g=1-0.1(-8)=1.8.
 
 ## 把手算對應到 PyTorch
 
-`Linear(1,1,bias=False)` 每筆讀 1 個數、輸出 1 個數，只乘權重。`[[2.0]]` 外層表示一批只有 1 筆，內層表示每筆只有 1 個輸入，所以形狀為 `[1,1]`。這些數值陣列在 PyTorch 叫 **tensor（張量）**；`torch` 是程式匯入的 PyTorch 套件名稱。完整程式先建立模型、設定 w=1，然後執行：
+`Linear(1,1,bias=False)` 每筆讀 1 個數、輸出 1 個數，只乘權重。`[[2.0]]` 外層表示一批只有 1 筆，內層表示每筆只有 1 個輸入，所以形狀為 `[1,1]`。這些數值陣列在 PyTorch 叫 **tensor（張量）**；`torch` 是程式匯入的 PyTorch 套件名稱。下面從建立模型、設定 w=1，到更新後重新預測，對照剛才的手算：
 
 ``` { .python data-excerpt="lesson_cases/00-warmup.py" }
+import torch
+
+model = torch.nn.Linear(1, 1, bias=False)
+with torch.no_grad():
+    model.weight.fill_(1.0)
 optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 x, target = torch.tensor([[2.0]]), torch.tensor([[4.0]])
 model.train()
@@ -175,6 +180,10 @@ gradient = model.weight.grad.item()
 before = model.weight.item()
 optimizer.step()
 after = model.weight.item()
+model.eval()
+with torch.no_grad():
+    new_prediction = model(x)
+    new_loss = ((new_prediction - target) ** 2).mean().item()
 ```
 
 **optimizer（優化器）**負責按更新規則修改參數。這裡的 **SGD（Stochastic Gradient Descent，隨機梯度下降）**一般用抽到的一筆或一小批資料估計梯度；本例只有一筆固定資料，沒有抽樣，但更新式仍是剛才的負梯度步驟。`model.parameters()` 把要更新的權重交給它。
@@ -182,6 +191,8 @@ after = model.weight.item()
 `model.train()` 設定模型處於訓練模式。接下來 `zero_grad()` 清掉既有梯度；`model(x)` 是**前向計算（forward）**，產生預測；loss 比較預測和答案；`backward()` 計算梯度，並累加到參數的 `.grad`；最後 `step()` 才更新參數。取出 `.item()` 是把只有一個值的 tensor 轉成一般 Python 數字，便於印出。
 
 清除梯度是為了避免本步和舊步混在一起。例如，假設某個參數的 `.grad` 留著舊梯度 −8，這次 `backward()` 又算出 −3；若沒有先清除，累加後會是 −11。一般逐步更新時，這一步應使用新算出的 −3，所以每步開始前先呼叫 `zero_grad()`。
+
+`fill_(1.0)` 把初始權重設為 1；這是人指定起點，不用記錄梯度，所以放在 `torch.no_grad()` 裡。更新後的 `model.eval()` 切到評估模式，再用 `no_grad()` 重新預測；此時只看結果，不準備反傳。這兩個動作的差別在頁末另有補充。
 
 程式輸出與手算一致：
 

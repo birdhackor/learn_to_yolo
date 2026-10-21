@@ -187,7 +187,26 @@ FlashAttention 是 GPU 上的一種 attention 實作：分塊算分數、softmax
 
     不能沿用舊權重 [0.3349,0.1651,0.3349,0.1651]、只把第四個 V 換成 [2,0]（那樣會算出 [1.0,0.5]）。第四個 token 同時也是第四個 key：它的分數從 0 變成 2/√2，分子從 1 變成約 4.1133，共同分母從 6.0562 變成約 9.1695，所以四個權重都要重算。
 
-**練習 2：目標改用原 feature。**這題要改程式：在 Colab 裡改「本節可修改的完整實驗」下面那一格；本機則改 `lesson_cases/15-attention-bridge.py`，兩者是同一份程式。把 `target = feature * torch.tensor([1., .5]).view(1, 2, 1, 1)` 改成 `target = feature`，其他不動。先預測：程式會停在哪一條斷言？為什麼？原本的七行輸出，還會印出哪幾行？再執行核對。
+**練習 2：目標改用原 feature。**假設把本頁上方訓練片段的 `target = feature * torch.tensor([1., .5]).view(1, 2, 1, 1)` 改成 `target = feature`，其他不動。本例改動後，Q、K、V 三塊梯度仍各含非零值。要預測哪些輸出還會印出，還需知道列印與斷言的先後。下面保留完整程式的七個 `print`；`...` 省略前面已說明的計算與其餘檢查：
+
+``` { .python data-excerpt="lesson_cases/15-attention-bridge.py" }
+# 原例前向核對後，先印四行
+print('tokens:', tokens.tolist())
+print('first attention row:', attention[0, 0].detach().double().round(decimals=4).tolist())
+print('first weighted value:', output_tokens[0, 0].detach().double().round(decimals=4).tolist())
+print('shape feature -> tokens -> affinity -> feature:', tuple(feature.shape), tuple(tokens.shape), tuple(attention.shape), tuple(output.shape))
+with torch.no_grad():
+    ...  # 用副本做練習 1；此時投影仍是單位矩陣
+    print('exercise fourth-token [2,0], first weight row:', exercise_weights[0, 0].double().round(decimals=4).tolist())
+    print('exercise first output:', exercise_output[0, 0].double().round(decimals=4).tolist())
+...  # 建立 optimizer、設定 target、算 MSE、backward，再拆出三塊梯度
+assert all(part.abs().sum() > 0 for part in (grad_q, grad_k, grad_v))
+assert not torch.allclose(grad_q, grad_k)
+...  # 其餘兩組梯度比較、保存舊權重、step 與更新檢查
+print(f'backward/step through Q,K,V verified; reconstruction loss={loss.item():.4f}')
+```
+
+先預測：程式會停在哪一條斷言？為什麼？原本的七行輸出，還會印出哪幾行？想實際核對時，再修改 Colab 的完整實驗程式格，或本機 `lesson_cases/15-attention-bridge.py`。
 
 ??? note "參考答案"
 

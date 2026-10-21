@@ -437,3 +437,11 @@ artifacts/checks/curriculum/00-warmup.json
 本頁沒有重新全面審閱A；只處理先前已確認的待修，依修改處核對圖文及桌面／手機實頁。
 
 本頁未有需要新增修正的來源缺口；保留原文的通過依據在本輪原答與覆核。必要與可選建議均由主 Agent 逐項裁定，詳見[決策表](clear-tutorial/remainder-2026-10-08-93dc8d8/coordinator/decisions.json)及[本輪範圍](clear-tutorial/remainder-2026-10-08-93dc8d8/README.md)。修後的技術、圖文、銜接與實頁範圍見[技術複查](clear-tutorial/remainder-2026-10-08-93dc8d8/technical/post-repair.json)、[銜接複查](clear-tutorial/remainder-2026-10-08-93dc8d8/audit/post-repair.json)和 [post-repair](clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair/)；不把局部複查稱作全書新首讀，也不等同真人學生測試。
+
+## 2026-10-21：教材內嵌程式與 Colab 選跑
+
+補模型建立、w=1 初始化與更新後重新預測，使原手算與程式完整對照。
+
+本頁按改動小節完成不同審閱者的易讀性、正確性及連貫性核對；原答與提示後修稿核回分開保存。全部 52 節另做 Colab 依賴篩查，沒有將局部核對改稱全書新盲讀。實驗程式、Notebook、圖與既有實測數據不變。
+
+本輪發現、逐項處置、實際 CPU／實頁範圍與原始紀錄見[本輪摘要](colab-self-contained-2026-10-21.md)。現行內容指紋另綁定 coverage.json。

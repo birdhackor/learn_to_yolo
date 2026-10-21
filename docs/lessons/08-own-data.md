@@ -125,13 +125,30 @@ target 讀的是前處理後 64×64 框；grid_size 是每邊格數，num_classe
 
 自主練習：
 
+下面摘出兩題會用到的原設定。`records` 是前面的六筆圖片標註；`bad` 是刻意改壞的一份副本，不會改到原資料。`anns` 是主例的 train 批次標註，與前文的 `annotations` 扮演相同角色，框同樣已轉到 64×64。`...` 省略其他輸入檢查與資料讀取步驟：
+
+``` { .python data-excerpt="lesson_cases/08-own-data.py" }
+classes = ['red_rectangle','blue_rectangle','yellow_rectangle']
+...
+bad = copy.deepcopy(records); bad[1]['split'] = 'test'
+expect_rejection(bad,classes,'source leakage')
+...
+target = build_targets(anns,grid_size=4,image_size=64,num_classes=len(classes))
+model = GridDetector(num_classes=len(classes),grid_size=4,width=8)
+...
+prediction = model(images)
+assert prediction.shape == (2,4,4,8)
+```
+
+`expect_rejection` 呼叫 `validate_annotations`；收到 `ValueError` 時印出拒絕原因，若資料反而被接受，就報錯。先依本頁的來源切分與輸出規則作答；想動手核對時，再修改 Colab 的完整實驗或本機 `lesson_cases/08-own-data.py`。
+
 練習 1：完整程式裡有一行 `bad = copy.deepcopy(records); bad[1]['split'] = 'test'`。`bad[1]` 就是 video_A 的 A1（`video_A/1.png`），A0 仍在 train。把 `'test'` 改成 `'validation'`，`validate_annotations` 能通過檢查嗎？
 
 ??? note "參考答案"
 
     不能，仍會印出 `rejected source leakage : source leakage`。video_A 已經以 train 出現過，A1 又出現在 validation，同一個 source_id 跨了 split，就是洩漏。改成 validation 或 test，結果都一樣。
 
-練習 2：在完整程式的 `classes` 末尾加上 `'green_rectangle'`，新增「綠矩形」成為 class 3。head 輸出的最後一軸應是多少？哪個斷言（assert）要跟著改？
+練習 2：在上面的 `classes` 末尾加上 `'green_rectangle'`，新增「綠矩形」成為 class 3。head 輸出的最後一軸應是多少？哪個斷言（assert）要跟著改？
 
 ??? note "參考答案"
 

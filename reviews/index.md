@@ -277,3 +277,11 @@
 本附頁由獨立銜接與技術審閱者核對當前來源；頁內既有審閱歷史的接觸另記，未冒稱完全無歷史提示。範圍起點為93dc8d8；首讀、技術與銜接角色分開，原答未回寫。
 
 本頁相關處置：DEC-013；包含採用、保留或後文撤回的來源與理解收益。必要與可選建議均由主 Agent 逐項裁定，詳見[決策表](clear-tutorial/remainder-2026-10-08-93dc8d8/coordinator/decisions.json)及[本輪範圍](clear-tutorial/remainder-2026-10-08-93dc8d8/README.md)。修後的技術、圖文、銜接與實頁範圍見[技術複查](clear-tutorial/remainder-2026-10-08-93dc8d8/technical/post-repair.json)、[銜接複查](clear-tutorial/remainder-2026-10-08-93dc8d8/audit/post-repair.json)和 [post-repair](clear-tutorial/remainder-2026-10-08-93dc8d8/post-repair/)；不把局部複查稱作全書新首讀，也不等同真人學生測試。
+
+## 2026-10-21：教材內嵌程式與 Colab 選跑
+
+在閱讀入口說明理解所需程式片段內嵌、Colab 供選擇執行完整實驗。
+
+本頁按改動小節完成不同審閱者的易讀性、正確性及連貫性核對；原答與提示後修稿核回分開保存。全部 52 節另做 Colab 依賴篩查，沒有將局部核對改稱全書新盲讀。實驗程式、Notebook、圖與既有實測數據不變。
+
+本輪發現、逐項處置、實際 CPU／實頁範圍與原始紀錄見[本輪摘要](colab-self-contained-2026-10-21.md)。現行內容指紋另綁定 coverage.json。

@@ -140,7 +140,30 @@ Ultralytics 的 `reg_max` 指**bin 數 K**，16 代表 0～15；GFL 所用 mmdet
 
 ## 自主練習
 
-1. 把 target 改成 2.6 格，K 仍為 4。先手算：哪兩個 bin 有權重、各是多少？初始梯度是多少？再到完整程式（`lesson_cases/12-dfl.py`，也就是 Colab 裡那份）的 `main()` 修改 `target`，執行核對。跟著要改三處：梯度斷言用的 `wanted_grad`、期望值和 1.25 比較的斷言，以及檢查 bin 機率的斷言（`probs[0, 1] > .73 and probs[0, 2] > .24` 那一行）。新的寫法先自己想。
+先對照原本的 target、初始梯度與訓練後檢查；`...` 省略上文已說明的 400 步更新。`dfl` 是前面的兩個相鄰 bin 加權 CE，`expected_distance` 是沿 bin 軸的機率加權平均：
+
+``` { .python data-excerpt="lesson_cases/12-dfl.py" }
+target = torch.tensor([1.25])
+logits = nn.Parameter(torch.zeros(1, 4))
+optimizer = torch.optim.SGD([logits], lr=.5)
+loss = dfl(logits, target)
+loss.backward()
+wanted_grad = torch.tensor([[.25, -.50, .0, .25]])
+assert torch.allclose(logits.grad, wanted_grad)
+...
+probs = logits.softmax(-1).detach()
+distance = expected_distance(logits).detach()
+assert abs(distance.item() - 1.25) < .02
+assert probs[0, 1] > .73 and probs[0, 2] > .24
+```
+
+`dfl` 在讀取 bin 前還有這個範圍檢查，確保 target 右側的相鄰 bin 存在：
+
+``` { .python data-excerpt="lesson_cases/12-dfl.py" }
+assert ((target >= 0) & (target < logits.shape[-1] - 1)).all()
+```
+
+1. 把 target 改成 2.6 格，K 仍為 4。先手算：哪兩個 bin 有權重、各是多少？初始梯度是多少？上面三處檢查要怎麼跟著改：`wanted_grad`、期望值和 1.25 比較的斷言，以及 bin 機率的斷言？想執行核對時，再到 Colab 的完整實驗，或本機 `lesson_cases/12-dfl.py` 的 `main()` 修改。
 2. 若 target 改成 3.2 格，程式會怎樣？該怎麼處理？
 3. 為什麼「學到的期望值誤差很小」不足以驗證 DFL 實作正確？
 

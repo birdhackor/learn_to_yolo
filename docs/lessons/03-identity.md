@@ -72,6 +72,10 @@ x=\begin{bmatrix}-2&-1\\0&1\end{bmatrix}.
 完整程式得到完全相同的 y，包含負數 −2、−1。**主分支內的 ReLU 不會碰到捷徑上的 x。**
 
 ``` { .python data-excerpt="lesson_cases/03-identity.py" }
+block = IdentityBlock(1)
+with torch.no_grad():
+    for p in block.parameters():
+        p.zero_()
 x = torch.tensor([[[[-2.0, -1.0], [0.0, 1.0]]]], requires_grad=True)
 y = block(x)
 assert torch.equal(x, y)

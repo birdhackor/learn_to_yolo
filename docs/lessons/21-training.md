@@ -32,7 +32,7 @@ loss 雖然在最後的兩個分數計算，反向傳播仍沿整條模型路徑
 
 optimizer 用 **AdamW**，學習率 0.003、weight decay=0.01。Adam 會保留過去梯度的移動平均來調整更新；W 指 weight decay（權重衰減），AdamW 把讓權重稍往 0 縮的動作與梯度更新分開處理。60 步使用固定學習率，沒有 scheduler。這是本例選定的訓練設定；與第 1 章的資料與 optimizer 設定不同，分數不能當成 ViT／CNN 的公平對照。
 
-每步先啟用訓練模式、抽 batch、計算交叉熵，再清梯度、反傳，確認梯度可用，最後 `optimizer.step()`。完整程式的前半如下：
+每步先啟用訓練模式、抽 batch、計算交叉熵，再清梯度、反傳，確認梯度可用，最後 `optimizer.step()`。下面保留完整的單步函式：
 
 ``` { .python data-excerpt="lesson_cases/21-training.py" }
 def train_step(model, optimizer, dataset, batch_size):
@@ -50,9 +50,18 @@ def train_step(model, optimizer, dataset, batch_size):
     grad_norm = float(sum(parameter.grad.square().sum() for parameter in parameters.values()).sqrt())
     if not grad_norm > 0:
         raise RuntimeError("gradient全部為0")
+    groups = {
+        "patch_projection": float(model.patch_embed.projection.weight.grad.norm()),
+        "first_qkv": float(model.blocks[0].attention.qkv.weight.grad.norm()),
+        "first_mlp": float(model.blocks[0].mlp[0].weight.grad.norm()),
+        "cls": float(model.cls_token.grad.norm()), "position": float(model.pos_embed.grad.norm()),
+        "head": float(model.head.weight.grad.norm()),
+    }
+    optimizer.step()
+    return float(loss.detach()), grad_norm, groups
 ```
 
-`grad_norm` 將全部參數梯度的平方相加再開根號，量整體梯度的長度。程式接著記錄部件梯度，才呼叫 `optimizer.step()`；單有 `backward()` 還不是一次參數更新。這裡的 RNG 是 Random Number Generator（亂數產生器），batch 抽樣與 dropout 都會推進它的狀態，後面接續訓練時還會用到。
+`grad_norm` 將全部參數梯度的平方相加再開根號，量整體梯度的長度。`groups` 另記六個部件的梯度長度，接著 `optimizer.step()` 才修改參數；單有 `backward()` 還不是一次參數更新。回傳的 loss 是更新前已算好的值，沒有在 step 後重算。這裡的 RNG 是 Random Number Generator（亂數產生器），batch 抽樣與 dropout 都會推進它的狀態，後面接續訓練時還會用到。
 
 ## Loss 降低與答對新圖，各看一份證據
 

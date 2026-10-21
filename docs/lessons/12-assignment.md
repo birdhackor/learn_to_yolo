@@ -123,8 +123,27 @@ mean BCE 對每個 logit 的梯度爲 `(sigmoid(z)−t)/4`，4 是候選平均�
 
 自主練習（先自己算，再展開答案）：
 
+以下是兩題用到的分數與四個檢查，依完整程式的執行順序摘錄；`...` 省略已在正文說明的框、梯度計算與輸出。`box_iou(gt, predicted_boxes)` 建立上面的 `[GT,候選]` IoU 表，`assign` 回傳 owner 與品質表：
+
+``` { .python data-excerpt="lesson_cases/12-assignment.py" }
+scores = torch.tensor([[.9, .7, .1, .8], [.1, .8, .7, .9]])
+...
+overlaps = box_iou(gt, predicted_boxes)
+owner, metric = assign(points, gt, scores, overlaps)
+assert owner.tolist() == [0, 0, 1, -1]
+empty, _ = assign(points, gt[:0], scores[:0], overlaps[:0])
+assert empty.tolist() == [-1] * 4
+...
+assert torch.allclose(logits.grad, torch.tensor([-.125, -.125, -.125, .125]))
+...
+moved_boxes = predicted_boxes.clone()
+moved_boxes[1] = gt[1]
+moved_owner, _ = assign(points, gt, scores, box_iou(gt, moved_boxes))
+assert moved_owner.tolist() == [0, 1, 1, -1]
+```
+
 1. 把 p1 的預測框改成 GT B 的 `[12,0,32,16]`，重新計算整欄 IoU，不只改一個 IoU 數字。提示：新框和 A 的交集寬是 20−12=8。A、B 各選誰？owner 變成什麼？這題手算即可；完整程式結尾已經做了這個修改，算完再對照輸出的最後一行。
-2. 改一個分數：在 Colab 裡改「本節可修改的完整實驗」下面那一格程式；本機則改 `lesson_cases/12-assignment.py`，兩者是同一份程式。把 `main()` 裡 `scores` 第一列的第二個數，也就是 A 對 p1 的 `.7`，改成 `.1`。先預測：A 的品質、top-2 的選擇和 owner 會不會變？哪些斷言（assert）要跟著改？再執行核對。
+2. 改一個分數：把上面 `scores` 第一列的第二個數，也就是 A 對 p1 的 `.7`，改成 `.1`。先預測：A 的品質、top-2 的選擇和 owner 會不會變？哪些斷言（assert）要跟著改？想執行核對時，再修改 Colab 的完整實驗程式格，或本機 `lesson_cases/12-assignment.py` 的 `main()`。
 
 ??? note "參考答案"
 

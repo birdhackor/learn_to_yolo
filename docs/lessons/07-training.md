@@ -49,26 +49,34 @@ adaptive pool 是 `AdaptiveAvgPool2d`，自動分區取平均到指定尺寸；�
 
 ## 梯度算完，還要真的更新
 
-下面摘錄 lesson case 的迴圈；單獨一行的 `...` 省略其他檢查，索引內的 `...` 則保留前面的軸：
+下面摘錄 lesson case 的迴圈與檢查；單獨一行的 `...` 只省略印出結果的程式，索引內的 `...` 則保留前面的軸。`images`、`target` 是前面準備好的四張圖與訓練目標；`math.isfinite` 檢查一般 Python 數字是否有限：
 
 ``` { .python data-excerpt="lesson_cases/07-training.py" }
+import math
+
 model = GridDetector(num_classes=2, grid_size=4, width=8)
 optimizer = torch.optim.Adam(model.parameters(), lr=.01)
-...                                     # 省略：複製第一個參數供最後比對、切到訓練模式
+before = next(model.parameters()).detach().clone()
+model.train()
 for step in range(3):
     optimizer.zero_grad(set_to_none=True)
     prediction = model(images)          # [4,4,4,7]
-    ...                                 # 省略：shape 的斷言
+    assert prediction.shape == (4, 4, 4, 7)
     parts = grid_loss(prediction, target)
-    ...                                 # 省略：total 是有限值的斷言
+    assert torch.isfinite(parts['total'])
     parts['total'].backward()
-    ...                                 # 省略：檢查梯度的斷言（見下方說明）
+    assert all(torch.isfinite(p.grad).all() for p in model.parameters() if p.grad is not None)
+    grad = sum(p.grad.abs().sum().item() for p in model.parameters() if p.grad is not None)
+    assert math.isfinite(grad) and grad > 0
     optimizer.step()
     with torch.no_grad():               # 以下只是監看，不需要梯度
         obj = prediction[..., 4].sigmoid()                  # prediction 是這次更新「前」算出的
         pos_mean = obj[target['positive']].mean().item()    # 4 個正格的平均
         neg_mean = obj[~target['positive']].mean().item()   # 60 個負格的平均；~ 把 True／False 對調
     ...                                 # 省略：印出這一步的分項 loss 與兩個平均
+assert not torch.equal(before, next(model.parameters()).detach())
+assert target['positive'].sum() == 4
+print('3 real CPU optimizer steps; parameters changed; no generalization claim')
 ```
 
 
@@ -104,7 +112,7 @@ Adam 同樣要到 step 才更新，與暖身的 SGD 在這一點相同。它另�
 
 ## 自主練習：只反傳、不更新會發生什麼
 
-自主練習：在 Colab 裡改「本節可修改的完整實驗」下面那一格程式；本機則改 `lesson_cases/07-training.py`，兩者是同一份程式。刪掉迴圈裡 `optimizer.step()` 那一行再執行：哪些檢查仍可能通過？哪一個會失敗？三行輸出會有什麼變化？
+自主練習：先看上面的迴圈與斷言，假設刪掉 `optimizer.step()`：哪些檢查仍可能通過？哪一個會失敗？三行輸出會有什麼變化？想實際核對時，再到 Colab 的「本節可修改的完整實驗」程式格，或本機的 `lesson_cases/07-training.py` 刪掉這一行；兩者是同一份程式。
 
 ??? note "參考答案"
 
