@@ -1,12 +1,10 @@
-"""Validate lesson pages, their code excerpts, fixed-version notebooks, review coverage and SVG assets."""
+"""Validate current lesson sources, code excerpts, fixed-version notebook pairing and SVG assets."""
 
 import ast
 import json
 from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
-
-from review_coverage import stale as stale_reviews
 
 ROOT = Path(__file__).resolve().parents[1]
 # A code block marked ``` { .python data-excerpt="lesson_cases/<id>.py" } quotes that file verbatim.
@@ -88,11 +86,9 @@ for section in lessons:
         assert (page.parent / diagram).resolve().is_file(), f"Missing diagram: {diagram}"
     excerpts += excerpt_problems(page)
 assert not excerpts, "Page code excerpts differ from the code they quote:\n" + "\n".join(excerpts)
-reviews = stale_reviews()
-assert not reviews, "Pages whose review does not cover the current text, figures or code:\n" + "\n".join(reviews)
 for svg in (ROOT / "docs/assets/diagrams").glob("*.svg"):
     root = ET.parse(svg).getroot()
     assert root.attrib.get("viewBox"), f"SVG needs responsive viewBox: {svg}"
     namespace = {"s": "http://www.w3.org/2000/svg"}
     assert root.find("s:title", namespace) is not None, f"SVG needs accessible title: {svg}"
-print(f"{len(lessons)} lesson pages, marked code excerpts, fixed-version notebooks, reviews of every page and SVG assets: OK")
+print(f"{len(lessons)} lesson pages, marked code excerpts, fixed-version notebooks and SVG assets: OK")

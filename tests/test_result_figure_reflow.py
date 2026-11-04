@@ -1,5 +1,6 @@
 """Site layouts must keep alternate experiment outcomes and measured frame data."""
 from pathlib import Path
+from collections import Counter
 import runpy
 import xml.etree.ElementTree as ET
 
@@ -22,10 +23,12 @@ def test_capstone_layout_keeps_all_measured_boxes_and_alternate_weight(tmp_path)
     before.write(original, encoding="unicode")
     capstone_panel(original, readable)
     after = ET.parse(readable).getroot()
-    assert [x.get("href") for x in before.findall(".//s:image", NS)] == [
-        x.get("href") for x in after.findall(".//s:image", NS)]
+    # The vertical reading layout intentionally interleaves baseline and alternate panels.
+    # Preserve every original image and measured box, including duplicates, independent of order.
+    assert Counter(x.get("href") for x in before.findall(".//s:image", NS)) == Counter(
+        x.get("href") for x in after.findall(".//s:image", NS))
     def boxes(root):
-        return [dict(x.attrib) for x in root.findall(".//s:rect", NS) if x.get("stroke")]
+        return Counter(tuple(sorted(x.attrib.items())) for x in root.findall(".//s:rect", NS) if x.get("stroke"))
     assert boxes(before) == boxes(after)
     assert "只改一項：box weight 2" in [x.text for x in after.findall("s:text", NS)]
     assert "1:0.07" in [x.text for x in after.findall(".//s:text", NS)]

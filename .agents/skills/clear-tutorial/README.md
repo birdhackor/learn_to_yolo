@@ -8,6 +8,7 @@
 | [寫作短 prompt](references/writing-prompt.md) | 寫作時可直接使用的通用指令 |
 | [審閱流程](references/review-protocol.md) | 協調者安排逐段閱讀、保存證據及比對歷史問題 |
 | [跨領域校準例](references/calibration.md) | 作者與審閱者按不同教學目的接受或拒絕同一種證據 |
+| [保存與發布](references/publication.md) | 按變更審閱、短期工作資料、長期證據及可核對的發布 |
 | [專案背景與技術核對](references/project-context.md) | 本 repo 的作者、協調者與技術審閱者按需要查核 |
 | [UPSTREAM.json](UPSTREAM.json) | 固定來源版本與原始檔案雜湊的維護資料 |
 
@@ -18,6 +19,8 @@
 更新 skill 不代表教材已改寫或重新審閱。只分析、只審閱或只改 skill 時，依使用者指定的階段完成並如實報告，不自行擴大範圍。
 
 ## 來源與維護
+
+2026-11-04 採納 tiny-perceptron-vlm [92b8763](https://github.com/birdhackor/tiny-perceptron-vlm/commit/92b8763ca24511f0da1c259429851a314accea19)、[6749702](https://github.com/birdhackor/tiny-perceptron-vlm/commit/674970212debb8e27341d04edff2362c25750710)、[f282ae6](https://github.com/birdhackor/tiny-perceptron-vlm/commit/f282ae699663de46a39338c0782958701f1a8e19) 的保存與發布機制，依本專案既有 LFS、獨立實驗及科學紀錄分工調整；未照抄其資料分組或專案控制設定。原 UPSTREAM 雜湊繼續描述下述最初來源。
 
 本 skill 以 [tiny-perceptron-vlm 的固定版本](https://github.com/birdhackor/tiny-perceptron-vlm/tree/6b8fb865b6f4f5f1c1649420520232f9911c1227/.agents/skills/clear-tutorial) 為基礎，保留易懂寫作與逐段審閱方法，再依目前工作需求調整文件分工。
 

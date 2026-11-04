@@ -1,47 +1,43 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## Project Structure
 
-`miniyolo/` contains reusable PyTorch models, data loaders, geometry, targets, losses, inference, metrics, and training. `lesson_cases/` holds standalone CPU experiments; matching pages and notebooks live in `docs/lessons/` and `notebooks/`. Keep their identifiers aligned through `section-map.json`. Diagrams belong in `docs/assets/diagrams/`, tests in `tests/`, and maintenance utilities in `scripts/`. `reviews/` and `artifacts/checks/` preserve review and execution evidence. Raw clear-tutorial review records live in the private repo `birdhackor/learn_to_yolo-reviews`; clone it into the ignored `reviews/clear-tutorial/` when you need them (see `reviews/README.md`).
+`miniyolo/` contains reusable PyTorch components. `lesson_cases/`, `docs/lessons/` and `notebooks/` share identifiers through `section-map.json`. Diagrams belong in `docs/assets/diagrams/`, tests in `tests/`, and maintenance tools in `scripts/`. Preserve tensor shapes, coordinate conventions, lesson identifiers and published lesson tags.
 
-## Build, Test, and Development Commands
+Use Python 3.12. Keep educational prose and user communication in Traditional Chinese; think and plan in English. Match surrounding Python style (four spaces, snake_case); no formatter is configured.
 
-Run commands from the repository root. Use Python 3.12 and follow `README.md` to create `.venv-model` and `.venv-docs` environments with pinned requirements; install the CPU PyTorch build for experiments.
+## Validation and Execution
 
-- `PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py`: run one lesson.
-- `.venv-model/bin/python -m pytest tests/`: run the test suite.
-- `.venv-model/bin/python -m miniyolo.train --steps 160 --samples 32 --device cpu`: train the synthetic detector.
-- `python3 scripts/validate_preparation.py` and `python3 scripts/validate_lessons.py`: validate manifests, lesson pairs, and reviews.
-- `python3 scripts/validate_curriculum_evidence.py`: check source hashes and saved outputs.
-- `.venv-docs/bin/zensical build --clean --strict`, then `python3 scripts/validate_site.py`: build and validate the website.
-- `.venv-docs/bin/zensical serve`: preview documentation locally.
+- Runtime: install the CPU PyTorch wheel, then `requirements-model.txt`. Tests additionally use `requirements-test.txt`; website builds only use `requirements-docs.txt`. Video and GPU dependencies remain optional.
+- `python3 scripts/validate_preparation.py` checks manifests and notebook format.
+- `python3 scripts/validate_lessons.py` checks current lesson/code/notebook/figure consistency. Editorial history is not a build input.
+- `python3 scripts/validate_curriculum_evidence.py` checks preserved scientific records against their source programs.
+- `.venv-model/bin/python -m pytest tests/` runs deterministic CPU tests. Add meaningful checks for behavior changes, empty inputs, invalid data and failure paths where relevant.
+- `.venv-model/bin/python scripts/course_execution.py ensure --revision "$(git rev-parse HEAD)"` validates or reruns the complete CPU experiment bundle in ignored `outputs/lesson-execution/`. Its conservative key includes ordered notebook code, shared code, data manifests, assets, scientific records, requirements and the actual runtime. Prose changes can reuse successful results; unknown, changed or incomplete inputs require a rerun. Add any new runtime input, including Markdown read by code, to the key.
+- Build with `.venv-docs/bin/zensical build --clean --strict`; use `python3 scripts/validate_site.py` for links, search, figures and notebook pairing. Formal publication also writes `build-info.json` using `scripts/publication.py`, then validates with `--require-publication`.
+- When lesson programs change, rebuild notebooks for a new release tag and regenerate affected scientific evidence with `scripts/verify_curriculum.py` / `scripts/record_evidence.py`. The transient CPU cache never replaces historical scientific measurements or relabels their dates. Review changed scientific claims and figures against the new records.
+- Compare a failing test with the unchanged base before calling it a regression. Do not skip product tests to conceal a failure.
 
-## Coding Style & Naming Conventions
+## Editorial Review and Publication
 
-Use four-space Python indentation, `snake_case` functions and modules, and `PascalCase` classes. Preserve tensor shapes and coordinate conventions in docstrings. Lesson filenames use numbered, hyphenated identifiers such as `07-training`. Keep educational prose in Traditional Chinese. No formatter or linter is configured; match surrounding code.
+Use `.agents/skills/clear-tutorial/SKILL.md` for substantive teaching changes. Review readability, correctness and coherence over changed material and necessary context. Keep independent first-reading observations distinct from later technical answers; state actual scope and unverified work. A small maintenance change does not restart the entire historical review process.
 
-## Testing Guidelines
+Record findings, fixes, validation and limitations briefly in the PR. Detailed sessions, frozen drafts and screenshots are temporary work, normally under ignored `work/` or `outputs/`, with CI artifacts retained 30 days (temporary detailed review artifacts at most 90 days). Never add historical review hashes, original-reviewer callbacks or replay chains as deployment requirements. AI review does not establish student learning outcomes.
 
-Use pytest files named `test_*.py` and functions named `test_*`. Add deterministic CPU checks for changed behavior, including empty inputs, invalid annotations, numerical stability, and checkpoint compatibility where applicable. No numeric coverage threshold is configured.
+Pages remains manually triggered; its CPU execution job is separate from its minimal website build. CI runs on PRs/main, without duplicate feature-branch push runs. Runtime, dependency and workflow changes include Windows/macOS; prose changes need Linux. Unavailable diff information runs the full matrix. Linux's release-pin checks require full non-partial history; students and other jobs use shallow clones without LFS payloads.
 
-After lesson changes, synchronize notebook code and regenerate actual evidence with `.venv-model/bin/python scripts/verify_curriculum.py --section 07-training`. This updates the notebook, lesson page, and evidence JSON; rerun consistency validators afterward.
+Check published `build-info.json` revision and real notebook/download links after deployment. Keep publication revision and actual execution revision separate when reusing results. GPU/Modal work and model/data publication remain manual and require the author's authorization; this maintenance work does not authorize paid compute.
 
-## Commit & Pull Request Guidelines
+## Storage and Archives
 
-History uses concise English imperative subjects, for example `Fix homepage figure` or `Add bounded manual L4 TensorRT parity verification`, without Conventional Commit prefixes. Keep commits focused. PRs should describe the change, affected lessons, validation results, related issues where applicable, and screenshots for visual changes.
+- Ordinary Git keeps teaching sources, small figures, executable public notebooks, implementation, tests, generators, seeds, fixed manifests, licenses, provenance, important scientific results and `lesson-releases.json`.
+- Keep temporary outputs, downloads and full training logs in ignored storage. Use existing Git LFS or versioned model/data releases for fixed large datasets and weights; download explicitly and verify sizes and SHA-256 before use. Tests and lesson experiments must not silently fetch assets. Do not overwrite modified local data or published releases.
+- Identify real readers before moving files: workflows, code, notebooks and documentary links. Classify by use, not directory names such as `reviews` or `evidence`. Long-term evidence supporting a claim must remain available.
+- Retired review machinery and deployment reports are archived at `ccb7c89b4b5ae27e3d318e5e514cec5c1b569e3f`; use immutable links for removed paths. `reviews/vision-branch/sources/` remains tracked because it contains scientific provenance and results. See `reviews/README.md`.
+- New raw review sessions do not need a separate private-repository commit or push. The existing private `birdhackor/learn_to_yolo-reviews` remains an optional historical archive, not a deployment dependency.
+- Publish and anonymously cold-download/verify replacement assets before removing tracked originals. Preserve attribution, licenses, reconstruction recipes and original bytes. Prefer an existing suitable transport over introducing a new one.
+- No history rewrite, tag movement or force push is part of this work. Size measurements may inform a decision but are not prerequisites for adopting a sound mechanism.
 
-## Data, Releases & Agent Instructions
+## Commits and PRs
 
-Keep temporary outputs in ignored `artifacts/runs/`. Use Git LFS for curated datasets, checkpoints, and exports as defined in `.gitattributes`; preserve licenses and checksums. Never overwrite published lesson tags; generate future notebook releases with `python3 scripts/build_lesson_notebooks.py --ref <new-release-tag>` and refresh execution evidence afterward. Keep credentials out of commits. Agents should think and plan in English and communicate with users in Traditional Chinese.
-
-## Repository Size & History Rewrites
-
-On 2026-10-11, about 97% of `.git` was raw review records (mostly screenshots) still in the current tree, and old versions took about 1%. Size problems here come from what gets committed, not from history.
-
-- Commit review screenshots, captured pages and third-party papers to the private reviews repo, not here. Colab notebooks run `git clone --depth 1 --branch <tag>` and download the whole tree at that tag, so check `git ls-tree -r -l <ref> | awk '{s+=$4} END {print s}'` before tagging.
-- Measure before deciding. For tracked files, compare `st_size` with `st_blocks*512`. For `.git`, split objects into those still in `HEAD` and those only in history with `git cat-file --batch-all-objects --batch-check='%(objectname) %(objecttype) %(objectsize) %(objectsize:disk)'`, `git rev-list --objects --all` and `git ls-tree -r HEAD`.
-- Before removing a path, find every reader: hard-coded paths, `.github/workflows`, doc links (`blob/main`, `tree/main`, tag URLs) and the review gate. Run validators under a `sys.addaudithook` logger to see which files they open. After changing a site page's text, figures or lesson code, even a link, add a review entry and then run `review_coverage.py --write`; until `--write` runs, `validate_lessons.py` fails. Editing a review file also needs `--write`. The generated execution-record block, Colab tags and new files outside the site navigation do not trip this gate.
-- If a test fails after a change, run it on the unchanged commit before calling it a regression.
-- Delete by naming each path. Remove `.git/objects/pack/tmp_pack_*` garbage only when `lsof` shows no user, `.git` has no `*.lock`, and no pack index refers to it.
-- Before rewriting history, push every branch and tag to a private archive and compare with `git ls-remote`; `birdhackor/learn_to_yolo-archive` holds the 2026-10-11 snapshot, and later pushes to it use new ref names. Keep published lesson tags unchanged by rewriting only commits after the latest tag, and use a full-tree rewrite such as `git filter-branch --index-filter '…' -- <branches> ^<tag>`. `git filter-repo --refs <tag>..<branch>` only filters changes made inside the range, so files inherited from the tag survive. Compare every rewritten commit's blob ids and modes with the original minus the removed path, then run the tests and validators.
-- Read the `on:` triggers in `.github/workflows/` before a forced push; on 2026-10-11 all five were `workflow_dispatch`. Push with `--force-with-lease=<ref>:<expected old>` and `--atomic`. To switch an existing clone, run `git fetch --prune --force origin '+refs/heads/*:refs/remotes/origin/*' '+refs/tags/*:refs/tags/*'`, `git reset --hard origin/main`, `git update-ref -d ORIG_HEAD`, `git reflog expire --expire=now --all`, then `git gc --prune=now`.
+Use focused English imperative commit subjects. Explain concrete behavior, affected material, meaningful validation and limitations. Include screenshots when visual behavior changes. Keep credentials out of commits; keep generated website and execution outputs out of Git.

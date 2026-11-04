@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "repository": "birdhackor/learn_to_yolo",
+  "releases": {
+    "lessons-v0.1.0": "baed4ff05a2bdaf850c01e23adbdf6f544df4aaf",
+    "lessons-v0.2.0": "0c94e35d015341f4c42dc295d38739682a47674c",
+    "lessons-v0.3.0": "b36c2c73cc2f22a1e4e0b9dda1a3181e15ecc777",
+    "lessons-v0.4.0": "8292a666b72934f86228e5d408ffb922c1855599",
+    "lessons-v0.4.1": "e28f85a5591db42830a8fb0365c686b0d3676e8d",
+    "lessons-v0.5.0": "a6ec0d60c65ba97eeef9dc55c2e7d110b34f5edb",
+    "lessons-v0.6.0": "6903a243cb9eab96ca0795a217bca5c605574c9b",
+    "lessons-v0.6.1": "50acb99e6a76ae5baffeaf98b1c9357a7e8ccece"
+  }
+}

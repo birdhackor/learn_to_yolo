@@ -1,14 +1,12 @@
-# 審查紀錄
+# 審閱與發布歷史
 
-這個目錄主要放每一頁的審查紀錄（課程頁是 `<節>.md`，其他頁用路徑命名）與 `coverage.json`，另有格式維護核對（`formatting/`）等附件。`scripts/validate_lessons.py`（經由 `scripts/review_coverage.py`）在這個目錄裡只讀逐頁紀錄與 `coverage.json`。
+2026-11-04 將逐頁審閱、coverage 指紋、舊截圖與發布 log 移出目前工作樹。完整公開版本固定在 [整理前的 commit](https://github.com/birdhackor/learn_to_yolo/tree/ccb7c89b4b5ae27e3d318e5e514cec5c1b569e3f/reviews)。這次沒有改寫歷史；原檔仍在該版本，教材引用改用完整 SHA。
 
-## 逐段原始紀錄（`clear-tutorial/`）不在公開 repo
+新的修改按實際範圍核對易讀性、正確性與連貫性，PR 留發現、修正、驗證與限制。詳細 session、凍結稿、截圖與發布 log 放忽略的 `work/`、`outputs/` 或短期 artifact；一般 CI 保留 30 天，詳細臨時審閱最多 90 天。不需要每輪另外推送私人 repo，也不將歷史審閱作部署依賴。
 
-依 clear-tutorial skill 做的逐段首次閱讀、技術與銜接審閱的原始紀錄，從 2026-10-11 起存在不公開的 repo `birdhackor/learn_to_yolo-reviews`。這批紀錄以網頁截圖為主，留在公開 repo 會讓每次 clone、下載 ZIP 和 Colab 環境格多下載數百 MiB。
+必要科學來源與實測結果仍長期可查；本目錄的 `vision-branch/sources/` 保留來源版本、授權與預訓練實測資料。`artifacts/checks/curriculum/` 的重要結果照常保留，與臨時執行快取分開。固定資料使用既有 LFS／資料下載流程；先公開並冷下載驗證替代包，再搬移原始內容。
 
-- `lessons-v0.6.1` 以前的輪次（`16f6910`、`full-review-2026-10-06`、`vision-v0.6.0`、`release-v0.6.1-2026-10-06` 等）仍可在 [該 tag 的目錄](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial) 查看。
-- 之後的輪次只在不公開的 repo。
-- 要查看或新增紀錄時，把它 clone 到 `reviews/clear-tutorial/`（已列入 `.gitignore`），新紀錄在那個 repo 內 commit。本目錄各頁審查紀錄裡指向 `clear-tutorial/` 的相對連結保留原文，有這個 clone 時才能開啟。
+較早的逐段原始紀錄另在不公開的 `birdhackor/learn_to_yolo-reviews`，可按需 clone 到忽略的 `reviews/clear-tutorial/`；它是歷史查詢來源。`lessons-v0.6.1` 以前的輪次仍可在[該 tag](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial)查看。以下保留 2026-10-11 的歷史對照，不作現行操作要求。
 
 ## commit hash 對照
 

@@ -4,6 +4,9 @@ __pycache__/
 .ipynb_checkpoints/
 site/
 .cache/
+.pytest_cache/
+/work/
+/outputs/
 data/downloads/
 data/processed/
 artifacts/runs/
@@ -12,3 +15,14 @@ artifacts/*.svg
 artifacts/lesson-*/
 .DS_Store
 reviews/clear-tutorial/
+# Review sessions and deployment reports are transient; scientific sources remain tracked.
+/reviews/*.md
+!/reviews/README.md
+/reviews/coverage.json
+/reviews/formatting/
+/reviews/vision-branch/author-*.md
+/artifacts/checks/curriculum-publication.json
+/artifacts/checks/curriculum-public-browser.json
+/artifacts/checks/curriculum-release-bootstrap.json
+/artifacts/checks/lessons-v*-local.json
+/artifacts/checks/site-rendering-v*.json

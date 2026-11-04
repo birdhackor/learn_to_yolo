@@ -15,7 +15,8 @@ bootstrap  gives each case an empty folder and a new virtual environment, then r
            the restarted session, then runs both cells again); plus chapter 20, whose cell also installs
            the ONNX packages. Then it runs every command in README.md's bash blocks, in order, in another
            fresh clone (all but `zensical serve`, which does not return).
-save       downloads both results of a verify-release.yml run into artifacts/checks/.
+save       downloads results into ignored outputs/release-verification/<run>/; never commits logs.
+pins       checks the small committed release registry against complete local Git history.
 
 The manually started workflow .github/workflows/verify-release.yml runs site and bootstrap on a
 GitHub-hosted Linux runner with Python 3.12. Exit status is 1 when a check fails; the output is written
@@ -47,8 +48,7 @@ CPU_INDEX = "https://download.pytorch.org/whl/cpu"
 OTHER_TORCH = "2.8.0"
 RESTART_REQUEST = "重新啟動工作階段"  # what the environment cell asks for after replacing an imported PyTorch
 CELL_BREAK = "<<next cell>>"
-RECORDS = {"site": ROOT / "artifacts/checks/curriculum-publication.json",
-           "bootstrap": ROOT / "artifacts/checks/curriculum-release-bootstrap.json"}
+RELEASES = "lesson-releases.json"
 # One Colab session: the cells share one namespace; optionally PyTorch was imported before them.
 SESSION = f'''import json, sys
 cells = json.loads(open(sys.argv[1], encoding="utf-8").read())
@@ -110,7 +110,7 @@ def fetch(url: str) -> tuple[int | None, bytes]:
 def clone(tag: str, folder: Path) -> str:
     """Shallow public clone of the tag without LFS content; returns its commit."""
     environment = {**os.environ, "GIT_LFS_SKIP_SMUDGE": "1"}
-    subprocess.run(["git", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1", "--branch", tag,
+    subprocess.run(["git", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1", "--no-tags", "--branch", tag,
                     CLONE_URL, str(folder)],
                    env=environment, check=True)
     return subprocess.check_output(["git", "-C", str(folder), "rev-parse", "HEAD"], text=True).strip()
@@ -153,6 +153,40 @@ def navigation(items: list) -> list[str]:
         for value in (item.values() if isinstance(item, dict) else [item]):
             pages += navigation(value) if isinstance(value, list) else [value] if value.endswith(".md") else []
     return pages
+
+
+def retained_releases(source: Path) -> dict[str, str]:
+    path = source / RELEASES
+    if path.is_file():
+        registry = json.loads(path.read_text())
+        if registry.get("schema_version") != 1 or registry.get("repository") != REPOSITORY:
+            raise ValueError("Invalid lesson release registry")
+        expected = registry["releases"]
+    else:
+        # Compatibility only for already-published tags predating the registry.
+        previous = json.loads((source / "artifacts/checks/curriculum-publication.json").read_text())
+        expected = {old["source_ref"]: old["code_commit"] for old in previous.get("old_releases_retained", [])}
+        if "release_commit" in previous:
+            expected[previous["source_ref"]] = previous["release_commit"]
+    if not expected or any(not re.fullmatch(r"lessons-v[0-9]+\.[0-9]+\.[0-9]+", tag)
+                           or not re.fullmatch(r"[0-9a-f]{40}", commit) for tag, commit in expected.items()):
+        raise ValueError("Release pins must contain immutable lesson tags and full commit SHAs")
+    return expected
+
+
+def check_pins(source: Path = ROOT) -> None:
+    if subprocess.check_output(["git", "rev-parse", "--is-shallow-repository"], cwd=source).strip() != b"false":
+        raise ValueError("Release pin verification requires complete Git history and tags")
+    promisor = subprocess.run(["git", "config", "--get-regexp", r"^remote\..*\.promisor$"],
+                             cwd=source, capture_output=True)
+    if promisor.returncode != 1:
+        raise ValueError("Release pin verification requires a complete, non-partial clone")
+    for tag, expected in retained_releases(source).items():
+        actual = subprocess.check_output(["git", "rev-parse", f"refs/tags/{tag}^{{commit}}"],
+                                         cwd=source, text=True).strip()
+        if actual != expected:
+            raise ValueError(f"Published lesson tag moved: {tag}")
+    print("Immutable lesson release pins: OK")
 
 
 def check_site(tag: str, work: Path) -> dict:
@@ -202,10 +236,7 @@ def check_site(tag: str, work: Path) -> dict:
             peeled[name[:-3]] = sha
         else:
             peeled.setdefault(name, sha)
-    previous = json.loads((source / "artifacts/checks/curriculum-publication.json").read_text())
-    expected = {old["source_ref"]: old["code_commit"] for old in previous.get("old_releases_retained", [])}
-    if "release_commit" in previous:
-        expected[previous["source_ref"]] = previous["release_commit"]
+    expected = retained_releases(source)
     old = [{"source_ref": ref, "code_commit": peeled.get(ref), "matches_previous_verification": peeled.get(ref) == sha}
            for ref, sha in sorted(expected.items())]
     status, body = fetch(f"https://api.github.com/repos/{REPOSITORY}/actions/workflows/pages.yml/runs?status=success&per_page=1")
@@ -213,6 +244,11 @@ def check_site(tag: str, work: Path) -> dict:
     deployment = {"workflow_run_id": runs[0]["id"], "workflow_url": runs[0]["html_url"],
                   "deployed_commit": runs[0]["head_sha"], "deployed_commit_is_release_commit": runs[0]["head_sha"] == commit,
                   } if runs else {"error": f"GitHub API status {status}"}
+    if (source / RELEASES).is_file():
+        status, body = fetch(base + "build-info.json")
+        info = json.loads(body) if status == 200 else {}
+        deployment["public_build_info"] = info
+        deployment["public_revision_matches"] = info.get("revision") == commit and info.get("publication_ready") is True
     result.update({
         "pages_workflow": deployment, "old_releases_retained": old,
         "navigation_pages_verified": len(pages), "pages": pages, "figures": figures, "lessons": lessons,
@@ -225,7 +261,8 @@ def check_site(tag: str, work: Path) -> dict:
                         and all(f["http_status"] == 200 and f["bytes_match_build"] for f in figures)
                         and all(l["colab_link_on_public_page"] and l["notebook_http_status"] == 200
                                 and l["environment_cell_uses_tag"] and l["last_cell_is_lesson_program"] for l in lessons)
-                        and old and all(o["matches_previous_verification"] for o in old) and "workflow_run_id" in deployment)
+                        and old and all(o["matches_previous_verification"] for o in old) and "workflow_run_id" in deployment
+                        and deployment.get("public_revision_matches", not (source / RELEASES).is_file()))
     return result
 
 
@@ -313,22 +350,40 @@ def check_bootstrap(tag: str, work: Path) -> dict:
 
 
 def save(run_id: str) -> None:
+    if not run_id.isdigit():
+        raise ValueError("The workflow run ID must be numeric")
+    destination = ROOT / "outputs/release-verification" / run_id
+    reports = {}
     with tempfile.TemporaryDirectory() as folder:
         subprocess.run(["gh", "run", "download", run_id, "--dir", folder], cwd=ROOT, check=True)
-        for name, record in RECORDS.items():
+        for name in ("site", "bootstrap"):
             found = list(Path(folder).rglob(f"{name}.json"))
-            assert len(found) == 1, (name, found)
-            shutil.copyfile(found[0], record)
-            print(f"{record.relative_to(ROOT)}: passed={json.loads(record.read_text())['passed']}")
+            if len(found) != 1:
+                raise ValueError(f"Expected exactly one {name}.json in the workflow artifacts")
+            raw = found[0].read_bytes()
+            json.loads(raw)
+            target = destination / f"{name}.json"
+            if target.exists() and target.read_bytes() != raw:
+                raise ValueError(f"Conflicting saved report; not overwritten: {target}")
+            reports[name] = raw
+    destination.mkdir(parents=True, exist_ok=True)
+    for name, raw in reports.items():
+        target = destination / f"{name}.json"
+        target.write_bytes(raw)
+        print(f"{target.relative_to(ROOT)}: passed={json.loads(raw)['passed']}")
+    if any(json.loads(raw).get("passed") is not True for raw in reports.values()):
+        raise ValueError("Release verification failed; diagnostic reports were saved without changing release pins")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("check", choices=("site", "bootstrap", "save"))
+    parser.add_argument("check", choices=("site", "bootstrap", "save", "pins"))
     parser.add_argument("--tag", help="published lesson tag (site, bootstrap)")
     parser.add_argument("--output", type=Path, help="result JSON (site, bootstrap)")
     parser.add_argument("--run", help="verify-release.yml run ID (save)")
     args = parser.parse_args()
+    if args.check == "pins":
+        return check_pins()
     if args.check == "save":
         if not args.run:
             parser.error("save needs --run")
