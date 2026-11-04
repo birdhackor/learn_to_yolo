@@ -65,7 +65,7 @@ Git LFS（Git Large File Storage）是讓 Git 另外存放大型檔案的擴充�
 只取這份封裝（沒有安裝 `git-lfs` 的電腦要先安裝它）：
 
 ```bash
-GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/birdhackor/learn_to_yolo.git
+GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 --no-tags https://github.com/birdhackor/learn_to_yolo.git
 cd learn_to_yolo
 git lfs install --local --skip-smudge
 git lfs pull --include="data/curated/fashion-mnist-v1.tar" --exclude=""

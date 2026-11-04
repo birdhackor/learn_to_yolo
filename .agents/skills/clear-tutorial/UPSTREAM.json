@@ -10,7 +10,8 @@
     "references/review-protocol.md: use existing evidence fields to verify conditions, objects and coverage; seal main-only answers and summaries before extras, independent judgments before cross/history.",
     "references/writing-prompt.md and references/calibration.md: concise cross-domain contrasts for partially fulfilled commitments, choice needs and object pairing; retain sufficient positive boundaries.",
     "references/project-context.md: keep YOLO reader background, technical facts and repository checks for authors, coordinators and technical reviewers.",
-    "references/review-example-10-5.md: remove the external VLM case from the active skill and preserve it unchanged in repository review history."
+    "references/review-example-10-5.md: remove the external VLM case from the active skill and preserve it unchanged in repository review history.",
+    "references/publication.md and review workflow: scope reviews to actual changes, retain scientific evidence, keep transient sessions outside Git, and separate publishing from historical review hashes."
   ],
   "source_files": [
     {
@@ -37,5 +38,14 @@
       "git_blob_sha1": "b7b631dfb3a49df7db64e3e129f730f304a9b843",
       "sha256": "cc584a73b4023fbedb0eb311ddc2f997669b95683e1ec277105daf5c17715240"
     }
-  ]
+  ],
+  "mechanism_sources": {
+    "adopted_on": "2026-11-04",
+    "repository": "birdhackor/tiny-perceptron-vlm",
+    "commits": [
+      "92b8763ca24511f0da1c259429851a314accea19",
+      "674970212debb8e27341d04edff2362c25750710",
+      "f282ae699663de46a39338c0782958701f1a8e19"
+    ]
+  }
 }

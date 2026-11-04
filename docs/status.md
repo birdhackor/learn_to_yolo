@@ -39,7 +39,7 @@
 - 在真實資料上，用相同資料與訓練預算（例如訓練步數）比較各機制的效果。合成資料上只有少數小型對照，例如 3.3 節的 plain 與 residual。
 - 正式的 GPU 速度與效能測試。
 - 新 ViT／DINO 支線的 GPU 訓練、原版規模訓練及 DINOv3 實作。
-- 在 Google Colab 上執行 notebook，包括 Colab 可能分配給你的 GPU：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出。代替的檢查有兩項。第一，環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。第二，網站發布後，在 GitHub 提供的 Linux 電腦上，從指定的公開 tag 重新下載教材（驗證版本以紀錄內的 tag 為準），在全新的 Python 環境裡照原樣執行 notebook 的環境格和實驗格（notebook 最後一格，內容和 `lesson_cases/` 裡該節的程式相同）：第 0 章試沒裝 PyTorch、裝了別的版本、已是 2.9.1、已經 import 過別的版本四種情況，以及第 20 章（它的環境格還要另裝 ONNX 套件）；也依序執行 README 列出的指令（預覽網站用的 `zensical serve` 除外）。結果記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/main/artifacts/checks/curriculum-release-bootstrap.json)。這台電腦不是 Colab，也沒有 GPU。
+- 在 Google Colab 上執行 notebook，包括 Colab 可能分配給你的 GPU：逐節執行紀錄都在 Colab 以外的電腦上用 CPU 跑出。代替的檢查有兩項。第一，環境格（每節 notebook 最上面的程式格，見下方〈執行方式〉）處理各種情況的方式，例如 PyTorch 版本不同、已經 import 過 torch，由自動測試模擬檢查（`tests/test_notebook_bootstrap.py`，不會真的安裝套件）。第二，網站發布後，在 GitHub 提供的 Linux 電腦上，從指定的公開 tag 重新下載教材（驗證版本以紀錄內的 tag 為準），在全新的 Python 環境裡照原樣執行 notebook 的環境格和實驗格（notebook 最後一格，內容和 `lesson_cases/` 裡該節的程式相同）：第 0 章試沒裝 PyTorch、裝了別的版本、已是 2.9.1、已經 import 過別的版本四種情況，以及第 20 章（它的環境格還要另裝 ONNX 套件）；也依序執行 README 列出的指令（預覽網站用的 `zensical serve` 除外）。結果記在[發布驗證紀錄](https://github.com/birdhackor/learn_to_yolo/blob/ccb7c89b4b5ae27e3d318e5e514cec5c1b569e3f/artifacts/checks/curriculum-release-bootstrap.json)。這台電腦不是 Colab，也沒有 GPU。
 - 用 TensorRT 跑更大的模型，或改用其他數值精度時的結果，例如強制每一層都用 FP16（16 位元浮點數），或用 INT8（8 位元整數，要先經校準或量化感知訓練等流程決定縮放）。
 - 接上實體攝影機當影片來源。
 - 真人學生的學習效果。
@@ -125,7 +125,7 @@ AI 審查能幫忙找卡點，不等於真人學生已看懂；本專案沒有�
 
 教材介紹的版本到 YOLO26 為止，不包含之後的版本，也不涵蓋 YOLOv6、v7、v9 的機制（範圍見[課程大綱](planning/outline.md)）；只寫找得到原文或公開程式碼可以查證的設計，不為無法確認的版本編造架構。每個已介紹的 YOLO 版本，都以原論文或官方程式碼的某個固定版本為準（commit：程式碼某一次提交的版本編號，對應的內容固定不變），而不是會隨時變動的最新版。
 
-審查紀錄每頁一份，存在 repository 的 `reviews/` 資料夾，記下查核的方法、每個發現的問題與處理方式；審查的總覽見[全套實驗與審查頁](validation/curriculum.md)。每份審查看過的內容（頁面文字、頁面上的 SVG、PNG 等圖，課程頁還包括該節程式和它 import 的模組）都用 SHA-256 記在 `reviews/coverage.json`。審查之後，只要其中任何一項改了，網站建置前的檢查就會失敗，直到那一頁有一份對應新內容的審查。頁尾自動產生的「實際執行紀錄」和 Colab 連結裡的教材版本（例如 `lessons-v0.6.1`）不算在內。
+歷史逐頁審閱與指紋保留於[固定封存版本](https://github.com/birdhackor/learn_to_yolo/tree/ccb7c89b4b5ae27e3d318e5e514cec5c1b569e3f/reviews)，下列連結描述原本版本的審閱。新的修改按影響範圍核對易讀性、正確性與連貫性，PR 留結論與限制；詳細工作資料短期保存，審閱歷史不再作網站部署輸入。科學結果、來源、授權、程式與 Notebook 一致性仍獨立核對。紀錄重產時，維護者仍須查找正文引用的舊數字，對照新紀錄更新並審閱受影響內容。
 
 這些都是編輯審查，沒有做過真人學生的學習實驗：沒有請真人學生實際用本教材學習，再測量學習效果。
 

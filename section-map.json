@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "note": "status ready means the page, lesson program and notebook exist; execution records are in artifacts/checks/curriculum/ and reviews in reviews/.",
+  "note": "status ready means the page, lesson program and notebook exist; scientific records are in artifacts/checks/curriculum/; scoped editorial review is recorded in the PR.",
   "sections": [
     {
       "id": "preparation-environment",

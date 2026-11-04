@@ -186,9 +186,16 @@ class Page(HTMLParser):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--require-publication", action="store_true",
+                        help="require build-info to identify a verified full CPU execution bundle")
     args = parser.parse_args()
     config = tomllib.loads((ROOT / "zensical.toml").read_text())["project"]
     site = (ROOT / config["site_dir"]).resolve()
+    if args.require_publication:
+        from publication import build_info
+        info = json.loads((site / "build-info.json").read_text())
+        assert info == build_info(ROOT, ROOT / "outputs/lesson-execution", info["revision"]), \
+            "Published build metadata differs from the checked sources or execution results"
     base = config["site_url"]
     base_parts = urlsplit(base)
     version = (ROOT / "requirements-docs.txt").read_text().strip().split("==")[1]

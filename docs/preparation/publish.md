@@ -12,9 +12,9 @@ python3 -m venv .venv-docs
 .venv-docs/bin/zensical serve
 ```
 
-用瀏覽器打開終端機顯示的本地網址。Windows 把 `.venv-docs/bin/` 換成 `.venv-docs\Scripts\`。預覽不需要 GPU、PyTorch 或資料集。只建置不預覽時執行 `.venv-docs/bin/zensical build --clean --strict`：`--clean` 清除建置快取，`--strict` 遇到警告就中止。和 Pages 相同的整套檢查，指令見第 6 節第 8 步〈跑完所有檢查〉。
+用瀏覽器打開終端機顯示的本地網址。Windows 把 `.venv-docs/bin/` 換成 `.venv-docs\Scripts\`。預覽不需要 GPU、PyTorch 或資料集。只建置不預覽時執行 `.venv-docs/bin/zensical build --clean --strict`：`--clean` 清除建置快取，`--strict` 遇到警告就中止。和 Pages 相同的整套檢查，指令見第 6 節的來源、證據與網站檢查。
 
-本頁其他直接用 `python3` 執行的指令，也要用 Python 3.12。`review_coverage.py`、`validate_lessons.py`、`validate_site.py` 與 `verify_release.py` 用到 Python 3.11 才加入的標準庫 `tomllib`，在更舊的 Python 會停在 `ModuleNotFoundError: No module named 'tomllib'`。Zensical 只要求 Python 3.10 以上，所以預覽成功，不代表這些檢查跑得動。
+本頁其他直接用 `python3` 執行的指令，也要用 Python 3.12。`validate_lessons.py`、`validate_site.py` 與 `verify_release.py` 用到 Python 3.11 才加入的標準庫 `tomllib`，在更舊的 Python 會停在 `ModuleNotFoundError: No module named 'tomllib'`。Zensical 只要求 Python 3.10 以上，所以預覽成功，不代表這些檢查跑得動。
 
 repo 沒有 LICENSE 檔。程式與原創教材用什麼條款開放，由 owner 決定，例如程式用 MIT、原創教材用 CC BY 4.0；決定後在 repo 根目錄加上 LICENSE。第三方資料一律遵照各自來源的授權。
 
@@ -51,7 +51,7 @@ git commit -m "Update Learn to YOLO site"
 git push origin HEAD:main
 ```
 
-`data/downloads/`、`data/processed/`、`artifacts/runs/`、`site/` 與建置快取都列在 `.gitignore`，不會被 commit。`git diff --cached` 顯示即將 commit 的實際修改；commit 前看一遍已暫存的檔案，不要夾帶無關的修改。遠端 main 有新的 commit 時，照一般 Git 流程同步、解決衝突，不要 force push。
+`work/`、`outputs/`、`data/downloads/`、`data/processed/`、`artifacts/runs/`、`site/` 與建置快取都列在 `.gitignore`，不會被 commit。`git diff --cached` 顯示即將 commit 的實際修改；commit 前看一遍已暫存的檔案，不要夾帶無關的修改。遠端 main 有新的 commit 時，照一般 Git 流程同步、解決衝突，不要 force push。
 
 ## 3. 啟用 GitHub Pages
 
@@ -62,21 +62,22 @@ repo 的 Pages 來源已設為 GitHub Actions。第一次設定（或重新設�
 3. Actions 被停用時，到 **Settings → Actions → General** 允許 workflow 使用的 GitHub 官方 actions。workflow 自己宣告需要的權限，不必為它另外建立 PAT，也不必把全部 workflow 的權限設成 write。
 4. **Settings → Environments → github-pages**：已有部署分支規則時，確認 main 可以部署；也可以把部署來源限制為 main。
 5. **Actions → Publish Learn to YOLO → Run workflow**，選 main 後執行。
-6. 等 build 與 deploy 都成功，從 deployment URL 或 Settings → Pages 開啟網站。
+6. 等 execute、build 與 deploy 都成功，從 deployment URL 或 Settings → Pages 開啟網站。
 
 網址是 **<https://birdhackor.github.io/learn_to_yolo/>**。設定好之後，每次發布只需要第 5、6 步。
 
-build job 依序執行下面五項，任何一項失敗都不會部署：
+CPU 工作先核對或執行完整實驗 bundle；build job 再核對 bundle、寫入版本資訊，並依序執行下面各項，任何一項失敗都不會部署：
 
 - `validate_preparation.py`：資料 manifest、頁面與 notebook 的配對、notebook 格式、網站檔案的大小與類型。
-- `validate_lessons.py`：課程頁、頁面裡的程式摘錄與程式一致、固定版本的 notebook、每一頁的審查紀錄對應目前內容、SVG。
+- `validate_lessons.py`：課程頁、頁面裡的程式摘錄與程式一致、固定版本的 notebook、SVG。
 - `validate_curriculum_evidence.py`：每份執行紀錄都對得上目前的程式、notebook 與頁面。
 - `zensical build --clean --strict`。
-- `validate_site.py`：Zensical 版本與 `requirements-docs.txt` 相符、連結與錨點、Colab 配對、搜尋語言、Markdown 是否照原意轉成表格／編號清單／摺疊區塊／數學／連結、有沒有文字被誤當成 HTML 標籤，以及 artifact 邊界（`site/` 裡沒有 symlink 與 LFS pointer，也沒有 `.pt`、`.pth`、`.onnx`、`.ipynb`、`.zip`、`.tar`、`.gz` 檔）。
+- `publication.py`：核對完整成功的 CPU bundle，寫入網站與實際執行版本。
+- `validate_site.py --require-publication`：Zensical 版本與 `requirements-docs.txt` 相符、連結與錨點、Colab 配對、搜尋語言、Markdown 是否照原意轉成表格／編號清單／摺疊區塊／數學／連結、有沒有文字被誤當成 HTML 標籤，以及 artifact 邊界（`site/` 裡沒有 symlink 與 LFS pointer，也沒有 `.pt`、`.pth`、`.onnx`、`.ipynb`、`.zip`、`.tar`、`.gz` 檔）。
 
 建置只上傳 `site/`，不下載 LFS 資料、不安裝 PyTorch；部署用 Actions artifact，不需要 gh-pages 分支。公式用的 MathJax 3.2.2 與它的字型放在 `docs/assets/vendor/mathjax/`，隨網站提供，並附上 MathJax 的 Apache 2.0 授權（來源校驗見 `artifacts/checks/mathjax-vendor.json`）。
 
-Pages workflow 整體只有 `contents: read` 權限，只有 deploy job 另外宣告 `pages: write` 與 `id-token: write`。repo 的五個 workflow（網站、LFS 資料、兩項 GPU 檢查、發布後的公開驗證）都只能手動啟動：push 本身不會發布網站，也不會啟動 GPU。
+Pages workflow 整體只有 `contents: read` 權限，只有 deploy job 另外宣告 `pages: write` 與 `id-token: write`。網站、LFS 資料、兩項 GPU 檢查與發布後驗證仍手動啟動。另有 CI 在 PR/main 執行離線測試及建站；push 不會發布網站或啟動 GPU。
 
 public repo 用免費方案就能使用 Pages，也不需要自訂網域。repo 若改成 private，要另外核對帳號方案與網站的可見範圍。
 
@@ -143,157 +144,39 @@ GitHub 明列 **Git LFS 不能用於 GitHub Pages**。網站只說明取得方�
 
 ## 6. 發布新版教材
 
-52 節頁面的 Colab 按鈕與 notebook 固定在同一個發布 tag：按鈕開啟這個 tag 的 notebook，notebook 的環境格也 clone 這個 tag（`section-map.json` 各節的 `source_ref` 記著它）。已發布的 `lessons-v*` tag 一律不移動、不覆寫；教材的程式或實驗結果改了，就發布一個新 tag。
+先分清這次修改的是文稿、實驗還是發布工具。文字和網站維護可沿用現有 Notebook tag；實驗程式或環境格改動才建立新的 tag。既有 tag 的內容與指向都保留。
 
-先用這張圖決定本次需要走哪些分支；詳細指令在後面的編號步驟。所有 GPU 工作仍只能手動啟動。兩類紀錄都過期時，依詳細步驟先重產 GPU、再 CPU；圖中的每類重產步驟只在該類過期時執行。
-
-![發布流程先檢查紀錄是否過期，再依需求重產CPU或GPU紀錄，最後核對正文、審查、檢查與發布](../assets/diagrams/release-evidence-flow.svg)
-
-若紀錄從另一台電腦帶回，先分清三種檔案：
-
-|檔案|帶回後怎麼處理|
-|---|---|
-|`artifacts/checks/` 紀錄與重畫的 `docs/assets/diagrams/` 圖|一起帶回；`--render-only` 不會重畫或複製圖片|
-|頁尾執行紀錄、notebook 儲存的輸出|可在編輯機用 `verify_curriculum.py --render-only` 依紀錄重寫，保留這台的正文修改|
-|正文的數字、圖說與結論|人工對照新紀錄，數字有變就修改並重新審查；工具不會替你判斷教學結論|
-
-發布前，每份執行紀錄都要對得上目前的程式。逐節的紀錄是 `artifacts/checks/curriculum/<節>.json`，記著執行的日期（UTC）、產生它的電腦與 stdout，並用 SHA-256 綁定產生它的程式：該節程式，加上它直接或間接 import 的每個 repo 檔案。補充實驗的 CPU 紀錄與兩份 GPU 紀錄也以同樣方式綁定各自的程式，清單在 `scripts/evidence_records.py`。綁定的檔案都沒變，紀錄就一直有效，保留它的日期與電腦；任何一個改了，那份紀錄才過期。所以發布新版時只重跑過期的紀錄。
-
-以下指令都在 repo 根目錄執行。`.venv-model` 是照 README 建立的 CPU 模型環境，`.venv-docs` 是第 1 節的文件環境；直接寫 `python3` 的指令，照第 1 節用 Python 3.12。
-
-1. **把 notebook 配對到新 tag。** 教材的頁面與程式都改好後執行：
-
-    ```bash
-    python3 scripts/build_lesson_notebooks.py --ref <新 tag>
-    ```
-
-    它重建 52 本 notebook，並把各節頁面的 Colab 連結與 `section-map.json` 的 `source_ref` 改成新 tag。正文裡直接寫出 tag 的地方不會跟著改：`README.md`、〈驗證範圍〉、〈全套實驗與審查〉與第 0 章〈一次學習的超短暖身〉（環境格印出的版本）都寫著目前的 tag，要另外搜尋 `lessons-v`，逐一改成新 tag；審查涵蓋只略過 Colab 連結裡的 tag，所以改了這些地方的 tag 之後，`README.md` 以外的三頁都要重新審查。`lesson_cases/<節>.py` 沒變的節，最後一格直接填回紀錄裡的輸出；改過的節列在輸出的最後。紀錄是否過期（包括 import 的模組有沒有改），由下一步判斷。
-
-2. **列出過期的紀錄。**
-
-    ```bash
-    .venv-model/bin/python scripts/record_evidence.py
-    ```
-
-    這只列出，不重產紀錄，也不改動 git 追蹤的檔案：哪些 GPU 紀錄要重跑、哪些 CPU 紀錄（逐節紀錄與補充紀錄）過期，以及這台電腦的規格。`grid-learning.json` 的兩張圖（`grid-learning-curve.svg`、`grid-learning-predictions.svg`）由 `scripts/render_learning_evidence.py` 依紀錄畫出，而這支腳本不在紀錄綁定的程式裡，所以紀錄沒過期時，`record_evidence.py` 會用它在暫存目錄重畫一次；和網站上的圖不同，就列出 `grid-learning figures (renderer changed)`，第 5 步的 `--run` 只重畫這兩張圖，不重新訓練。
-
-3. **把修改推到一個分支。** 第 4 步的 GPU workflow 跑的是 GitHub 上的程式；第 5 步若在另一台電腦記錄，那台電腦也要從 GitHub 取得這些修改。要做其中任何一件事，先照第 2 節確認 diff，再把到目前為止的修改（教材、程式與第 1 步重建的 notebook）commit 到一個分支並推上去：
-
-    ```bash
-    git switch -c <分支>
-    git add -A
-    git commit -m "<這一版的修改>"
-    git push -u origin <分支>
-    ```
-
-    已經在要推的分支上時，省略第一行。`-u` 讓之後在這個分支上直接執行 `git pull`，就能取回別處推到它的 commit。沒有過期的 GPU 紀錄，CPU 紀錄也就在這台電腦記錄時，跳過這一步。
-
-4. **重產 GPU 紀錄。** 沒有過期的 GPU 紀錄就跳過這一步。在第 3 步的分支上執行：
-
-    ```bash
-    .venv-model/bin/python scripts/record_evidence.py --gpu <分支>
-    ```
-
-    workflow 跑的是推上去的程式，所以本機的 commit 必須和 `origin/<分支>` 相同，否則它會停下。它用 GitHub CLI（`gh`，先執行 `gh auth login`）逐一啟動過期紀錄對應的 workflow（`deployment-gpu.yml`、`gpu-smoke.yml`，在 Modal 的一張 NVIDIA L4 上執行），等它跑完，再下載結果存成紀錄。workflow 需要 repository 的 Modal 設定（至少 `MODAL_TOKEN_ID` 與 `MODAL_TOKEN_SECRET`），清單見〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉。成功產生的 GPU 紀錄留在工作區，commit 後推到同一個分支。
-
-    兩種紀錄分開檢查：`--gpu` 結束前用 `validate_curriculum_evidence.py --scope gpu`，只檢查 GPU 紀錄；下一步的 `--run` 結束前用 `--scope cpu`，只檢查逐節與補充的 CPU 紀錄。另一種紀錄還過期，不會讓這兩項檢查失敗；全部紀錄到第 8 步才一起檢查。`--gpu` 失敗在這項檢查時，GPU 紀錄已經存好；`--run` 失敗在這裡時，不會執行後面的 `--push` 或 `--bundle`。
-
-    workflow 失敗時它會停下；下載得到結果時，仍把結果存進紀錄檔供你檢查。看完後先換掉這份結果，不要 commit 它。原因是結果在 workflow 一開始就寫上了它綁定的程式的 SHA-256，而 `--gpu` 只比對 SHA-256，不看結果有沒有通過：留著它，下次 `--gpu` 會把它當成現行紀錄而跳過，`validate_curriculum_evidence.py` 卻會因為它沒有通過而一直失敗。換的方法是用 `git status --short` 看停下時訊息指名的紀錄檔：顯示 `M`（git 已追蹤）就執行 `git restore --staged --worktree <紀錄檔>`，還原成最近一次 commit 的版本；顯示 `??`（git 還沒追蹤）就刪除。然後修正原因：只改 repo 以外的設定（例如 repository 的 Modal 設定）時，改好後重跑這一步；改了 repo 裡的程式時，從第 1 步重來。
-
-5. **重產 CPU 紀錄。** 既有 CPU 紀錄是在哪台電腦產生的，各紀錄裡都有記載（逐節紀錄在 `machine` 欄：作業系統、CPU、Python、PyTorch 等）。盡量在同一台電腦重跑，沒改到的計算才會得到和舊紀錄相同的數字。在那台電腦 checkout 第 3 步的分支（做了第 4 步時，要包含推上去的 GPU 紀錄），照 README 建好 `.venv-model`，再用 `.venv-model/bin/python -m pip install -r requirements-video.txt` 加裝影片套件，然後執行：
-
-    ```bash
-    .venv-model/bin/python scripts/record_evidence.py --run --push <分支>
-    ```
-
-    `--run` 先核對 Python 3.12 與 `requirements-model.txt`、`requirements-video.txt` 的固定版本，不符就停下；接著只重跑過期的部分：逐節程式交給 `verify_curriculum.py`（它同時更新 notebook 的輸出與頁尾的執行紀錄區塊，並把第 4.1、4.2 節與第 17–19 章實驗畫的圖複製到 `docs/assets/diagrams/`，並從同次原始 SVG 生成第 17–19 章的直式閱讀圖；第 21.4、22.3 的完整曲線及第 23.2 的預測框也依最新正式 JSON 更新，圖內保存來源指紋），補充紀錄交給各自的實驗腳本（除了影片檔與 Fashion-MNIST 的紀錄，各腳本也會重畫 `docs/assets/diagrams/` 裡對應的圖）。重產 Fashion-MNIST 的紀錄時，`--run` 會先執行 `scripts/download_data.py fetch fashion-mnist`，在 `data/downloads/fashion-mnist/` 備齊四個原始檔（共 30.88 MB）：已有、而且大小與 SHA-256 都和 `data/manifest.json` 相符的檔就沿用，缺的才下載，這時記錄的電腦要能連網；有不符的舊檔則會停下，訊息會指名那個檔，移走後重新執行上面的指令。最後用 `validate_curriculum_evidence.py --scope cpu` 檢查，並在輸出最後的 `Changed files:` 列出改動的檔案。`--push <分支>` 把這些檔案 commit 並推到該分支；不方便推送時，改用 `--bundle <檔名>.tar.gz` 把它們打包。兩種的帶回方法見下一步。就在平常編輯的電腦記錄時，只要 `--run`。換一台電腦也能重產，新紀錄會記下新的電腦，但計時與訓練後的小數可能和舊紀錄不同。
-
-
-    第 8 章的框號圖另取 **1600 步補充實驗** 的紀錄，不是 `08-own-data` 主例六張圖的一次更新。這份補充紀錄改變時，先依同次 PNG 與 JSON 刷新 `08-custom-predictions-readable.svg` 的素材、框和圖下判定，再生成框號圖：
-
-    ```bash
-    python3 scripts/reflow_result_figures.py --kind custom \
-      --source docs/assets/diagrams/08-custom-predictions-readable.svg \
-      --record artifacts/checks/curriculum/custom-data-learning.json \
-      --output docs/assets/diagrams/08-custom-predictions-labelled.svg
-    ```
-
-    這個命令會逐框核對基本圖和指定紀錄的座標；不相符就停下，不會替舊圖加上新紀錄的編號。只重跑 `08-own-data` 主例不會刷新這份 1600 步圖。
-
-6. **從別處帶回紀錄時，連重畫的圖一起帶回。** 第 5 步改動的檔案都列在 `Changed files:` 底下：`artifacts/checks/` 的紀錄、`docs/assets/diagrams/` 裡重畫的圖，以及頁面與 notebook（頁尾的執行紀錄區塊與最後一格的輸出）。用了 `--push` 時，在平常編輯的電腦執行 `git pull --no-rebase`，就帶回整份清單；兩邊都有新的 commit 時，`--no-rebase` 指定把它們合併起來。這台電腦在第 3 步之後若又改過同一個檔，git 不會直接蓋掉，而是合併兩邊的修改；合併不了就停下，列出有問題的檔案。
-
-    `--bundle` 的包裡也是整份清單，但 `tar -xzf` 會直接覆寫同名檔，不合併也不提示。包裡的頁面與 notebook 是記錄那台電腦上的版本：第 3 步之後在這台電腦改過其中一頁，解開後那個修改就不見了。所以只解開紀錄與圖，頁面與 notebook 改在這台電腦依紀錄重寫：
-
-    ```bash
-    tar --exclude='docs/lessons/*' --exclude='notebooks/*' -xzf <檔名>.tar.gz
-    .venv-model/bin/python scripts/verify_curriculum.py --render-only
-    ```
-
-    第二行的 `--render-only` 不執行任何實驗，只依紀錄重寫 52 節頁尾的執行紀錄區塊、notebook 最後一格的輸出，以及紀錄索引 `artifacts/checks/curriculum/index.json`；有任何一節沒有現行紀錄就停下。用其他方式帶回紀錄，或 `git pull` 合併時保留了這邊的頁面或 notebook，也執行這一行。
-
-    紀錄與圖則一定要從記錄的那台電腦帶回：圖只在那台電腦上重畫，`--render-only` 不會重畫、也不會複製任何圖。少帶了圖，網站會在新的輸出旁邊顯示舊圖，而 Pages 建置前的檢查都不會發現：`validate_curriculum_evidence.py` 不檢查圖；圖檔沒變，`review_coverage.py` 也不會要求重新審查。
-
-7. **審查改過的頁面。** 使用 repo 的 `.agents/skills/clear-tutorial/SKILL.md`：先凍結正文與必要圖，逐段提供給首次閱讀者，記下當下理解與卡點後才開放下一段；修正後另由非作者讀程式、核對數字與原始來源；最後由另一位讀者看前後銜接與修改處。每輪保存自己的方法、實際範圍、問題、處理與未驗證項目，不用全文讀後復述替代首次閱讀，不讓作者自己宣稱獨立驗收。實驗按疑點執行；文字改寫不自動啟動 GPU 。必要的桌面／手機圖與公式，使用實際 Zensical 頁面檢查。
-
-    逐段原始紀錄放在不公開的審查 repo（需要時 clone 到 `reviews/clear-tutorial/`，見 [`reviews/README.md`](https://github.com/birdhackor/learn_to_yolo/blob/main/reviews/README.md)），既有每頁審查繼續保留；來源說法核對論文原文、官方程式固定 commit／tag 或函式庫官方文件，記下版本與支持的位置。操作頁的指令也對照實作，必要時實際試跑。若收到過早提示或缺少明訂前文，記為閱讀安排限制，不能把它算作乾淨盲讀。〈[驗證範圍](../status.md)〉、〈[全套實驗與審查](../validation/curriculum.md)〉及 README 只寫實際完成的審查範圍。所有審查者都是 AI，不能說成真人學生驗收。
-
-    審查涵蓋頁面文字、頁面上的 SVG、PNG 等圖，以及課程頁的程式與它 import 的模組；第 5 步會重畫部分實驗圖，所以審查放在紀錄之後。Colab 連結裡的 tag 與頁尾的執行紀錄區塊不算在內。審查紀錄放在 `reviews/`：課程頁是 `reviews/<節>.md`；其他頁取 `docs/` 底下的路徑，把 `/` 換成 `-`，例如 `docs/preparation/publish.md` 的審查是 `reviews/preparation-publish.md`。寫好後記下它涵蓋的內容；頁面路徑從 repo 根目錄算起，可以一次給好幾頁：
-
-    ```bash
-    python3 scripts/review_coverage.py --write docs/preparation/publish.md
-    ```
-
-    不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查已對不上目前內容的頁面，列出的路徑可以直接接在 `--write` 後面；有這種頁面時，`validate_lessons.py` 會失敗。
-
-    審查指紋涵蓋正文，包括正文裡的數字；它不會自動拿紀錄的新數值來重新核算正文。課程頁引用自己那一節的紀錄不會漏掉：那份紀錄過期，表示那一節的程式或它 import 的模組改了，審查也跟著失效；重畫後內容變了的圖，也會讓顯示它的頁面被列出。其餘引用紀錄數字的正文就不一定會被列出：引用別份紀錄的課程頁（例如第 18、19 章引用影片檔的紀錄、第 20 章引用 L4 的紀錄），以及不是課程頁、也沒有顯示重畫的圖的頁面（例如〈驗證範圍〉、〈[資料規劃](data.md)〉與〈[GPU／checkpoint 實測](../validation/gpu-smoke.md)〉），紀錄重產後都不會因此被列出；不在網站導覽裡的 `README.md` 則沒有審查紀錄。所以第 4、5 步重產了紀錄時，要在 `docs/` 與 `README.md` 找出引用這些紀錄的地方（可以搜尋紀錄的檔名與舊的數字），對照新紀錄逐一核對；數字變了就改正文，再重審改過的頁。
-
-    審查之後又改了內容時，看改的是什麼。改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），從第 1 步重來，因為 notebook 與紀錄都可能因此過期；改了 `lesson_cases/` 卻略過第 1 步時，`validate_lessons.py` 會因為 notebook 最後一格和程式不一致而失敗，但只顯示 `AssertionError`，不說明原因。只改了頁面文字或圖，就重新審查改過的頁面，再對它執行一次 `review_coverage.py --write`。
-
-8. **跑完所有檢查。**
+1. 修改正文、程式或圖。需要新 Notebook 時執行 `python3 scripts/build_lesson_notebooks.py --ref <新 tag>`；只改工具不用重建已發布 Notebook。
+2. 執行 `.venv-model/bin/python scripts/record_evidence.py` 列出過期科學紀錄。程式沒改的紀錄保留原日期與電腦。受影響的 CPU 紀錄用 `--run` 重產；先安裝 `requirements-model.txt`、需要的 `requirements-video.txt`，並依提示核對固定套件版本。涉及真實資料時先明確執行 `python3 scripts/download_data.py fetch fashion-mnist`，再用 `python3 scripts/verify_data.py fashion-mnist` 離線核對；不把下載藏進教材或測試。GPU 紀錄仍須作者授權，依原有手動 GPU workflow 執行。
+3. 紀錄重產後，同步圖與正文中的數字、比較條件和限制。`verify_curriculum.py --render-only` 只將有效紀錄接回目前頁面和 Notebook，不執行實驗，也不重畫圖。從別台電腦帶回結果時，圖也要一起帶回；保留本機修改，避免直接解包覆寫整份教材。
+4. 依 clear-tutorial 核對受影響內容的易讀性、技術正確性與前後銜接；圖或版面改動時看實際頁面。PR 簡述範圍、發現、修正、驗證與限制。詳細工作資料放 `work/`、`outputs/` 或短期 artifact，不提交全套 session，不要求歷史指紋或原審閱者回叫。
+5. 執行來源、證據、測試及網站檢查：
 
     ```bash
     python3 scripts/validate_preparation.py
     python3 scripts/validate_lessons.py
     python3 scripts/validate_curriculum_evidence.py
+    .venv-model/bin/python -m pip install -r requirements-test.txt
     .venv-model/bin/python -m pytest tests/
     .venv-docs/bin/zensical build --clean --strict
     python3 scripts/validate_site.py
     ```
 
-    除了 pytest，其餘就是 Pages workflow 部署前跑的檢查。
+6. 檢查 diff，commit 並推送教材與必要科學紀錄。有新 tag 時建立並推送它，不覆寫舊 tag。保留 `lesson-releases.json` 的既有完整 SHA；新發布經公開核對後，把新的 tag/commit 加入這份小清單。舊驗證 log 不作發布輸入，也不需要先刪 log 才能發版。
+7. 手動執行 Pages。它以程式、資產、資料清單、科學紀錄與實際環境識別整包 CPU 結果；相同則核對後重用，缺少或不符則執行全部 52 節。只執行實驗格，沒有執行會 clone/install 的 Colab 環境格；後者另由公開驗證工作核對。網站工作只裝 Zensical，並寫入網站與實際執行版本、執行日期及範圍。
+8. 部署完成後核對公開 `build-info.json` 的 `revision`，點開修改頁面、圖與 Colab 入口。有新 tag 時手動執行 Verify published lessons；它從乾淨公開 clone 比對網站、圖、Notebook、環境格和 README 指令，並以固定 release 清單核對舊 tag。這是在 Linux runner 上驗證，不能宣稱已驗證 Colab 託管 runtime。
+9. 用 `python3 scripts/verify_release.py save --run <編號>` 下載兩份結果到 `outputs/release-verification/<編號>/`。失敗會回報非零狀態並保留診斷資料；已有不同內容不覆寫。成功後在 PR 留結論與 workflow URL，需要長期支持主張的資料另挑選保存，無須再次 commit 整份 log。
 
-9. **commit、建立 tag、推送。** 先用 `git rm artifacts/checks/curriculum-release-bootstrap.json` 刪掉上一版的環境格與 README 驗證：它驗證的是上一個 tag，沒有程式讀它，第 11 步會為新 tag 重建。`artifacts/checks/curriculum-publication.json` 則要留著：第 11 步的網站檢查會從新 tag 讀這份上一版的網站驗證，核對舊 tag 的 commit；少了它，網站檢查會在讀檔時中止。接著照第 2 節的方式 commit 所有教材與紀錄，再建立並推送新 tag：
+本機要核對正式發布所需的 CPU bundle，可在模型環境執行：
 
-    ```bash
-    git tag -a <新 tag> -m "<這一版的說明>"
-    git push origin HEAD:main
-    git push origin <新 tag>
-    ```
+```bash
+.venv-model/bin/python scripts/course_execution.py ensure --revision "$(git rev-parse HEAD)"
+.venv-model/bin/python scripts/course_execution.py verify
+```
 
-    已發布的 `lessons-v*` tag 不重建、不移動。Colab 按鈕與環境格都指向這個 tag；tag 推上 GitHub 之前，新版的 Colab 入口打不開。
+結果位於忽略的 `outputs/lesson-execution/`，不覆寫教材的歷史實測輸出。要強制重跑，移走這個快取目錄後再執行。新的執行輸入（包括被程式讀取的 Markdown）要加入 `course_execution.py`；選用下載的存在與否不影響一般 CPU 教材。
 
-10. **發布網站。** 到 **Actions → Publish Learn to YOLO → Run workflow**，選 `main`，等 build 與 deploy 都成功。
-
-11. **驗證公開網站與新 tag。** 到 **Actions → Verify published lessons → Run workflow**，`tag` 填新 tag 後執行（也可以用 `gh workflow run verify-release.yml -f tag=<新 tag>`）。這個 workflow 在 GitHub 提供的 Linux runner 上用 Python 3.12，從公開的 repository 重新 clone 這個 tag（不下載 LFS 資料），分兩項檢查：
-
-    - **網站**：在 runner 上用 tag 的內容嚴格建置網站，再和公開網站比對。導覽裡的每一頁都要回應 HTTP 200，`<article>` 元素（頁面的內文）和建置結果相同；`assets/diagrams/` 的每張圖也要逐 byte 相同。它也確認每節頁面的 Colab 按鈕指向這個 tag 的 notebook，GitHub 上這本 notebook 的環境格固定在這個 tag、最後一格就是該節程式；已發布的舊 tag 仍指向上一份驗證記下的 commit；並記下最近一次成功的 Pages workflow run、它部署的 commit，以及那是不是 tag 的 commit。
-    - **環境格與 README**：每種情況都用一個空資料夾與新的虛擬環境，像 Colab 的一個工作階段那樣，在同一個命名空間裡依序執行第 0 章 notebook 的環境格與最後一格。情況有四種：沒有 PyTorch、裝著別的 PyTorch 版本、已經是固定的版本（應該沿用），以及別的版本已經 import（應該要求重新啟動工作階段，接著用新的程序重跑兩格）；最後一格的輸出都要和 notebook 存著的輸出相同。另外執行第 20 章的兩格，它的環境格還會安裝 ONNX 套件。接著在另一份新 clone 裡，依序執行 `README.md` 的 bash 區塊裡的每個指令（`zensical serve` 不會自己結束，所以略過）。
-
-    兩項都不經過 Colab：Google 登入、Colab 的託管 runtime 與它可能分配的 GPU，只有照第 4 節實際在 Colab 開啟才看得到，那樣的結果也不在下面的紀錄裡。
-
-    workflow 跑完後（有檢查沒通過，結果照樣會上傳），用 GitHub CLI 把結果存進 repo。run 的編號在它的網址 `…/actions/runs/<編號>` 裡：
-
-    ```bash
-    python3 scripts/verify_release.py save --run <編號>
-    ```
-
-    它下載這次 run 的兩份結果，存成 `artifacts/checks/curriculum-publication.json`（網站，覆寫上一版的驗證）與 `artifacts/checks/curriculum-release-bootstrap.json`（環境格與 README），並印出兩份各自的 `passed`。兩份都印出 `passed=True` 時，commit 並推到 main；這兩個檔案不在網站裡，不必重新部署。上一版的驗證留在 git 歷史裡，可以用 `git log -p -- artifacts/checks/curriculum-publication.json` 查；新 tag 裡的這個檔案也是上一版的驗證（見第 9 步），因為驗證在建立 tag 之後才 commit。
-
-    有一份沒通過，就兩份都不要 commit，改用重新驗證的結果：〈[全套實驗與審查](../validation/curriculum.md)〉連到這兩份紀錄，向讀者說明它們確認了哪些事；網站驗證還會隨下一個 tag 成為下次核對舊 tag 的依據，沒通過的網站驗證可能少記或記錯舊 tag 的 commit。紀錄裡逐項記著結果與每個指令的輸出，可以從中找出是哪一頁、哪種情況或哪個指令；看完後用 `git restore --staged --worktree artifacts/checks/curriculum-publication.json` 還原成上一版的驗證，並刪除 `artifacts/checks/curriculum-release-bootstrap.json`。
-
-    原因在 tag 以外時（例如部署還沒完成、網路或套件下載暫時失敗），照第 10 步確認部署成功後重新執行這個 workflow，再用新的 run 編號執行 `save`。原因在 tag 的內容時（頁面、notebook、README 或程式），已推上 GitHub 的 tag 不移動，修正後從第 1 步改用另一個新 tag 重來；這時 `curriculum-release-bootstrap.json` 已經不在 git 裡，第 9 步不必再刪。
-
-只更新 Zensical 主題、導覽或建置工具時，不需要新 tag：Colab 按鈕沿用目前的 tag，程式沒變，執行紀錄也都仍然有效。跑完第 8 步的檢查後，照第 10 步重新部署即可。這類修改要另外在瀏覽器裡看過閱讀頁、搜尋、快速換頁後的公式、SVG 與手機版面。
+要在本機產生正式版本資訊，先完成上述檢查並提交發布來源，再執行 `.venv-docs/bin/python scripts/publication.py --revision "$(git rev-parse HEAD)"` 和 `.venv-docs/bin/python scripts/validate_site.py --require-publication`。CI 的 Linux 工作保留完整歷史並執行 `verify_release.py pins`；其他平台與學生安裝使用淺 clone，查歷史才另行取得完整版本。
 
 ## 官方參考與研究紀錄
 

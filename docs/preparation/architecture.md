@@ -6,7 +6,7 @@
 
 本次配對範圍是 52 節：原第 0–20 章的 42 節主線，以及從 15.1 attention 分岔的第 21–23 章 10 節 ViT／DINO 選讀支線。本版教材與 notebook 固定為 `lessons-v0.6.1`；公開入口驗證以保存紀錄中的 tag 與結果為準，既有 `lessons-v0.5.0` 紀錄保留原本範圍。
 
-Pages 由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`，最後用 `validate_site.py` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag（已發布的固定版本標籤）再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
+Pages 先在獨立 CPU 工作核對或重跑完整 52 節實驗，快取以程式、資料與環境識別；網站工作只裝建站工具。發布由手動啟動的 `.github/workflows/pages.yml` 建置：先跑 `scripts/` 裡的 `validate_preparation.py`、`validate_lessons.py` 與 `validate_curriculum_evidence.py`，再執行 `zensical build --clean --strict`、寫入 `build-info.json`，最後用 `validate_site.py --require-publication` 檢查產生的網頁；任何一步失敗就不上傳。網站發布後，手動啟動的 `.github/workflows/verify-release.yml`（`scripts/verify_release.py`）從公開的 tag（已發布的固定版本標籤）再檢查網站、notebook 環境格與 README 的指令，檢查範圍與結果見〈[全套實驗與審查](../validation/curriculum.md)〉。
 
 ```text
 zensical.toml                 網站設定、主題與小節導覽
@@ -24,24 +24,28 @@ lesson_cases/                 各節完整實驗程式，與 notebook 最後一�
 miniyolo/                     資料、模型、targets、loss、推論、評估與訓練套件
 tests/                        核心計算、checkpoint 續訓、8.2 節結果圖的 TP／FP 判定與圖說，以及 notebook 環境格的測試
 requirements-model.txt        模型與實驗的固定版本
+requirements-test.txt         維護者測試依賴，沿用模型套件並另裝 pytest
 requirements-video.txt        選用的影片檔讀寫套件（OpenCV），18、19 節讀寫真實影片時用
-scripts/                      資料下載與 LFS 封裝、notebook 配對、圖片推論、補充實驗、執行紀錄、審查涵蓋、網站檢查與發布後驗證
+scripts/                      資料下載與離線核對、LFS 封裝、notebook 配對、實驗與快取、網站檢查與發布後驗證
 section-map.json              小節 ID 與閱讀頁、notebook、固定版本的配對
+lesson-releases.json          已發布 lesson tag 的固定完整 commit，與工作流程 log 分開
 data/manifest.json            資料來源、校驗碼與 LFS 封裝資訊
 data/hosted-lfs-run.json      發布 LFS 封裝的工作流程各步驟的結果
 data/*-lfs-verification.json  LFS 在本地與 GitHub 上的驗證紀錄
 data/curated/                 授權清楚的精選資料，使用 LFS
 data/licenses/                精選資料的原授權文字
 data/downloads/               本地或 Colab 下載快取，不進 Git
-artifacts/checks/             執行紀錄、發布驗證與其他查核紀錄
+artifacts/checks/             必要實驗結果、科學來源及其他長期查核紀錄
 artifacts/checks/curriculum/  每節一份執行紀錄 <節>.json、彙總 index.json，另有多數補充紀錄與第 20 章 GPU 紀錄
 artifacts/*.png               部分小節程式畫出的圖（例如 01-small-cnn.png），不進 Git
 artifacts/lesson-*/           部分小節程式寫出的檔案（例如 lesson-17/），不進 Git
 artifacts/runs/               補充實驗、訓練、推論與檢查工具的輸出，不進 Git
 artifacts/checkpoints/        .gitattributes 指定給 LFS 的模型權重路徑，目錄不存在
 artifacts/exports/            .gitattributes 指定給 LFS 的匯出模型路徑，目錄不存在
-reviews/                      網站每一頁的審查紀錄；coverage.json 記下每份審查涵蓋的內容
-.github/workflows/            手動啟動的 Pages 發布、發布後驗證、GPU 紀錄與 LFS 資料工作流程
+reviews/                      歷史封存說明與必要科學來源，詳細審閱短期保存
+outputs/                      執行快取、發布驗證及其他臨時輸出，不進 Git
+work/                         暫稿、審閱工作資料與中間檔，不進 Git
+.github/workflows/            PR/main CI，以及手動 Pages、發布後驗證、GPU 與 LFS 工作流程
 requirements-modal.txt        GPU 工作流程在 GitHub Actions 上安裝的 Modal 用戶端，不含 PyTorch
 requirements-gpu.in           GPU 紀錄的套件：沿用 requirements-model.txt，PyTorch 改用 CUDA 版
 requirements-gpu.lock         由 requirements-gpu.in 產生、附雜湊的完整清單，Modal 的 GPU 環境照它安裝（第 20 章另加 TensorRT）
@@ -72,7 +76,7 @@ Colab URL 格式：
 https://colab.research.google.com/github/birdhackor/learn_to_yolo/blob/<ref>/notebooks/<section>.ipynb
 ```
 
-`section-map.json` 記錄 52 個教學小節 ID，各自配對網頁、獨立 notebook 與固定的 release tag（`source_ref`）；另有一筆首頁連結的 Colab 環境檢查 notebook，指向 `main`。一節標成 `ready`，只表示閱讀頁、實驗程式與 notebook 都存在；執行紀錄在 `artifacts/checks/curriculum/`，審查紀錄在 `reviews/`，`ready` 本身不代表審查、發布、GPU 訓練或效果驗證。網址與檔名都用小節 ID，不用標題，改標題不會讓外部連結失效。
+`section-map.json` 記錄 52 個教學小節 ID，各自配對網頁、獨立 notebook 與固定的 release tag（`source_ref`）；另有一筆首頁連結的 Colab 環境檢查 notebook，指向 `main`。一節標成 `ready`，只表示閱讀頁、實驗程式與 notebook 都存在；執行紀錄在 `artifacts/checks/curriculum/`，歷史審查見 `reviews/README.md`，新審閱結論留在 PR，`ready` 本身不代表審查、發布、GPU 訓練或效果驗證。網址與檔名都用小節 ID，不用標題，改標題不會讓外部連結失效。
 
 `scripts/build_lesson_notebooks.py --ref <tag>` 產生 52 本 notebook，並讓各頁的 Colab 連結與 `section-map.json` 都指向這個 tag。每本 notebook 有四格：說明、環境格、實驗說明、完整實驗程式；最後一格與 `lesson_cases/<節>.py` 逐字相同，並存著執行紀錄的輸出。環境格 clone 這個 tag 並確認版本相符；PyTorch 不是 2.9.1 時改裝 2.9.1 的 CPU 版（已經是 2.9.1 就沿用，CPU 或 CUDA 版都可以），若改裝前 torch 已載入，改裝後就停下，要求重新啟動工作階段。各節實驗都只用 CPU。環境格在這幾種情況下的行為有單元測試（`tests/test_notebook_bootstrap.py`，pip 與 git 都換成假的，不實際安裝或 clone）。
 

@@ -85,7 +85,7 @@ repository = base / ("learn_to_yolo_" + REF.replace(".", "_").replace("-", "_"))
 if not repository.exists():
     environment = os.environ.copy()
     environment["GIT_LFS_SKIP_SMUDGE"] = "1"
-    subprocess.run(["git", "clone", "--depth", "1", "--branch", REF,
+    subprocess.run(["git", "clone", "--depth", "1", "--no-tags", "--branch", REF,
                     "https://github.com/{REPOSITORY}.git", str(repository)],
                    env=environment, check=True)
 actual_ref = subprocess.check_output(
@@ -169,7 +169,7 @@ def main() -> None:
         section.update(status="ready", page=str(page.relative_to(ROOT)),
                        notebook=str(notebook_path.relative_to(ROOT)), source_ref=args.ref)
     registry["note"] = ("status ready means the page, lesson program and notebook exist; execution records are in "
-                        "artifacts/checks/curriculum/ and reviews in reviews/.")
+                        "artifacts/checks/curriculum/; scoped editorial review is recorded in the PR.")
     registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n")
     print(f"Paired {sum(s['kind'] == 'lesson' for s in registry['sections'])} authored lessons with notebooks pinned to {args.ref}.")
     if missing:

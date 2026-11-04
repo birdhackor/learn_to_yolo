@@ -6,7 +6,7 @@
 
 本次工作版安排 52 節：第 0–20 章的原有 42 節主線，加上第 21–23 章的 10 節 ViT／DINO 選讀支線。主線順序不變；學過 CNN、ResNet 與 [15.1 attention](docs/lessons/15-attention-bridge.md) 後，可分岔讀 [21.1 圖片切成 patch](docs/lessons/21-patches.md)，理解圖片如何交給 Transformer、自監督特徵如何學習，再接回單物件定位。只讀網頁也能學；每節配對一本獨立 notebook。
 
-本版實驗程式與 notebook 固定到 `lessons-v0.6.1`；網頁文字與圖解持續修訂，公開入口驗證以各次保存紀錄中的版本與結果為準。既有 `lessons-v0.5.0` 的發布驗證與依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做的主線審查保留原本範圍；[原始閱讀紀錄與處理](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查也保存在 [`reviews/`](reviews/)，不改標成盲讀，也不當成新支線的審查。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[驗證範圍](docs/status.md)。模型是教學用的簡化版，不是原版的完整重現。
+本版實驗程式與 notebook 固定到 `lessons-v0.6.1`；網頁文字與圖解持續修訂，公開入口驗證以各次保存紀錄中的版本與結果為準。既有 `lessons-v0.5.0` 的發布驗證與依 [clear-tutorial skill](.agents/skills/clear-tutorial/SKILL.md) 做的主線審查保留原本範圍；[原始閱讀紀錄與處理](https://github.com/birdhackor/learn_to_yolo/tree/lessons-v0.6.1/reviews/clear-tutorial/16f6910)保留當時的卡點和協調者前提安排的限制。先前完整頁面審查保存在[固定封存版本](reviews/README.md)，不改標成盲讀，也不當成新支線的審查。審查者都是 AI，沒有真人學生學習效果測試；執行與審查範圍見[驗證範圍](docs/status.md)。模型是教學用的簡化版，不是原版的完整重現。
 
 2026-10-06 已依新版四題重新審閱全部 52 節，保留分段閱讀、修正、非作者技術核對與前後銜接紀錄，見[本輪總覽](https://github.com/birdhackor/learn_to_yolo/blob/lessons-v0.6.1/reviews/clear-tutorial/full-review-2026-10-06/README.md)。四題仍有 DINO 介紹漏抓與逐項引用缺陷，不能把保存答案當成嚴格盲讀全面合格；原始紀錄及獨立裁定一併保留。
 
@@ -14,14 +14,13 @@
 
 ## CPU 本機執行
 
-使用 Python 3.12，在 repository 根目錄執行（第一行的 `python3` 要是 3.12 版；不是的話，換成 Python 3.12 直譯器的路徑）：
+新取得專案可用 `GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 --no-tags https://github.com/birdhackor/learn_to_yolo.git`。使用 Python 3.12，在 repository 根目錄執行（第一行的 `python3` 要是 3.12 版；不是的話，換成 Python 3.12 直譯器的路徑）：
 
 ```bash
 python3 -m venv .venv-model
 .venv-model/bin/python -m pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cpu
 .venv-model/bin/python -m pip install -r requirements-model.txt
 PYTHONPATH=. .venv-model/bin/python lesson_cases/00-warmup.py
-.venv-model/bin/python -m pytest tests/
 .venv-model/bin/python scripts/check_lesson_runtime.py
 ```
 
@@ -47,7 +46,7 @@ Notebook 的最後一格是完整、可修改的實驗程式，與 `lesson_cases
 
 這個命令用程式畫出固定的紅／藍矩形圖，走過 data → target → loss → update → decode → NMS → held-out AP50。checkpoint、loss 曲線圖、validation 範例圖、每一步的 loss（`history.json`）與完整報告 `report.json`（設定、指標與每一步的 loss），都存在 git 不追蹤的 `artifacts/runs/grid-learning/`。換一台電腦重跑，數字可能略有不同；這些結果只代表這個受控的合成任務，不能外推到照片。
 
-repo 保存的執行紀錄 [`artifacts/checks/grid-learning.json`](artifacts/checks/grid-learning.json)，是同一個命令另加 `--report artifacts/checks/grid-learning.json` 寫出的報告；只有明確指定 `--report` 才會寫到這裡，照上面的命令重跑不會改動它。檔內記有執行的電腦、每一步的 loss 與 validation、test 的 mAP50，並以 SHA-256 綁定產生它的程式。紀錄過期時，下方發布步驟第 4 步的 `record_evidence.py --run` 就這樣重產它，再由 `scripts/render_learning_evidence.py` 依紀錄重畫網站上的 loss 曲線與預測圖；這些結果在 [7.4 三步訓練與診斷](docs/lessons/07-training.md)的 160 步補充實驗有逐項解說。
+repo 保存的執行紀錄 [`artifacts/checks/grid-learning.json`](artifacts/checks/grid-learning.json)，是同一個命令另加 `--report artifacts/checks/grid-learning.json` 寫出的報告；只有明確指定 `--report` 才會寫到這裡，照上面的命令重跑不會改動它。檔內記有執行的電腦、每一步的 loss 與 validation、test 的 mAP50，並以 SHA-256 綁定產生它的程式。紀錄過期時，維護工具 `record_evidence.py --run` 就這樣重產它，再由 `scripts/render_learning_evidence.py` 依紀錄重畫網站上的 loss 曲線與預測圖；這些結果在 [7.4 三步訓練與診斷](docs/lessons/07-training.md)的 160 步補充實驗有逐項解說。
 
 要用較大的預算，把 `--steps 160 --samples 32` 換成 `--epochs 20 --samples 1024`：1024 張訓練圖各用過 20 次，共 2560 次參數更新。`--epochs` 與 `--steps` 只能擇一，同時指定會直接報錯。再用 `--output` 另指定目錄，前一次的結果就會留著對照，例如 `.venv-model/bin/python -m miniyolo.train --epochs 20 --samples 1024 --device cpu --output artifacts/runs/grid-learning-20-epochs`。GPU 環境先依 [PyTorch 官方安裝選擇器](https://pytorch.org/get-started/locally/) 安裝相容的 CUDA build，確認 `torch.cuda.is_available()` 為 `True`，再把 `--device cpu` 改成 `--device cuda`；這個指令沒有在 GPU 上實際跑過，GPU 上做過的檢查見下一段。
 
@@ -68,7 +67,7 @@ Loader 讀取時會再核對大小、SHA-256 與 IDX 格式，把 28×28 灰階�
 
 ## 網站建置與發布
 
-網站使用 **Zensical 0.0.67** 的 modern 主題，設定在 `zensical.toml`。中文導覽、全文搜尋、深淺色模式與快速換頁由 Zensical 提供；公式與 SVG 隨網站發布。下面的命令同樣使用 Python 3.12，在 repository 根目錄執行。`validate_lessons.py`、`validate_site.py`、下方發布步驟第 5 步的 `review_coverage.py` 與第 7 步的 `verify_release.py` 用到 Python 3.11 起才內建的 `tomllib`，`python3` 是更舊的版本時會失敗。
+網站使用 Zensical，網站工具固定在 `requirements-docs.txt`。只預覽或檢查網站不需要模型套件、訓練資料或 GPU：
 
 ```bash
 python3 -m venv .venv-docs
@@ -81,19 +80,20 @@ python3 scripts/validate_site.py
 .venv-docs/bin/zensical serve
 ```
 
-建置前的三項檢查核對資料清單與 notebook 配對、頁面裡的程式摘錄與審查紀錄，以及每份執行紀錄是否對得上目前的程式、notebook 與頁面；建置後的 `validate_site.py` 檢查連結、Colab 配對、搜尋與 Markdown 轉換。這些步驟不需要 PyTorch、資料或 GPU：檢查腳本只用 Python 標準函式庫，建置只用 `.venv-docs`。手動觸發的 GitHub Pages 工作流程依同樣順序執行。
+維護者另安裝 `requirements-test.txt` 後執行 pytest；一般 CPU 練習只需前述模型環境。
 
-發布新版教材時使用新的 tag，不覆寫已發布的 tag。步驟依序如下：
+```bash
+.venv-model/bin/python -m pip install -r requirements-test.txt
+.venv-model/bin/python -m pytest tests/
+```
 
-1. 執行 `python3 scripts/build_lesson_notebooks.py --ref <新版 tag>`：重建 notebook，Colab 連結改指向新 tag。
-2. 執行 `.venv-model/bin/python scripts/record_evidence.py`：列出程式有變而過期的執行紀錄，不執行任何實驗。程式沒變的紀錄沿用，保留原本的日期與電腦。
-3. 有過期的 GPU 紀錄時，先把目前的修改 commit 並推到一個分支，再執行 `.venv-model/bin/python scripts/record_evidence.py --gpu <分支>`。它用 GitHub CLI（`gh`）啟動 GitHub Actions 工作流程，等它跑完再把結果存成紀錄；工作流程跑的是推上去的程式，所以本機的 commit 要和該分支相同。
-4. 用 `.venv-model/bin/python -m pip install -r requirements-video.txt` 加裝影片紀錄要用的 OpenCV，再執行 `.venv-model/bin/python scripts/record_evidence.py --run`，在這台電腦重產過期的 CPU 紀錄。`--run` 會先確認 Python 與套件符合固定版本；最好在產生既有紀錄的同一種環境執行（每份紀錄都記有它的電腦），沒有改到的計算才會得到相同的數字。
-5. 重新審查改過的頁面。不加參數執行 `python3 scripts/review_coverage.py`，會列出還沒有審查、或審查對不上目前內容的頁面：頁面文字、頁面上的 SVG、PNG 等圖，或課程頁的程式與它 import 的模組有變，都算改過；頁尾的執行紀錄區塊與 Colab 連結裡的 tag 不算。第 4 步會重畫部分實驗圖，所以審查放在紀錄之後。依 [clear-tutorial](.agents/skills/clear-tutorial/SKILL.md) 依序做逐段首次閱讀、非作者技術核對、另一位讀者銜接複查，保留原始卡點與實際核回。以下是第二輪的技術細節：在獨立的副本執行該節程式、照頁面做練習，逐句對照程式、執行紀錄與手算，並從初學讀者的角度看說明；頁面引用論文、官方程式或函式庫文件的說法，另打開原始來源逐句核對（論文看原文，官方程式看固定的 commit 或 tag，函式庫看官方文件），並在審查紀錄列出查閱的來源與版本。其他頁對照 repo 的程式、指令、紀錄與頁面引用的來源查核，頁面上有指令的，也實際執行其中一部分。修正要由另一位 AI 檢查，紀錄要列出每個發現與它的處理。審查紀錄放在 `reviews/`（課程頁是 `reviews/<節>.md`；其他頁用路徑命名，例如 `docs/validation/curriculum.md` 是 `reviews/validation-curriculum.md`），寫好後執行 `python3 scripts/review_coverage.py --write <頁面路徑>`，記下它涵蓋的內容。還有頁面沒有審查、或審查對不上目前內容時，`validate_lessons.py` 會失敗。審查之後又改了程式（`lesson_cases/` 的程式、它們 import 的模組，或補充實驗的腳本），就從第 1 步重來，因為 notebook 與執行紀錄都可能因此過期；只改了頁面文字或圖，就重新審查 `review_coverage.py` 列出的頁面（同一張圖可能出現在好幾頁），再對它們執行一次 `--write`。`review_coverage.py` 保存正文內容（包含數字）的指紋，但不自動核算正文與重產紀錄的數值是否一致：第 3、4 步重產了紀錄時，要在 `docs/` 與 `README.md` 搜尋這些紀錄的檔名與舊的數字，對照新紀錄逐一核對，改了正文就重審那一頁。
-6. 本節開頭的網站檢查全部通過後，用 `git rm artifacts/checks/curriculum-release-bootstrap.json` 刪掉上一版的環境格與 README 驗證，提交變更並推到 main，建立並推送新 tag，再從 main 執行 Pages 工作流程（Publish Learn to YOLO）。
-7. 部署成功後執行 Verify published lessons 工作流程（`gh workflow run verify-release.yml -f tag=<新版 tag>`）：它在 GitHub 的 Linux runner 上，從公開的新 tag 比對網站、執行 notebook 的環境格與這份 README 的指令。跑完後執行 `python3 scripts/verify_release.py save --run <run 編號>`，把兩份結果存成 `artifacts/checks/curriculum-publication.json` 與 `artifacts/checks/curriculum-release-bootstrap.json`；兩份都通過，就 commit 並推到 main。
+教材修改按影響範圍核對易讀性、正確性與連貫性，PR 留發現、修正、測試和未驗證範圍；詳細閱讀、凍結稿與截圖使用短期 artifact。歷史審閱保留於[固定封存版本](reviews/README.md)，網站不再讀逐頁審閱指紋。來源同步、必要科學結果、嚴格建置、連結和下載入口仍須通過。
 
-在另一台電腦記錄 CPU 紀錄的做法、GPU 工作流程需要的設定與失敗時的處理、部署後如何驗證公開網站與 Colab 入口，以及 GitHub Pages／LFS 的其他操作，見[發布與帳號設定](docs/preparation/publish.md)。
+正式發布由手動 Pages workflow 執行。它先在 CPU 工作中核對或重跑完整 52 節實驗，再由只安裝網站工具的工作建站；整套成功結果保存在忽略的 `outputs/lesson-execution/`，以有序程式、共用輸入、套件與環境識別。純文字改動可沿用相同執行輸入的結果；缺少、過期或不完整就重跑，並保留真正的執行版本和日期。CI 在 PR/main 執行，依實際執行輸入決定跨平台範圍。
+
+程式修改需要新的 Notebook 發布 tag：先執行 `build_lesson_notebooks.py --ref <新 tag>`，再用 `record_evidence.py` 檢查及更新受影響的科學紀錄與圖，核對正文數值並審閱修改。既有 tag 不移動，已發布 Notebook 保留原內容；新的環境格會使用淺 clone、略過其他 tag 與 LFS 資料。文字與發布工具維護可以沿用現有教材 tag。
+
+發布後檢查公開 `build-info.json` 的網站版本、實際執行版本與 CPU 範圍，點開受影響頁面及 Colab 入口。新版 tag 另以 Verify published lessons 核對公開內容；`verify_release.py save --run <編號>` 將結果存入忽略的 `outputs/release-verification/`，不再覆寫或提交整包發布 log。已發布 tag 的完整 commit 清單獨立保存在 `lesson-releases.json`，不依賴上一輪 log。操作與科學紀錄重建細節見[發布與帳號設定](docs/preparation/publish.md)。
 
 ## 目錄結構
 
@@ -101,6 +101,6 @@ python3 scripts/validate_site.py
 - `lesson_cases/`、`notebooks/`：每節可獨立執行的實驗；各節 notebook 的最後一格與同名程式逐字相同。`notebooks/00_environment_check.ipynb` 另用來檢查 Colab 環境。
 - `docs/`：網站內容；各節教材在 `docs/lessons/`，示意圖與實際結果圖在 `docs/assets/diagrams/`。
 - `artifacts/checks/`：執行與檢查紀錄。每節一份的執行紀錄在 `artifacts/checks/curriculum/`。這些紀錄和補充實驗、GPU 的紀錄都記下執行的電腦或 GPU，並以 SHA-256 綁定各自的程式；補充與 GPU 紀錄的清單在 `scripts/evidence_records.py`。其他輸出寫在 git 不追蹤的 `artifacts/runs/` 等位置。
-- `reviews/`：網站導覽裡每一頁的 AI 審查紀錄；`coverage.json` 以 SHA-256 記下每份審查涵蓋的頁面文字、圖與程式。
+- `reviews/`：歷史封存說明及必要科學來源；新的詳細審閱使用短期 artifact，PR 留摘要。
 - `scripts/`：資料下載、補充實驗、執行紀錄與網站檢查的工具。
-- `section-map.json`：52 節的網頁、notebook 與固定 tag 對應表；`status: ready` 只表示網頁、程式與 notebook 都在，不代表已審查或發布。
+- `section-map.json`：52 節的網頁、notebook 與固定 tag 對應表；`status: ready` 只表示網頁、程式與 notebook 都在，不代表已審查或發布。`lesson-releases.json` 另外保存已發布 tag 的固定 commit。
